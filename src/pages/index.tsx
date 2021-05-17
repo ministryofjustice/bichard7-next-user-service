@@ -1,9 +1,9 @@
+import Layout from "../components/layout"
+
 const Index = () => (
-  <div className="govuk-width-container">
-    <main className="govuk-main-wrapper">
-      <h1 className="govuk-heading-xl">Hello, world!</h1>
-    </main>
-  </div>
+  <Layout>
+    <h1 className="govuk-heading-xl">Hello, world!</h1>
+  </Layout>
 )
 
 export default Index
