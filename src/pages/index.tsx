@@ -1,5 +1,9 @@
 const Index = () => (
-  <h1>Hello, world!</h1>
+  <div className="govuk-width-container">
+    <main className="govuk-main-wrapper">
+      <h1 className="govuk-heading-xl">Hello, world!</h1>
+    </main>
+  </div>
 )
 
 export default Index
