@@ -7,8 +7,8 @@ const App = ({ Component, pageProps }: AppProps) => {
     document.body.className = document.body.className ? `${document.body.className} js-enabled` : "js-enabled"
 
     // eslint-disable-next-line @typescript-eslint/no-var-requires, global-require
-    const GOVUKFrontend = require("govuk-frontend")
-    GOVUKFrontend.initAll()
+    const GovUkFrontend = require("govuk-frontend")
+    GovUkFrontend.initAll()
   }, [])
 
   // eslint-disable-next-line react/jsx-props-no-spreading
