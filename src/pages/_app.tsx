@@ -1,8 +1,8 @@
 import { AppProps } from "next/app"
-import { FunctionComponent, useEffect } from "react"
+import { useEffect } from "react"
 import "../styles/globals.scss"
 
-const GOVUKApp: FunctionComponent<AppProps> = ({ Component, pageProps }: AppProps): JSX.Element => {
+const App = ({ Component, pageProps }: AppProps) => {
   useEffect(() => {
     document.body.className = document.body.className ? `${document.body.className} js-enabled` : "js-enabled"
 
@@ -15,4 +15,4 @@ const GOVUKApp: FunctionComponent<AppProps> = ({ Component, pageProps }: AppProp
   return <Component {...pageProps} />
 }
 
-export default GOVUKApp
+export default App

@@ -1,11 +1,6 @@
 import Document, { Html, Head, Main, NextScript } from "next/document"
 
-class GOVUKDocument extends Document {
-  static async getInitialProps(ctx) {
-    const initialProps = await Document.getInitialProps(ctx)
-    return { ...initialProps }
-  }
-
+export default class GovUkDocument extends Document {
   render() {
     return (
       <Html className="govuk-template" lang="en">
@@ -18,5 +13,3 @@ class GOVUKDocument extends Document {
     )
   }
 }
-
-export default GOVUKDocument
