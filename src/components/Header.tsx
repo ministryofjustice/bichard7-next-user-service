@@ -28,7 +28,7 @@ const HeaderLogo = () => (
             alt=""
           />
         </svg>
-        <span className="govuk-header__logotype-text">GOV.UK</span>
+        <span className="govuk-header__logotype-text">{"GOV.UK"}</span>
       </span>
     </a>
   </div>

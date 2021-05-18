@@ -43,7 +43,7 @@
         "@typescript-eslint/ban-ts-comment": "off",
         "no-plusplus": "off",
         "react/react-in-jsx-scope": "off",
-        "react/react-jsx-curly-brace-presence": ["off"],
+        "react/jsx-curly-brace-presence": ["error", { "props": "ignore", "children": "always"}],
         "react/require-default-props": ["off"],
         "curly": [2, "all"],
         "require-await": "error"
