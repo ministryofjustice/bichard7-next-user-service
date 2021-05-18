@@ -1,7 +1,7 @@
-import Button from "components/button"
-import GridRow from "components/gridRow"
-import Layout from "components/layout"
-import TextInput from "components/textInput"
+import Button from "components/Button"
+import GridRow from "components/GridRow"
+import Layout from "components/Layout"
+import TextInput from "components/TextInput"
 
 const Index = () => (
   <Layout>
