@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "prepare": "./scripts/copy-govuk-frontend-assets.sh",
+    "prepare": "./scripts/copy-govuk-frontend-assets.sh && husky install",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
   },
@@ -29,8 +29,13 @@
     "eslint-plugin-prettier": "^3.4.0",
     "eslint-plugin-react": "^7.23.2",
     "eslint-plugin-react-hooks": "^4.2.0",
+    "husky": "^6.0.0",
+    "lint-staged": "^11.0.0",
     "prettier": "^2.3.0",
     "sass": "^1.32.13",
     "typescript": "^4.2.4"
+  },
+  "lint-staged": {
+    "*.{js,ts,tsx}": "eslint --cache --fix"
   }
 }
