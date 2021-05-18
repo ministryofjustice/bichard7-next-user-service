@@ -1,6 +1,6 @@
-import { ReactNode } from "react";
-import Header from "./Header";
-import Footer from "./Footer";
+import { ReactNode } from "react"
+import Header from "./Header"
+import Footer from "./Footer"
 
 interface Props {
   children: ReactNode
@@ -8,7 +8,7 @@ interface Props {
 
 const Layout = ({ children }: Props) => (
   <>
-    <Header serviceName={"Ministry of Justice: Bichard 7"} />
+    <Header serviceName="Ministry of Justice: Bichard 7" />
 
     <div className="govuk-width-container ">
       <main className="govuk-main-wrapper " role="main">
@@ -20,4 +20,4 @@ const Layout = ({ children }: Props) => (
   </>
 )
 
-export default Layout;
+export default Layout

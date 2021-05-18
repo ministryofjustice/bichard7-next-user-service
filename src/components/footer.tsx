@@ -3,7 +3,6 @@ const Footer = () => (
     <div className="govuk-width-container ">
       <div className="govuk-footer__meta">
         <div className="govuk-footer__meta-item govuk-footer__meta-item--grow">
-
           <svg
             aria-hidden="true"
             focusable="false"
@@ -43,4 +42,4 @@ const Footer = () => (
   </footer>
 )
 
-export default Footer;
+export default Footer
