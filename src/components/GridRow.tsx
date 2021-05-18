@@ -6,15 +6,11 @@ interface Props {
 }
 
 const GridRow = ({ aside, children }: Props) => {
-  let asideComponent: ReactNode
-  if (aside) {
-    asideComponent = <div className="govuk-grid-column-one-third">{aside}</div>
-  }
-
   return (
     <div className="govuk-grid-row">
       <div className="govuk-grid-column-two-thirds">{children}</div>
-      {aside}
+
+      {!!aside && <div className="govuk-grid-column-one-third">{aside}</div>}
     </div>
   )
 }
