@@ -103,6 +103,10 @@ dist
 # TernJS port file
 .tern-port
 
+# Cypress output
+**/cypress/screenshots
+**/cypress/videos
+
 # Ignore govuk-frontend assets - these are copied from
 # node_modules/govuk-frontend using scripts/copy-govuk-frontend-assets.sh
 public/assets/fonts/bold-affa96571d-v2.woff
