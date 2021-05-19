@@ -1,0 +1,69 @@
+version: 2.1
+
+jobs:
+  build:
+    docker:
+      - image: cimg/node:15.9.0
+
+    working_directory: ~
+
+    steps:
+      - checkout
+
+      - run:
+          name: Install node dependencies
+          command: npm install
+
+      - run:
+          name: Check the code for linting errors
+          command: npm run lint
+
+      - run:
+          name: Build the user service application
+          command: npm run build
+
+      # Persist the build output to the workspace to reduce build time later
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .next
+            - node_modules
+
+  test:
+    docker:
+      - image: cimg/node:15.9.0
+
+    working_directory: ~
+
+    steps:
+      - checkout
+
+      # Use the persisted build output, negating the need to rebuild now
+      - attach_workspace:
+          at: .
+
+      - run:
+          name: Install node dependencies
+          command: npm install
+
+      - run:
+          name: Install Cypress
+          command: ./.circleci/scripts/install-cypress.sh
+
+      - run:
+          name: Run UI tests
+          command: npm run test:ui
+
+      - store_artifacts:
+          path: ./cypress/videos
+      - store_artifacts:
+          path: ./cypress/screenshots
+
+workflows:
+  version: 2
+  build-and-test:
+    jobs:
+      - build
+      - test:
+          requires:
+            - build
