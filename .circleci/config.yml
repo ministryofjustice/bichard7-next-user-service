@@ -10,9 +10,18 @@ jobs:
     steps:
       - checkout
 
+      # Load node_modules from the cache if they haven't changed
+      - restore_cache:
+          key: v1-npm-deps-{{ checksum "package-lock.json" }}
+
       - run:
           name: Install node dependencies
           command: npm install
+
+      # Store node_modules in cache to speed up future installs
+      - save_cache:
+          key: v1-npm-deps-{{ checksum "package-lock.json" }}
+          paths: node_modules
 
       - run:
           name: Check the code for linting errors
@@ -25,9 +34,7 @@ jobs:
       # Persist the build output to the workspace to reduce build time later
       - persist_to_workspace:
           root: .
-          paths:
-            - .next
-            - node_modules
+          paths: .next
 
   test:
     docker:
@@ -41,6 +48,10 @@ jobs:
       # Use the persisted build output, negating the need to rebuild now
       - attach_workspace:
           at: .
+
+      # Load node_modules from the cache if they haven't changed
+      - restore_cache:
+          key: v1-npm-deps-{{ checksum "package-lock.json" }}
 
       - run:
           name: Install node dependencies
