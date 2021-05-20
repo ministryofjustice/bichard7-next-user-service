@@ -49,6 +49,7 @@
         "curly": ["error", "all"],
         "require-await": "error",
         "filenames/match-exported": "error",
+        "@typescript-eslint/explicit-module-boundary-types": ["off"],
         "@typescript-eslint/naming-convention": [
           "error",
           {
@@ -56,12 +57,6 @@
             "format": ["StrictPascalCase", "strictCamelCase"]
           }
         ]
-      }
-    },
-    {
-      "files": ["**/*.tsx"],
-      "rules": {
-        "@typescript-eslint/explicit-module-boundary-types": ["off"]
       }
     },
     {
