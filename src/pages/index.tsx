@@ -4,7 +4,7 @@ import GridRow from "components/GridRow"
 import Layout from "components/Layout"
 import Head from "next/head"
 import TextInput from "components/TextInput"
-import authenticate from "lib/authenticate"
+import { Authenticator } from "lib/Authenticator"
 import { GetServerSideProps } from "next"
 import parseFormData from "lib/parseFormData"
 
@@ -15,9 +15,9 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
     const { email, password } = (await parseFormData(req)) as { email: string; password: string }
 
     if (email && password) {
-      const user = authenticate({ emailAddress: email, password })
+      const user = Authenticator.authenticate({ emailAddress: email, password })
 
-      if (user.loggedIn) {
+      if (user.authenticated) {
         return {
           redirect: {
             destination: "https://localhost:9443/bichard-ui/",
