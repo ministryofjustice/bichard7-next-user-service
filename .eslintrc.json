@@ -60,7 +60,7 @@
       }
     },
     {
-      "files": ["**/_*.tsx", "**/_*.ts", "**/index.tsx", "**/index.ts"],
+      "files": ["**/_*.{ts,tsx}", "**/index.{ts,tsx}", "*.config.{js,ts}"],
       "rules": {
         "filenames/match-exported": "off"
       }
