@@ -58,6 +58,10 @@ jobs:
           command: npm install
 
       - run:
+          name: Run unit tests
+          command: npm run test:unit
+
+      - run:
           name: Install Cypress
           command: ./.circleci/scripts/install-cypress.sh
 
