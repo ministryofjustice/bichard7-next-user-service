@@ -4,25 +4,29 @@ import GridRow from "components/GridRow"
 import Layout from "components/Layout"
 import Head from "next/head"
 import TextInput from "components/TextInput"
-import { authenticate } from "lib/authentication"
+import authenticate from "lib/authenticate"
 import { GetServerSideProps } from "next"
-import parse from "urlencoded-body-parser"
+import parseFormData from "lib/parseFormData"
 
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   let invalidCredentials = false
 
   if (req.method === "POST") {
-    const { email, password } = await parse(req)
-    const user = authenticate({ emailAddress: email, password })
+    const { email, password } = (await parseFormData(req)) as { email: string; password: string }
 
-    if (user.loggedIn) {
-      return {
-        redirect: {
-          destination: "https://localhost:9443/bichard-ui/",
-          permanent: false
+    if (email && password) {
+      const user = authenticate({ emailAddress: email, password })
+
+      if (user.loggedIn) {
+        return {
+          redirect: {
+            destination: "https://localhost:9443/bichard-ui/",
+            permanent: false
+          }
         }
       }
     }
+
     invalidCredentials = true
   }
 
