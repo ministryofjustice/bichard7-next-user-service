@@ -8,6 +8,7 @@ const config: Config.InitialOptions = {
       tsconfig: "test/tsconfig.json"
     }
   },
+  moduleDirectories: ["node_modules", "./src"],
   testPathIgnorePatterns: ["/node_modules/", "/.next/", "/cypress"],
   transformIgnorePatterns: ["/node_modules/", "/.next/", "/cypress"],
   verbose: true
