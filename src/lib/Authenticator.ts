@@ -1,16 +1,8 @@
 import LocalAuthenticator from "lib/AuthenticationProvider/LocalAuthenticator"
-
-export interface User {
-  emailAddress: string
-  password: string
-}
-
-export interface AuthenticatedUser extends User {
-  authenticated: boolean
-}
+import { AuthenticationResult, UserCredentials } from "./User"
 
 export interface AuthenticationProvider {
-  authenticate(user: User): boolean
+  authenticate(credentials: UserCredentials): AuthenticationResult
 }
 
 export class Authenticator {
@@ -25,12 +17,7 @@ export class Authenticator {
     return Authenticator.provider
   }
 
-  public static authenticate(user: User): AuthenticatedUser {
-    const authenticated = Authenticator.getProvider().authenticate(user)
-
-    return {
-      ...user,
-      authenticated
-    }
+  public static authenticate(credentials: UserCredentials): AuthenticationResult {
+    return Authenticator.getProvider().authenticate(credentials)
   }
 }

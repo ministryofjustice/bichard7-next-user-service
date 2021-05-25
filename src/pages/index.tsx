@@ -7,17 +7,18 @@ import TextInput from "components/TextInput"
 import { Authenticator } from "lib/Authenticator"
 import { GetServerSideProps } from "next"
 import parseFormData from "lib/parseFormData"
+import { isSuccess, UserCredentials } from "lib/User"
 
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   let invalidCredentials = false
 
   if (req.method === "POST") {
-    const { email, password } = (await parseFormData(req)) as { email: string; password: string }
+    const credentials: UserCredentials = (await parseFormData(req)) as { emailAddress: string; password: string }
 
-    if (email && password) {
-      const user = Authenticator.authenticate({ emailAddress: email, password })
+    if (credentials.emailAddress && credentials.password) {
+      const result = Authenticator.authenticate(credentials)
 
-      if (user.authenticated) {
+      if (isSuccess(result)) {
         return {
           redirect: {
             destination: "https://localhost:9443/bichard-ui/",
@@ -55,7 +56,7 @@ const Index = ({ invalidCredentials }: Props) => (
         )}
 
         <form action="/" method="post">
-          <TextInput id="email" name="email" label="Email address" type="email" />
+          <TextInput id="email" name="emailAddress" label="Email address" type="email" />
           <TextInput id="password" name="password" label="Password" type="password" />
           <Button>{"Sign in"}</Button>
         </form>

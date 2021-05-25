@@ -20,7 +20,7 @@ describe("Logging In", () => {
           url: "/",
           form: true,
           body: {
-            email: "bichard01@example.com",
+            emailAddress: "bichard01@example.com",
             password: "password"
           },
           followRedirect: false

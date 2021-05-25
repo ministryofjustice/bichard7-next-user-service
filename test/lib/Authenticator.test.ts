@@ -1,5 +1,6 @@
 import LocalAuthenticator from "lib/AuthenticationProvider/LocalAuthenticator"
 import { Authenticator } from "lib/Authenticator"
+import { User } from "lib/User"
 
 jest.mock("lib/AuthenticationProvider/LocalAuthenticator")
 const LocalAuthenticatorMock = LocalAuthenticator as jest.MockedClass<typeof LocalAuthenticator>
@@ -26,22 +27,19 @@ describe("Authenticator class", () => {
       LocalAuthenticatorMock.mockClear()
     })
 
-    it("should return an object containing the passed user details", () => {
-      const authenticatedUser = Authenticator.authenticate({ emailAddress, password })
-      expect(authenticatedUser.emailAddress).toEqual(emailAddress)
-      expect(authenticatedUser.password).toEqual(password)
+    it("should return a User when authentication is successful", () => {
+      LocalAuthenticatorMock.prototype.authenticate.mockReturnValue({ emailAddress })
+      const result = Authenticator.authenticate({ emailAddress, password })
+      expect(result).not.toBeInstanceOf(Error)
+      expect(result).toHaveProperty("emailAddress")
+      expect((result as User).emailAddress).toEqual(emailAddress)
     })
 
-    it("should return a true `authenticated` key when the user is authenticated", () => {
-      LocalAuthenticatorMock.prototype.authenticate.mockReturnValue(true)
-      const { authenticated } = Authenticator.authenticate({ emailAddress, password })
-      expect(authenticated).toBe(true)
-    })
-
-    it("should return a false `authenticated` key when the user is not authenticated", () => {
-      LocalAuthenticatorMock.prototype.authenticate.mockReturnValue(false)
-      const { authenticated } = Authenticator.authenticate({ emailAddress, password })
-      expect(authenticated).toBe(false)
+    it("should return an Error when authentication is not successful", () => {
+      LocalAuthenticatorMock.prototype.authenticate.mockReturnValue(new Error("Test error"))
+      const result = Authenticator.authenticate({ emailAddress, password })
+      expect(result).toBeInstanceOf(Error)
+      expect(result).not.toHaveProperty("emailAddress")
     })
   })
 })
