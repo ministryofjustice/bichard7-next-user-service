@@ -8,6 +8,7 @@ import Authenticator from "lib/Authenticator"
 import { GetServerSideProps } from "next"
 import parseFormData from "lib/parseFormData"
 import { isSuccess, UserCredentials } from "lib/User"
+import config from "lib/config"
 
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   let invalidCredentials = false
@@ -21,7 +22,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
       if (isSuccess(result)) {
         return {
           redirect: {
-            destination: "https://localhost:9443/bichard-ui/",
+            destination: config.bichardRedirectURL,
             permanent: false
           }
         }
