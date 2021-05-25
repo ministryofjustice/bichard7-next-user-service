@@ -1,4 +1,4 @@
-import { AuthenticationProvider } from "lib/Authenticator"
+import { AuthenticationProvider } from "lib/AuthenticationProvider"
 import { AuthenticationResult, UserCredentials } from "lib/User"
 
 export default class LocalAuthenticator implements AuthenticationProvider {

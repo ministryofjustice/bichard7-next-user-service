@@ -1,5 +1,5 @@
 import LocalAuthenticator from "lib/AuthenticationProvider/LocalAuthenticator"
-import { Authenticator } from "lib/Authenticator"
+import Authenticator from "lib/Authenticator"
 import { User } from "lib/User"
 
 jest.mock("lib/AuthenticationProvider/LocalAuthenticator")

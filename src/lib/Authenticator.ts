@@ -1,11 +1,8 @@
 import LocalAuthenticator from "lib/AuthenticationProvider/LocalAuthenticator"
+import { AuthenticationProvider } from "./AuthenticationProvider"
 import { AuthenticationResult, UserCredentials } from "./User"
 
-export interface AuthenticationProvider {
-  authenticate(credentials: UserCredentials): AuthenticationResult
-}
-
-export class Authenticator {
+export default class Authenticator {
   private static provider: AuthenticationProvider
 
   public static getProvider(): AuthenticationProvider {
