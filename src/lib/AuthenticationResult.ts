@@ -1,11 +1,10 @@
-import { User } from "./User"
-
-export type AuthenticationResult = User | Error
+export type Token = string
+export type AuthenticationResult = Token | Error
 
 export function isError(result: AuthenticationResult): result is Error {
   return result instanceof Error
 }
 
-export function isSuccess(result: AuthenticationResult): result is User {
+export function isSuccess(result: AuthenticationResult): result is Token {
   return !isError(result)
 }

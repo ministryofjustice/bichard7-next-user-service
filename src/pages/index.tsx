@@ -23,7 +23,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
       if (isSuccess(result)) {
         return {
           redirect: {
-            destination: config.bichardRedirectURL,
+            destination: `${config.bichardRedirectURL}?token=${result}`,
             permanent: false
           }
         }
