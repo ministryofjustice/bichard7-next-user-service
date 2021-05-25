@@ -19,8 +19,9 @@ describe("Local development authenticator", () => {
   })
 
   test.each`
-    emailAddress               | password
-    ${"bichard01@example.com"} | ${"password"}
+    emailAddress                        | password
+    ${"bichard01@example.com"}          | ${"password"}
+    ${"b7exceptionhandler@example.com"} | ${"password"}
   `("should authenticate $emailAddress:$password", ({ emailAddress, password }) => {
     const result = authenticator.authenticate({ emailAddress, password })
     expect(result).not.toBeInstanceOf(Error)
@@ -32,6 +33,8 @@ describe("Local development authenticator", () => {
     const payload = jwt.verify(token as string, config.localAuthenticator.jwtSecret)
 
     expect(payload).toHaveProperty("emailAddress")
+    expect(payload).toHaveProperty("role")
+    expect(payload).toHaveProperty("displayName")
     expect(payload).toHaveProperty("exp")
     expect(payload).not.toHaveProperty("password")
   })
