@@ -25,13 +25,13 @@ describe("Logging In", () => {
           },
           followRedirect: false
         }).then((response) => {
-          const loc = response.headers.location
-          expect(loc).to.equal("https://localhost:9443/bichard-ui/")
+          const { location } = response.headers
+          expect(location).to.equal("https://localhost:9443/bichard-ui/")
         })
       })
 
       it("should show an error message when invalid credentials are entered", () => {
-        cy.get("input[type=email]").type("foobar@example.com").should("have.value", "foobar@example.com")
+        cy.get("input[type=email]").type("foobar@example.com")
         cy.get("input[type=password").type("foobar")
         cy.get("form").submit()
         cy.get(".govuk-error-summary").should("be.visible").contains("h2", "Invalid credentials")

@@ -32,17 +32,16 @@ describe("Authenticator class", () => {
       expect(authenticatedUser.password).toEqual(password)
     })
 
-    it("should pass unmodified user details to the authentication provider", () => {
-      Authenticator.authenticate({ emailAddress, password })
-      expect(LocalAuthenticatorMock.prototype.authenticate).toHaveBeenCalledWith({ emailAddress, password })
+    it("should return a true `authenticated` key when the user is authenticated", () => {
+      LocalAuthenticatorMock.prototype.authenticate.mockReturnValue(true)
+      const { authenticated } = Authenticator.authenticate({ emailAddress, password })
+      expect(authenticated).toBe(true)
     })
 
-    it("should return a key describing whether the user successfully authenticated", () => {
-      ;[true, false].forEach((authed) => {
-        LocalAuthenticatorMock.prototype.authenticate.mockReturnValue(authed)
-        const { authenticated } = Authenticator.authenticate({ emailAddress, password })
-        expect(authenticated).toBe(authed)
-      })
+    it("should return a false `authenticated` key when the user is not authenticated", () => {
+      LocalAuthenticatorMock.prototype.authenticate.mockReturnValue(false)
+      const { authenticated } = Authenticator.authenticate({ emailAddress, password })
+      expect(authenticated).toBe(false)
     })
   })
 })
