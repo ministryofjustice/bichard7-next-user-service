@@ -49,6 +49,10 @@
         "curly": ["error", "all"],
         "require-await": "error",
         "filenames/match-exported": "error",
+        "import/prefer-default-export": "error",
+        "import/no-cycle": "error",
+        "import/first": "error",
+        "@typescript-eslint/explicit-module-boundary-types": ["off"],
         "@typescript-eslint/naming-convention": [
           "error",
           {
@@ -59,13 +63,7 @@
       }
     },
     {
-      "files": ["**/*.tsx"],
-      "rules": {
-        "@typescript-eslint/explicit-module-boundary-types": ["off"]
-      }
-    },
-    {
-      "files": ["**/_*.tsx", "**/_*.ts", "**/index.tsx", "**/index.ts"],
+      "files": ["**/_*.{ts,tsx}", "**/index.{ts,tsx}", "*.config.{js,ts}"],
       "rules": {
         "filenames/match-exported": "off"
       }
