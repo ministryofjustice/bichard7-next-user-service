@@ -7,7 +7,8 @@ import TextInput from "components/TextInput"
 import Authenticator from "lib/Authenticator"
 import { GetServerSideProps } from "next"
 import parseFormData from "lib/parseFormData"
-import { isSuccess, UserCredentials } from "lib/User"
+import { UserCredentials } from "lib/User"
+import { isSuccess } from "lib/AuthenticationResult"
 import config from "lib/config"
 
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {

@@ -1,5 +1,6 @@
-import { AuthenticationProvider } from "lib/AuthenticationProvider"
-import { AuthenticationResult, UserCredentials } from "lib/User"
+import AuthenticationProvider from "lib/AuthenticationProvider"
+import { UserCredentials } from "lib/User"
+import { AuthenticationResult } from "lib/AuthenticationResult"
 
 export default class LocalAuthenticator implements AuthenticationProvider {
   private static readonly users: [UserCredentials] = [{ emailAddress: "bichard01@example.com", password: "password" }]
