@@ -21,9 +21,12 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
       const result = Authenticator.authenticate(credentials)
 
       if (isSuccess(result)) {
+        const url = new URL(config.bichardRedirectURL)
+        url.searchParams.append("token", result)
+
         return {
           redirect: {
-            destination: `${config.bichardRedirectURL}?token=${result}`,
+            destination: url.href,
             permanent: false
           }
         }
