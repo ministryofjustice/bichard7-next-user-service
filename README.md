@@ -35,7 +35,13 @@ $ npm run start
 
 ### Testing
 
-The application has UI tests that are run by [Cypress](https://www.cypress.io/). These can be run against a production build of the app with:
+The application has unit tests written using [Jest](https://jestjs.io/), which can be run with:
+
+```
+$ npm run test:unit
+```
+
+The application also has UI tests that are run by [Cypress](https://www.cypress.io/). These can be run against a production build of the app with:
 
 ```
 $ npm run test:ui
@@ -68,3 +74,13 @@ And similarly, to run them and make any possible auto-corrections, use:
 ```
 $ npm run lint:fix
 ```
+
+## Configuration
+
+The application makes use of the following environment variables to permit configuration:
+
+| Variable                       | Default                              | Description                                                                              |
+|--------------------------------|--------------------------------------|------------------------------------------------------------------------------------------|
+| `$BICHARD_REDIRECT_URL`        | `https://localhost:9443/bichard-ui/` | The URL to redirect to with a token as a GET parameter when authentication is successful |
+| `$LOCAL_AUTH_TOKEN_SECRET`     | `super-secret-token-secret`          | The HMAC secret to use for signing the tokens                                            |
+| `$LOCAL_AUTH_TOKEN_EXPIRES_IN` | `5 seconds`                          | The amount of time the tokens should be valid for after issuing                          |
