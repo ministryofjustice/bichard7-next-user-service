@@ -1,6 +1,7 @@
 import AuthenticationProvider from "lib/AuthenticationProvider"
 import { User, UserCredentials } from "lib/User"
-import { AuthenticationResult, Token, TokenPayload } from "lib/AuthenticationResult"
+import { AuthenticationResult } from "lib/AuthenticationResult"
+import { Token, TokenPayload } from "lib/Token"
 import jwt from "jsonwebtoken"
 import config from "lib/config"
 import users from "data/users"

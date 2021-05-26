@@ -1,7 +1,7 @@
 import LocalAuthenticator from "lib/AuthenticationProvider/LocalAuthenticator"
 import jwt from "jsonwebtoken"
 import config from "lib/config"
-import { TokenPayload } from "lib/AuthenticationResult"
+import { TokenPayload } from "lib/Token"
 
 describe("Local development authenticator", () => {
   const authenticator = new LocalAuthenticator()
