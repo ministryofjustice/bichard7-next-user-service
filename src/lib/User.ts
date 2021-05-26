@@ -3,10 +3,25 @@ export interface UserCredentials {
   password: string
 }
 
-export type UserRole = "B7Allocator" | "B7ExceptionHandler"
+export type UserGroup =
+  | "B7Allocator"
+  | "B7Audit"
+  | "B7ExceptionHandler"
+  | "B7GeneralHandler"
+  | "B7Supervisor"
+  | "B7TriggerHandler"
 
 export interface User {
-  displayName: string
+  username: string
+  exclusionList: string[]
+  inclusionList: string[]
+  endorsedBy: string
+  orgServes: string
+  forenames: string
+  surname: string
   emailAddress: string
-  role: UserRole
+  postalAddress: string
+  postCode: string
+  phoneNumber: string
+  groups: UserGroup[]
 }

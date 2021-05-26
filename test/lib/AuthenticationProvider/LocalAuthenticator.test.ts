@@ -1,6 +1,8 @@
 import LocalAuthenticator from "lib/AuthenticationProvider/LocalAuthenticator"
 import jwt from "jsonwebtoken"
 import config from "lib/config"
+import { TokenPayload } from "lib/Token"
+import users from "data/users"
 
 describe("Local development authenticator", () => {
   const authenticator = new LocalAuthenticator()
@@ -19,9 +21,21 @@ describe("Local development authenticator", () => {
   })
 
   test.each`
-    emailAddress                        | password
-    ${"bichard01@example.com"}          | ${"password"}
-    ${"b7exceptionhandler@example.com"} | ${"password"}
+    emailAddress                       | password
+    ${"bichard01@example.com"}         | ${"password"}
+    ${"allocator1@example.com"}        | ${"password"}
+    ${"audit1@example.com"}            | ${"password"}
+    ${"exceptionhandler1@example.com"} | ${"password"}
+    ${"generalhandler1@example.com"}   | ${"password"}
+    ${"supervisor1@example.com"}       | ${"password"}
+    ${"triggerhandler1@example.com"}   | ${"password"}
+    ${"allocator2@example.com"}        | ${"password"}
+    ${"audit2@example.com"}            | ${"password"}
+    ${"exceptionhandler2@example.com"} | ${"password"}
+    ${"generalhandler2@example.com"}   | ${"password"}
+    ${"supervisor2@example.com"}       | ${"password"}
+    ${"triggerhandler2@example.com"}   | ${"password"}
+    ${"nogroupsassigned@example.com"}  | ${"password"}
   `("should authenticate $emailAddress:$password", ({ emailAddress, password }) => {
     const result = authenticator.authenticate({ emailAddress, password })
     expect(result).not.toBeInstanceOf(Error)
@@ -29,13 +43,22 @@ describe("Local development authenticator", () => {
   })
 
   it("should generate a valid JWT token for an authenticated user", () => {
-    const token = authenticator.authenticate({ emailAddress: "bichard01@example.com", password: "password" })
-    const payload = jwt.verify(token as string, config.localAuthenticator.jwtSecret)
+    const emailAddress = "bichard01@example.com"
+    const token = authenticator.authenticate({ emailAddress, password: "password" })
+    const data = jwt.verify(token as string, config.localAuthenticator.jwtSecret)
 
-    expect(payload).toHaveProperty("emailAddress")
-    expect(payload).toHaveProperty("role")
-    expect(payload).toHaveProperty("displayName")
-    expect(payload).toHaveProperty("exp")
-    expect(payload).not.toHaveProperty("password")
+    expect(data).not.toBeNull()
+    expect(data).not.toHaveProperty("password")
+
+    const payload = data as TokenPayload
+    const [user] = users.filter((u) => u.emailAddress === emailAddress)
+
+    expect(payload.username).toEqual(user.username)
+    expect(payload.exclusionList).toEqual(user.exclusionList)
+    expect(payload.inclusionList).toEqual(user.inclusionList)
+    expect(payload.forenames).toEqual(user.forenames)
+    expect(payload.surname).toEqual(user.surname)
+    expect(payload.emailAddress).toEqual(user.emailAddress)
+    expect(payload.groups).toEqual(user.groups)
   })
 })
