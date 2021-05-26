@@ -2,6 +2,7 @@ import LocalAuthenticator from "lib/AuthenticationProvider/LocalAuthenticator"
 import jwt from "jsonwebtoken"
 import config from "lib/config"
 import { TokenPayload } from "lib/Token"
+import users from "data/users"
 
 describe("Local development authenticator", () => {
   const authenticator = new LocalAuthenticator()
@@ -42,25 +43,22 @@ describe("Local development authenticator", () => {
   })
 
   it("should generate a valid JWT token for an authenticated user", () => {
-    const token = authenticator.authenticate({ emailAddress: "bichard01@example.com", password: "password" })
+    const emailAddress = "bichard01@example.com"
+    const token = authenticator.authenticate({ emailAddress, password: "password" })
     const data = jwt.verify(token as string, config.localAuthenticator.jwtSecret)
 
+    expect(data).not.toBeNull()
     expect(data).not.toHaveProperty("password")
 
     const payload = data as TokenPayload
-    expect(payload.username).toEqual("Bichard01")
-    expect(payload.exclusionList).toEqual(["5", "6", "7", "8"])
-    expect(payload.inclusionList).toEqual(["B41ME00"])
-    expect(payload.forenames).toEqual("Bichard User")
-    expect(payload.surname).toEqual("01")
-    expect(payload.emailAddress).toEqual("bichard01@example.com")
-    expect(payload.groups).toEqual([
-      "B7Allocator",
-      "B7Audit",
-      "B7ExceptionHandler",
-      "B7GeneralHandler",
-      "B7Supervisor",
-      "B7TriggerHandler"
-    ])
+    const [user] = users.filter((u) => u.emailAddress === emailAddress)
+
+    expect(payload.username).toEqual(user.username)
+    expect(payload.exclusionList).toEqual(user.exclusionList)
+    expect(payload.inclusionList).toEqual(user.inclusionList)
+    expect(payload.forenames).toEqual(user.forenames)
+    expect(payload.surname).toEqual(user.surname)
+    expect(payload.emailAddress).toEqual(user.emailAddress)
+    expect(payload.groups).toEqual(user.groups)
   })
 })
