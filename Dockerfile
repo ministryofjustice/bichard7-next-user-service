@@ -7,7 +7,7 @@ WORKDIR /user-service
 
 COPY ./package*.json /user-service/
 COPY ./scripts/ /user-service/scripts
-RUN npm install
+RUN npm install --production
 
 COPY . /user-service/
 
