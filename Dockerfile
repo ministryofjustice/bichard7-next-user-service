@@ -11,6 +11,7 @@ RUN npm install --production
 
 COPY . /user-service/
 
+ENV NEXT_TELEMETRY_DISABLED=1
 RUN npm run build
 
 EXPOSE 3000
