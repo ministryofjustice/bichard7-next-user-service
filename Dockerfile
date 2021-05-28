@@ -1,18 +1,42 @@
 ARG NODE_IMAGE="node:latest"
-FROM ${NODE_IMAGE}
+
+# Build user-service app
+
+FROM ${NODE_IMAGE} as builder
 
 LABEL maintainer="CJSE"
 
-WORKDIR /user-service
+WORKDIR /src/user-service
 
-COPY ./package*.json /user-service/
-COPY ./scripts/ /user-service/scripts
-RUN npm install --production
+COPY ./package*.json ./
+COPY ./scripts/ ./scripts/
+RUN npm install
 
-COPY . /user-service/
+COPY . ./
 
 ENV NEXT_TELEMETRY_DISABLED=1
 RUN npm run build
+
+# Run user-service app
+
+FROM ${NODE_IMAGE} as runner
+
+RUN useradd nextjs
+RUN groupadd nodejs
+RUN usermod -a -G nodejs nextjs
+
+ENV NEXT_TELEMETRY_DISABLED=1
+ENV NODE_ENV=production
+
+WORKDIR /app
+COPY ./package*.json ./
+RUN npm install --production --ignore-scripts
+
+COPY --from=builder /src/user-service/next.config.js ./
+COPY --from=builder /src/user-service/public ./public
+COPY --from=builder --chown=nextjs:nodejs /src/user-service/.next ./.next
+
+USER nextjs
 
 EXPOSE 3000
 
