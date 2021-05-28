@@ -1,4 +1,4 @@
-ARG NODE_IMAGE="node:latest"
+ARG NODE_IMAGE="node:15.9"
 
 # Build user-service app
 
