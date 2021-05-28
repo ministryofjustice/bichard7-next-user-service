@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "prepare": "./scripts/copy-govuk-frontend-assets.sh && if [[ ! \"${npm_config_production}\" ]]; then husky install; fi",
+    "prepare": "./scripts/copy-govuk-frontend-assets.sh && ./scripts/install-git-hooks.sh",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "cypress:open": "cypress open",
