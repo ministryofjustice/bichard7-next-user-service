@@ -2,12 +2,14 @@
 
 set -e
 
-if [[ -z "${AWS_ACCOUNT_ID}" ]]; then
-    echo "AWS_ACCOUNT_ID is not set!" >&2
-    exit 1
-fi
-
 echo "Building user-service docker image on `date`"
+
+if [[ -z "${AWS_ACCOUNT_ID}" ]]; then
+    AWS_ACCOUNT_ID=$(aws sts get-caller-identity \
+        --query 'Account' \
+        --output text
+    )
+fi
 
 aws ecr get-login-password --region eu-west-2 | docker login \
     --username AWS \
