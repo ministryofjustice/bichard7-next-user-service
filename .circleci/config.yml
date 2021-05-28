@@ -12,7 +12,9 @@ jobs:
 
       # Load node_modules from the cache if they haven't changed
       - restore_cache:
-          key: v1-npm-deps-{{ checksum "package-lock.json" }}
+          keys:
+           - v1-npm-deps-{{ checksum "package-lock.json" }}
+           - v1-npm-deps-
 
       - run:
           name: Install node dependencies
@@ -51,7 +53,9 @@ jobs:
 
       # Load node_modules from the cache if they haven't changed
       - restore_cache:
-          key: v1-npm-deps-{{ checksum "package-lock.json" }}
+          keys:
+           - v1-npm-deps-{{ checksum "package-lock.json" }}
+           - v1-npm-deps-
 
       - run:
           name: Install node dependencies
