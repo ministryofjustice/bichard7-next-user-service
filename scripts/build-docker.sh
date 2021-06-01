@@ -26,3 +26,13 @@ IMAGE_HASH=$(aws ecr describe-images \
 DOCKER_IMAGE_HASH="${AWS_ACCOUNT_ID}.dkr.ecr.eu-west-2.amazonaws.com/nodejs@${IMAGE_HASH}"
 
 docker build --build-arg "NODE_IMAGE=${DOCKER_IMAGE_HASH}" -t user-service .
+
+if [[ -n "${CODEBUILD_RESOLVED_SOURCE_VERSION}" && -n "${CODEBUILD_START_TIME}" ]]; then
+    docker tag \
+        user-service:latest \
+        ${AWS_ACCOUNT_ID}.dkr.ecr.eu-west-2.amazonaws.com/user-service:${CODEBUILD_RESOLVED_SOURCE_VERSION}-${CODEBUILD_START_TIME}
+
+    echo "Push docker image on `date`"
+    docker push \
+        ${AWS_ACCOUNT_ID}.dkr.ecr.eu-west-2.amazonaws.com/user-service:${CODEBUILD_RESOLVED_SOURCE_VERSION}-${CODEBUILD_START_TIME}
+fi
