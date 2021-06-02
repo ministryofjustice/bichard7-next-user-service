@@ -28,7 +28,8 @@ export default class LocalAuthenticator implements AuthenticationProvider {
     }
 
     const options: jwt.SignOptions = {
-      expiresIn: config.localAuthenticator.jwtExpiresIn
+      expiresIn: config.localAuthenticator.jwtExpiresIn,
+      issuer: config.localAuthenticator.jwtIssuer
     }
 
     return jwt.sign(payload, config.localAuthenticator.jwtSecret, options)

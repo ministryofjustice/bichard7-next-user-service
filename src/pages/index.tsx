@@ -22,12 +22,12 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
 
       if (isSuccess(result)) {
         const url = new URL(config.bichardRedirectURL)
-        url.searchParams.append("token", result)
+        url.searchParams.append(config.tokenQueryParamName, result)
 
         return {
           redirect: {
             destination: url.href,
-            permanent: false
+            statusCode: 302
           }
         }
       }

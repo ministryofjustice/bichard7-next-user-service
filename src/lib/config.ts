@@ -1,4 +1,5 @@
 interface LocalAuthenticatorConfig {
+  jwtIssuer: string
   jwtSecret: string
   jwtExpiresIn: string
 }
@@ -6,13 +7,16 @@ interface LocalAuthenticatorConfig {
 interface UserServiceConfig {
   bichardRedirectURL: string
   localAuthenticator: LocalAuthenticatorConfig
+  tokenQueryParamName: string
 }
 
 const config: UserServiceConfig = {
-  bichardRedirectURL: process.env.BICHARD_REDIRECT_URL ?? "https://localhost:9443/bichard-ui/",
+  bichardRedirectURL: process.env.BICHARD_REDIRECT_URL ?? "https://localhost:9443/bichard-ui/Authenticate",
+  tokenQueryParamName: process.env.TOKEN_QUERY_PARAM_NAME ?? "token",
   localAuthenticator: {
-    jwtSecret: process.env.LOCAL_AUTH_TOKEN_SECRET || "super-secret-token-secret",
-    jwtExpiresIn: process.env.LOCAL_AUTH_TOKEN_EXPIRES_IN || "5 seconds"
+    jwtIssuer: process.env.LOCAL_AUTH_TOKEN_ISSUER ?? "Bichard",
+    jwtSecret: process.env.LOCAL_AUTH_TOKEN_SECRET ?? "OliverTwist",
+    jwtExpiresIn: process.env.LOCAL_AUTH_TOKEN_EXPIRES_IN ?? "5 seconds"
   }
 }
 
