@@ -38,6 +38,7 @@ The application makes use of the following environment variables to permit confi
 | `$LOCAL_AUTH_TOKEN_ISSUER`     | `Bichard`                             | The string to use as the token issuer (`iss`)                                             |
 | `$LOCAL_AUTH_TOKEN_SECRET`     | `OliverTwist`                         | The HMAC secret to use for signing the tokens                                             |
 | `$LOCAL_AUTH_TOKEN_EXPIRES_IN` | `5 seconds`                           | The amount of time the tokens should be valid for after issuing                           |
+| `$TOKEN_QUERY_PARAM_NAME`      | `token`                               | The name to use for the token query parameter when redirecting to `$BICHARD_REDIRECT_URL` |
 
 ## Development
 
