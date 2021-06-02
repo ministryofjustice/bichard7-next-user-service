@@ -26,7 +26,7 @@ describe("Logging In", () => {
           followRedirect: false
         }).then((response) => {
           const { location } = response.headers
-          expect(location).to.match(/^https:\/\/localhost:9443\/bichard-ui/)
+          expect(location).to.match(/^https:\/\/localhost:9443\/Authenticate/)
           expect(location).to.match(/\?token=[A-Za-z0-9_.]+/)
         })
       })
