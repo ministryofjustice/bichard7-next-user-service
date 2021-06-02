@@ -35,6 +35,7 @@ The application makes use of the following environment variables to permit confi
 | Variable                       | Default                               | Description                                                                               |
 |--------------------------------|---------------------------------------|-------------------------------------------------------------------------------------------|
 | `$BICHARD_REDIRECT_URL`        | `https://localhost:9443/Authenticate` | The URL to redirect to with a token as a GET parameter when authentication is successful  |
+| `$LOCAL_AUTH_TOKEN_ISSUER`     | `Bichard`                             | The string to use as the token issuer (`iss`)                                             |
 | `$LOCAL_AUTH_TOKEN_SECRET`     | `OliverTwist`                         | The HMAC secret to use for signing the tokens                                             |
 | `$LOCAL_AUTH_TOKEN_EXPIRES_IN` | `5 seconds`                           | The amount of time the tokens should be valid for after issuing                           |
 
