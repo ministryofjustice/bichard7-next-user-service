@@ -11,7 +11,7 @@ interface UserServiceConfig {
 }
 
 const config: UserServiceConfig = {
-  bichardRedirectURL: process.env.BICHARD_REDIRECT_URL ?? "https://localhost:9443/Authenticate",
+  bichardRedirectURL: process.env.BICHARD_REDIRECT_URL ?? "https://localhost:9443/bichard-ui/Authenticate",
   tokenQueryParamName: process.env.TOKEN_QUERY_PARAM_NAME ?? "token",
   localAuthenticator: {
     jwtIssuer: process.env.LOCAL_AUTH_TOKEN_ISSUER || "Bichard",
