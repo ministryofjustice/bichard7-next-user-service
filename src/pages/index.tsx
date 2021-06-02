@@ -27,7 +27,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
         return {
           redirect: {
             destination: url.href,
-            permanent: false
+            statusCode: 302
           }
         }
       }
