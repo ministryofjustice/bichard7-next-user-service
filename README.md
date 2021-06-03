@@ -4,29 +4,36 @@ A Next.js application powered by AWS Cognito to provide user authentication with
 
 ## Building
 
-The user-service portal is hosted on AWS via ECS using a custom Docker image. To build the image locally, you need to:
+AWS CodeBuild automatically builds the user-service Docker image and pushes into the AWS container repository (ECR).
 
-1. Make sure you have installed and configured the [AWS CLI](https://aws.amazon.com/cli/). You can optionally also install and configure [`aws-vault`](https://github.com/99designs/aws-vault).
+You can build the user-service Docker image locally from a publicly-available [`node` image](https://hub.docker.com/_/node) by running:
+
+```shell
+$ docker build -t user-service .
+```
+
+However, to build the user-service Docker image from the triaged `nodejs` image in the ECR repo (which is what CodeBuild does), you'll need to authenticate with AWS in order to fetch the `nodejs` image.
+
+You can do this by:
+
+1. Make sure you have installed and configured the [AWS CLI](https://aws.amazon.com/cli/) and [`aws-vault`](https://github.com/99designs/aws-vault).
 
 1. Run the `build-docker.sh` script:
    ```shell
-   # Without aws-vault
-   $ ./scripts/build-docker.sh
-
-   # With aws-vault
    $ aws-vault exec <account_name> -- ./scripts/build-docker.sh
    ```
 
-This will use the AWS CLI to login to the AWS container repository (ECR), fetch the latest version of the `nodejs` image from the repository, and then build the user-service Docker image on top of that.
+This will use the AWS CLI to login to ECR, fetch the latest version of the `nodejs` image from the repository, and then build the user-service Docker image on top of that.
 
-You can now run the Docker image as usual:
+## Running
+
+Once you've built the Docker image (see either of the methods [above](#building)), you run the Docker image as usual:
 
 ```shell
-$ docker run \
-    -p 3000:3000 \
-    -e BICHARD_REDIRECT_URL="http://localhost:9443/foobar/" \
-    user-service
+$ docker run -p 3443:3000 user-service
 ```
+
+This above example will expose the service at http://localhost:3443/.
 
 ## Configuration
 
