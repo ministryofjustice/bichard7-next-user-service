@@ -9,37 +9,44 @@ import parseFormData from "lib/parseFormData"
 import Auth from "@aws-amplify/auth"
 
 interface Props {
-  invalidCredentials?: boolean
+  invalidCode?: boolean
 }
 
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   const props: Props = {}
 
   if (req.method === "POST") {
-    const { emailAddress } = (await parseFormData(req)) as { emailAddress: string }
+    const { verifyCode } = (await parseFormData(req)) as { verifyCode: string }
 
-    if (emailAddress) {
+    if (verifyCode) {
       try {
-        await Auth.signIn(emailAddress)
+        const user = await Auth.currentAuthenticatedUser()
+        await Auth.sendCustomChallengeAnswer(user, verifyCode)
 
-        return {
-          redirect: {
-            destination: "/verify",
-            statusCode: 302
+        try {
+          await Auth.currentSession()
+
+          return {
+            redirect: {
+              destination: "/token",
+              statusCode: 302
+            }
           }
+        } catch (error) {
+          console.log(error)
         }
       } catch (error) {
         console.log(error)
       }
     }
 
-    props.invalidCredentials = true
+    props.invalidCode = true
   }
 
   return { props }
 }
 
-const Index = ({ invalidCredentials }: Props) => (
+const Verify = ({ invalidCode }: Props) => (
   <>
     <Head>
       <title>{"Sign in to Bichard 7"}</title>
@@ -48,12 +55,12 @@ const Index = ({ invalidCredentials }: Props) => (
       <GridRow>
         <h1 className="govuk-heading-xl">{"Sign in to Bichard 7"}</h1>
 
-        {invalidCredentials && (
-          <ErrorSummary title="Invalid email address">{"The supplied email address is not valid."}</ErrorSummary>
+        {invalidCode && (
+          <ErrorSummary title="Invalid code">{"The supplied email confirmation code is incorrect"}</ErrorSummary>
         )}
 
         <form action="/" method="post">
-          <TextInput id="email" name="emailAddress" label="Email address" type="email" />
+          <TextInput id="verifyCode" name="verifyCode" label="Confirmation code" type="number" />
           <Button>{"Sign in"}</Button>
         </form>
       </GridRow>
@@ -61,4 +68,4 @@ const Index = ({ invalidCredentials }: Props) => (
   </>
 )
 
-export default Index
+export default Verify

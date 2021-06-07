@@ -16,7 +16,7 @@ Amplify.configure({
     userPoolWebClientId: process.env.COGNITO_CLIENT_ID,
 
     // The authentication flow type
-    authenticationFlowType: "USER_PASSWORD_AUTH"
+    authenticationFlowType: "CUSTOM_AUTH"
   }
 })
 
