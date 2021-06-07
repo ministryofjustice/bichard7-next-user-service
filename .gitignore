@@ -123,3 +123,6 @@ public/assets/images/govuk-crest.png
 public/assets/images/govuk-logotype-crown.png
 public/assets/images/govuk-mask-icon.svg
 public/assets/images/govuk-opengraph-image.png
+
+# Built lambda zips
+lambda.zip
