@@ -4,48 +4,42 @@ import GridRow from "components/GridRow"
 import Layout from "components/Layout"
 import Head from "next/head"
 import TextInput from "components/TextInput"
-import Authenticator from "lib/Authenticator"
 import { GetServerSideProps } from "next"
 import parseFormData from "lib/parseFormData"
 import { UserCredentials } from "lib/User"
-import { isSuccess } from "lib/AuthenticationResult"
-import config from "lib/config"
+import Auth from "@aws-amplify/auth"
 
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
-  let invalidCredentials = false
+  const props: Props = {}
 
   if (req.method === "POST") {
     const credentials: UserCredentials = (await parseFormData(req)) as { emailAddress: string; password: string }
 
     if (credentials.emailAddress && credentials.password) {
-      const result = Authenticator.authenticate(credentials)
-
-      if (isSuccess(result)) {
-        const url = new URL(config.bichardRedirectURL)
-        url.searchParams.append(config.tokenQueryParamName, result)
-
-        return {
-          redirect: {
-            destination: url.href,
-            statusCode: 302
-          }
-        }
+      try {
+        const user = await Auth.signIn(credentials.emailAddress, credentials.password)
+        const idToken = user.getSignInUserSession()?.getIdToken()
+        props.token = idToken?.getJwtToken()
+        props.tokenContents = JSON.stringify(idToken?.decodePayload(), null, 4)
+      } catch (error) {
+        console.log(error)
+        props.invalidCredentials = true
       }
+    } else {
+      props.invalidCredentials = true
     }
-
-    invalidCredentials = true
   }
 
-  return {
-    props: { invalidCredentials }
-  }
+  return { props }
 }
 
 interface Props {
   invalidCredentials?: boolean
+  token?: string
+  tokenContents?: string
 }
 
-const Index = ({ invalidCredentials }: Props) => (
+const Index = ({ invalidCredentials, token, tokenContents }: Props) => (
   <>
     <Head>
       <title>{"Sign in to Bichard 7"}</title>
@@ -66,6 +60,16 @@ const Index = ({ invalidCredentials }: Props) => (
           <Button>{"Sign in"}</Button>
         </form>
       </GridRow>
+      {token && (
+        <>
+          <GridRow>
+            <code style={{ wordWrap: "break-word" }}>{token}</code>
+          </GridRow>
+          <GridRow>
+            <pre>{tokenContents}</pre>
+          </GridRow>
+        </>
+      )}
     </Layout>
   </>
 )
