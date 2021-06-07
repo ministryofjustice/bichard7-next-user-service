@@ -17,17 +17,20 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
 
     if (credentials.emailAddress && credentials.password) {
       try {
-        const user = await Auth.signIn(credentials.emailAddress, credentials.password)
-        const idToken = user.getSignInUserSession()?.getIdToken()
-        props.token = idToken?.getJwtToken()
-        props.tokenContents = JSON.stringify(idToken?.decodePayload(), null, 4)
+        await Auth.signIn(credentials.emailAddress, credentials.password)
+
+        return {
+          redirect: {
+            destination: "/token",
+            statusCode: 302
+          }
+        }
       } catch (error) {
         console.log(error)
-        props.invalidCredentials = true
       }
-    } else {
-      props.invalidCredentials = true
     }
+
+    props.invalidCredentials = true
   }
 
   return { props }
@@ -35,11 +38,9 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
 
 interface Props {
   invalidCredentials?: boolean
-  token?: string
-  tokenContents?: string
 }
 
-const Index = ({ invalidCredentials, token, tokenContents }: Props) => (
+const Index = ({ invalidCredentials }: Props) => (
   <>
     <Head>
       <title>{"Sign in to Bichard 7"}</title>
@@ -60,16 +61,6 @@ const Index = ({ invalidCredentials, token, tokenContents }: Props) => (
           <Button>{"Sign in"}</Button>
         </form>
       </GridRow>
-      {token && (
-        <>
-          <GridRow>
-            <code style={{ wordWrap: "break-word" }}>{token}</code>
-          </GridRow>
-          <GridRow>
-            <pre>{tokenContents}</pre>
-          </GridRow>
-        </>
-      )}
     </Layout>
   </>
 )
