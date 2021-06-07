@@ -15,6 +15,8 @@
     "test:ui": "concurrently --kill-others --success first npm:start npm:cypress:run"
   },
   "dependencies": {
+    "@aws-amplify/auth": "^4.0.1",
+    "@aws-amplify/core": "^4.0.3",
     "@types/qs": "^6.9.6",
     "govuk-frontend": "^3.12.0",
     "jsonwebtoken": "^8.5.1",
