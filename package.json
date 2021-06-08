@@ -15,6 +15,7 @@
     "test:ui": "concurrently --kill-others --success first npm:start npm:cypress:run"
   },
   "dependencies": {
+    "@aws-sdk/client-cognito-identity-provider": "^3.18.0",
     "@types/qs": "^6.9.6",
     "govuk-frontend": "^3.12.0",
     "jsonwebtoken": "^8.5.1",
