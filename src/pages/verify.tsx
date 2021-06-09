@@ -7,7 +7,10 @@ import TextInput from "components/TextInput"
 import { GetServerSideProps } from "next"
 import parseFormData from "lib/parseFormData"
 import config from "lib/config"
-import { AdminInitiateAuthCommand, CognitoIdentityProviderClient } from "@aws-sdk/client-cognito-identity-provider"
+import {
+  AdminRespondToAuthChallengeCommand,
+  CognitoIdentityProviderClient
+} from "@aws-sdk/client-cognito-identity-provider"
 import crypto from "crypto"
 import Cookies from "cookies"
 
@@ -18,12 +21,15 @@ const generateSecretHash = (username: string) =>
     .digest("base64")
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
-  let invalidCredentials = false
+  let invalidCode = false
 
   if (req.method === "POST") {
-    const { emailAddress } = (await parseFormData(req)) as { emailAddress: string }
+    const { code } = (await parseFormData(req)) as { code: string }
 
-    if (emailAddress) {
+    if (code) {
+      const cookies = new Cookies(req, res)
+      const cookie = JSON.parse(cookies.get("cognito-login")!)
+
       const client = new CognitoIdentityProviderClient({
         credentials: {
           accessKeyId: config.cognitoAuthenticator.accessKeyId,
@@ -33,57 +39,54 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
         region: config.cognitoAuthenticator.region
       })
 
-      const command = new AdminInitiateAuthCommand({
-        AuthFlow: "CUSTOM_AUTH",
-        AuthParameters: {
-          USERNAME: emailAddress,
-          SECRET_HASH: generateSecretHash(emailAddress)
+      const command = new AdminRespondToAuthChallengeCommand({
+        ChallengeName: "CUSTOM_CHALLENGE",
+        ChallengeResponses: {
+          USERNAME: cookie.USERNAME,
+          ANSWER: code,
+          SECRET_HASH: generateSecretHash(cookie.USERNAME)
         },
         ClientId: config.cognitoAuthenticator.clientId,
+        Session: cookie.session,
         UserPoolId: config.cognitoAuthenticator.userPoolId
       })
 
       try {
         const response = await client.send(command)
-        const challengeParams = response.ChallengeParameters
-        const session = response.Session
+        const token = response.AuthenticationResult?.IdToken
 
-        const cookies = new Cookies(req, res)
-        cookies.set(
-          "cognito-login",
-          JSON.stringify({
-            ...challengeParams,
-            session
-          })
-        )
-
-        return {
-          redirect: {
-            destination: "/verify",
-            statusCode: 302
+        if (token) {
+          return {
+            redirect: {
+              destination: `/authed?token=${token}`,
+              statusCode: 302
+            }
           }
         }
+        console.log(response)
+        console.error("No token in response")
+        invalidCode = true
       } catch (error) {
         console.error("Cognito failed", error)
-        invalidCredentials = true
+        invalidCode = true
       }
     } else {
-      invalidCredentials = true
+      invalidCode = true
     }
   }
 
   return {
     props: {
-      invalidCredentials
+      invalidCode
     }
   }
 }
 
 interface Props {
-  invalidCredentials?: boolean
+  invalidCode?: boolean
 }
 
-const Index = ({ invalidCredentials }: Props) => (
+const Verify = ({ invalidCode }: Props) => (
   <>
     <Head>
       <title>{"Sign in to Bichard 7"}</title>
@@ -92,14 +95,12 @@ const Index = ({ invalidCredentials }: Props) => (
       <GridRow>
         <h1 className="govuk-heading-xl">{"Sign in to Bichard 7"}</h1>
 
-        {invalidCredentials && (
-          <ErrorSummary title="Invalid credentials">
-            {"The supplied email address and password are not valid."}
-          </ErrorSummary>
+        {invalidCode && (
+          <ErrorSummary title="Invalid credentials">{"The supplied confirmation code is not valid."}</ErrorSummary>
         )}
 
-        <form action="/" method="post">
-          <TextInput id="email" name="emailAddress" label="Email address" type="email" />
+        <form action="/verify" method="post">
+          <TextInput id="code" name="code" label="Confirmation code" type="number" />
           <Button>{"Sign in"}</Button>
         </form>
       </GridRow>
@@ -107,4 +108,4 @@ const Index = ({ invalidCredentials }: Props) => (
   </>
 )
 
-export default Index
+export default Verify
