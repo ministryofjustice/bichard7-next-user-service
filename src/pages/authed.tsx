@@ -35,7 +35,10 @@ const Authed = ({ token }: Props) => (
       <GridRow>
         <h1 className="govuk-heading-xl">{"Authenticated!"}</h1>
 
-        <code style={{ wordBreak: "break-all" }}>{token}</code>
+        <div className="govuk-body">
+          <p>{"You're signed in."}</p>
+          <code style={{ wordBreak: "break-all" }}>{token}</code>
+        </div>
       </GridRow>
     </Layout>
   </>

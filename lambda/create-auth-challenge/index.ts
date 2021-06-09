@@ -1,18 +1,19 @@
 import { CreateAuthChallengeTriggerHandler } from "aws-lambda";
-import { randomDigits } from "crypto-secure-random-digit"
+import { v4 as uuidv4 } from "uuid"
 
 export const handler: CreateAuthChallengeTriggerHandler = async (event) => {
   let secretLoginCode: string
 
   if (!event.request.session || !event.request.session.length) {
     // This is a new session, generate a new code
-    secretLoginCode = randomDigits(6).join('')
-    console.log(`Confirmation code: ${secretLoginCode}`)
+    secretLoginCode = uuidv4()
   } else {
     // There's an existing session, reuse the previously-generated code
     const previousChallenge = event.request.session.slice(-1)[0]
     secretLoginCode = previousChallenge.challengeMetadata!.match(/CODE-(\d*)/)![1]
   }
+
+  console.log(`Link: http://localhost:3000/verify?code=${secretLoginCode}`)
 
   // This is sent back to the client app
   event.response.publicChallengeParameters = {
