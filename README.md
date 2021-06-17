@@ -1,6 +1,6 @@
 # Bichard7 vNext: User Service
 
-A Next.js application powered by AWS Cognito to provide user authentication within the new Bichard7 architecture.
+A Next.js application to provide user authentication within the new Bichard7 architecture.
 
 ## Building
 
@@ -30,10 +30,23 @@ This will use the AWS CLI to login to ECR, fetch the latest version of the `node
 Once you've built the Docker image (see either of the methods [above](#building)), you run the Docker image as usual:
 
 ```shell
-$ docker run -p 3443:3000 user-service
+$ docker run -p 3443:443 user-service
 ```
 
 This above example will expose the service at http://localhost:3443/.
+
+### A Note on SSL Certificates
+
+The Docker image is configured to run NGINX in front of the Next.js application, to allow us to do SSL termination.
+
+A self-signed certificate is generated and included in the Docker image, but this can be overridden by mounting a different certificate and key at `/certs/server.{crt,key}`:
+
+```shell
+$ docker run \
+   -p 3443:443 \
+   -v /path/to/your/certificates:/certs \
+   user-service
+```
 
 ## Configuration
 
@@ -46,6 +59,16 @@ The application makes use of the following environment variables to permit confi
 | `$LOCAL_AUTH_TOKEN_SECRET`     | `OliverTwist`                                    | The HMAC secret to use for signing the tokens                                             |
 | `$LOCAL_AUTH_TOKEN_EXPIRES_IN` | `5 seconds`                                      | The amount of time the tokens should be valid for after issuing                           |
 | `$TOKEN_QUERY_PARAM_NAME`      | `token`                                          | The name to use for the token query parameter when redirecting to `$BICHARD_REDIRECT_URL` |
+
+These can be passed through to the docker container with the `-e` flag, for example:
+
+```shell
+$ docker run \
+   -p 3443:443 \
+   -e LOCAL_AUTH_TOKEN_SECRET="SECRET" \
+   -e LOCAL_AUTH_TOKEN_EXPIRES_IN="10 seconds" \
+   user-service
+```
 
 ## Development
 

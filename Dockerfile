@@ -2,7 +2,7 @@ ARG NODE_IMAGE="node:15.9"
 
 # Build user-service app
 
-FROM ${NODE_IMAGE} as builder
+FROM ${NODE_IMAGE} as app_builder
 
 LABEL maintainer="CJSE"
 
@@ -17,9 +17,32 @@ COPY . ./
 ENV NEXT_TELEMETRY_DISABLED=1
 RUN npm run build
 
+FROM ${NODE_IMAGE} as cert_generator
+
+WORKDIR /certs
+
+RUN yum update -y && \
+    yum install -y openssl
+
+RUN openssl req -newkey rsa:4096 \
+    -x509 \
+    -sha256 \
+    -days 3650 \
+    -nodes \
+    -out server.crt \
+    -keyout server.key \
+    -subj "/CN=localhost"
+
 # Run user-service app
 
 FROM ${NODE_IMAGE} as runner
+
+RUN yum update -y && \
+    amazon-linux-extras install -y epel && \
+    yum install -y \
+        supervisor \
+        nginx \
+        shadow-utils
 
 RUN useradd nextjs
 RUN groupadd nodejs
@@ -32,12 +55,16 @@ WORKDIR /app
 COPY ./package*.json ./
 RUN npm install --production --ignore-scripts
 
-COPY --from=builder /src/user-service/next.config.js ./
-COPY --from=builder /src/user-service/public ./public
-COPY --from=builder --chown=nextjs:nodejs /src/user-service/.next ./.next
+COPY --from=app_builder /src/user-service/next.config.js ./
+COPY --from=app_builder /src/user-service/public ./public
+COPY --from=app_builder --chown=nextjs:nodejs /src/user-service/.next ./.next
 
-USER nextjs
+COPY --from=cert_generator /certs /certs
 
-EXPOSE 3000
+COPY docker/conf/nginx.conf /etc/nginx/nginx.conf
+COPY docker/conf/supervisord.conf /etc/supervisord.conf
 
-CMD [ "npm", "start" ]
+EXPOSE 80
+EXPOSE 443
+
+CMD [ "/usr/bin/supervisord", "-c", "/etc/supervisord.conf" ]
