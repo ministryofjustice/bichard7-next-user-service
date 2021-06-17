@@ -1,4 +1,4 @@
-ARG NODE_IMAGE="node:15.9"
+ARG NODE_IMAGE="258361008057.dkr.ecr.eu-west-2.amazonaws.com/nodejs:latest"
 
 # Build user-service app
 
