@@ -1,11 +1,7 @@
-.PHONY: build
-build:
-	docker build -t user-service .
+.PHONY: $(MAKECMDGOALS)
 
-.PHONY: build-from-ecr
-build-from-ecr:
+build:
 	./scripts/build-docker.sh
 
-.PHONY: run
 run:
-	docker run -p 3443:3000 user-service
+	docker run -p 3443:443 user-service
