@@ -21,6 +21,13 @@ RUN npm run build
 
 FROM ${NODE_IMAGE} as runner
 
+RUN yum update -y && \
+    amazon-linux-extras install -y epel && \
+    yum install -y \
+        supervisor \
+        nginx \
+        shadow-utils
+
 RUN useradd nextjs
 RUN groupadd nodejs
 RUN usermod -a -G nodejs nextjs
@@ -36,8 +43,10 @@ COPY --from=builder /src/user-service/next.config.js ./
 COPY --from=builder /src/user-service/public ./public
 COPY --from=builder --chown=nextjs:nodejs /src/user-service/.next ./.next
 
-USER nextjs
+COPY docker/conf/nginx.conf /etc/nginx/nginx.conf
+COPY docker/conf/supervisord.conf /etc/supervisord.conf
 
-EXPOSE 3000
+EXPOSE 80
+EXPOSE 443
 
-CMD [ "npm", "start" ]
+CMD [ "/usr/bin/supervisord", "-c", "/etc/supervisord.conf" ]
