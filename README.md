@@ -30,10 +30,23 @@ This will use the AWS CLI to login to ECR, fetch the latest version of the `node
 Once you've built the Docker image (see either of the methods [above](#building)), you run the Docker image as usual:
 
 ```shell
-$ docker run -p 3443:3000 user-service
+$ docker run -p 3443:443 user-service
 ```
 
 This above example will expose the service at http://localhost:3443/.
+
+### A Note on SSL Certificates
+
+The Docker image is configured to run NGINX in front of the Next.js application, to allow us to do SSL termination.
+
+A self-signed certificate is generated and included in the Docker image, but this can be overridden by mounting a different certificate and key at `/certs/server.{crt,key}`:
+
+```shell
+$ docker run \
+   -p 3443:443 \
+   -v /path/to/your/certificates:/certs \
+   user-service
+```
 
 ## Configuration
 
