@@ -1,6 +1,6 @@
 # Bichard7 vNext: User Service
 
-A Next.js application powered by AWS Cognito to provide user authentication within the new Bichard7 architecture.
+A Next.js application to provide user authentication within the new Bichard7 architecture.
 
 ## Building
 
@@ -59,6 +59,16 @@ The application makes use of the following environment variables to permit confi
 | `$LOCAL_AUTH_TOKEN_SECRET`     | `OliverTwist`                                    | The HMAC secret to use for signing the tokens                                             |
 | `$LOCAL_AUTH_TOKEN_EXPIRES_IN` | `5 seconds`                                      | The amount of time the tokens should be valid for after issuing                           |
 | `$TOKEN_QUERY_PARAM_NAME`      | `token`                                          | The name to use for the token query parameter when redirecting to `$BICHARD_REDIRECT_URL` |
+
+These can be passed through to the docker container with the `-e` flag, for example:
+
+```shell
+$ docker run \
+   -p 3443:443 \
+   -e LOCAL_AUTH_TOKEN_SECRET="SECRET" \
+   -e LOCAL_AUTH_TOKEN_EXPIRES_IN="10 seconds" \
+   user-service
+```
 
 ## Development
 
