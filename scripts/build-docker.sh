@@ -1,14 +1,23 @@
 #!/usr/bin/env bash
 
+FETCHED_AWS_ACCOUNT_ID=$(aws sts get-caller-identity \
+    --query 'Account' \
+    --output text \
+    2> /dev/null
+)
+
+AWS_STATUS=$?
+if [[ $AWS_STATUS -ne 0 ]]; then
+    echo "Unable to authenticate with AWS - are you running this with aws-vault?" >&2
+    exit $AWS_STATUS
+fi
+
 set -e
 
 echo "Building user-service docker image on `date`"
 
 if [[ -z "${AWS_ACCOUNT_ID}" ]]; then
-    AWS_ACCOUNT_ID=$(aws sts get-caller-identity \
-        --query 'Account' \
-        --output text
-    )
+    AWS_ACCOUNT_ID=$FETCHED_AWS_ACCOUNT_ID
 fi
 
 aws ecr get-login-password --region eu-west-2 | docker login \

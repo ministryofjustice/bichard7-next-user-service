@@ -4,36 +4,28 @@ A Next.js application to provide user authentication within the new Bichard7 arc
 
 ## Building
 
-AWS CodeBuild automatically builds the user-service Docker image and pushes into the AWS container repository (ECR).
+AWS CodeBuild automatically builds the user-service Docker image and pushes into the AWS container repository (ECR). The image is built upon the `nodejs` image from our ECR repo.
 
-You can build the user-service Docker image locally from a publicly-available [`node` image](https://hub.docker.com/_/node) by running:
+In order to build the user-service image locally, you'll need to have installed and configured the [AWS CLI](https://aws.amazon.com/cli/) and [`aws-vault`](https://github.com/99designs/aws-vault), so that you can authenticate with AWS and pull down the `nodejs` image from ECR.
+
+You can then run the build process via `aws-vault`:
 
 ```shell
-$ docker build -t user-service .
+$ aws-vault exec bichard7-sandbox-shared -- make build
 ```
-
-However, to build the user-service Docker image from the triaged `nodejs` image in the ECR repo (which is what CodeBuild does), you'll need to authenticate with AWS in order to fetch the `nodejs` image.
-
-You can do this by:
-
-1. Make sure you have installed and configured the [AWS CLI](https://aws.amazon.com/cli/) and [`aws-vault`](https://github.com/99designs/aws-vault).
-
-1. Run the `build-docker.sh` script:
-   ```shell
-   $ aws-vault exec <account_name> -- ./scripts/build-docker.sh
-   ```
-
-This will use the AWS CLI to login to ECR, fetch the latest version of the `nodejs` image from the repository, and then build the user-service Docker image on top of that.
 
 ## Running
 
-Once you've built the Docker image (see either of the methods [above](#building)), you run the Docker image as usual:
+Once you've built the Docker image (see [above](#building)), you run the Docker image as usual:
 
 ```shell
 $ docker run -p 3443:443 user-service
+
+# Or, a shortcut to run the above:
+$ make run
 ```
 
-This above example will expose the service at http://localhost:3443/.
+Either of these commands will expose the service at https://localhost:3443/.
 
 ### A Note on SSL Certificates
 
@@ -88,7 +80,7 @@ $ docker run \
    ```
    N.B. This will also configure git hooks with [husky](https://typicode.github.io/husky/) to automatically lint the code, and copy the GOV.UK Frontend assets into the location that Next.js serves static files from.
 
-### Running the app
+### Running the app locally
 
 The application can be started in development mode, which includes features such as extra error reporting and hot-code reloading, by running:
 
