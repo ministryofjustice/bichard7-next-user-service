@@ -4,8 +4,8 @@ import { UserCredentials } from "lib/User"
 import users from "data/users"
 
 export default class LocalAuthenticator extends AuthenticationProvider {
-  // eslint-disable-next-line class-methods-use-this
-  public authenticate(credentials: UserCredentials): AuthenticationResult {
+  // eslint-disable-next-line class-methods-use-this, require-await
+  public async authenticate(credentials: UserCredentials): Promise<AuthenticationResult> {
     const [match] = users.filter(
       (u) => u.emailAddress === credentials.emailAddress && u.password === credentials.password
     )

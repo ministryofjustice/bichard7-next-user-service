@@ -18,7 +18,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
     const credentials: UserCredentials = (await parseFormData(req)) as { emailAddress: string; password: string }
 
     if (credentials.emailAddress && credentials.password) {
-      const result = Authenticator.authenticate(credentials)
+      const result = await Authenticator.authenticate(credentials)
 
       if (isSuccess(result)) {
         const url = new URL(config.bichardRedirectURL)

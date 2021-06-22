@@ -5,7 +5,7 @@ import { Token, TokenPayload } from "lib/Token"
 import { User, UserCredentials } from "lib/User"
 
 export default abstract class AuthenticationProvider {
-  abstract authenticate(credentials: UserCredentials): AuthenticationResult
+  abstract authenticate(credentials: UserCredentials): Promise<AuthenticationResult>
 
   protected static generateToken(user: User): Token {
     const payload: TokenPayload = {
