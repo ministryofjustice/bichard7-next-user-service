@@ -2,20 +2,30 @@ import LocalAuthenticator from "lib/AuthenticationProvider/LocalAuthenticator"
 import AuthenticationProvider from "./AuthenticationProvider"
 import { UserCredentials } from "./User"
 import { AuthenticationResult } from "./AuthenticationResult"
+import DatabaseAuthenticator from "./AuthenticationProvider/DatabaseAuthenticator"
+import config from "./config"
 
 export default class Authenticator {
-  private static provider: AuthenticationProvider
+  private static provider?: AuthenticationProvider
 
   public static getProvider(): AuthenticationProvider {
     if (!Authenticator.provider) {
-      // TODO: Add logic here to choose between Local/Cognito authentication
-      Authenticator.provider = new LocalAuthenticator()
+      if (config.authenticator === "DB") {
+        Authenticator.provider = new DatabaseAuthenticator()
+      } else {
+        Authenticator.provider = new LocalAuthenticator()
+      }
     }
 
     return Authenticator.provider
   }
 
-  public static authenticate(credentials: UserCredentials): AuthenticationResult {
-    return Authenticator.getProvider().authenticate(credentials)
+  public static clearProvider() {
+    Authenticator.provider = undefined
+  }
+
+  public static async authenticate(credentials: UserCredentials): Promise<AuthenticationResult> {
+    const result = await Authenticator.getProvider().authenticate(credentials)
+    return result
   }
 }

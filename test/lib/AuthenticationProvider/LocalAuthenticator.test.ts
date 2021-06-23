@@ -14,8 +14,8 @@ describe("Local development authenticator", () => {
     ${"foobar@example.com"}    | ${"foobarbaz"}
     ${"foobar@example.com"}    | ${"password"}
     ${"bichard01@example.com"} | ${"foobarbaz"}
-  `("shouldn't authenticate $emailAddress:$password", ({ emailAddress, password }) => {
-    const result = authenticator.authenticate({ emailAddress, password })
+  `("shouldn't authenticate $emailAddress:$password", async ({ emailAddress, password }) => {
+    const result = await authenticator.authenticate({ emailAddress, password })
     expect(result).toBeInstanceOf(Error)
     expect(typeof result).not.toBe("string")
   })
@@ -36,16 +36,16 @@ describe("Local development authenticator", () => {
     ${"supervisor2@example.com"}       | ${"password"}
     ${"triggerhandler2@example.com"}   | ${"password"}
     ${"nogroupsassigned@example.com"}  | ${"password"}
-  `("should authenticate $emailAddress:$password", ({ emailAddress, password }) => {
-    const result = authenticator.authenticate({ emailAddress, password })
+  `("should authenticate $emailAddress:$password", async ({ emailAddress, password }) => {
+    const result = await authenticator.authenticate({ emailAddress, password })
     expect(result).not.toBeInstanceOf(Error)
     expect(typeof result).toBe("string")
   })
 
-  it("should generate a valid JWT token for an authenticated user", () => {
+  it("should generate a valid JWT token for an authenticated user", async () => {
     const emailAddress = "bichard01@example.com"
-    const token = authenticator.authenticate({ emailAddress, password: "password" })
-    const data = jwt.verify(token as string, config.localAuthenticator.jwtSecret)
+    const token = await authenticator.authenticate({ emailAddress, password: "password" })
+    const data = jwt.verify(token as string, config.tokenSecret)
 
     expect(data).not.toBeNull()
     expect(data).not.toHaveProperty("password")
