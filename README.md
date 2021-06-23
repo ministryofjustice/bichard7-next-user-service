@@ -44,21 +44,21 @@ $ docker run \
 
 The application makes use of the following environment variables to permit configuration:
 
-| Variable                       | Default                                          | Description                                                                               |
-|--------------------------------|--------------------------------------------------|-------------------------------------------------------------------------------------------|
-| `$BICHARD_REDIRECT_URL`        | `https://localhost:9443/bichard-ui/Authenticate` | The URL to redirect to with a token as a GET parameter when authentication is successful  |
-| `$LOCAL_AUTH_TOKEN_ISSUER`     | `Bichard`                                        | The string to use as the token issuer (`iss`)                                             |
-| `$LOCAL_AUTH_TOKEN_SECRET`     | `OliverTwist`                                    | The HMAC secret to use for signing the tokens                                             |
-| `$LOCAL_AUTH_TOKEN_EXPIRES_IN` | `5 seconds`                                      | The amount of time the tokens should be valid for after issuing                           |
-| `$TOKEN_QUERY_PARAM_NAME`      | `token`                                          | The name to use for the token query parameter when redirecting to `$BICHARD_REDIRECT_URL` |
+| Variable                  | Default                                          | Description                                                                               |
+|---------------------------|--------------------------------------------------|-------------------------------------------------------------------------------------------|
+| `$BICHARD_REDIRECT_URL`   | `https://localhost:9443/bichard-ui/Authenticate` | The URL to redirect to with a token as a GET parameter when authentication is successful  |
+| `$TOKEN_ISSUER`           | `Bichard`                                        | The string to use as the token issuer (`iss`)                                             |
+| `$TOKEN_SECRET`           | `OliverTwist`                                    | The HMAC secret to use for signing the tokens                                             |
+| `$TOKEN_EXPIRES_IN`       | `5 seconds`                                      | The amount of time the tokens should be valid for after issuing                           |
+| `$TOKEN_QUERY_PARAM_NAME` | `token`                                          | The name to use for the token query parameter when redirecting to `$BICHARD_REDIRECT_URL` |
 
 These can be passed through to the docker container with the `-e` flag, for example:
 
 ```shell
 $ docker run \
    -p 3443:443 \
-   -e LOCAL_AUTH_TOKEN_SECRET="SECRET" \
-   -e LOCAL_AUTH_TOKEN_EXPIRES_IN="10 seconds" \
+   -e TOKEN_SECRET="SECRET" \
+   -e TOKEN_EXPIRES_IN="10 seconds" \
    user-service
 ```
 

@@ -45,7 +45,7 @@ describe("Local development authenticator", () => {
   it("should generate a valid JWT token for an authenticated user", async () => {
     const emailAddress = "bichard01@example.com"
     const token = await authenticator.authenticate({ emailAddress, password: "password" })
-    const data = jwt.verify(token as string, config.localAuthenticator.jwtSecret)
+    const data = jwt.verify(token as string, config.tokenSecret)
 
     expect(data).not.toBeNull()
     expect(data).not.toHaveProperty("password")

@@ -19,10 +19,10 @@ export default abstract class AuthenticationProvider {
     }
 
     const options: jwt.SignOptions = {
-      expiresIn: config.localAuthenticator.jwtExpiresIn,
-      issuer: config.localAuthenticator.jwtIssuer
+      expiresIn: config.tokenExpiresIn,
+      issuer: config.tokenIssuer
     }
 
-    return jwt.sign(payload, config.localAuthenticator.jwtSecret, options)
+    return jwt.sign(payload, config.tokenSecret, options)
   }
 }
