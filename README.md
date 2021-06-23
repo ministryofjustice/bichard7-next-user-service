@@ -27,7 +27,57 @@ $ make run
 
 Either of these commands will expose the service at https://localhost:3443/.
 
-### A Note on SSL Certificates
+## Configuration
+
+The application makes use of the following environment variables to permit configuration:
+
+| Variable                  | Default                                            | Description                                                                                     |
+|---------------------------|----------------------------------------------------|-------------------------------------------------------------------------------------------------|
+| `$BICHARD_REDIRECT_URL`   | `"https://localhost:9443/bichard-ui/Authenticate"` | The URL to redirect to with a token as a GET parameter when authentication is successful        |
+| `$DB_AUTH`                | `false`                                            | Whether to validate users against the database (true) or the static local list of users (false) |
+| `$DB_AUTH_HOST`           | `"localhost"`                                      | The hostname of the database server                                                             |
+| `$DB_AUTH_USER`           | `"bichard"`                                        | The username to use when connecting to the database                                             |
+| `$DB_AUTH_PASSWORD`       | `"password"`                                       | The password to use when connecting to the database                                             |
+| `$DB_AUTH_DATABASE`       | `"bichard"`                                        | The name of the database containing the user information                                        |
+| `$DB_AUTH_PORT`           | `5432`                                             | The port number to connect to the database on                                                   |
+| `$TOKEN_EXPIRES_IN`       | `"5 seconds"`                                      | The amount of time the tokens should be valid for after issuing                                 |
+| `$TOKEN_ISSUER`           | `"Bichard"`                                        | The string to use as the token issuer (`iss`)                                                   |
+| `$TOKEN_QUERY_PARAM_NAME` | `"token"`                                          | The name to use for the token query parameter when redirecting to `$BICHARD_REDIRECT_URL`       |
+| `$TOKEN_SECRET`           | `"OliverTwist"`                                    | The HMAC secret to use for signing the tokens                                                   |
+
+These can be passed through to the docker container with the `-e` flag, for example:
+
+```shell
+$ docker run \
+   -p 3443:443 \
+   -e TOKEN_SECRET="SECRET" \
+   -e TOKEN_EXPIRES_IN="10 seconds" \
+   user-service
+```
+
+### Authentication Mechanism
+
+By default, the user-service will validate login attempts against a [static list of users](/src/data/users.ts).
+
+In order to validate users against the `users` table stored in the Bichard Postgres database, you need to:
+
+1. Spin up a local instance of the database, if you want to run it locally:
+   ```shell
+   $ cd /path/to/bichard7-next
+   $ make run-pg
+   ```
+
+1. Pass through the `DB_AUTH` environment variable:
+   ```shell
+   $ cd /path/to/bichard7-next-user-service
+   $ docker run \
+      -p 3443:443 \
+      -e DB_AUTH=true
+   ```
+
+The defaults for the database connection configuration should be sufficient for connecting to a local instance of the database. To change the configuration, you can pass through the other `$DB_AUTH_*` environment variables (see [the table above](#Configuration)).
+
+### SSL Certificates
 
 The Docker image is configured to run NGINX in front of the Next.js application, to allow us to do SSL termination.
 
@@ -40,28 +90,6 @@ $ docker run \
    user-service
 ```
 
-## Configuration
-
-The application makes use of the following environment variables to permit configuration:
-
-| Variable                  | Default                                          | Description                                                                               |
-|---------------------------|--------------------------------------------------|-------------------------------------------------------------------------------------------|
-| `$BICHARD_REDIRECT_URL`   | `https://localhost:9443/bichard-ui/Authenticate` | The URL to redirect to with a token as a GET parameter when authentication is successful  |
-| `$TOKEN_ISSUER`           | `Bichard`                                        | The string to use as the token issuer (`iss`)                                             |
-| `$TOKEN_SECRET`           | `OliverTwist`                                    | The HMAC secret to use for signing the tokens                                             |
-| `$TOKEN_EXPIRES_IN`       | `5 seconds`                                      | The amount of time the tokens should be valid for after issuing                           |
-| `$TOKEN_QUERY_PARAM_NAME` | `token`                                          | The name to use for the token query parameter when redirecting to `$BICHARD_REDIRECT_URL` |
-
-These can be passed through to the docker container with the `-e` flag, for example:
-
-```shell
-$ docker run \
-   -p 3443:443 \
-   -e TOKEN_SECRET="SECRET" \
-   -e TOKEN_EXPIRES_IN="10 seconds" \
-   user-service
-```
-
 ## Development
 
 ### Installing requirements
@@ -70,7 +98,7 @@ $ docker run \
 
 1. Install and use the version of node specified by this project:
    ```shell
-   $ cd /path/to/bichard7-next-services
+   $ cd /path/to/bichard7-next-user-service
    $ nvm install
    ```
 
