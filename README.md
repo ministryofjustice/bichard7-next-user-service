@@ -59,23 +59,27 @@ $ docker run \
 
 By default, the user-service will validate login attempts against a [static list of users](/src/data/users.ts).
 
-In order to validate users against the `users` table stored in the Bichard Postgres database, you need to:
+In order to validate users against a local instance of the Bichard Postgres database, you need to:
 
-1. Spin up a local instance of the database, if you want to run it locally:
+1. Spin up a local instance of the database (if you don't already have one running):
    ```shell
    $ cd /path/to/bichard7-next
    $ make run-pg
    ```
 
-1. Pass through the `DB_AUTH` environment variable:
+1. Pass through the environment variables to turn on database-backed auth, and to specify the docker host as the database host:
    ```shell
    $ cd /path/to/bichard7-next-user-service
    $ docker run \
       -p 3443:443 \
-      -e DB_AUTH=true
+      -e DB_AUTH=true \
+      -e DB_AUTH_HOST=host.docker.internal
+
+   # Or, a shortcut to run the above:
+   $ make run-db
    ```
 
-The defaults for the database connection configuration should be sufficient for connecting to a local instance of the database. To change the configuration, you can pass through the other `$DB_AUTH_*` environment variables (see [the table above](#Configuration)).
+To customise other database connection parameters, see the `$DB_AUTH_*` parameters in [the table above](#Configuration). The other database configuration defaults should be sufficient for connceting to a local instance of the database.
 
 ### SSL Certificates
 
