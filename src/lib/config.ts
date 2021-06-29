@@ -18,7 +18,7 @@ interface UserServiceConfig {
 }
 
 const config: UserServiceConfig = {
-  authenticator: process.env.DB_AUTH ? "DB" : "LOCAL",
+  authenticator: process.env.DB_AUTH === "true" ? "DB" : "LOCAL",
   bichardRedirectURL: process.env.BICHARD_REDIRECT_URL ?? "https://localhost:9443/bichard-ui/Authenticate",
   tokenExpiresIn: process.env.TOKEN_EXPIRES_IN ?? "5 seconds",
   tokenIssuer: process.env.TOKEN_ISSUER ?? "Bichard",
