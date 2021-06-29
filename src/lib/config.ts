@@ -4,6 +4,7 @@ interface DatabaseAuthenticatorConfig {
   dbPassword: string
   dbDatabase: string
   dbPort: number
+  dbSsl: boolean
 }
 
 interface UserServiceConfig {
@@ -28,7 +29,8 @@ const config: UserServiceConfig = {
     dbUser: process.env.DB_AUTH_USER ?? "bichard",
     dbPassword: process.env.DB_AUTH_PASSWORD ?? "password",
     dbDatabase: process.env.DB_AUTH_DATABASE ?? "bichard",
-    dbPort: Number(process.env.DB_AUTH_PORT) ?? 5432
+    dbPort: Number(process.env.DB_AUTH_PORT) ?? 5432,
+    dbSsl: process.env.DB_AUTH_SSL === "true"
   }
 }
 
