@@ -40,6 +40,7 @@ The application makes use of the following environment variables to permit confi
 | `$DB_AUTH_PASSWORD`       | `"password"`                                       | The password to use when connecting to the database                                             |
 | `$DB_AUTH_DATABASE`       | `"bichard"`                                        | The name of the database containing the user information                                        |
 | `$DB_AUTH_PORT`           | `5432`                                             | The port number to connect to the database on                                                   |
+| `$DB_AUTH_SSL`            | `false`                                            | Whether to use SSL when connecting to the database                                              |
 | `$TOKEN_EXPIRES_IN`       | `"5 seconds"`                                      | The amount of time the tokens should be valid for after issuing                                 |
 | `$TOKEN_ISSUER`           | `"Bichard"`                                        | The string to use as the token issuer (`iss`)                                                   |
 | `$TOKEN_QUERY_PARAM_NAME` | `"token"`                                          | The name to use for the token query parameter when redirecting to `$BICHARD_REDIRECT_URL`       |
