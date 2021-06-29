@@ -15,7 +15,8 @@ export default class DatabaseAuthenticator extends AuthenticationProvider {
       host: config.databaseAuthenticator.dbHost,
       database: config.databaseAuthenticator.dbDatabase,
       password: config.databaseAuthenticator.dbPassword,
-      port: config.databaseAuthenticator.dbPort
+      port: config.databaseAuthenticator.dbPort,
+      ssl: config.databaseAuthenticator.dbSsl ? { rejectUnauthorized: false } : false
     })
     this.dbClient.connect()
   }
