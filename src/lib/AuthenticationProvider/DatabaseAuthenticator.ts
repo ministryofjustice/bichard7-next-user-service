@@ -51,8 +51,8 @@ export default class DatabaseAuthenticator extends AuthenticationProvider {
 
     return {
       username: user.username,
-      exclusionList: user.exclusion_list,
-      inclusionList: user.inclusion_list,
+      exclusionList: user.exclusion_list.split(/[, ]/),
+      inclusionList: user.inclusion_list.split(/[, ]/),
       endorsedBy: user.endorsed_by,
       orgServes: user.org_serves,
       forenames: user.forenames,
