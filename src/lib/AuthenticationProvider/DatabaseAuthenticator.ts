@@ -78,7 +78,7 @@ export default class DatabaseAuthenticator extends AuthenticationProvider {
     `
 
     const res = await this.dbClient.query(query, [emailAddress])
-    const groups = res.rows.map((row) => row.name)
+    const groups = res.rows.map((row) => row.name.replace(/_grp$/, ""))
 
     return groups
   }
