@@ -4,7 +4,7 @@ const users: Array<User & UserCredentials> = [
   {
     username: "Bichard01",
     exclusionList: ["5", "6", "7", "8"],
-    inclusionList: ["B41ME00"],
+    inclusionList: ["B01", "B41ME00"],
     endorsedBy: "Endorser Not found",
     orgServes: "048C600",
     forenames: "Bichard User",
@@ -19,7 +19,7 @@ const users: Array<User & UserCredentials> = [
   {
     username: "Allocator1",
     exclusionList: ["5", "6", "7", "8"],
-    inclusionList: ["B41ME00"],
+    inclusionList: ["B01", "B41ME00"],
     endorsedBy: "Endorser Not found",
     orgServes: "048C600",
     forenames: "Bichard User",
@@ -34,7 +34,7 @@ const users: Array<User & UserCredentials> = [
   {
     username: "Audit1",
     exclusionList: ["5", "6", "7", "8"],
-    inclusionList: ["B41ME00"],
+    inclusionList: ["B01", "B41ME00"],
     endorsedBy: "Endorser Not found",
     orgServes: "048C600",
     forenames: "Bichard User",
@@ -49,7 +49,7 @@ const users: Array<User & UserCredentials> = [
   {
     username: "ExceptionHandler1",
     exclusionList: ["5", "6", "7", "8"],
-    inclusionList: ["B41ME00"],
+    inclusionList: ["B01", "B41ME00"],
     endorsedBy: "Endorser Not found",
     orgServes: "048C600",
     forenames: "Bichard User",
@@ -64,7 +64,7 @@ const users: Array<User & UserCredentials> = [
   {
     username: "GeneralHandler1",
     exclusionList: ["5", "6", "7", "8"],
-    inclusionList: ["B41ME00"],
+    inclusionList: ["B01", "B41ME00"],
     endorsedBy: "Endorser Not found",
     orgServes: "048C600",
     forenames: "Bichard User",
@@ -79,7 +79,7 @@ const users: Array<User & UserCredentials> = [
   {
     username: "Supervisor1",
     exclusionList: ["5", "6", "7", "8"],
-    inclusionList: ["B41ME00"],
+    inclusionList: ["B01", "B41ME00"],
     endorsedBy: "Endorser Not found",
     orgServes: "048C600",
     forenames: "Bichard User",
@@ -94,7 +94,7 @@ const users: Array<User & UserCredentials> = [
   {
     username: "TriggerHandler1",
     exclusionList: ["5", "6", "7", "8"],
-    inclusionList: ["B41ME00"],
+    inclusionList: ["B01", "B41ME00"],
     endorsedBy: "Endorser Not found",
     orgServes: "048C600",
     forenames: "Bichard User",
@@ -109,7 +109,7 @@ const users: Array<User & UserCredentials> = [
   {
     username: "Allocator2",
     exclusionList: ["5", "6", "7", "8"],
-    inclusionList: ["B41ME00"],
+    inclusionList: ["B40ME00"],
     endorsedBy: "Endorser Not found",
     orgServes: "048C600",
     forenames: "Bichard User",
@@ -124,7 +124,7 @@ const users: Array<User & UserCredentials> = [
   {
     username: "Audit2",
     exclusionList: ["5", "6", "7", "8"],
-    inclusionList: ["B41ME00"],
+    inclusionList: ["B40ME00"],
     endorsedBy: "Endorser Not found",
     orgServes: "048C600",
     forenames: "Bichard User",
@@ -139,7 +139,7 @@ const users: Array<User & UserCredentials> = [
   {
     username: "ExceptionHandler2",
     exclusionList: ["5", "6", "7", "8"],
-    inclusionList: ["B41ME00"],
+    inclusionList: ["B40ME00"],
     endorsedBy: "Endorser Not found",
     orgServes: "048C600",
     forenames: "Bichard User",
@@ -154,7 +154,7 @@ const users: Array<User & UserCredentials> = [
   {
     username: "GeneralHandler2",
     exclusionList: ["5", "6", "7", "8"],
-    inclusionList: ["B41ME00"],
+    inclusionList: ["B40ME00"],
     endorsedBy: "Endorser Not found",
     orgServes: "048C600",
     forenames: "Bichard User",
@@ -169,7 +169,7 @@ const users: Array<User & UserCredentials> = [
   {
     username: "Supervisor2",
     exclusionList: ["5", "6", "7", "8"],
-    inclusionList: ["B41ME00"],
+    inclusionList: ["B40ME00"],
     endorsedBy: "Endorser Not found",
     orgServes: "048C600",
     forenames: "Bichard User",
@@ -184,7 +184,7 @@ const users: Array<User & UserCredentials> = [
   {
     username: "TriggerHandler2",
     exclusionList: ["5", "6", "7", "8"],
-    inclusionList: ["B41ME00"],
+    inclusionList: ["B40ME00"],
     endorsedBy: "Endorser Not found",
     orgServes: "048C600",
     forenames: "Bichard User",
@@ -199,7 +199,7 @@ const users: Array<User & UserCredentials> = [
   {
     username: "NoGroupsAssigned",
     exclusionList: ["5", "6", "7", "8"],
-    inclusionList: ["B41ME00"],
+    inclusionList: ["B40ME00"],
     endorsedBy: "Endorser Not found",
     orgServes: "048C600",
     forenames: "Bichard User",
