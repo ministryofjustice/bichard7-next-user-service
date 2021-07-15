@@ -27,14 +27,14 @@ aws ecr get-login-password --region eu-west-2 | docker login \
 
 # Get our latest staged nodejs image
 IMAGE_HASH=$(aws ecr describe-images \
-    --repository-name nodejs \
+    --repository-name nginx-nodejs-supervisord \
     --query 'to_string(sort_by(imageDetails,& imagePushedAt)[-1].imageDigest)' \
     --output text
 )
 
-DOCKER_IMAGE_HASH="${AWS_ACCOUNT_ID}.dkr.ecr.eu-west-2.amazonaws.com/nodejs@${IMAGE_HASH}"
+DOCKER_IMAGE_HASH="${AWS_ACCOUNT_ID}.dkr.ecr.eu-west-2.amazonaws.com/nginx-nodejs-supervisord@${IMAGE_HASH}"
 
-docker build --build-arg "NODE_IMAGE=${DOCKER_IMAGE_HASH}" -t user-service .
+docker build --build-arg "BUILD_IMAGE=${DOCKER_IMAGE_HASH}" -t user-service .
 
 if [[ -n "${CODEBUILD_RESOLVED_SOURCE_VERSION}" && -n "${CODEBUILD_START_TIME}" ]]; then
     docker tag \
