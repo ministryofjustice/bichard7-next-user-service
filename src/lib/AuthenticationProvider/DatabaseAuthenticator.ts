@@ -5,7 +5,7 @@ import { compare } from "lib/shiro"
 import { User, UserCredentials, UserGroup } from "lib/User"
 import type { ITask } from "pg-promise"
 
-async function fetchGroups(tx: ITask<unknown>, emailAddress: string): Promise<UserGroup[]> {
+async function fetchGroups(t: ITask<unknown>, emailAddress: string): Promise<UserGroup[]> {
   const query = `
     SELECT g.name
     FROM br7own.groups g
@@ -16,7 +16,7 @@ async function fetchGroups(tx: ITask<unknown>, emailAddress: string): Promise<Us
     WHERE u.email = $1
   `
 
-  let groups = await tx.any(query, [emailAddress])
+  let groups = await t.any(query, [emailAddress])
 
   // Remove the "_grp" suffix from group names
   // i.e. `B7Supervisor_grp` => `B7Supervisor`
@@ -25,7 +25,7 @@ async function fetchGroups(tx: ITask<unknown>, emailAddress: string): Promise<Us
   return groups
 }
 
-async function fetchUser(tx: ITask<unknown>, emailAddress: string): Promise<User & UserCredentials> {
+async function fetchUser(t: ITask<unknown>, emailAddress: string): Promise<User & UserCredentials> {
   const query = `
     SELECT
       username,
@@ -43,7 +43,7 @@ async function fetchUser(tx: ITask<unknown>, emailAddress: string): Promise<User
     WHERE email = $1
   `
 
-  const user = await tx.one(query, [emailAddress])
+  const user = await t.one(query, [emailAddress])
 
   return {
     username: user.username,
@@ -58,14 +58,29 @@ async function fetchUser(tx: ITask<unknown>, emailAddress: string): Promise<User
     postCode: user.post_code,
     phoneNumber: user.phone_number,
     password: user.password,
-    groups: await fetchGroups(tx, emailAddress)
+    groups: await fetchGroups(t, emailAddress)
   }
+}
+
+async function updateUserLoginTimestamp(t: ITask<unknown>, emailAddress: string) {
+  const query = `
+    UPDATE br7own.users
+    SET last_login_attempt = NOW()
+    WHERE email = $1
+  `
+
+  await t.none(query, [emailAddress])
 }
 
 export default class DatabaseAuthenticator extends AuthenticationProvider {
   // eslint-disable-next-line class-methods-use-this
   public async authenticate(credentials: UserCredentials): Promise<AuthenticationResult> {
-    const user = await db.tx((t) => fetchUser(t, credentials.emailAddress))
+    const user = await db.tx(async (t) => {
+      const u = await fetchUser(t, credentials.emailAddress)
+      await updateUserLoginTimestamp(t, credentials.emailAddress)
+      return u
+    })
+
     const match = await compare(credentials.password, user.password)
     return match ? AuthenticationProvider.generateToken(user) : new Error("Invalid credentials")
   }
