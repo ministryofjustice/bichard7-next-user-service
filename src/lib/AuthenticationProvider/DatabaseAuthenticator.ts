@@ -41,9 +41,10 @@ async function fetchUser(t: ITask<unknown>, emailAddress: string): Promise<User 
       password
     FROM br7own.users
     WHERE email = $1
+      AND last_login_attempt < NOW() - INTERVAL '$2 seconds'
   `
 
-  const user = await t.one(query, [emailAddress])
+  const user = await t.one(query, [emailAddress, 10])
 
   return {
     username: user.username,
@@ -75,13 +76,19 @@ async function updateUserLoginTimestamp(t: ITask<unknown>, emailAddress: string)
 export default class DatabaseAuthenticator extends AuthenticationProvider {
   // eslint-disable-next-line class-methods-use-this
   public async authenticate(credentials: UserCredentials): Promise<AuthenticationResult> {
-    const user = await db.tx(async (t) => {
-      const u = await fetchUser(t, credentials.emailAddress)
-      await updateUserLoginTimestamp(t, credentials.emailAddress)
-      return u
-    })
+    const error = new Error("Invalid credentials")
 
-    const match = await compare(credentials.password, user.password)
-    return match ? AuthenticationProvider.generateToken(user) : new Error("Invalid credentials")
+    try {
+      const user = await db.tx(async (t) => {
+        const u = await fetchUser(t, credentials.emailAddress)
+        await updateUserLoginTimestamp(t, credentials.emailAddress)
+        return u
+      })
+
+      const match = await compare(credentials.password, user.password)
+      return match ? AuthenticationProvider.generateToken(user) : error
+    } catch {
+      return error
+    }
   }
 }
