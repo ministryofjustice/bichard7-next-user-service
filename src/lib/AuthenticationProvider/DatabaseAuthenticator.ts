@@ -1,5 +1,6 @@
 import AuthenticationProvider from "lib/AuthenticationProvider"
 import { AuthenticationResult } from "lib/AuthenticationResult"
+import config from "lib/config"
 import db from "lib/db"
 import { compare } from "lib/shiro"
 import { User, UserCredentials, UserGroup } from "lib/User"
@@ -44,7 +45,7 @@ async function fetchUser(t: ITask<unknown>, emailAddress: string): Promise<User 
       AND last_login_attempt < NOW() - INTERVAL '$2 seconds'
   `
 
-  const user = await t.one(query, [emailAddress, 10])
+  const user = await t.one(query, [emailAddress, config.incorrectDelay])
 
   return {
     username: user.username,
