@@ -1,26 +1,10 @@
 import AuthenticationProvider from "lib/AuthenticationProvider"
 import { AuthenticationResult } from "lib/AuthenticationResult"
-import config from "lib/config"
+import db from "lib/db"
 import { compare } from "lib/shiro"
 import { User, UserCredentials, UserGroup } from "lib/User"
-import { Client } from "pg"
 
 export default class DatabaseAuthenticator extends AuthenticationProvider {
-  private dbClient: Client
-
-  constructor() {
-    super()
-    this.dbClient = new Client({
-      user: config.databaseAuthenticator.dbUser,
-      host: config.databaseAuthenticator.dbHost,
-      database: config.databaseAuthenticator.dbDatabase,
-      password: config.databaseAuthenticator.dbPassword,
-      port: config.databaseAuthenticator.dbPort,
-      ssl: config.databaseAuthenticator.dbSsl ? { rejectUnauthorized: false } : false
-    })
-    this.dbClient.connect()
-  }
-
   public async authenticate(credentials: UserCredentials): Promise<AuthenticationResult> {
     const user = await this.fetchUser(credentials.emailAddress)
     const match = await compare(credentials.password, user.password)
@@ -46,8 +30,11 @@ export default class DatabaseAuthenticator extends AuthenticationProvider {
       LIMIT 1
     `
 
-    const res = await this.dbClient.query(query, [emailAddress])
-    const user = res.rows[0]
+    const user = await db.oneOrNone(query, [emailAddress])
+
+    if (!user) {
+      throw new Error("Invalid credentials")
+    }
 
     return {
       username: user.username,
@@ -66,6 +53,7 @@ export default class DatabaseAuthenticator extends AuthenticationProvider {
     }
   }
 
+  // eslint-disable-next-line class-methods-use-this
   private async fetchGroupsForUser(emailAddress: string): Promise<Array<UserGroup>> {
     const query = `
       SELECT g.name
@@ -77,8 +65,11 @@ export default class DatabaseAuthenticator extends AuthenticationProvider {
       WHERE u.email = $1
     `
 
-    const res = await this.dbClient.query(query, [emailAddress])
-    const groups = res.rows.map((row) => row.name.replace(/_grp$/, ""))
+    let groups = await db.any(query, [emailAddress])
+
+    // Remove the "_grp" suffix from group names
+    // i.e. `B7Supervisor_grp` => `B7Supervisor`
+    groups = groups.map((group) => group.name.replace(/_grp$/, ""))
 
     return groups
   }

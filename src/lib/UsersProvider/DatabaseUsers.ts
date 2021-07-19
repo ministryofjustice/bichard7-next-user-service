@@ -1,23 +1,9 @@
 import UsersProvider from "lib/UsersProvider"
 import { ListUsersResult } from "lib/UsersResult"
-import config from "lib/config"
-import { Client } from "pg"
+import db from "lib/db"
 
 export default class DatabaseUsers implements UsersProvider {
-  private dbClient: Client
-
-  constructor() {
-    this.dbClient = new Client({
-      user: config.databaseAuthenticator.dbUser,
-      host: config.databaseAuthenticator.dbHost,
-      database: config.databaseAuthenticator.dbDatabase,
-      password: config.databaseAuthenticator.dbPassword,
-      port: config.databaseAuthenticator.dbPort,
-      ssl: config.databaseAuthenticator.dbSsl ? { rejectUnauthorized: false } : false
-    })
-    this.dbClient.connect()
-  }
-
+  // eslint-disable-next-line class-methods-use-this
   public async list(): Promise<ListUsersResult> {
     const query = `
       SELECT
@@ -28,13 +14,15 @@ export default class DatabaseUsers implements UsersProvider {
         email
       FROM br7own.users
     `
-    const result = await this.dbClient.query(query)
-    return result.rows.map((r) => ({
-      username: r.username,
-      forenames: r.forenames,
-      surname: r.surname,
-      phoneNumber: r.phone_number,
-      emailAddress: r.email
+
+    const result = await db.any(query)
+
+    return result.map((row) => ({
+      username: row.username,
+      forenames: row.forenames,
+      surname: row.surname,
+      phoneNumber: row.phone_number,
+      emailAddress: row.email
     })) as unknown as ListUsersResult
   }
 }
