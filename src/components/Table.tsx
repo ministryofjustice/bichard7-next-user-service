@@ -1,5 +1,3 @@
-import React from "react"
-
 export type TableHeader = [string, string]
 
 export type TableHeaders = Array<TableHeader>

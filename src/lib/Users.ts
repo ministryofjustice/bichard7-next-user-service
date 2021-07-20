@@ -1,7 +1,7 @@
 import LocalUsers from "lib/UsersProvider/LocalUsers"
-import DatabaseUsers from "./UsersProvider/DatabaseUsers"
-import UsersProvider from "./UsersProvider"
-import { ListUsersResult } from "./UsersResult"
+import DatabaseUsers from "lib/UsersProvider/DatabaseUsers"
+import UsersProvider from "lib/UsersProvider"
+import { ListUsersResult } from "lib/UsersResult"
 import config from "./config"
 
 export default class Users {

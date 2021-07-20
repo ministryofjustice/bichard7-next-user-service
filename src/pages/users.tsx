@@ -23,7 +23,7 @@ interface Props {
 }
 
 const tableHeaders: TableHeaders = [
-  ["username", "User name"],
+  ["username", "Username"],
   ["forenames", "Forename(s)"],
   ["surname", "Surname"],
   ["phoneNumber", "Phone number"],
