@@ -1,5 +1,5 @@
 import UsersProvider from "lib/UsersProvider"
-import { AllUsersResult } from "lib/UsersResult"
+import { ListUsersResult } from "lib/UsersResult"
 import config from "lib/config"
 import { Client } from "pg"
 
@@ -18,7 +18,7 @@ export default class DatabaseUsers implements UsersProvider {
     this.dbClient.connect()
   }
 
-  public async list(): Promise<AllUsersResult> {
+  public async list(): Promise<ListUsersResult> {
     const query = `
       SELECT
         username,
@@ -35,6 +35,6 @@ export default class DatabaseUsers implements UsersProvider {
       surname: r.surname,
       phoneNumber: r.phone_number,
       emailAddress: r.email
-    }))
+    })) as unknown as ListUsersResult
   }
 }

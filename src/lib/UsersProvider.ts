@@ -1,5 +1,5 @@
-import { AllUsersResult } from "lib/UsersResult"
+import { ListUsersResult } from "lib/UsersResult"
 
 export default interface UsersProvider {
-  list(): AllUsersResult
+  list(): Promise<ListUsersResult>
 }

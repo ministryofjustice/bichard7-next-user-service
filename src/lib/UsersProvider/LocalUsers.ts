@@ -4,13 +4,13 @@ import users from "data/users"
 
 export default class LocalUsers implements UsersProvider {
   // eslint-disable-next-line class-methods-use-this
-  list(): ListUsersResult {
+  list(): Promise<ListUsersResult> {
     return users.map((u) => ({
       username: u.username,
       forenames: u.forenames,
       surname: u.surname,
       phoneNumber: u.phoneNumber,
       emailAddress: u.emailAddress
-    })) as unknown as ListUsersResult
+    })) as unknown as Promise<ListUsersResult>
   }
 }
