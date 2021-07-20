@@ -28,8 +28,8 @@ export default class DatabaseUsers implements UsersProvider {
         email
       FROM br7own.users
     `
-    const res = await this.dbClient.query(query)
-    return res.rows.map((r) => ({
+    const result = await this.dbClient.query(query)
+    return result.rows.map((r) => ({
       username: r.username,
       forenames: r.forenames,
       surname: r.surname,

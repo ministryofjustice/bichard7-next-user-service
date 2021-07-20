@@ -6,16 +6,15 @@ import UsersProvider from "../lib/Users"
 import { isSuccess } from "../lib/UsersResult"
 
 export const getServerSideProps: GetServerSideProps = async () => {
-  let ret
+  let usersList = null
   const result = await UsersProvider.list()
 
   if (isSuccess(result)) {
-    ret = result
-  } else {
-    ret = null
+    usersList = result
   }
+
   return {
-    props: { usersList: ret }
+    props: { usersList }
   }
 }
 
@@ -36,7 +35,7 @@ const users = ({ usersList }: Props) => (
     <Head>
       <title>{"Users"}</title>
     </Head>
-    <Layout>{usersList ? <Table tableHeaders={tableHeaders} tableTitle="Users" tableData={usersList} /> : null}</Layout>
+    <Layout>{usersList && <Table tableHeaders={tableHeaders} tableTitle="Users" tableData={usersList} />}</Layout>
   </>
 )
 
