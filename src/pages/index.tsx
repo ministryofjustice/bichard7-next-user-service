@@ -4,48 +4,37 @@ import GridRow from "components/GridRow"
 import Layout from "components/Layout"
 import Head from "next/head"
 import TextInput from "components/TextInput"
-import Authenticator from "lib/Authenticator"
 import { GetServerSideProps } from "next"
 import parseFormData from "lib/parseFormData"
-import { UserCredentials } from "lib/User"
-import { isSuccess } from "lib/AuthenticationResult"
-import config from "lib/config"
 
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
-  let invalidCredentials = false
+  let invalidEmail = false
 
   if (req.method === "POST") {
-    const credentials: UserCredentials = (await parseFormData(req)) as { emailAddress: string; password: string }
+    const formData = (await parseFormData(req)) as { emailAddress: string }
 
-    if (credentials.emailAddress && credentials.password) {
-      const result = await Authenticator.authenticate(credentials)
-
-      if (isSuccess(result)) {
-        const url = new URL(config.bichardRedirectURL)
-        url.searchParams.append(config.tokenQueryParamName, result)
-
-        return {
-          redirect: {
-            destination: url.href,
-            statusCode: 302
-          }
+    if (formData.emailAddress) {
+      return {
+        redirect: {
+          destination: "/check-email",
+          statusCode: 302
         }
       }
     }
 
-    invalidCredentials = true
+    invalidEmail = true
   }
 
   return {
-    props: { invalidCredentials }
+    props: { invalidEmail }
   }
 }
 
 interface Props {
-  invalidCredentials?: boolean
+  invalidEmail?: boolean
 }
 
-const Index = ({ invalidCredentials }: Props) => (
+const Index = ({ invalidEmail }: Props) => (
   <>
     <Head>
       <title>{"Sign in to Bichard 7"}</title>
@@ -54,15 +43,12 @@ const Index = ({ invalidCredentials }: Props) => (
       <GridRow>
         <h1 className="govuk-heading-xl">{"Sign in to Bichard 7"}</h1>
 
-        {invalidCredentials && (
-          <ErrorSummary title="Invalid credentials">
-            {"The supplied email address and password are not valid."}
-          </ErrorSummary>
+        {invalidEmail && (
+          <ErrorSummary title="Invalid email">{"The supplied email address is not valid."}</ErrorSummary>
         )}
 
         <form action="/" method="post">
           <TextInput id="email" name="emailAddress" label="Email address" type="email" />
-          <TextInput id="password" name="password" label="Password" type="password" />
           <Button>{"Sign in"}</Button>
         </form>
       </GridRow>
