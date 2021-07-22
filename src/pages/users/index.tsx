@@ -32,7 +32,7 @@ const tableHeaders: TableHeaders = [
   ["emailAddress", "Email address"]
 ]
 
-const users = ({ usersList }: Props) => (
+const Users = ({ usersList }: Props) => (
   <>
     <Head>
       <title>{"Users"}</title>
@@ -47,4 +47,4 @@ const users = ({ usersList }: Props) => (
   </>
 )
 
-export default users
+export default Users
