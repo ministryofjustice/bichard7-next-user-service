@@ -20,10 +20,12 @@
     "jsonwebtoken": "^8.5.1",
     "next": "^10.2.0",
     "pg": "^8.6.0",
+    "pg-promise": "^10.10.2",
     "qs": "^6.5.2",
     "raw-body": "^2.4.1",
     "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "react-dom": "^17.0.2",
+    "squel": "^5.13.0"
   },
   "devDependencies": {
     "@types/jest": "^26.0.23",

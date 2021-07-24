@@ -1,4 +1,4 @@
-interface DatabaseAuthenticatorConfig {
+export interface DatabaseAuthenticatorConfig {
   dbHost: string
   dbUser: string
   dbPassword: string
@@ -7,7 +7,7 @@ interface DatabaseAuthenticatorConfig {
   dbSsl: boolean
 }
 
-interface UserServiceConfig {
+export interface UserServiceConfig {
   authenticator: "DB" | "LOCAL"
   bichardRedirectURL: string
   databaseAuthenticator: DatabaseAuthenticatorConfig
