@@ -1,5 +1,10 @@
 describe("User", () => {
   describe("Display list of users", () => {
+    beforeEach(() => {
+      cy.task("db:teardown", null, { timeout: 30000 })
+      cy.task("db:seed", null, { timeout: 30000 })
+    })
+
     it("should display a list of user in tabular form", () => {
       cy.visit("/users")
 

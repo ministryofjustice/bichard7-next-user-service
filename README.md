@@ -169,3 +169,11 @@ And similarly, to run them and make any possible auto-corrections, use:
 ```shell
 $ npm run lint:fix
 ```
+
+## Database concerns
+
+We using the Postgres docker container defined in the `bichard7-next` git repository as our datastore. There are two main concerns to be aware of when developing with use of the database.
+1. We have a script in this repository which references the `bichard7-next` repository that attempts to build, run, perform any migrations and seed the Postgres instance. The script is referenced in the MakeFile and can be run at the command line with `$ make local-run-db`.
+2. If you wish to set the database to any state while developing / running cypress tests you can use the `cy.task('db:seed')` and `cy.task('db:teardown')` functions and add more if you wish to keep state stable while practicing TDD / BDD
+
+

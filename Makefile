@@ -6,5 +6,9 @@ build:
 run:
 	docker run -p 3443:443 user-service
 
+local-run-db:
+	./scripts/local-run-db.sh
+
 run-db:
-	docker run -p 3443:443 -e DB_AUTH=true -e DB_AUTH_HOST=host.docker.internal user-service
+	./scripts/run-db.sh
+	
