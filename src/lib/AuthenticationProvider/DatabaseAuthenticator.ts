@@ -11,9 +11,9 @@ export default class DatabaseAuthenticator extends AuthenticationProvider {
     const error = new Error("Invalid credentials")
 
     try {
-      const user = await db.tx(async (t) => {
-        const u = await this.fetchUser(t, credentials.emailAddress)
-        await this.updateUserLoginTimestamp(t, credentials.emailAddress)
+      const user = await db.tx(async (task: ITask<unknown>) => {
+        const u = await this.fetchUser(task, credentials.emailAddress)
+        await this.updateUserLoginTimestamp(task, credentials.emailAddress)
         return u
       })
 
@@ -25,7 +25,7 @@ export default class DatabaseAuthenticator extends AuthenticationProvider {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  private async fetchGroups(t: ITask<unknown>, emailAddress: string): Promise<UserGroup[]> {
+  private async fetchGroups(task: ITask<unknown>, emailAddress: string): Promise<UserGroup[]> {
     const query = `
       SELECT g.name
       FROM br7own.groups g
@@ -36,16 +36,16 @@ export default class DatabaseAuthenticator extends AuthenticationProvider {
       WHERE u.email = $1
     `
 
-    let groups = await t.any(query, [emailAddress])
+    let groups = await task.any(query, [emailAddress])
 
     // Remove the "_grp" suffix from group names
     // i.e. `B7Supervisor_grp` => `B7Supervisor`
-    groups = groups.map((group) => group.name.replace(/_grp$/, ""))
+    groups = groups.map((group: { name: string }) => group.name.replace(/_grp$/, ""))
 
     return groups
   }
 
-  private async fetchUser(t: ITask<unknown>, emailAddress: string): Promise<User & UserCredentials> {
+  private async fetchUser(task: ITask<unknown>, emailAddress: string): Promise<User & UserCredentials> {
     const query = `
       SELECT
         username,
@@ -64,7 +64,7 @@ export default class DatabaseAuthenticator extends AuthenticationProvider {
         AND last_login_attempt < NOW() - INTERVAL '$2 seconds'
     `
 
-    const user = await t.one(query, [emailAddress, config.incorrectDelay])
+    const user = await task.one(query, [emailAddress, config.incorrectDelay])
 
     return {
       username: user.username,
@@ -79,18 +79,18 @@ export default class DatabaseAuthenticator extends AuthenticationProvider {
       postCode: user.post_code,
       phoneNumber: user.phone_number,
       password: user.password,
-      groups: await this.fetchGroups(t, emailAddress)
+      groups: await this.fetchGroups(task, emailAddress)
     }
   }
 
   // eslint-disable-next-line class-methods-use-this
-  private async updateUserLoginTimestamp(t: ITask<unknown>, emailAddress: string) {
+  private async updateUserLoginTimestamp(task: ITask<unknown>, emailAddress: string) {
     const query = `
       UPDATE br7own.users
       SET last_login_attempt = NOW()
       WHERE email = $1
     `
 
-    await t.none(query, [emailAddress])
+    await task.none(query, [emailAddress])
   }
 }

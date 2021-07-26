@@ -17,7 +17,7 @@ export default class DatabaseUsers implements UsersProvider {
 
     const result = await db.any(query)
 
-    return result.map((row) => ({
+    return result.map((row: { [key: string]: string }) => ({
       username: row.username,
       forenames: row.forenames,
       surname: row.surname,
