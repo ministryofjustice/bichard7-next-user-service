@@ -16,7 +16,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
     if (formData.emailAddress) {
       return {
         redirect: {
-          destination: "/check-email",
+          destination: "/login/check-email",
           statusCode: 302
         }
       }
