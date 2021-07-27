@@ -47,7 +47,7 @@ const Index = ({ invalidEmail }: Props) => (
           <ErrorSummary title="Invalid email">{"The supplied email address is not valid."}</ErrorSummary>
         )}
 
-        <form action="/" method="post">
+        <form method="post">
           <TextInput id="email" name="emailAddress" label="Email address" type="email" />
           <Button>{"Sign in"}</Button>
         </form>

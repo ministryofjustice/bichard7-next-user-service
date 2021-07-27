@@ -79,7 +79,7 @@ const VerifyEmail = ({ emailAddress, invalidCredentials, invalidVerification }: 
         )}
 
         {!invalidVerification && (
-          <form action="/verify" method="post">
+          <form method="post">
             <p className="govuk-body">
               {"You are signing in as "}
               <b>{emailAddress}</b>
