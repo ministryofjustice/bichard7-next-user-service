@@ -5,59 +5,66 @@ import Layout from "components/Layout"
 import Head from "next/head"
 import TextInput from "components/TextInput"
 import { GetServerSideProps } from "next"
-import { UserCredentials } from "lib/User"
 import parseFormData from "lib/parseFormData"
-import { isSuccess } from "lib/AuthenticationResult"
+import { isError } from "lib/AuthenticationResult"
 import config from "lib/config"
 import Authenticator from "lib/Authenticator"
+import jwt from "jsonwebtoken"
 
 export const getServerSideProps: GetServerSideProps = async ({ req, query }) => {
-  let invalidCredentials = false
-  let invalidVerification = false
-
-  const { emailAddress, verificationCode } = query
-
   if (req.method === "POST") {
-    const credentials: UserCredentials = (await parseFormData(req)) as { emailAddress: string; password: string }
+    const { token, password } = (await parseFormData(req)) as { token: string; password: string }
+    if (!token || !password) {
+      return { props: { invalidCredentials: true } }
+    }
 
-    if (credentials.emailAddress && credentials.password) {
-      const result = await Authenticator.authenticate(credentials)
+    const { emailAddress } = jwt.verify(token, config.tokenSecret, { issuer: config.tokenIssuer }) as {
+      emailAddress: string
+    }
+    if (!emailAddress) {
+      return { props: { invalidCredentials: true } }
+    }
 
-      if (isSuccess(result)) {
-        const token = result
-        const url = new URL(config.bichardRedirectURL)
-        url.searchParams.append(config.tokenQueryParamName, token)
+    const result = await Authenticator.authenticate({ emailAddress, password })
+    if (isError(result)) {
+      return { props: { invalidCredentials: true } }
+    }
 
-        return {
-          redirect: {
-            destination: url.href,
-            statusCode: 302
-          }
-        }
+    const bichardToken = result
+    const url = new URL(config.bichardRedirectURL)
+    url.searchParams.append(config.tokenQueryParamName, bichardToken)
+
+    return {
+      redirect: {
+        destination: url.href,
+        statusCode: 302
       }
     }
-
-    invalidCredentials = true
-  } else if (!emailAddress || !verificationCode) {
-    invalidVerification = true
   }
 
-  return {
-    props: {
-      emailAddress,
-      invalidCredentials,
-      invalidVerification
-    }
+  const { token } = query as { token: string }
+  if (!token) {
+    return { props: { invalidVerification: true } }
   }
+
+  const { emailAddress } = jwt.verify(token, config.tokenSecret, { issuer: config.tokenIssuer }) as {
+    emailAddress: string
+  }
+  if (!emailAddress) {
+    return { props: { invalidVerification: true } }
+  }
+
+  return { props: { emailAddress, token } }
 }
 
 interface Props {
   emailAddress?: string
   invalidCredentials?: boolean
   invalidVerification?: boolean
+  token?: string
 }
 
-const VerifyEmail = ({ emailAddress, invalidCredentials, invalidVerification }: Props) => (
+const VerifyEmail = ({ emailAddress, invalidCredentials, invalidVerification, token }: Props) => (
   <>
     <Head>
       <title>{"Sign in to Bichard 7"}</title>
@@ -86,6 +93,7 @@ const VerifyEmail = ({ emailAddress, invalidCredentials, invalidVerification }: 
               {"."}
             </p>
             <TextInput id="password" name="password" label="Password" type="password" />
+            <input type="hidden" id="token" name="token" value={token} />
             <Button>{"Sign in"}</Button>
           </form>
         )}
