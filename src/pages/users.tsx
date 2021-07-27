@@ -3,17 +3,14 @@ import Head from "next/head"
 import Table, { TableHeaders, StringMap } from "components/Table"
 import { GetServerSideProps } from "next"
 
-import query, { objectAsProps } from "lib/query"
-import { getAllUsers } from "lib/query/queries"
-import { AllUsers, getAllUsers as tGetAllUsers } from "lib/query/transforms"
-import { GetAllUsers } from "lib/query/queries/users"
-import { QueryError, QueryType } from "lib/query/types"
+import objectToProps from "lib/objectToProps"
+import { getAllUsers, Users } from "lib/useCases"
+import getConnection from "lib/getConnection"
 
 export const getServerSideProps: GetServerSideProps = async () => {
-  const allUsers = await query<GetAllUsers, AllUsers>(QueryType.Any, [getAllUsers], tGetAllUsers, (e: QueryError) =>
-    console.error(e)
-  )
-  return objectAsProps({ allUsers })
+  const connection = getConnection()
+  const allUsers = await getAllUsers(connection)
+  return objectToProps<Users>({ allUsers })
 }
 
 interface Props {

@@ -1,6 +1,3 @@
-const seed = () => {
-  console.log("seed")
-  return null
-}
+const seed = () => {}
 
 module.exports = seed
