@@ -14,18 +14,22 @@ import { decodeEmailToken, EmailToken } from "lib/token/emailToken"
 export const getServerSideProps: GetServerSideProps = async ({ req, query }) => {
   if (req.method === "POST") {
     const { token, password } = (await parseFormData(req)) as { token: EmailToken; password: string }
-    if (!token || !password) {
-      return { props: { invalidCredentials: true } }
+    if (!token) {
+      return { props: { invalidVerification: true } }
     }
 
     const { emailAddress } = decodeEmailToken(token)
     if (!emailAddress) {
-      return { props: { invalidCredentials: true } }
+      return { props: { invalidVerification: true } }
+    }
+
+    if (!password) {
+      return { props: { invalidCredentials: true, emailAddress } }
     }
 
     const result = await Authenticator.authenticate({ emailAddress, password })
     if (isError(result)) {
-      return { props: { invalidCredentials: true } }
+      return { props: { invalidCredentials: true, emailAddress } }
     }
 
     const bichardToken = result
