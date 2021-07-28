@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@types/qs": "^6.9.6",
+    "crypto-secure-random-digit": "^1.0.9",
     "govuk-frontend": "^3.12.0",
     "jsonwebtoken": "^8.5.1",
     "next": "^10.2.0",

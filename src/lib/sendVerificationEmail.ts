@@ -1,8 +1,28 @@
+import { randomDigits } from "crypto-secure-random-digit"
 import config from "lib/config"
+import db from "lib/db"
 import jwt from "jsonwebtoken"
 
-export default function sendVerificationEmail(emailAddress: string) {
-  const payload = { emailAddress }
+function generateVerificationCode() {
+  return randomDigits(6).join("")
+}
+
+async function storeVerificationCode(emailAddress: string, verificationCode: string) {
+  const query = `
+    UPDATE br7own.users
+    SET email_verification_code = $1,
+      email_verification_generated = NOW()
+    WHERE email = $2
+  `
+
+  await db.none(query, [verificationCode, emailAddress])
+}
+
+function sendEmail(emailAddress: string, verificationCode: string) {
+  const payload = {
+    emailAddress,
+    verificationCode
+  }
 
   const options: jwt.SignOptions = {
     expiresIn: "3 hours",
@@ -21,4 +41,10 @@ export default function sendVerificationEmail(emailAddress: string) {
     Click here to log in to Bichard:
     ${url.href}
   `)
+}
+
+export default async function sendVerificationEmail(emailAddress: string) {
+  const verificationCode = generateVerificationCode()
+  await storeVerificationCode(emailAddress, verificationCode)
+  sendEmail(emailAddress, verificationCode)
 }
