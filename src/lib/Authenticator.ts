@@ -3,7 +3,7 @@ import { AuthenticationResult } from "lib/AuthenticationResult"
 import config from "lib/config"
 import db from "lib/db"
 import { compare } from "lib/shiro"
-import { Token, TokenPayload } from "lib/Token"
+import { BichardToken, BichardTokenPayload } from "lib/token/bichardToken"
 import { User, UserCredentials, UserGroup } from "lib/User"
 import type { ITask } from "pg-promise"
 
@@ -93,8 +93,8 @@ export default class Authenticator {
     await task.none(query, [emailAddress])
   }
 
-  private static generateToken(user: User): Token {
-    const payload: TokenPayload = {
+  private static generateToken(user: User): BichardToken {
+    const payload: BichardTokenPayload = {
       username: user.username,
       exclusionList: user.exclusionList,
       inclusionList: user.inclusionList,

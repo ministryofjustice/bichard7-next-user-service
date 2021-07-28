@@ -1,8 +1,6 @@
 import { randomDigits } from "crypto-secure-random-digit"
-import config from "lib/config"
 import db from "lib/db"
-import jwt from "jsonwebtoken"
-import { EmailTokenPayload, generateEmailToken } from "./token"
+import { EmailTokenPayload, generateEmailToken } from "lib/token/emailToken"
 
 function generateVerificationCode() {
   return randomDigits(6).join("")
