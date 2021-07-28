@@ -6,8 +6,7 @@ import Head from "next/head"
 import TextInput from "components/TextInput"
 import { GetServerSideProps } from "next"
 import parseFormData from "lib/parseFormData"
-import jwt from "jsonwebtoken"
-import config from "lib/config"
+import sendVerificationEmail from "lib/sendVerificationEmail"
 
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   let invalidEmail = false
@@ -16,16 +15,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
     const { emailAddress } = (await parseFormData(req)) as { emailAddress: string }
 
     if (emailAddress) {
-      const payload = { emailAddress }
-      const options: jwt.SignOptions = {
-        expiresIn: "3 hours",
-        issuer: config.tokenIssuer
-      }
-
-      const token = jwt.sign(payload, config.tokenSecret, options)
-      const url = new URL("/login/verify", `http://${req.headers.host}`)
-      url.searchParams.append("token", token)
-      console.log(`Click here to log in to bichard:\n${url.href}`)
+      sendVerificationEmail(emailAddress)
 
       return {
         redirect: {
