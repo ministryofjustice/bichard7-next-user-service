@@ -1,4 +1,4 @@
-import { Token } from "lib/Token"
+import { Token } from "lib/token"
 
 export type AuthenticationResult = Token | Error
 

@@ -2,7 +2,7 @@ import { randomDigits } from "crypto-secure-random-digit"
 import config from "lib/config"
 import db from "lib/db"
 import jwt from "jsonwebtoken"
-import { EmailTokenPayload } from "./Token"
+import { EmailTokenPayload, generateEmailToken } from "./token"
 
 function generateVerificationCode() {
   return randomDigits(6).join("")
@@ -25,13 +25,7 @@ function sendEmail(emailAddress: string, verificationCode: string) {
     verificationCode
   }
 
-  const options: jwt.SignOptions = {
-    expiresIn: "3 hours",
-    issuer: config.tokenIssuer
-  }
-
-  const token = jwt.sign(payload, config.tokenSecret, options)
-
+  const token = generateEmailToken(payload)
   const url = new URL("/login/verify", "http://localhost:3000")
   url.searchParams.append("token", token)
 
