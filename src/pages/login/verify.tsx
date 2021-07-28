@@ -9,18 +9,16 @@ import parseFormData from "lib/parseFormData"
 import { isError } from "lib/AuthenticationResult"
 import config from "lib/config"
 import Authenticator from "lib/Authenticator"
-import jwt from "jsonwebtoken"
+import { decodeEmailToken, EmailToken } from "lib/token/emailToken"
 
 export const getServerSideProps: GetServerSideProps = async ({ req, query }) => {
   if (req.method === "POST") {
-    const { token, password } = (await parseFormData(req)) as { token: string; password: string }
+    const { token, password } = (await parseFormData(req)) as { token: EmailToken; password: string }
     if (!token || !password) {
       return { props: { invalidCredentials: true } }
     }
 
-    const { emailAddress } = jwt.verify(token, config.tokenSecret, { issuer: config.tokenIssuer }) as {
-      emailAddress: string
-    }
+    const { emailAddress } = decodeEmailToken(token)
     if (!emailAddress) {
       return { props: { invalidCredentials: true } }
     }
@@ -42,14 +40,12 @@ export const getServerSideProps: GetServerSideProps = async ({ req, query }) => 
     }
   }
 
-  const { token } = query as { token: string }
+  const { token } = query as { token: EmailToken }
   if (!token) {
     return { props: { invalidVerification: true } }
   }
 
-  const { emailAddress } = jwt.verify(token, config.tokenSecret, { issuer: config.tokenIssuer }) as {
-    emailAddress: string
-  }
+  const { emailAddress } = decodeEmailToken(token)
   if (!emailAddress) {
     return { props: { invalidVerification: true } }
   }
