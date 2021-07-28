@@ -2,6 +2,7 @@ import { randomDigits } from "crypto-secure-random-digit"
 import config from "lib/config"
 import db from "lib/db"
 import jwt from "jsonwebtoken"
+import { EmailTokenPayload } from "./Token"
 
 function generateVerificationCode() {
   return randomDigits(6).join("")
@@ -19,7 +20,7 @@ async function storeVerificationCode(emailAddress: string, verificationCode: str
 }
 
 function sendEmail(emailAddress: string, verificationCode: string) {
-  const payload = {
+  const payload: EmailTokenPayload = {
     emailAddress,
     verificationCode
   }
