@@ -2,24 +2,21 @@ import Layout from "components/Layout"
 import Head from "next/head"
 import Table, { TableHeaders, StringMap } from "components/Table"
 import { GetServerSideProps } from "next"
-import UsersProvider from "../lib/Users"
-import { isSuccess } from "../lib/UsersResult"
+import { getAllUsers } from "useCases"
+import getConnection from "lib/getConnection"
 
 export const getServerSideProps: GetServerSideProps = async () => {
-  let usersList = null
-  const result = await UsersProvider.list()
-
-  if (isSuccess(result)) {
-    usersList = result
-  }
-
+  const connection = getConnection()
+  const allUsers = await getAllUsers(connection, (e: Error) => console.error(e))
   return {
-    props: { usersList }
+    props: {
+      allUsers
+    }
   }
 }
 
 interface Props {
-  usersList: StringMap[] | null
+  allUsers: StringMap[] | null
 }
 
 const tableHeaders: TableHeaders = [
@@ -30,12 +27,12 @@ const tableHeaders: TableHeaders = [
   ["emailAddress", "Email address"]
 ]
 
-const users = ({ usersList }: Props) => (
+const users = ({ allUsers }: Props) => (
   <>
     <Head>
       <title>{"Users"}</title>
     </Head>
-    <Layout>{usersList && <Table tableHeaders={tableHeaders} tableTitle="Users" tableData={usersList} />}</Layout>
+    <Layout>{allUsers && <Table tableHeaders={tableHeaders} tableTitle="Users" tableData={allUsers} />}</Layout>
   </>
 )
 
