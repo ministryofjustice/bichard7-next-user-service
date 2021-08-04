@@ -38,7 +38,7 @@ jobs:
           root: .
           paths: .next
 
-  test:
+  unit_test:
     docker:
       - image: cimg/node:15.9.0
 
@@ -65,6 +65,29 @@ jobs:
           name: Run unit tests
           command: npm run test:unit
 
+  ui_test:
+    docker:
+      - image: cimg/node:15.9.0
+
+    working_directory: ~
+
+    steps:
+      - checkout
+
+      # Use the persisted build output, negating the need to rebuild now
+      - attach_workspace:
+          at: .
+
+      # Load node_modules from the cache if they haven't changed
+      - restore_cache:
+          keys:
+           - v1-npm-deps-{{ checksum "package-lock.json" }}
+           - v1-npm-deps-
+
+      - run:
+          name: Install node dependencies
+          command: npm install
+
       - run:
           name: Install Cypress
           command: ./.circleci/scripts/install-cypress.sh
@@ -83,6 +106,9 @@ workflows:
   build-and-test:
     jobs:
       - build
-      - test:
+      - ui_test:
+          requires:
+            - build
+      - unit_test:
           requires:
             - build
