@@ -1,5 +1,21 @@
 version: 2.1
 
+commands:
+  checkout_and_install:
+    description: Check out the repo and install the node dependencies
+    steps:
+      - checkout
+
+      # Load node_modules from the cache if they haven't changed
+      - restore_cache:
+          keys:
+            - v1-npm-deps-{{ checksum "package-lock.json" }}
+            - v1-npm-deps-
+
+      - run:
+          name: Install node dependencies
+          command: npm install
+
 jobs:
   build:
     docker:
@@ -8,17 +24,7 @@ jobs:
     working_directory: ~
 
     steps:
-      - checkout
-
-      # Load node_modules from the cache if they haven't changed
-      - restore_cache:
-          keys:
-           - v1-npm-deps-{{ checksum "package-lock.json" }}
-           - v1-npm-deps-
-
-      - run:
-          name: Install node dependencies
-          command: npm install
+      - checkout_and_install
 
       # Store node_modules in cache to speed up future installs
       - save_cache:
@@ -45,21 +51,11 @@ jobs:
     working_directory: ~
 
     steps:
-      - checkout
+      - checkout_and_install
 
       # Use the persisted build output, negating the need to rebuild now
       - attach_workspace:
           at: .
-
-      # Load node_modules from the cache if they haven't changed
-      - restore_cache:
-          keys:
-           - v1-npm-deps-{{ checksum "package-lock.json" }}
-           - v1-npm-deps-
-
-      - run:
-          name: Install node dependencies
-          command: npm install
 
       - run:
           name: Run unit tests
@@ -72,21 +68,11 @@ jobs:
     working_directory: ~
 
     steps:
-      - checkout
+      - checkout_and_install
 
       # Use the persisted build output, negating the need to rebuild now
       - attach_workspace:
           at: .
-
-      # Load node_modules from the cache if they haven't changed
-      - restore_cache:
-          keys:
-           - v1-npm-deps-{{ checksum "package-lock.json" }}
-           - v1-npm-deps-
-
-      - run:
-          name: Install node dependencies
-          command: npm install
 
       - run:
           name: Install Cypress
