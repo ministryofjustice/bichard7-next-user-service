@@ -71,7 +71,7 @@ The user-service will validate login attempts against the Bichard Postgres datab
    $ cd /path/to/bichard7-next-user-service
    $ docker run \
       -p 3443:443 \
-      -e DB_HOST=host.docker.internal
+      -e DB_HOST=172.17.0.1
 
    # Or, a shortcut to run the above:
    $ make run
