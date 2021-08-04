@@ -5,13 +5,11 @@ commands:
     description: Check out the repo and install the node dependencies
     steps:
       - checkout
-
-      # Load node_modules from the cache if they haven't changed
       - restore_cache:
+          name: Load node_modules from the cache if they haven't changed
           keys:
             - v1-npm-deps-{{ checksum "package-lock.json" }}
             - v1-npm-deps-
-
       - run:
           name: Install node dependencies
           command: npm install
@@ -20,26 +18,19 @@ jobs:
   build:
     docker:
       - image: cimg/node:15.9.0
-
     working_directory: ~
-
     steps:
       - checkout_and_install
-
-      # Store node_modules in cache to speed up future installs
       - save_cache:
+          name: Save node_modules cache
           key: v1-npm-deps-{{ checksum "package-lock.json" }}
           paths: node_modules
-
       - run:
           name: Check the code for linting errors
           command: npm run lint
-
       - run:
           name: Build the user service application
           command: npm run build
-
-      # Persist the build output to the workspace to reduce build time later
       - persist_to_workspace:
           root: .
           paths: .next
@@ -47,16 +38,11 @@ jobs:
   unit_test:
     docker:
       - image: cimg/node:15.9.0
-
     working_directory: ~
-
     steps:
       - checkout_and_install
-
-      # Use the persisted build output, negating the need to rebuild now
       - attach_workspace:
           at: .
-
       - run:
           name: Run unit tests
           command: npm run test:unit
@@ -64,24 +50,17 @@ jobs:
   ui_test:
     docker:
       - image: cimg/node:15.9.0
-
     working_directory: ~
-
     steps:
       - checkout_and_install
-
-      # Use the persisted build output, negating the need to rebuild now
       - attach_workspace:
           at: .
-
       - run:
           name: Install Cypress
           command: ./.circleci/scripts/install-cypress.sh
-
       - run:
           name: Run UI tests
           command: npm run test:ui
-
       - store_artifacts:
           path: ./cypress/videos
       - store_artifacts:
