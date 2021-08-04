@@ -1,15 +1,15 @@
-interface DatabaseAuthenticatorConfig {
-  dbHost: string
-  dbUser: string
-  dbPassword: string
-  dbDatabase: string
-  dbPort: number
-  dbSsl: boolean
+interface DatabaseConfig {
+  host: string
+  user: string
+  password: string
+  database: string
+  port: number
+  ssl: boolean
 }
 
 interface UserServiceConfig {
   bichardRedirectURL: string
-  databaseAuthenticator: DatabaseAuthenticatorConfig
+  database: DatabaseConfig
   incorrectDelay: number
   tokenExpiresIn: string
   tokenIssuer: string
@@ -24,13 +24,13 @@ const config: UserServiceConfig = {
   tokenIssuer: process.env.TOKEN_ISSUER ?? "Bichard",
   tokenQueryParamName: process.env.TOKEN_QUERY_PARAM_NAME ?? "token",
   tokenSecret: process.env.TOKEN_SECRET ?? "OliverTwist",
-  databaseAuthenticator: {
-    dbHost: process.env.DB_AUTH_HOST ?? "localhost",
-    dbUser: process.env.DB_AUTH_USER ?? "bichard",
-    dbPassword: process.env.DB_AUTH_PASSWORD ?? "password",
-    dbDatabase: process.env.DB_AUTH_DATABASE ?? "bichard",
-    dbPort: parseInt(process.env.DB_AUTH_PORT ?? "5432", 10),
-    dbSsl: process.env.DB_AUTH_SSL === "true"
+  database: {
+    host: process.env.DB_HOST ?? process.env.DB_AUTH_HOST ?? "localhost",
+    user: process.env.DB_USER ?? process.env.DB_AUTH_USER ?? "bichard",
+    password: process.env.DB_PASSWORD ?? process.env.DB_AUTH_PASSWORD ?? "password",
+    database: process.env.DB_DATABASE ?? process.env.DB_AUTH_DATABASE ?? "bichard",
+    port: parseInt(process.env.DB_PORT ?? process.env.DB_AUTH_PORT ?? "5432", 10),
+    ssl: (process.env.DB_SSL ?? process.env.DB_AUTH_SSL) === "true"
   }
 }
 
