@@ -34,7 +34,6 @@ The application makes use of the following environment variables to permit confi
 | Variable                  | Default                                            | Description                                                                                                                                      |
 |---------------------------|----------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------|
 | `$BICHARD_REDIRECT_URL`   | `"https://localhost:9443/bichard-ui/Authenticate"` | The URL to redirect to with a token as a GET parameter when authentication is successful                                                         |
-| `$DB_AUTH`                | `false`                                            | Whether to validate users against the database (true) or the static local list of users (false)                                                  |
 | `$DB_AUTH_HOST`           | `"localhost"`                                      | The hostname of the database server                                                                                                              |
 | `$DB_AUTH_USER`           | `"bichard"`                                        | The username to use when connecting to the database                                                                                              |
 | `$DB_AUTH_PASSWORD`       | `"password"`                                       | The password to use when connecting to the database                                                                                              |
@@ -57,11 +56,9 @@ $ docker run \
    user-service
 ```
 
-### Authentication Mechanism
+### Database
 
-By default, the user-service will validate login attempts against a [static list of users](/src/data/users.ts).
-
-In order to validate users against a local instance of the Bichard Postgres database, you need to:
+The user-service will validate login attempts against the Bichard Postgres database. This means you'll need to:
 
 1. Spin up a local instance of the database (if you don't already have one running):
    ```shell
@@ -74,11 +71,10 @@ In order to validate users against a local instance of the Bichard Postgres data
    $ cd /path/to/bichard7-next-user-service
    $ docker run \
       -p 3443:443 \
-      -e DB_AUTH=true \
       -e DB_AUTH_HOST=host.docker.internal
 
    # Or, a shortcut to run the above:
-   $ make run-db
+   $ make run
    ```
 
 To customise other database connection parameters, see the `$DB_AUTH_*` parameters in [the table above](#Configuration). The other database configuration defaults should be sufficient for connceting to a local instance of the database.

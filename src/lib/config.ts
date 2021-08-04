@@ -8,7 +8,6 @@ interface DatabaseAuthenticatorConfig {
 }
 
 interface UserServiceConfig {
-  authenticator: "DB" | "LOCAL"
   bichardRedirectURL: string
   databaseAuthenticator: DatabaseAuthenticatorConfig
   incorrectDelay: number
@@ -19,7 +18,6 @@ interface UserServiceConfig {
 }
 
 const config: UserServiceConfig = {
-  authenticator: process.env.DB_AUTH === "true" ? "DB" : "LOCAL",
   bichardRedirectURL: process.env.BICHARD_REDIRECT_URL ?? "https://localhost:9443/bichard-ui/Authenticate",
   incorrectDelay: parseInt(process.env.INCORRECT_DELAY ?? "10", 10),
   tokenExpiresIn: process.env.TOKEN_EXPIRES_IN ?? "5 seconds",

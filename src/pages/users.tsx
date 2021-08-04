@@ -2,12 +2,12 @@ import Layout from "components/Layout"
 import Head from "next/head"
 import Table, { TableHeaders, StringMap } from "components/Table"
 import { GetServerSideProps } from "next"
-import UsersProvider from "../lib/Users"
+import Users from "../lib/Users"
 import { isSuccess } from "../lib/UsersResult"
 
 export const getServerSideProps: GetServerSideProps = async () => {
   let usersList = null
-  const result = await UsersProvider.list()
+  const result = await Users.list()
 
   if (isSuccess(result)) {
     usersList = result

@@ -1,30 +1,26 @@
-import LocalUsers from "lib/UsersProvider/LocalUsers"
-import DatabaseUsers from "lib/UsersProvider/DatabaseUsers"
-import UsersProvider from "lib/UsersProvider"
 import { ListUsersResult } from "lib/UsersResult"
-import config from "./config"
+import db from "lib/db"
 
 export default class Users {
-  private static provider?: UsersProvider
-
-  public static getProvider(): UsersProvider {
-    if (!Users.provider) {
-      if (config.authenticator === "DB") {
-        Users.provider = new DatabaseUsers()
-      } else {
-        Users.provider = new LocalUsers()
-      }
-    }
-
-    return Users.provider
-  }
-
-  public static clearProvider() {
-    Users.provider = undefined
-  }
-
   public static async list(): Promise<ListUsersResult> {
-    const result = await Users.getProvider().list()
-    return result
+    const query = `
+      SELECT
+        username,
+        forenames,
+        surname,
+        phone_number,
+        email
+      FROM br7own.users
+    `
+
+    const result = await db.any(query)
+
+    return result.map((row: { [key: string]: string }) => ({
+      username: row.username,
+      forenames: row.forenames,
+      surname: row.surname,
+      phoneNumber: row.phone_number,
+      emailAddress: row.email
+    })) as unknown as ListUsersResult
   }
 }
