@@ -12,49 +12,44 @@ import Authenticator from "lib/Authenticator"
 import { decodeEmailToken, EmailToken } from "lib/token/emailToken"
 
 export const getServerSideProps: GetServerSideProps = async ({ req, query }) => {
-  if (req.method === "POST") {
-    const { token, password } = (await parseFormData(req)) as { token: EmailToken; password: string }
-    if (!token) {
-      return { props: { invalidVerification: true } }
-    }
+  try {
+    if (req.method === "POST") {
+      const { token, password } = (await parseFormData(req)) as { token: EmailToken; password: string }
+      const { emailAddress, verificationCode } = decodeEmailToken(token)
+      const result = await Authenticator.authenticate({ emailAddress, password, verificationCode })
 
-    const { emailAddress } = decodeEmailToken(token)
-    if (!emailAddress) {
-      return { props: { invalidVerification: true } }
-    }
+      if (isError(result)) {
+        return {
+          props: {
+            invalidCredentials: true,
+            emailAddress,
+            token
+          }
+        }
+      }
 
-    if (!password) {
-      return { props: { invalidCredentials: true, emailAddress } }
-    }
+      const url = new URL(config.bichardRedirectURL)
+      url.searchParams.append(config.tokenQueryParamName, result)
 
-    const result = await Authenticator.authenticate({ emailAddress, password })
-    if (isError(result)) {
-      return { props: { invalidCredentials: true, emailAddress } }
-    }
-
-    const bichardToken = result
-    const url = new URL(config.bichardRedirectURL)
-    url.searchParams.append(config.tokenQueryParamName, bichardToken)
-
-    return {
-      redirect: {
-        destination: url.href,
-        statusCode: 302
+      return {
+        redirect: {
+          destination: url.href,
+          statusCode: 302
+        }
       }
     }
-  }
 
-  const { token } = query as { token: EmailToken }
-  if (!token) {
+    const { token } = query as { token: EmailToken }
+    const { emailAddress } = decodeEmailToken(token)
+
+    if (!token || !emailAddress) {
+      throw new Error()
+    }
+
+    return { props: { emailAddress, token } }
+  } catch {
     return { props: { invalidVerification: true } }
   }
-
-  const { emailAddress } = decodeEmailToken(token)
-  if (!emailAddress) {
-    return { props: { invalidVerification: true } }
-  }
-
-  return { props: { emailAddress, token } }
 }
 
 interface Props {

@@ -1,28 +1,31 @@
-import jwt from "jsonwebtoken"
 import { AuthenticationResult } from "lib/AuthenticationResult"
 import config from "lib/config"
 import db from "lib/db"
 import { compare } from "lib/shiro"
-import { BichardToken, BichardTokenPayload } from "lib/token/bichardToken"
+import { generateBichardToken } from "lib/token/bichardToken"
 import { User, UserCredentials, UserGroup } from "lib/User"
 import type { ITask } from "pg-promise"
 
 export default class Authenticator {
   public static async authenticate(credentials: UserCredentials): Promise<AuthenticationResult> {
-    const error = new Error("Invalid credentials")
+    if (!credentials.emailAddress || !credentials.password || !credentials.verificationCode) {
+      return new Error()
+    }
 
+    let user: User & UserCredentials
     try {
-      const user = await db.tx(async (task: ITask<unknown>) => {
+      user = await db.tx(async (task: ITask<unknown>) => {
         const u = await Authenticator.fetchUser(task, credentials.emailAddress)
         await Authenticator.updateUserLoginTimestamp(task, credentials.emailAddress)
         return u
       })
-
-      const match = await compare(credentials.password, user.password)
-      return match ? Authenticator.generateToken(user) : error
     } catch {
-      return error
+      return new Error()
     }
+
+    const passwordMatch = await compare(credentials.password, user.password)
+    const verificationMatch = credentials.verificationCode === user.verificationCode
+    return passwordMatch && verificationMatch ? generateBichardToken(user) : new Error()
   }
 
   private static async fetchGroups(task: ITask<unknown>, emailAddress: string): Promise<UserGroup[]> {
@@ -58,13 +61,15 @@ export default class Authenticator {
         postal_address,
         post_code,
         phone_number,
-        password
+        password,
+        email_verification_code
       FROM br7own.users
       WHERE email = $1
         AND last_login_attempt < NOW() - INTERVAL '$2 seconds'
+        AND email_verification_generated > NOW() - INTERVAL '$3 minutes'
     `
 
-    const user = await task.one(query, [emailAddress, config.incorrectDelay])
+    const user = await task.one(query, [emailAddress, config.incorrectDelay, 30])
 
     return {
       username: user.username,
@@ -79,7 +84,8 @@ export default class Authenticator {
       postCode: user.post_code,
       phoneNumber: user.phone_number,
       password: user.password,
-      groups: await Authenticator.fetchGroups(task, emailAddress)
+      groups: await Authenticator.fetchGroups(task, emailAddress),
+      verificationCode: user.email_verification_code
     }
   }
 
@@ -91,24 +97,5 @@ export default class Authenticator {
     `
 
     await task.none(query, [emailAddress])
-  }
-
-  private static generateToken(user: User): BichardToken {
-    const payload: BichardTokenPayload = {
-      username: user.username,
-      exclusionList: user.exclusionList,
-      inclusionList: user.inclusionList,
-      forenames: user.forenames,
-      surname: user.surname,
-      emailAddress: user.emailAddress,
-      groups: user.groups
-    }
-
-    const options: jwt.SignOptions = {
-      expiresIn: config.tokenExpiresIn,
-      issuer: config.tokenIssuer
-    }
-
-    return jwt.sign(payload, config.tokenSecret, options)
   }
 }
