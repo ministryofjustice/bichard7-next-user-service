@@ -1,6 +1,6 @@
 # Bichard7 vNext: User Service
 
-A Next.js application to provide user authentication within the new Bichard7 architecture.
+A Next.js application to provide user authentication and user management within the new Bichard7 architecture.
 
 ## Building
 
@@ -16,7 +16,9 @@ $ aws-vault exec bichard7-sandbox-shared -- make build
 
 ## Running
 
-Once you've built the Docker image (see [above](#building)), you run the Docker image as usual:
+In order to run the user-service, you'll also need to ensure the Bichard PostgreSQL database is running locally (see [Running the database](#running-the-database) below).
+
+Once you've built the Docker image (see [Building](#building) above) and have the Bichard PostgreSQL database running, you run the Docker image as usual:
 
 ```shell
 $ docker run -p 3443:443 user-service
@@ -26,6 +28,15 @@ $ make run
 ```
 
 Either of these commands will expose the service at https://localhost:3443/.
+
+### Running the database
+
+To spin up a local instance of the database, you can use the `run-pg` make target in the [main bichard repo](https://github.com/ministryofjustice/bichard7-next):
+
+```shell
+$ cd /path/to/bichard7-next
+$ make run-pg
+```
 
 ## Configuration
 
@@ -56,26 +67,22 @@ $ docker run \
    user-service
 ```
 
-### Database
+### Configuring the database connection
 
-The user-service will validate login attempts against the Bichard Postgres database. This means you'll need to:
+The user-service requires a connection to the Bichard PostgreSQL database. The defaults for the database connection parameters are set up to work when the user-service is running locally (see [Running the app locally](#running-the-app-locally) below).
 
-1. Spin up a local instance of the database (if you don't already have one running):
-   ```shell
-   $ cd /path/to/bichard7-next
-   $ make run-pg
-   ```
+However, this means that if you're running the user-service inside Docker, you'll need to pass through the `$DB_HOST` environment variable to configure the database connection:
 
-1. Pass through the environment variables to turn on database-backed auth, and to specify the docker host as the database host:
-   ```shell
-   $ cd /path/to/bichard7-next-user-service
-   $ docker run \
-      -p 3443:443 \
-      -e DB_HOST=172.17.0.1
+```shell
+$ cd /path/to/bichard7-next-user-service
+$ docker run \
+   -p 3443:443 \
+   -e DB_HOST=172.17.0.1 \
+   user-service
 
-   # Or, a shortcut to run the above:
-   $ make run
-   ```
+# Or, a shortcut to run the above:
+$ make run
+```
 
 To customise other database connection parameters, see the `$DB_*` parameters in [the table above](#Configuration). The other database configuration defaults should be sufficient for connceting to a local instance of the database.
 
