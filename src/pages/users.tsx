@@ -1,4 +1,5 @@
 import Layout from "components/Layout"
+import Button from "components/Button"
 import Head from "next/head"
 import Table, { TableHeaders, StringMap } from "components/Table"
 import { GetServerSideProps } from "next"
@@ -36,6 +37,10 @@ const users = ({ usersList }: Props) => (
       <title>{"Users"}</title>
     </Head>
     <Layout>{usersList && <Table tableHeaders={tableHeaders} tableTitle="Users" tableData={usersList} />}</Layout>
+    <Layout>
+      <Button>{"Add user"}</Button>
+      {usersList && <Table tableHeaders={tableHeaders} tableTitle="Users" tableData={usersList} />}
+    </Layout>
   </>
 )
 
