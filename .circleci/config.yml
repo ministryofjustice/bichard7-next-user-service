@@ -1,5 +1,33 @@
 version: 2.1
 
+commands:
+    checkout_and_install:
+        description: Check out the repo and install the node dependencies
+        steps:
+        - checkout
+        - restore_cache:
+            name: Load node_modules from the cache if they haven't changed
+            keys:
+                - v1-npm-deps-{{ checksum "package-lock.json" }}
+                - v1-npm-deps-
+        - run:
+            name: Install node dependencies
+            command: npm install
+
+    run_bichard_database:
+        description: Check out the b7-next repo and spin up the postgres database
+        steps:
+        - add_ssh_keys:
+            fingerprints:
+                - 07:76:0b:c1:80:51:7f:ec:3f:c8:7d:1c:91:d4:60:f5
+        - run:
+            name: Clone Bichard7 Next
+            command: git clone --depth 1 git@github.com:ministryofjustice/bichard7-next.git ~/bichard7-next
+        - run:
+            name: Spin up PostgreSQL database
+            working_directory: ~/bichard7-next
+            command: make run-pg
+
 jobs:
   build:
     docker:
@@ -38,41 +66,34 @@ jobs:
           root: .
           paths: .next
 
-  test:
+  unit_test:
     docker:
-      - image: cimg/node:15.9.0
-
+      - image: cimg/node:16.3.0
     working_directory: ~
-
     steps:
-      - checkout
-
-      # Use the persisted build output, negating the need to rebuild now
+      - checkout_and_install
       - attach_workspace:
           at: .
-
-      # Load node_modules from the cache if they haven't changed
-      - restore_cache:
-          keys:
-           - v1-npm-deps-{{ checksum "package-lock.json" }}
-           - v1-npm-deps-
-
-      - run:
-          name: Install node dependencies
-          command: npm install
-
       - run:
           name: Run unit tests
           command: npm run test:unit
 
+  ui_integration_test:
+    machine:
+      image: ubuntu-2004:202104-01
+      docker_layer_caching: true
+    working_directory: ~
+    steps:
+      - checkout_and_install
+      - attach_workspace:
+          at: .
       - run:
           name: Install Cypress
           command: ./.circleci/scripts/install-cypress.sh
-
+      - run_bichard_database
       - run:
           name: Run UI tests
           command: npm run test:ui
-
       - store_artifacts:
           path: ./cypress/videos
       - store_artifacts:
@@ -83,6 +104,9 @@ workflows:
   build-and-test:
     jobs:
       - build
-      - test:
+      - ui_integration_test:
+          requires:
+            - build
+      - unit_test:
           requires:
             - build

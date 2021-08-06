@@ -14,20 +14,26 @@ describe("Logging In", () => {
         cy.get("input[type=password").should("be.visible")
       })
 
-      it("should redirect to Bichard7 with a token when valid credentials are entered", () => {
-        cy.request({
-          method: "POST",
-          url: "/",
-          form: true,
-          body: {
-            emailAddress: "bichard01@example.com",
-            password: "password"
-          },
-          followRedirect: false
-        }).then((response) => {
-          const { location } = response.headers
-          expect(location).to.match(/^https:\/\/localhost:9443\/bichard-ui\/Authenticate/)
-          expect(location).to.match(/\?token=[A-Za-z0-9_.]+/)
+      describe("Log in request", () => {
+        beforeEach(async () => {
+          await cy.task("db:seed:users")
+        })
+
+        it("should redirect to Bichard7 with a token when valid credentials are entered", () => {
+          cy.request({
+            method: "POST",
+            url: "/",
+            form: true,
+            body: {
+              emailAddress: "bichard01@example.com",
+              password: "password"
+            },
+            followRedirect: false
+          }).then((response) => {
+            const { location } = response.headers
+            expect(location).to.match(/^https:\/\/localhost:9443\/bichard-ui\/Authenticate/)
+            expect(location).to.match(/\?token=[A-Za-z0-9_.]+/)
+          })
         })
       })
 
