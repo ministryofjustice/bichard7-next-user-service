@@ -63,7 +63,7 @@
       }
     },
     {
-      "files": ["**/_*.{ts,tsx}", "**/index.{ts,tsx}", "*.config.{js,ts}"],
+      "files": ["**/_*.{ts,tsx}", "src/pages/**/*.{ts,tsx}", "*.config.{js,ts}"],
       "rules": {
         "filenames/match-exported": "off"
       }
