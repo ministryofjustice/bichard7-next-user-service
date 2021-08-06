@@ -1,3 +1,8 @@
+import { ReactNode } from "react"
+import KeyValuePair from "types/KeyValuePair"
+import getColumnComponents from "./getColumnComponents"
+import TableColumn from "./TableColumn"
+
 export type TableHeader = [string, string]
 
 export type TableHeaders = Array<TableHeader>
@@ -5,14 +10,13 @@ export type TableHeaders = Array<TableHeader>
 export type Props = {
   tableHeaders: TableHeaders
   tableTitle: string
-  tableData: StringMap[]
+  tableData: KeyValuePair<string, string>[]
+  children?: ReactNode
 }
 
-export type StringMap = {
-  [key: string]: string
-}
+const Table = ({ tableTitle, tableHeaders, tableData, children }: Props) => {
+  const columnComponents = getColumnComponents(children)
 
-const Table = ({ tableTitle, tableHeaders, tableData }: Props) => {
   return (
     <table className="govuk-table">
       <caption className="govuk-table__caption govuk-table__caption--m">{tableTitle}</caption>
@@ -28,11 +32,10 @@ const Table = ({ tableTitle, tableHeaders, tableData }: Props) => {
       <tbody className="govuk-table__body">
         {tableData.map((row: StringMap) => (
           <tr key={Object.values(row).join("")} className="govuk-table__row">
-            {tableHeaders.map((header: TableHeader) => (
-              <td key={header[0]} className="govuk-table__cell">
-                {row[header[0]]}
-              </td>
-            ))}
+            {tableHeaders.map((header: TableHeader) => {
+              const field = header[0]
+              return <TableColumn key={field} component={columnComponents[field]} item={row} field={field} />
+            })}
           </tr>
         ))}
       </tbody>
