@@ -69,7 +69,7 @@ export default class Authenticator {
         AND email_verification_generated > NOW() - INTERVAL '$3 minutes'
     `
 
-    const user = await task.one(query, [emailAddress, config.incorrectDelay, 30])
+    const user = await task.one(query, [emailAddress, config.incorrectDelay, config.emailVerificationExpiresIn])
 
     return {
       username: user.username,

@@ -42,20 +42,21 @@ $ make run-pg
 
 The application makes use of the following environment variables to permit configuration:
 
-| Variable                  | Default                                            | Description                                                                                |
-|---------------------------|----------------------------------------------------|--------------------------------------------------------------------------------------------|
-| `$BICHARD_REDIRECT_URL`   | `"https://localhost:9443/bichard-ui/Authenticate"` | The URL to redirect to with a token as a GET parameter when authentication is successful   |
-| `$DB_HOST`                | `"localhost"`                                      | The hostname of the database server                                                        |
-| `$DB_USER`                | `"bichard"`                                        | The username to use when connecting to the database                                        |
-| `$DB_PASSWORD`            | `"password"`                                       | The password to use when connecting to the database                                        |
-| `$DB_DATABASE`            | `"bichard"`                                        | The name of the database containing the user information                                   |
-| `$DB_PORT`                | `5432`                                             | The port number to connect to the database on                                              |
-| `$DB_SSL`                 | `false`                                            | Whether to use SSL when connecting to the database                                         |
-| `$INCORRECT_DELAY`        | `10`                                               | The amount of time (in seconds) to wait between successive login attemps for the same user |
-| `$TOKEN_EXPIRES_IN`       | `"5 seconds"`                                      | The amount of time the tokens should be valid for after issuing                            |
-| `$TOKEN_ISSUER`           | `"Bichard"`                                        | The string to use as the token issuer (`iss`)                                              |
-| `$TOKEN_QUERY_PARAM_NAME` | `"token"`                                          | The name to use for the token query parameter when redirecting to `$BICHARD_REDIRECT_URL`  |
-| `$TOKEN_SECRET`           | `"OliverTwist"`                                    | The HMAC secret to use for signing the tokens                                              |
+| Variable                         | Default                                            | Description                                                                                |
+|----------------------------------|----------------------------------------------------|--------------------------------------------------------------------------------------------|
+| `$BICHARD_REDIRECT_URL`          | `"https://localhost:9443/bichard-ui/Authenticate"` | The URL to redirect to with a token as a GET parameter when authentication is successful   |
+| `$DB_HOST`                       | `"localhost"`                                      | The hostname of the database server                                                        |
+| `$DB_USER`                       | `"bichard"`                                        | The username to use when connecting to the database                                        |
+| `$DB_PASSWORD`                   | `"password"`                                       | The password to use when connecting to the database                                        |
+| `$DB_DATABASE`                   | `"bichard"`                                        | The name of the database containing the user information                                   |
+| `$DB_PORT`                       | `5432`                                             | The port number to connect to the database on                                              |
+| `$DB_SSL`                        | `false`                                            | Whether to use SSL when connecting to the database                                         |
+| `$EMAIL_VERIFICATION_EXPIRES_IN` | `30`                                               | The number of minutes after which the email verification links will expire                 |
+| `$INCORRECT_DELAY`               | `10`                                               | The amount of time (in seconds) to wait between successive login attemps for the same user |
+| `$TOKEN_EXPIRES_IN`              | `"5 seconds"`                                      | The amount of time the tokens should be valid for after issuing                            |
+| `$TOKEN_ISSUER`                  | `"Bichard"`                                        | The string to use as the token issuer (`iss`)                                              |
+| `$TOKEN_QUERY_PARAM_NAME`        | `"token"`                                          | The name to use for the token query parameter when redirecting to `$BICHARD_REDIRECT_URL`  |
+| `$TOKEN_SECRET`                  | `"OliverTwist"`                                    | The HMAC secret to use for signing the tokens                                              |
 
 These can be passed through to the docker container with the `-e` flag, for example:
 

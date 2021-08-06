@@ -10,6 +10,7 @@ interface DatabaseConfig {
 interface UserServiceConfig {
   bichardRedirectURL: string
   database: DatabaseConfig
+  emailVerificationExpiresIn: number
   incorrectDelay: number
   tokenExpiresIn: string
   tokenIssuer: string
@@ -19,6 +20,7 @@ interface UserServiceConfig {
 
 const config: UserServiceConfig = {
   bichardRedirectURL: process.env.BICHARD_REDIRECT_URL ?? "https://localhost:9443/bichard-ui/Authenticate",
+  emailVerificationExpiresIn: parseInt(process.env.EMAIL_VERIFICATION_EXPIRY ?? "30", 10),
   incorrectDelay: parseInt(process.env.INCORRECT_DELAY ?? "10", 10),
   tokenExpiresIn: process.env.TOKEN_EXPIRES_IN ?? "5 seconds",
   tokenIssuer: process.env.TOKEN_ISSUER ?? "Bichard",

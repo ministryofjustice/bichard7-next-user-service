@@ -22,7 +22,7 @@ export function decodeEmailToken(token: EmailToken): EmailTokenPayload {
 
 export function generateEmailToken(payload: EmailTokenPayload): EmailToken {
   const options: jwt.SignOptions = {
-    expiresIn: "3 hours",
+    expiresIn: `${config.emailVerificationExpiresIn} minutes`,
     ...signOptions
   }
 
