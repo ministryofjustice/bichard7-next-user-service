@@ -158,6 +158,24 @@ Cypress has a UI that enables individual tests to be run and debugged in a visib
 $ npm run cypress:open
 ```
 
+####Snapshot testing for React components
+
+Snapshot testing is a very useful tool whenever you want to make sure your UI does not change unexpectedly. So, React components test against a snapshot of the actual DOM nodes.
+
+When you make changes in a React component that results in changes in the DOM nodes, the following might have happened:
+- Changes you made have changed the behavior of the component that you didn't expect: **Update the code until test passes**
+- Changes you made have changed the behavior of the component that is as expected: **Update the snapshot**
+
+To update snapshots run the following command:
+
+```shell
+npm run test:unit -- -u
+```
+
+Check the snapshot before pushing it to the repository to ensure that the generated markup is as you expect.
+
+For more details, check [Jest documentation](https://jestjs.io/docs/snapshot-testing) and [React testing library](https://testing-library.com/docs/react-testing-library/api/#render).
+
 ### Code formatting
 
 This project utilises [ESLint](https://eslint.org/) and [Prettier](https://prettier.io/) to code linting and auto-formatting. They are run as part of a pre-commit git hook, as well as in the CI.
