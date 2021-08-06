@@ -30,7 +30,7 @@ const Table = ({ tableTitle, tableHeaders, tableData, children }: Props) => {
         </tr>
       </thead>
       <tbody className="govuk-table__body">
-        {tableData.map((row: StringMap) => (
+        {tableData.map((row: KeyValuePair<string, string>) => (
           <tr key={Object.values(row).join("")} className="govuk-table__row">
             {tableHeaders.map((header: TableHeader) => {
               const field = header[0]
