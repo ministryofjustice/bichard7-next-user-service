@@ -4,25 +4,27 @@ import GridRow from "components/GridRow"
 import Layout from "components/Layout"
 import Head from "next/head"
 import TextInput from "components/TextInput"
-import Authenticator from "lib/Authenticator"
 import { GetServerSideProps } from "next"
 import parseFormData from "lib/parseFormData"
 import { UserCredentials } from "lib/User"
-import { isSuccess } from "lib/AuthenticationResult"
 import config from "lib/config"
+import { authenticate } from "useCases"
+import getConnection from "lib/getConnection"
+import getSignedToken from "lib/getSignedToken"
 
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
-  let invalidCredentials = false
-
   if (req.method === "POST") {
     const credentials: UserCredentials = (await parseFormData(req)) as { emailAddress: string; password: string }
 
     if (credentials.emailAddress && credentials.password) {
-      const result = await Authenticator.authenticate(credentials)
+      const connection = getConnection()
 
-      if (isSuccess(result)) {
+      const user = await authenticate(credentials, connection, (e: Error) => console.error(e))
+      const token = user ? getSignedToken(user, (e: Error) => console.error(e)) : false
+
+      if (user && token) {
         const url = new URL(config.bichardRedirectURL)
-        url.searchParams.append(config.tokenQueryParamName, result)
+        url.searchParams.append(config.tokenQueryParamName, token)
 
         return {
           redirect: {
@@ -31,13 +33,22 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
           }
         }
       }
+      return {
+        props: {
+          invalidCredentials: true
+        }
+      }
     }
-
-    invalidCredentials = true
+    return {
+      props: {
+        invalidCredentials: false
+      }
+    }
   }
-
   return {
-    props: { invalidCredentials }
+    props: {
+      invalidCredentials: false
+    }
   }
 }
 

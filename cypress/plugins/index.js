@@ -16,7 +16,20 @@
  * @type {Cypress.PluginConfig}
  */
 // eslint-disable-next-line no-unused-vars
-module.exports = (on, config) => {
-  // `on` is used to hook into various events Cypress emits
-  // `config` is the resolved Cypress config
+// eslint-disable-next-line import/extensions
+// const teardown = require("../db/teardown.js")
+
+// eslint-disable-next-line import/extensions
+// const seed = require("../db/seed.js")
+
+// eslint-disable-next-line no-unused-vars
+module.exports = (on) => {
+  on("task", {
+    "db:teardown": () => {
+      // return teardown()
+    },
+    "db:seed": () => {
+      // return seed()
+    }
+  })
 }
