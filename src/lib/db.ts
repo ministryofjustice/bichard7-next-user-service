@@ -1,9 +1,10 @@
 import pgPromise from "pg-promise"
 import config from "lib/config"
+import Database from "types/Database"
 
 const pgp = pgPromise()
 
-const db = pgp({
+const db: Database = pgp({
   host: config.database.host,
   port: config.database.port,
   database: config.database.database,
