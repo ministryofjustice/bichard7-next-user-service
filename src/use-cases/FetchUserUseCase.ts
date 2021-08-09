@@ -15,9 +15,7 @@ export default class FetchUserUseCase {
       surname,
       postal_address AS "postalAddress",
       post_code AS "postCode",
-      phone_number AS "phoneNumber",
-      password,
-      email_verification_code AS "emailVerificationCode"
+      phone_number AS "phoneNumber"
     FROM br7own.users
     WHERE username = $1 AND deleted_at IS NULL
   `
