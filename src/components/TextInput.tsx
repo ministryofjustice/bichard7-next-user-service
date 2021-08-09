@@ -3,10 +3,12 @@ interface Props {
   label?: string
   name?: string
   type?: string
+  width?: string
 }
 
-const TextInput = ({ id, label, name, type }: Props) => {
+const TextInput = ({ id, label, name, type, width }: Props) => {
   const inputName = name || id
+  const widthClassName = width ? ` govuk-input--width-${width}` : ""
 
   return (
     <div className="govuk-form-group">
@@ -15,7 +17,7 @@ const TextInput = ({ id, label, name, type }: Props) => {
           {label}
         </label>
       )}
-      <input className="govuk-input" id={id} name={inputName} type={type} />
+      <input className={`govuk-input${widthClassName}`} id={id} name={inputName} type={type} />
     </div>
   )
 }
