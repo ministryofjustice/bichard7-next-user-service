@@ -10,3 +10,8 @@ export function isError(result: ListUsersResult | Error): result is Error {
 export function isSuccess(result: ListUsersResult | Error): result is ListUsersResult {
   return !isError(result)
 }
+
+export interface CreateUserResult {
+  result: string
+  error: Error
+}

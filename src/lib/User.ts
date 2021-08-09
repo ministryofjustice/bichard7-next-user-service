@@ -3,6 +3,14 @@ export interface UserCredentials {
   password: string
 }
 
+export interface UserDetails {
+  username: string
+  forenames: string
+  surname: string
+  phoneNumber: string
+  emailAddress: string
+}
+
 export type UserGroup =
   | "B7Allocator"
   | "B7Audit"

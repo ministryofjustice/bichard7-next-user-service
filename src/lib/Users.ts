@@ -1,5 +1,7 @@
-import { ListUsersResult } from "lib/UsersResult"
+import { ListUsersResult, CreateUserResult } from "lib/UsersResult"
 import db from "lib/db"
+
+const CheckName = "Pre-create user check"
 
 export default class Users {
   public static async list(): Promise<ListUsersResult> {
@@ -24,16 +26,20 @@ export default class Users {
     })) as unknown as ListUsersResult
   }
 
-  public static async isUsernameUnique(username: string): Promise<string> {
-    const query = `SELECT COUNT(1) FROM br7own.users WHERE username = LOWER('${username}')`
+  public static async isUsernameUnique(username: string): Promise<Error> {
+    const query = `SELECT COUNT(1) FROM br7own.users WHERE LOWER(username) = LOWER('${username}')`
     const result = await db.any(query)
-    return !(result.length === 1 && result[0].count === "1") ? "" : "Username already exists"
+    return !(result.length === 1 && result[0].count === "1")
+      ? { name: CheckName, message: "" }
+      : { name: CheckName, message: `Error: Username ${username} already exists` }
   }
 
-  public static async isEmailUnique(email: string): Promise<string> {
-    const query = `SELECT COUNT(1) FROM br7own.users WHERE email = LOWER('${email}')`
+  public static async isEmailUnique(email: string): Promise<Error> {
+    const query = `SELECT COUNT(1) FROM br7own.users WHERE LOWER(email) = LOWER('${email}')`
     const result = await db.any(query)
-    return !(result.length === 1 && result[0].count === "1") ? "" : "Email address already exists"
+    return !(result.length === 1 && result[0].count === "1")
+      ? { name: CheckName, message: "" }
+      : { name: CheckName, message: `Error: Email address ${email} already exists` }
   }
 
   public static async create(
@@ -42,14 +48,14 @@ export default class Users {
     surname: string,
     phoneNumber: string,
     emailAddress: string
-  ): Promise<string> {
-    let result = await this.isUsernameUnique(username)
-    if (result.length === 0) {
-      return result
+  ): Promise<CreateUserResult> {
+    let checkData = await this.isUsernameUnique(username)
+    if (checkData.message !== "") {
+      return { result: "", error: checkData }
     }
-    result = await this.isEmailUnique(emailAddress)
-    if (result.length === 0) {
-      return result
+    checkData = await this.isEmailUnique(emailAddress)
+    if (checkData.message !== "") {
+      return { result: "", error: checkData }
     }
 
     const query = `
@@ -76,12 +82,14 @@ export default class Users {
         ''
       )
     `
+    let errorMessage = ""
+    let result = ""
     try {
       result = (await db.any(query)).toString()
     } catch (e) {
-      result = "Failed to add user"
+      errorMessage = "Error: Failed to add user"
     }
 
-    return result
+    return { result, error: { name: "Failed Add User", message: errorMessage } }
   }
 }
