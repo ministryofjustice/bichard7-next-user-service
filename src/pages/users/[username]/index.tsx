@@ -9,6 +9,22 @@ import BackLink from "components/BackLink"
 import Link from "components/Link"
 import ButtonGroup from "components/ButtonGroup"
 
+export const getServerSideProps: GetServerSideProps = async ({ query }) => {
+  const { username } = query
+  const useCase = new FetchUserUseCase(db)
+  const user = await useCase.fetch(username as string)
+
+  if (!user) {
+    return {
+      notFound: true
+    }
+  }
+
+  return {
+    props: { user }
+  }
+}
+
 interface Props {
   user: User
 }
@@ -38,21 +54,5 @@ const index = ({ user }: Props) => (
     </Layout>
   </>
 )
-
-export const getServerSideProps: GetServerSideProps = async ({ query }) => {
-  const { username } = query
-  const useCase = new FetchUserUseCase(db)
-  const user = await useCase.fetch(username as string)
-
-  if (!user) {
-    return {
-      notFound: true
-    }
-  }
-
-  return {
-    props: { user }
-  }
-}
 
 export default index
