@@ -70,6 +70,10 @@ jobs:
           command: ./.circleci/scripts/install-cypress.sh
 
       - run:
+          name: Clone & install postgres
+          command: ./.circleci/scripts/install-postgres.sh
+
+      - run:
           name: Run UI tests
           command: npm run test:ui
 

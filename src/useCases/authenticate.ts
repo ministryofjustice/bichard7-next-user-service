@@ -76,7 +76,9 @@ const authenticate = async (credentials: UserCredentials, connection: any, onErr
       return u
     })
 
-    if (compare(credentials.password, user.password)) {
+    const isAuthenticated = await compare(credentials.password, user.password)
+
+    if (isAuthenticated) {
       return user
     }
     onError(invalidCredentialsError)
