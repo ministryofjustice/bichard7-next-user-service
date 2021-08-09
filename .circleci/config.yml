@@ -90,12 +90,9 @@ workflows:
   build-and-test:
     jobs:
       - build
-      - ui_test:
+      - ui_integration_test:
           requires:
             - build
       - unit_test:
-          requires:
-            - build
-      - integration_test:
           requires:
             - build
