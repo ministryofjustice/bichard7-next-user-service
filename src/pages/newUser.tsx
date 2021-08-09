@@ -2,7 +2,6 @@ import Button from "components/Button"
 import Layout from "components/Layout"
 import Head from "next/head"
 import TextInput from "components/TextInput"
-import ButtonSecondary from "components/ButtonSecondary"
 import SuccessBanner from "components/SuccessBanner"
 import { GetServerSideProps } from "next"
 import { UserDetails } from "lib/User"
@@ -83,8 +82,9 @@ const newUser = ({ errorMessage, successMessage }: Props) => (
         <Button>{"Add user"}</Button>
       </form>
 
-      <a href="/users">
-        <ButtonSecondary> {"Back"} </ButtonSecondary>
+      <a href="/users" className="govuk-back-link">
+        {" "}
+        {"Back"}{" "}
       </a>
     </Layout>
   </>
