@@ -17,7 +17,7 @@ export default class FetchUserUseCase {
       post_code AS "postCode",
       phone_number AS "phoneNumber"
     FROM br7own.users
-    WHERE username = $1 AND deleted_at IS NULL
+    WHERE username = $1
   `
 
   constructor(private db: Database) {}
