@@ -36,9 +36,10 @@ const users = ({ usersList }: Props) => (
     <Head>
       <title>{"Users"}</title>
     </Head>
-    <Layout>{usersList && <Table tableHeaders={tableHeaders} tableTitle="Users" tableData={usersList} />}</Layout>
     <Layout>
-      <Button>{"Add user"}</Button>
+      <a href="/newUser">
+        <Button>{"Add user"}</Button>
+      </a>
       {usersList && <Table tableHeaders={tableHeaders} tableTitle="Users" tableData={usersList} />}
     </Layout>
   </>
