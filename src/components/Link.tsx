@@ -6,7 +6,7 @@ interface Props {
 }
 
 const Link = ({ href, children }: Props) => (
-  <a href={href} className="govuk-link" role="button">
+  <a href={href} className="govuk-link">
     {children}
   </a>
 )
