@@ -19,7 +19,13 @@ const getSignedToken = (user: User, onError: (e: Error) => void) => {
     issuer: config.tokenIssuer
   }
 
-  return jwt.sign(payload, config.tokenSecret, options)
+  try {
+    const token = jwt.sign(payload, config.tokenSecret, options)
+    return token
+  } catch (e) {
+    onError(e)
+    return false
+  }
 }
 
 export default getSignedToken
