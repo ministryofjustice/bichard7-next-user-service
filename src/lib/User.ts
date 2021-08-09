@@ -9,6 +9,10 @@ export interface UserDetails {
   surname: string
   phoneNumber: string
   emailAddress: string
+  postCode: string
+  postalAddress: string
+  endorsedBy: string
+  organisation: string
 }
 
 export type UserGroup =

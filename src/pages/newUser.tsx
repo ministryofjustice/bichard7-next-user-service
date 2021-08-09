@@ -9,60 +9,81 @@ import parseFormData from "lib/parseFormData"
 import Users from "../lib/Users"
 
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
-  let invalidUsername = false
-  let invalidForename = false
-  let invalidSurname = false
-  let invalidPhonenumber = false
-  let invalidEmailAddress = false
+  let missingMandatory = false
   let errorMessage = ""
   let successMessage = ""
 
   if (req.method === "POST") {
-    const { username, forenames, surname, phoneNumber, emailAddress }: UserDetails = (await parseFormData(req)) as {
+    const {
+      username,
+      forenames,
+      surname,
+      phoneNumber,
+      emailAddress,
+      postCode,
+      postalAddress,
+      endorsedBy,
+      organisation
+    }: UserDetails = (await parseFormData(req)) as {
       username: string
       forenames: string
       surname: string
       phoneNumber: string
       emailAddress: string
+      postCode: string
+      postalAddress: string
+      endorsedBy: string
+      organisation: string
     }
 
     if (username === "") {
-      invalidUsername = true
+      missingMandatory = true
     }
     if (forenames === "") {
-      invalidForename = true
+      missingMandatory = true
     }
     if (surname === "") {
-      invalidSurname = true
+      missingMandatory = true
     }
     if (phoneNumber === "") {
-      invalidPhonenumber = true
+      missingMandatory = true
     }
     if (emailAddress === "") {
-      invalidEmailAddress = true
+      missingMandatory = true
     }
 
-    if (!(invalidUsername || invalidSurname || invalidForename || invalidPhonenumber || invalidEmailAddress)) {
-      const result = await Users.create(username, forenames, surname, phoneNumber, emailAddress)
+    if (!missingMandatory) {
+      const result = await Users.create(
+        username,
+        forenames,
+        surname,
+        phoneNumber,
+        emailAddress,
+        postCode,
+        postalAddress,
+        endorsedBy,
+        organisation
+      )
       errorMessage = result.error.message
       if (errorMessage === "") {
         successMessage = `User ${username} has ben successfully created`
       }
     } else {
-      errorMessage = "Please make sure that all fields are non empty"
+      errorMessage = "Please make sure that all mandatory fields are non empty"
     }
   }
   return {
-    props: { errorMessage, successMessage }
+    props: { errorMessage, successMessage, missingMandatory }
   }
 }
 
 interface Props {
   errorMessage: string
   successMessage: string
+  missingMandatory: boolean
 }
 
-const newUser = ({ errorMessage, successMessage }: Props) => (
+const newUser = ({ errorMessage, successMessage, missingMandatory }: Props) => (
   <>
     <Head>
       <title>{"New User"}</title>
@@ -73,11 +94,22 @@ const newUser = ({ errorMessage, successMessage }: Props) => (
       </span>
       {successMessage !== "" && <SuccessBanner message={successMessage} />}
       <form method="post">
-        <TextInput id="username" name="username" label="Username" type="text" />
-        <TextInput id="forenames" name="forenames" label="Forename(s)" type="text" />
-        <TextInput id="surname" name="surname" label="Surname" type="text" />
-        <TextInput id="phoneNumber" name="phoneNumber" label="Phone number" type="text" />
-        <TextInput id="emailAddress" name="emailAddress" label="Email address" type="email" />
+        <TextInput id="username" name="username" label="Username *" type="text" isError={missingMandatory} />
+        <TextInput id="forenames" name="forenames" label="Forename(s) *" type="text" isError={missingMandatory} />
+        <TextInput id="surname" name="surname" label="Surname *" type="text" isError={missingMandatory} />
+        <TextInput id="phoneNumber" name="phoneNumber" label="Phone number *" type="text" isError={missingMandatory} />
+        <TextInput
+          id="emailAddress"
+          name="emailAddress"
+          label="Email address *"
+          type="email"
+          isError={missingMandatory}
+        />
+
+        <TextInput id="postalAddress" name="postalAddress" label="Postal address" type="text" />
+        <TextInput id="postCode" name="postCode" label="Postcode" type="text" />
+        <TextInput id="endorsedBy" name="endorsedBy" label="Endorsed by" type="text" />
+        <TextInput id="orgServes" name="orgServes" label="Organisation" type="text" />
 
         <Button>{"Add user"}</Button>
       </form>

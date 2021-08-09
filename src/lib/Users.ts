@@ -47,7 +47,11 @@ export default class Users {
     forenames: string,
     surname: string,
     phoneNumber: string,
-    emailAddress: string
+    emailAddress: string,
+    postCode: string,
+    postalAddress: string,
+    endorsedBy: string,
+    organisation: string
   ): Promise<CreateUserResult> {
     let checkData = await this.isUsernameUnique(username)
     if (checkData.message !== "") {
@@ -68,7 +72,11 @@ export default class Users {
         active,
         exclusion_list,
         inclusion_list,
-        challenge_response
+        challenge_response,
+        post_code,
+        postal_address,
+        endorsed_by,
+        org_serves
       )
       VALUES (
         '${username}',
@@ -79,7 +87,11 @@ export default class Users {
         true,
         '',
         '',
-        ''
+        '',
+        ${postCode},
+        ${postalAddress},
+        ${endorsedBy},
+        ${organisation}
       )
     `
     let errorMessage = ""
