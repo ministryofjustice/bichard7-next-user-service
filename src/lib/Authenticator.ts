@@ -3,8 +3,10 @@ import config from "lib/config"
 import db from "lib/db"
 import { compare } from "lib/shiro"
 import { generateBichardToken } from "lib/token/bichardToken"
-import { User, UserCredentials, UserGroup } from "lib/User"
+import { User } from "lib/User"
+import { UserGroup } from "lib/UserGroup"
 import type { ITask } from "pg-promise"
+import { UserCredentials } from "./UserCredentials"
 
 export default class Authenticator {
   public static async authenticate(credentials: UserCredentials): Promise<AuthenticationResult> {

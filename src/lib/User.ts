@@ -1,11 +1,5 @@
 import { UserGroup } from "./UserGroup"
 
-export interface UserCredentials {
-  emailAddress: string
-  password: string
-  verificationCode: string
-}
-
 export interface User {
   username: string
   exclusionList: string[]
