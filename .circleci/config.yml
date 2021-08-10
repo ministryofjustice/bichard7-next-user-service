@@ -2,17 +2,18 @@ version: 2.1
 
 commands:
     checkout_and_install:
-    description: Check out the repo and install the node dependencies
-    steps:
-      - checkout
-      - restore_cache:
-          name: Load node_modules from the cache if they haven't changed
-          keys:
-            - v1-npm-deps-{{ checksum "package-lock.json" }}
-            - v1-npm-deps-
-      - run:
-          name: Install node dependencies
-          command: npm install
+        description: Check out the repo and install the node dependencies
+        steps:
+        - checkout
+        - restore_cache:
+            name: Load node_modules from the cache if they haven't changed
+            keys:
+                - v1-npm-deps-{{ checksum "package-lock.json" }}
+                - v1-npm-deps-
+        - run:
+            name: Install node dependencies
+            command: npm install
+
     run_bichard_database:
         description: Check out the b7-next repo and spin up the postgres database
         steps:
