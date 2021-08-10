@@ -6,7 +6,7 @@ function generateVerificationCode() {
   return randomDigits(6).join("")
 }
 
-async function storeVerificationCode(emailAddress: string, verificationCode: string) {
+export async function storeVerificationCode(emailAddress: string, verificationCode: string) {
   const query = `
     UPDATE br7own.users
     SET email_verification_code = $1,
