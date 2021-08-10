@@ -4,7 +4,7 @@ import Head from "next/head"
 import TextInput from "components/TextInput"
 import SuccessBanner from "components/SuccessBanner"
 import { GetServerSideProps } from "next"
-import { UserDetails } from "lib/User"
+import { UserDetails } from "lib/UserDetails"
 import parseFormData from "lib/parseFormData"
 import Users from "../lib/Users"
 

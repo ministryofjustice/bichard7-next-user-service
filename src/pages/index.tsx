@@ -7,7 +7,7 @@ import TextInput from "components/TextInput"
 import Authenticator from "lib/Authenticator"
 import { GetServerSideProps } from "next"
 import parseFormData from "lib/parseFormData"
-import { UserCredentials } from "lib/User"
+import { UserCredentials } from "lib/UserCredentials"
 import { isSuccess } from "lib/AuthenticationResult"
 import config from "lib/config"
 
