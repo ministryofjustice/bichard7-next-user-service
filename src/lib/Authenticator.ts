@@ -25,7 +25,20 @@ export default class Authenticator {
 
     const passwordMatch = await compare(credentials.password, user.password)
     const verificationMatch = credentials.verificationCode === user.verificationCode
-    return passwordMatch && verificationMatch ? generateBichardToken(user) : new Error()
+
+    if (!passwordMatch || !verificationMatch) {
+      return new Error()
+    }
+
+    try {
+      await db.tx(async (task: ITask<unknown>) => {
+        await Authenticator.disableUserVerificationGeneratedToken(task, credentials.emailAddress)
+      })
+    } catch {
+      return new Error()
+    }
+
+    return generateBichardToken(user)
   }
 
   private static async fetchGroups(task: ITask<unknown>, emailAddress: string): Promise<UserGroup[]> {
@@ -95,6 +108,17 @@ export default class Authenticator {
       SET last_login_attempt = NOW()
       WHERE email = $1
     `
+
+    await task.none(query, [emailAddress])
+  }
+
+  private static async disableUserVerificationGeneratedToken(task: ITask<unknown>, emailAddress: string) {
+    const query = `
+    UPDATE br7own.users
+    SET email_verification_code = '',
+        email_verification_generated = NULL
+    WHERE email = $1
+  `
 
     await task.none(query, [emailAddress])
   }
