@@ -12,7 +12,7 @@ commands:
             - v1-npm-deps-
       - run:
           name: Install node dependencies
-          command: npm install
+          command: npm ci
 
   run_bichard_database:
     description: Check out the b7-next repo and spin up the postgres database
