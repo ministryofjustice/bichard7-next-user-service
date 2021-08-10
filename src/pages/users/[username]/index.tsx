@@ -3,16 +3,15 @@ import Head from "next/head"
 import db from "lib/db"
 import { User } from "lib/User"
 import { GetServerSideProps } from "next"
-import FetchUserUseCase from "use-cases/FetchUserUseCase"
 import { Summary, SummaryItem } from "components/Summary"
 import BackLink from "components/BackLink"
 import Link from "components/Link"
 import ButtonGroup from "components/ButtonGroup"
+import getUserByUsername from "useCases/getUserByUsername"
 
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
   const { username } = query
-  const useCase = new FetchUserUseCase(db)
-  const user = await useCase.fetch(username as string)
+  const user = await getUserByUsername(db, username as string)
 
   if (!user) {
     return {

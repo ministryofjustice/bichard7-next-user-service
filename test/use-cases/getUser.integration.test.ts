@@ -1,7 +1,7 @@
 import db from "lib/db"
 import { User } from "lib/User"
 import { isError } from "types/Result"
-import FetchUserUseCase from "use-cases/FetchUserUseCase"
+import getUserByUsername from "useCases/getUserByUsername"
 
 const expectedUser = {
   username: "DummyUsername",
@@ -15,8 +15,6 @@ const expectedUser = {
   postCode: "AB1 1BA",
   phoneNumber: "DummyPhoneNumber"
 } as unknown as User
-
-const useCase = new FetchUserUseCase(db)
 
 describe("DeleteUserUseCase", () => {
   beforeEach(async () => {
@@ -50,7 +48,7 @@ describe("DeleteUserUseCase", () => {
   })
 
   it("should return user when user exists in the database", async () => {
-    const result = await useCase.fetch(expectedUser.username)
+    const result = await getUserByUsername(db, expectedUser.username)
 
     expect(isError(result)).toBe(false)
 
@@ -68,7 +66,7 @@ describe("DeleteUserUseCase", () => {
   })
 
   it("should return null when user does not exist in the database", async () => {
-    const result = await useCase.fetch("InvalidUsername")
+    const result = await getUserByUsername(db, "InvalidUsername")
 
     expect(result).toBeNull()
   })
