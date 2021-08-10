@@ -8,7 +8,7 @@ export type User = {
 
 export type Users = User[]
 
-const getAllUsers = async (connection: any, onError: (e: Error) => void): Promise<Users> => {
+const getAllUsers = async (connection: any): Promise<Users> => {
   let users
 
   const getAllUsersQuery = `
@@ -22,8 +22,8 @@ const getAllUsers = async (connection: any, onError: (e: Error) => void): Promis
     `
   try {
     users = await connection.any(getAllUsersQuery)
-  } catch (e) {
-    onError(e)
+  } catch (error) {
+    return error
   }
 
   return users.map((r: any) => ({

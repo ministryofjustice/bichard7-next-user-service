@@ -4,10 +4,21 @@ import Table, { TableHeaders, StringMap } from "components/Table"
 import { GetServerSideProps } from "next"
 import { getAllUsers } from "useCases"
 import getConnection from "lib/getConnection"
+import isError from "lib/isError"
 
 export const getServerSideProps: GetServerSideProps = async () => {
   const connection = getConnection()
-  const allUsers = await getAllUsers(connection, (e: Error) => console.error(e))
+  const allUsers = await getAllUsers(connection)
+
+  if (isError(allUsers)) {
+    console.error(allUsers)
+    return {
+      props: {
+        allUsers: null
+      }
+    }
+  }
+
   return {
     props: {
       allUsers

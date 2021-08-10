@@ -66,7 +66,7 @@ const updateUserLoginTimestamp = async (task: ITask<unknown>, emailAddress: stri
   await task.none(updateUserQuery, [emailAddress])
 }
 
-const authenticate = async (credentials: UserCredentials, connection: any, onError: (e: Error) => void) => {
+const authenticate = async (credentials: UserCredentials, connection: any) => {
   const invalidCredentialsError = new Error("Invalid credentials")
 
   try {
@@ -81,11 +81,9 @@ const authenticate = async (credentials: UserCredentials, connection: any, onErr
     if (isAuthenticated) {
       return user
     }
-    onError(invalidCredentialsError)
-    return false
-  } catch (e) {
-    onError(e)
-    return false
+    return invalidCredentialsError
+  } catch (error) {
+    return error
   }
 }
 

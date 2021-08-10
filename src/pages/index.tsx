@@ -11,6 +11,7 @@ import config from "lib/config"
 import { authenticate } from "useCases"
 import getConnection from "lib/getConnection"
 import getSignedToken from "lib/getSignedToken"
+import isError from "lib/isError"
 
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   if (req.method === "POST") {
@@ -19,8 +20,27 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
     if (credentials.emailAddress && credentials.password) {
       const connection = getConnection()
 
-      const user = await authenticate(credentials, connection, (e: Error) => console.error(e))
-      const token = user ? getSignedToken(user, (e: Error) => console.error(e)) : false
+      const user = await authenticate(credentials, connection)
+
+      if (isError(user)) {
+        console.error(user)
+        return {
+          props: {
+            invalidCredentials: true
+          }
+        }
+      }
+
+      const token = getSignedToken(user)
+
+      if (isError(token)) {
+        console.error(token)
+        return {
+          props: {
+            invalidCredentials: true
+          }
+        }
+      }
 
       if (user && token) {
         const url = new URL(config.bichardRedirectURL)

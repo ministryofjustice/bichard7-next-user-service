@@ -3,7 +3,7 @@ import { TokenPayload } from "lib/Token"
 import { User } from "lib/User"
 import config from "lib/config"
 
-const getSignedToken = (user: User, onError: (e: Error) => void) => {
+const getSignedToken = (user: User) => {
   const payload: TokenPayload = {
     username: user.username,
     exclusionList: user.exclusionList,
@@ -22,9 +22,8 @@ const getSignedToken = (user: User, onError: (e: Error) => void) => {
   try {
     const token = jwt.sign(payload, config.tokenSecret, options)
     return token
-  } catch (e) {
-    onError(e)
-    return false
+  } catch (error) {
+    return error
   }
 }
 
