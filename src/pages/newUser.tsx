@@ -92,7 +92,7 @@ const newUser = ({ errorMessage, successMessage, missingMandatory }: Props) => (
       <span id="event-name-error" className="govuk-error-message">
         {errorMessage}
       </span>
-      {successMessage !== "" && <SuccessBanner message={successMessage} />}
+      {successMessage && <SuccessBanner message={successMessage} />}
       <form method="post">
         <TextInput id="username" name="username" label="Username *" type="text" isError={missingMandatory} />
         <TextInput id="forenames" name="forenames" label="Forename(s) *" type="text" isError={missingMandatory} />
@@ -111,7 +111,7 @@ const newUser = ({ errorMessage, successMessage, missingMandatory }: Props) => (
         <TextInput id="endorsedBy" name="endorsedBy" label="Endorsed by" type="text" />
         <TextInput id="orgServes" name="orgServes" label="Organisation" type="text" />
 
-        <Button>{"Add user"}</Button>
+        <Button noDoubleClick>{"Add user"}</Button>
       </form>
 
       <a href="/users" className="govuk-back-link">
