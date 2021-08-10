@@ -4,9 +4,9 @@ import Head from "next/head"
 import TextInput from "components/TextInput"
 import SuccessBanner from "components/SuccessBanner"
 import { GetServerSideProps } from "next"
-import { UserDetails } from "lib/UserDetails"
+import { UserCreateDetails } from "lib/UserCreateDetails"
 import parseFormData from "lib/parseFormData"
-import Users from "../lib/Users"
+import createUser from "useCases/createUser"
 
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   let missingMandatory = false
@@ -14,17 +14,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   let successMessage = ""
 
   if (req.method === "POST") {
-    const {
-      username,
-      forenames,
-      surname,
-      phoneNumber,
-      emailAddress,
-      postCode,
-      postalAddress,
-      endorsedBy,
-      organisation
-    }: UserDetails = (await parseFormData(req)) as {
+    const userCreateDetails: UserCreateDetails = (await parseFormData(req)) as {
       username: string
       forenames: string
       surname: string
@@ -36,37 +26,21 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
       organisation: string
     }
 
-    if (username === "") {
-      missingMandatory = true
-    }
-    if (forenames === "") {
-      missingMandatory = true
-    }
-    if (surname === "") {
-      missingMandatory = true
-    }
-    if (phoneNumber === "") {
-      missingMandatory = true
-    }
-    if (emailAddress === "") {
+    if (
+      userCreateDetails.username === "" ||
+      userCreateDetails.forenames === "" ||
+      userCreateDetails.surname === "" ||
+      userCreateDetails.phoneNumber === "" ||
+      userCreateDetails.emailAddress === ""
+    ) {
       missingMandatory = true
     }
 
     if (!missingMandatory) {
-      const result = await Users.create(
-        username,
-        forenames,
-        surname,
-        phoneNumber,
-        emailAddress,
-        postCode,
-        postalAddress,
-        endorsedBy,
-        organisation
-      )
+      const result = await createUser(db, userCreateDetails)
       errorMessage = result.error.message
       if (errorMessage === "") {
-        successMessage = `User ${username} has ben successfully created`
+        successMessage = `User ${userCreateDetails.username} has ben successfully created`
       }
     } else {
       errorMessage = "Please make sure that all mandatory fields are non empty"

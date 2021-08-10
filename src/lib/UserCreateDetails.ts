@@ -1,4 +1,4 @@
-export interface UserDetails {
+export interface UserCreateDetails {
   username: string
   forenames: string
   surname: string
