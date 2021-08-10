@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@types/qs": "^6.9.6",
+    "crypto-secure-random-digit": "^1.0.9",
     "govuk-frontend": "^3.12.0",
     "jsonwebtoken": "^8.5.1",
     "next": "^10.2.0",
@@ -26,6 +27,7 @@
     "react-dom": "^17.0.2"
   },
   "devDependencies": {
+    "@testing-library/react": "^12.0.0",
     "@types/jest": "^26.0.23",
     "@types/jsonwebtoken": "^8.5.1",
     "@types/node": "^15.3.0",

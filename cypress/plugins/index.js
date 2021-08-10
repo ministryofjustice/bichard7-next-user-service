@@ -5,10 +5,23 @@
 // You can change the location of this file or turn off loading
 const createUsers = require("../db/seed/createUsers")
 
-module.exports = (on) => {
+import pgPromise from "pg-promise"
+
+/**
+ * @type {Cypress.PluginConfig}
+ */
+// eslint-disable-next-line no-unused-vars
+module.exports = async (on, config) => {
+  const pgp = pgPromise()
+  const db = pgp("postgres://bichard:password@localhost:5432/bichard")
+
   on("task", {
-    "db:seed:users": async () => {
-      // eslint-disable-next-line no-return-await
+    async getVerificationCode(emailAddress) {
+      const result = await db.one("SELECT email_verification_code FROM br7own.users WHERE email = $1", emailAddress)
+      return result.email_verification_code
+    },
+
+    async seedUsers(){
       return await createUsers()
     }
   })

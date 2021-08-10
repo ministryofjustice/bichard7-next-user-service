@@ -1,67 +1,50 @@
 version: 2.1
 
 commands:
-    checkout_and_install:
-        description: Check out the repo and install the node dependencies
-        steps:
-        - checkout
-        - restore_cache:
-            name: Load node_modules from the cache if they haven't changed
-            keys:
-                - v1-npm-deps-{{ checksum "package-lock.json" }}
-                - v1-npm-deps-
-        - run:
-            name: Install node dependencies
-            command: npm install
-
-    run_bichard_database:
-        description: Check out the b7-next repo and spin up the postgres database
-        steps:
-        - add_ssh_keys:
-            fingerprints:
-                - 07:76:0b:c1:80:51:7f:ec:3f:c8:7d:1c:91:d4:60:f5
-        - run:
-            name: Clone Bichard7 Next
-            command: git clone --depth 1 git@github.com:ministryofjustice/bichard7-next.git ~/bichard7-next
-        - run:
-            name: Spin up PostgreSQL database
-            working_directory: ~/bichard7-next
-            command: make run-pg
-
-jobs:
-  build:
-    docker:
-      - image: cimg/node:15.9.0
-
-    working_directory: ~
-
+  checkout_and_install:
+    description: Check out the repo and install the node dependencies
     steps:
       - checkout
-
-      # Load node_modules from the cache if they haven't changed
       - restore_cache:
+          name: Load node_modules from the cache if they haven't changed
           keys:
-           - v1-npm-deps-{{ checksum "package-lock.json" }}
-           - v1-npm-deps-
-
+            - v1-npm-deps-{{ checksum "package-lock.json" }}
+            - v1-npm-deps-
       - run:
           name: Install node dependencies
           command: npm install
 
-      # Store node_modules in cache to speed up future installs
+  run_bichard_database:
+    description: Check out the b7-next repo and spin up the postgres database
+    steps:
+      - add_ssh_keys:
+          fingerprints:
+            - 07:76:0b:c1:80:51:7f:ec:3f:c8:7d:1c:91:d4:60:f5
+      - run:
+          name: Clone Bichard7 Next
+          command: git clone --depth 1 git@github.com:ministryofjustice/bichard7-next.git ~/bichard7-next
+      - run:
+          name: Spin up PostgreSQL database
+          working_directory: ~/bichard7-next
+          command: make run-pg
+
+jobs:
+  build:
+    docker:
+      - image: cimg/node:16.3.0
+    working_directory: ~
+    steps:
+      - checkout_and_install
       - save_cache:
+          name: Save node_modules cache
           key: v1-npm-deps-{{ checksum "package-lock.json" }}
           paths: node_modules
-
       - run:
           name: Check the code for linting errors
           command: npm run lint
-
       - run:
           name: Build the user service application
           command: npm run build
-
-      # Persist the build output to the workspace to reduce build time later
       - persist_to_workspace:
           root: .
           paths: .next
@@ -78,7 +61,7 @@ jobs:
           name: Run unit tests
           command: npm run test:unit
 
-  ui_integration_test:
+  ui_test:
     machine:
       image: ubuntu-2004:202104-01
       docker_layer_caching: true
@@ -104,7 +87,7 @@ workflows:
   build-and-test:
     jobs:
       - build
-      - ui_integration_test:
+      - ui_test:
           requires:
             - build
       - unit_test:

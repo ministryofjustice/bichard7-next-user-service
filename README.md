@@ -1,6 +1,6 @@
 # Bichard7 vNext: User Service
 
-A Next.js application to provide user authentication within the new Bichard7 architecture.
+A Next.js application to provide user authentication and user management within the new Bichard7 architecture.
 
 ## Building
 
@@ -16,7 +16,9 @@ $ aws-vault exec bichard7-sandbox-shared -- make build
 
 ## Running
 
-Once you've built the Docker image (see [above](#building)), you run the Docker image as usual:
+In order to run the user-service, you'll also need to ensure the Bichard PostgreSQL database is running locally (see [Running the database](#running-the-database) below).
+
+Once you've built the Docker image (see [Building](#building) above) and have the Bichard PostgreSQL database running, you run the Docker image as usual:
 
 ```shell
 $ docker run -p 3443:443 user-service
@@ -27,25 +29,34 @@ $ make run
 
 Either of these commands will expose the service at https://localhost:3443/.
 
+### Running the database
+
+To spin up a local instance of the database, you can use the `run-pg` make target in the [main bichard repo](https://github.com/ministryofjustice/bichard7-next):
+
+```shell
+$ cd /path/to/bichard7-next
+$ make run-pg
+```
+
 ## Configuration
 
 The application makes use of the following environment variables to permit configuration:
 
-| Variable                  | Default                                            | Description                                                                                                                                      |
-|---------------------------|----------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------|
-| `$BICHARD_REDIRECT_URL`   | `"https://localhost:9443/bichard-ui/Authenticate"` | The URL to redirect to with a token as a GET parameter when authentication is successful                                                         |
-| `$DB_AUTH`                | `false`                                            | Whether to validate users against the database (true) or the static local list of users (false)                                                  |
-| `$DB_AUTH_HOST`           | `"localhost"`                                      | The hostname of the database server                                                                                                              |
-| `$DB_AUTH_USER`           | `"bichard"`                                        | The username to use when connecting to the database                                                                                              |
-| `$DB_AUTH_PASSWORD`       | `"password"`                                       | The password to use when connecting to the database                                                                                              |
-| `$DB_AUTH_DATABASE`       | `"bichard"`                                        | The name of the database containing the user information                                                                                         |
-| `$DB_AUTH_PORT`           | `5432`                                             | The port number to connect to the database on                                                                                                    |
-| `$DB_AUTH_SSL`            | `false`                                            | Whether to use SSL when connecting to the database                                                                                               |
-| `$INCORRECT_DELAY`        | `10`                                               | The amount of time (in seconds) to wait between successive login attemps for the same user (*only available when using database authentication*) |
-| `$TOKEN_EXPIRES_IN`       | `"5 seconds"`                                      | The amount of time the tokens should be valid for after issuing                                                                                  |
-| `$TOKEN_ISSUER`           | `"Bichard"`                                        | The string to use as the token issuer (`iss`)                                                                                                    |
-| `$TOKEN_QUERY_PARAM_NAME` | `"token"`                                          | The name to use for the token query parameter when redirecting to `$BICHARD_REDIRECT_URL`                                                        |
-| `$TOKEN_SECRET`           | `"OliverTwist"`                                    | The HMAC secret to use for signing the tokens                                                                                                    |
+| Variable                         | Default                                            | Description                                                                                |
+|----------------------------------|----------------------------------------------------|--------------------------------------------------------------------------------------------|
+| `$BICHARD_REDIRECT_URL`          | `"https://localhost:9443/bichard-ui/Authenticate"` | The URL to redirect to with a token as a GET parameter when authentication is successful   |
+| `$DB_HOST`                       | `"localhost"`                                      | The hostname of the database server                                                        |
+| `$DB_USER`                       | `"bichard"`                                        | The username to use when connecting to the database                                        |
+| `$DB_PASSWORD`                   | `"password"`                                       | The password to use when connecting to the database                                        |
+| `$DB_DATABASE`                   | `"bichard"`                                        | The name of the database containing the user information                                   |
+| `$DB_PORT`                       | `5432`                                             | The port number to connect to the database on                                              |
+| `$DB_SSL`                        | `false`                                            | Whether to use SSL when connecting to the database                                         |
+| `$EMAIL_VERIFICATION_EXPIRES_IN` | `30`                                               | The number of minutes after which the email verification links will expire                 |
+| `$INCORRECT_DELAY`               | `10`                                               | The amount of time (in seconds) to wait between successive login attemps for the same user |
+| `$TOKEN_EXPIRES_IN`              | `"5 seconds"`                                      | The amount of time the tokens should be valid for after issuing                            |
+| `$TOKEN_ISSUER`                  | `"Bichard"`                                        | The string to use as the token issuer (`iss`)                                              |
+| `$TOKEN_QUERY_PARAM_NAME`        | `"token"`                                          | The name to use for the token query parameter when redirecting to `$BICHARD_REDIRECT_URL`  |
+| `$TOKEN_SECRET`                  | `"OliverTwist"`                                    | The HMAC secret to use for signing the tokens                                              |
 
 These can be passed through to the docker container with the `-e` flag, for example:
 
@@ -57,31 +68,24 @@ $ docker run \
    user-service
 ```
 
-### Authentication Mechanism
+### Configuring the database connection
 
-By default, the user-service will validate login attempts against a [static list of users](/src/data/users.ts).
+The user-service requires a connection to the Bichard PostgreSQL database. The defaults for the database connection parameters are set up to work when the user-service is running locally (see [Running the app locally](#running-the-app-locally) below).
 
-In order to validate users against a local instance of the Bichard Postgres database, you need to:
+However, this means that if you're running the user-service inside Docker, you'll need to pass through the `$DB_HOST` environment variable to configure the database connection:
 
-1. Spin up a local instance of the database (if you don't already have one running):
-   ```shell
-   $ cd /path/to/bichard7-next
-   $ make run-pg
-   ```
+```shell
+$ cd /path/to/bichard7-next-user-service
+$ docker run \
+   -p 3443:443 \
+   -e DB_HOST=172.17.0.1 \
+   user-service
 
-1. Pass through the environment variables to turn on database-backed auth, and to specify the docker host as the database host:
-   ```shell
-   $ cd /path/to/bichard7-next-user-service
-   $ docker run \
-      -p 3443:443 \
-      -e DB_AUTH=true \
-      -e DB_AUTH_HOST=host.docker.internal
+# Or, a shortcut to run the above:
+$ make run
+```
 
-   # Or, a shortcut to run the above:
-   $ make run-db
-   ```
-
-To customise other database connection parameters, see the `$DB_AUTH_*` parameters in [the table above](#Configuration). The other database configuration defaults should be sufficient for connceting to a local instance of the database.
+To customise other database connection parameters, see the `$DB_*` parameters in [the table above](#Configuration). The other database configuration defaults should be sufficient for connceting to a local instance of the database.
 
 ### SSL Certificates
 
@@ -154,6 +158,24 @@ Cypress has a UI that enables individual tests to be run and debugged in a visib
 ```shell
 $ npm run cypress:open
 ```
+
+####Snapshot testing for React components
+
+Snapshot testing is a very useful tool whenever you want to make sure your UI does not change unexpectedly. So, React components test against a snapshot of the actual DOM nodes.
+
+When you make changes in a React component that results in changes in the DOM nodes, the following might have happened:
+- Changes you made have changed the behavior of the component that you didn't expect: **Update the code until test passes**
+- Changes you made have changed the behavior of the component that is as expected: **Update the snapshot**
+
+To update snapshots run the following command:
+
+```shell
+npm run test:unit -- -u
+```
+
+Check the snapshot before pushing it to the repository to ensure that the generated markup is as you expect.
+
+For more details, check [Jest documentation](https://jestjs.io/docs/snapshot-testing) and [React testing library](https://testing-library.com/docs/react-testing-library/api/#render).
 
 ### Code formatting
 

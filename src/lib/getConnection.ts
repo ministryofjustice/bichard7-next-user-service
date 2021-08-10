@@ -9,16 +9,16 @@ const getConnection = (): any => {
   }
 
   const {
-    databaseAuthenticator: { dbHost, dbPort, dbDatabase, dbUser, dbPassword, dbSsl }
+    database: { host, port, database, user, password, ssl }
   } = config
 
   connection = pgPromise()({
-    host: dbHost,
-    port: dbPort,
-    database: dbDatabase,
-    user: dbUser,
-    password: dbPassword,
-    ssl: dbSsl
+    host,
+    port,
+    database,
+    user,
+    password,
+    ssl
   })
 
   return connection

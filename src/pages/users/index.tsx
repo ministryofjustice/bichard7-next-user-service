@@ -1,10 +1,11 @@
 import Layout from "components/Layout"
 import Head from "next/head"
-import Table, { TableHeaders, StringMap } from "components/Table"
+import { Table, TableHeaders } from "components/Table"
 import { GetServerSideProps } from "next"
 import { getAllUsers } from "useCases"
 import getConnection from "lib/getConnection"
 import isError from "lib/isError"
+import KeyValuePair from 'types/KeyValuePair'
 
 export const getServerSideProps: GetServerSideProps = async () => {
   const connection = getConnection()
@@ -27,7 +28,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
 }
 
 interface Props {
-  allUsers: StringMap[] | null
+  allUsers: KeyValuePair<string, string>[] | null
 }
 
 const tableHeaders: TableHeaders = [

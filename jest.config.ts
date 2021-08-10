@@ -2,7 +2,10 @@ import type { Config } from "@jest/types"
 
 const config: Config.InitialOptions = {
   preset: "ts-jest",
-  testEnvironment: "node",
+  testEnvironment: "jsdom",
+  transform: {
+    "\\.[jt]sx?$": "babel-jest"
+  },
   globals: {
     "ts-jest": {
       tsconfig: "test/tsconfig.json"

@@ -1,6 +1,6 @@
 describe("User", () => {
   describe("Display list of users", () => {
-    beforeEach(async () => {
+    before(async () => {
       await cy.task("db:seed:users")
     })
 

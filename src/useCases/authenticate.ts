@@ -1,5 +1,5 @@
 import { ITask } from "pg-promise"
-import { UserCredentials, UserGroup } from "lib/User"
+import { UserGroup } from "lib/User"
 import { compare } from "lib/shiro"
 import config from "lib/config"
 
@@ -32,7 +32,8 @@ const getUserWithInterval = async (task: ITask<unknown>, params: any[]) => {
     post_code,
     email,
     phone_number,
-    password
+    password,
+    email_verification_code
   FROM br7own.users
   WHERE email = $1
     AND last_login_attempt < NOW() - INTERVAL '$2 seconds'`
@@ -66,22 +67,29 @@ const updateUserLoginTimestamp = async (task: ITask<unknown>, emailAddress: stri
   await task.none(updateUserQuery, [emailAddress])
 }
 
-const authenticate = async (credentials: UserCredentials, connection: any) => {
-  const invalidCredentialsError = new Error("Invalid credentials")
+const authenticate = async (connection: any, emailAddress: string, password: string, verificationCode: string) => {
+  
+  const invalidCredentialsError = new Error("Invalid credentials or invalid verification")
+  
+  if (!emailAddress || !password || !verificationCode) {
+    return new Error()
+  }
 
   try {
     const user = await connection.tx(async (task: ITask<unknown>) => {
-      const u = await getUserWithInterval(task, [credentials.emailAddress, config.incorrectDelay])
-      updateUserLoginTimestamp(task, credentials.emailAddress)
+      const u = await getUserWithInterval(task, [emailAddress, config.incorrectDelay])
+      updateUserLoginTimestamp(task, emailAddress)
       return u
     })
 
-    const isAuthenticated = await compare(credentials.password, user.password)
+    const isAuthenticated = await compare(password, user.password)
+    const isVerified = verificationCode === user.verificationCode
 
-    if (isAuthenticated) {
+    if (isAuthenticated && isVerified) {
       return user
+    } else {
+      return invalidCredentialsError
     }
-    return invalidCredentialsError
   } catch (error) {
     return error
   }
