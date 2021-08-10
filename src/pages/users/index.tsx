@@ -5,7 +5,7 @@ import { GetServerSideProps } from "next"
 import { getAllUsers } from "useCases"
 import getConnection from "lib/getConnection"
 import isError from "lib/isError"
-import KeyValuePair from 'types/KeyValuePair'
+import KeyValuePair from "types/KeyValuePair"
 
 export const getServerSideProps: GetServerSideProps = async () => {
   const connection = getConnection()

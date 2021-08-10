@@ -20,8 +20,8 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
       const connection = getConnection()
       const sent = sendVerificationEmail(connection, emailAddress)
 
-      if (isError(sent)){
-        console.error(sent);
+      if (isError(sent)) {
+        console.error(sent)
         return {
           props: { invalidEmail: true }
         }

@@ -68,9 +68,8 @@ const updateUserLoginTimestamp = async (task: ITask<unknown>, emailAddress: stri
 }
 
 const authenticate = async (connection: any, emailAddress: string, password: string, verificationCode: string) => {
-  
   const invalidCredentialsError = new Error("Invalid credentials or invalid verification")
-  
+
   if (!emailAddress || !password || !verificationCode) {
     return new Error()
   }
@@ -87,9 +86,8 @@ const authenticate = async (connection: any, emailAddress: string, password: str
 
     if (isAuthenticated && isVerified) {
       return user
-    } else {
-      return invalidCredentialsError
     }
+    return invalidCredentialsError
   } catch (error) {
     return error
   }

@@ -1,3 +1,5 @@
+/* eslint-disable import/first */
+/* eslint-disable import/order */
 /// <reference types="cypress" />
 // ***********************************************************
 // This example plugins/index.js can be used to load plugins
@@ -21,8 +23,8 @@ module.exports = async (on, config) => {
       return result.email_verification_code
     },
 
-    async seedUsers(){
-      return await createUsers()
+    seedUsers() {
+      return createUsers()
     }
   })
 }

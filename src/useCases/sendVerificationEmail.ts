@@ -14,7 +14,8 @@ const storeVerificationCode = async (connection: any, emailAddress: string, veri
   `
   try {
     await connection.none(storeVerificationQuery, [verificationCode, emailAddress])
-  } catch (error){
+    return undefined
+  } catch (error) {
     return error
   }
 }
@@ -37,14 +38,14 @@ const sendEmail = (emailAddress: string, verificationCode: string) => {
     ${url.href}
   `)
 
-  return true;
+  return true
 }
 
 const sendVerificationEmail = async (connection: any, emailAddress: string) => {
   const verificationCode = generateVerificationCode()
   try {
     await storeVerificationCode(connection, emailAddress, verificationCode)
-  } catch (error){
+  } catch (error) {
     return error
   }
   return sendEmail(emailAddress, verificationCode)
