@@ -85,3 +85,15 @@ jobs:
           path: ./cypress/videos
       - store_artifacts:
           path: ./cypress/screenshots
+
+workflows:
+  version: 2
+  build-and-test:
+    jobs:
+      - build
+      - ui_integration_test:
+          requires:
+            - build
+      - unit_test:
+          requires:
+            - build
