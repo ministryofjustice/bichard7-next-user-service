@@ -1,10 +1,10 @@
 import jwt from "jsonwebtoken"
-import { TokenPayload } from "lib/Token"
+import { BichardTokenPayload } from "lib/token/bichardToken"
 import { User } from "lib/User"
 import config from "lib/config"
 
 const getSignedToken = (user: User) => {
-  const payload: TokenPayload = {
+  const payload: BichardTokenPayload = {
     username: user.username,
     exclusionList: user.exclusionList,
     inclusionList: user.inclusionList,
