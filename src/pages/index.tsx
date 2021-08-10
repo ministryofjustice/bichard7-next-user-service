@@ -42,7 +42,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
         }
       }
 
-      if (user && token) {
+      if (token) {
         const url = new URL(config.bichardRedirectURL)
         url.searchParams.append(config.tokenQueryParamName, token)
 
