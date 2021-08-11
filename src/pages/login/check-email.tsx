@@ -9,7 +9,9 @@ const CheckEmail = () => (
     </Head>
     <Layout>
       <GridRow>
-        <h1 className="govuk-heading-xl">{"Check your email"}</h1>
+        <h1 data-test="check-email" className="govuk-heading-xl">
+          {"Check your email"}
+        </h1>
         <p className="govuk-body">
           {"In order to log in, you need to click the verification link that has been sent to your email address."}
         </p>
