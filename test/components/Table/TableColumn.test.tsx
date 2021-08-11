@@ -3,7 +3,7 @@ import { render } from "@testing-library/react"
 import { ReactNode } from "react"
 import KeyValuePair from "types/KeyValuePair"
 
-it("should render the field value when component is not provided", () => {
+it("should render the field value when custom column component is not provided", () => {
   const item = { dummyField: "DummyValue" }
 
   const WrapperComponent = ({ children }: { children: ReactNode }) => (
@@ -20,7 +20,7 @@ it("should render the field value when component is not provided", () => {
   expect(container).toMatchSnapshot()
 })
 
-it("should render the component when component is provided", () => {
+it("should render the component when custom column component is provided", () => {
   const dummyItem = { dummyField: "DummyValue" }
 
   type ColumnComponentProps = { item?: KeyValuePair<string, string>; field: string }
