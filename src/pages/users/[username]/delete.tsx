@@ -93,7 +93,9 @@ const Delete = ({ user, showInputNotMatchingError }: Props) => {
             />
           </Fieldset>
           <ButtonGroup>
-            <Button variant="warning">{"Delete account"}</Button>
+            <Button variant="warning" noDoubleClick>
+              {"Delete account"}
+            </Button>
             <Link href={`/users/${user.username}`}>{"Cancel"}</Link>
           </ButtonGroup>
         </form>
