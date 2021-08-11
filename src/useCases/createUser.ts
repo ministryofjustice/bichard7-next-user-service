@@ -39,10 +39,10 @@ export default async (connection: any, userCreateDetails: UserCreateDetails): Pr
         '',
         '',
         '',
-        ${userCreateDetails.postCode},
-        ${userCreateDetails.postalAddress},
-        ${userCreateDetails.endorsedBy},
-        ${userCreateDetails.organisation}
+        '${userCreateDetails.postCode}',
+        '${userCreateDetails.postalAddress}',
+        '${userCreateDetails.endorsedBy}',
+        '${userCreateDetails.organisation}'
       )
     `
   let errorMessage = ""

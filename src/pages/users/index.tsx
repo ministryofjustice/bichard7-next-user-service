@@ -46,7 +46,7 @@ const users = ({ allUsers }: Props) => (
       <title>{"Users"}</title>
     </Head>
     <Layout>
-      <a href="/newUser">
+      <a href="/users/newUser">
         <Button>{"Add user"}</Button>
       </a>
       {allUsers && <Table tableHeaders={tableHeaders} tableTitle="Users" tableData={allUsers} />}
