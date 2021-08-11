@@ -1,28 +1,35 @@
 import Layout from "components/Layout"
 import Button from "components/Button"
 import Head from "next/head"
+import { Table, TableHeaders } from "components/Table"
 import { GetServerSideProps } from "next"
-import { Table, LinkColumn, TableHeaders } from "components/Table"
-import Users from "lib/Users"
-import { User } from "lib/User"
+import { getAllUsers } from "useCases"
+import getConnection from "lib/getConnection"
+import isError from "lib/isError"
 import KeyValuePair from "types/KeyValuePair"
-import { isSuccess } from "../../lib/UsersResult"
 
 export const getServerSideProps: GetServerSideProps = async () => {
-  let usersList = null
-  const result = await Users.list()
+  const connection = getConnection()
+  const allUsers = await getAllUsers(connection)
 
-  if (isSuccess(result)) {
-    usersList = result
+  if (isError(allUsers)) {
+    console.error(allUsers)
+    return {
+      props: {
+        allUsers: null
+      }
+    }
   }
 
   return {
-    props: { usersList }
+    props: {
+      allUsers
+    }
   }
 }
 
 interface Props {
-  usersList: KeyValuePair<string, string>[] | null
+  allUsers: KeyValuePair<string, string>[] | null
 }
 
 const tableHeaders: TableHeaders = [
@@ -33,7 +40,7 @@ const tableHeaders: TableHeaders = [
   ["emailAddress", "Email address"]
 ]
 
-const ListUsers = ({ usersList }: Props) => (
+const users = ({ allUsers }: Props) => (
   <>
     <Head>
       <title>{"Users"}</title>
@@ -42,13 +49,9 @@ const ListUsers = ({ usersList }: Props) => (
       <a href="/newUser">
         <Button>{"Add user"}</Button>
       </a>
-      {usersList && (
-        <Table tableHeaders={tableHeaders} tableTitle="Users" tableData={usersList}>
-          <LinkColumn field="username" href={(user) => `users/${(user as User).username}`} />
-        </Table>
-      )}
+      {allUsers && <Table tableHeaders={tableHeaders} tableTitle="Users" tableData={allUsers} />}
     </Layout>
   </>
 )
 
-export default ListUsers
+export default users

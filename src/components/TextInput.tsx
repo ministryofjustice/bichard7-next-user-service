@@ -3,12 +3,14 @@ interface Props {
   label?: string
   name?: string
   type?: string
+  width?: string
   isError?: boolean
 }
 
-const TextInput = ({ id, label, name, type, isError = false }: Props) => {
+const TextInput = ({ id, label, name, type, width, isError = false }: Props) => {
   const inputName = name || id
-  const className = isError ? "govuk-input govuk-input--error" : "govuk-input"
+  const errorClassName = isError ? " govuk-input--error" : ""
+  const widthClassName = width ? ` govuk-input--width-${width}` : ""
 
   return (
     <div className="govuk-form-group">
@@ -17,7 +19,7 @@ const TextInput = ({ id, label, name, type, isError = false }: Props) => {
           {label}
         </label>
       )}
-      <input className={className} id={id} name={inputName} type={type} />
+      <input className={`govuk-input${widthClassName}${errorClassName}`} id={id} name={inputName} type={type} />
     </div>
   )
 }
