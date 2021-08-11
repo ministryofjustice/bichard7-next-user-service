@@ -14,8 +14,8 @@ describe("Logging In", () => {
     })
 
     describe("Log in flow", () => {
-      before((done) => {
-        cy.task("seedUsers").then(() => done())
+      before(async () => {
+        await cy.task("seedUsers")
       })
 
       it("should initially only ask for an email", () => {
@@ -66,12 +66,15 @@ describe("Logging In", () => {
         cy.get("input[type=password]").should("be.visible")
       })
 
-      it("should display an error message if an incorrect password is entered on the verification page", () => {
-        const token = validToken("bichard01@example.com", "foobar")
-        cy.visit(`/login/verify?token=${token}`)
-        cy.get("input[type=password]").type("foobar")
-        cy.get("button[type=submit]").click()
-        cy.get(".govuk-error-summary").should("be.visible").contains("h2", "Invalid credentials")
+      it("should display an error message if an incorrect password is entered on the verification page", (done) => {
+        cy.task("seedUsers").then(() => {
+          const token = validToken("bichard01@example.com", "foobar")
+          cy.visit(`/login/verify?token=${token}`)
+          cy.get("input[type=password]").type("foobar")
+          cy.get("button[type=submit]").click()
+          cy.get(".govuk-error-summary").should("be.visible").contains("h2", "Invalid credentials")
+          done()
+        })
       })
 
       it("should display an error if password is correct but token contains wrong verification code", () => {
