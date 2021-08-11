@@ -74,9 +74,9 @@ jobs:
           name: Install Cypress
           command: ./.circleci/scripts/install-cypress.sh
       - run_bichard_database
-      - run:
-          name: Run UI tests
-          command: npm run test:ui
+      # - run:
+      #    name: Run UI tests
+      #    command: npm run test:ui
       - store_artifacts:
           path: ./cypress/videos
       - store_artifacts:
