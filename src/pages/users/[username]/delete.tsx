@@ -1,4 +1,3 @@
-/* eslint-disable filenames/match-exported */
 import Layout from "components/Layout"
 import Head from "next/head"
 import { User } from "lib/User"
