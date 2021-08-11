@@ -2,6 +2,7 @@ import { ITask } from "pg-promise"
 import { UserGroup } from "lib/User"
 import { compare } from "lib/shiro"
 import config from "lib/config"
+import Database from "types/Database"
 
 const fetchGroups = async (task: ITask<unknown>, emailAddress: string): Promise<UserGroup[]> => {
   const fetchGroupsQuery = `
@@ -18,7 +19,7 @@ const fetchGroups = async (task: ITask<unknown>, emailAddress: string): Promise<
   return groups
 }
 
-const getUserWithInterval = async (task: ITask<unknown>, params: any[]) => {
+const getUserWithInterval = async (task: ITask<unknown>, params: unknown[]) => {
   const getUserQuery = `
   SELECT
     username,
@@ -69,7 +70,7 @@ const updateUserLoginTimestamp = async (task: ITask<unknown>, emailAddress: stri
   await task.none(updateUserQuery, [emailAddress])
 }
 
-const authenticate = async (connection: any, emailAddress: string, password: string, verificationCode: string) => {
+const authenticate = async (connection: Database, emailAddress: string, password: string, verificationCode: string) => {
   const invalidCredentialsError = new Error("Invalid credentials or invalid verification")
 
   if (!emailAddress || !password || !verificationCode) {
