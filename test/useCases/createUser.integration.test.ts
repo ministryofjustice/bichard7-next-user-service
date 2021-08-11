@@ -4,8 +4,8 @@ import createUser from "useCases/createUser"
 import User from "types/User"
 import getUserByUsername from "useCases/getUserByUsername"
 import { isError } from "types/Result"
-import setupSingleUserForTest from "./setupSingleUserForTest"
-import cleanupSingleUserForTest from "./cleanupSingleUserForTest"
+import deleteUser from "./deleteUser"
+import insertUser from "./insertUser"
 
 const connection = getConnection()
 
@@ -37,7 +37,8 @@ const newUser = {
 
 describe("DeleteUserUseCase", () => {
   beforeEach(async () => {
-    await setupSingleUserForTest(connection, previousUser)
+    await deleteUser(connection, previousUser)
+    await insertUser(connection, previousUser, false)
   })
 
   afterAll(() => {
@@ -81,7 +82,7 @@ describe("DeleteUserUseCase", () => {
   })
 
   it("should be possible to add a user to my force", async () => {
-    cleanupSingleUserForTest(connection, newUser)
+    await deleteUser(connection, newUser)
     const expectedError = new Error("")
     const createUserDetails: UserCreateDetails = {
       username: newUser.username,

@@ -1,6 +1,7 @@
 import User from "types/User"
 
-export default async (connection: any, expectedUser: User): Promise<void> => {
+export default async (connection: any, expectedUser: User, isDeleted: boolean): Promise<void> => {
+  const deletedAt = isDeleted ? new Date() : null
   const deleteQuery = `
     DELETE FROM br7own.users WHERE username = $1
   `
