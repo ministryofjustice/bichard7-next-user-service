@@ -10,29 +10,29 @@ import insertUser from "./insertUser"
 const connection = getConnection()
 
 const previousUser = {
-  username: "DummyCreateUsername",
-  emailAddress: "DummyCreateEmailAddress",
-  exclusionList: "DummyCreateExclusionList",
-  inclusionList: "DummyCreateInclusionList",
-  endorsedBy: "DummyCreateEndorsedBy",
-  orgServes: "DummyCreateOrgServes",
-  forenames: "DummyCreateForenames",
-  postalAddress: "DummyCreatePostalAddress",
-  postCode: "AB1 1BA Create",
-  phoneNumber: "DummyCreatePhoneNumber"
+  username: "CreateUsername",
+  emailAddress: "CreateEmailAddress",
+  exclusionList: "CreateExclusionList",
+  inclusionList: "CreateInclusionList",
+  endorsedBy: "CreateEndorsedBy",
+  orgServes: "CreateOrgServes",
+  forenames: "CreateForenames",
+  postalAddress: "CreatePostalAddress",
+  postCode: "AC1 1CA",
+  phoneNumber: "CreatePhoneNumber"
 } as unknown as User
 
 const newUser = {
-  username: "DummyCreateUsername2",
-  emailAddress: "DummyCreateEmailAddress2",
-  exclusionList: "DummyCreateExclusionList2",
-  inclusionList: "DummyCreateInclusionList2",
-  endorsedBy: "DummyCreateEndorsedBy2",
-  orgServes: "DummyCreateOrgServes2",
-  forenames: "DummyCreateForenames2",
-  postalAddress: "DummyCreatePostalAddress2",
-  postCode: "AB2 2BA Create",
-  phoneNumber: "DummyCreatePhoneNumber2"
+  username: "CreateUsername2",
+  emailAddress: "CreateEmailAddress2",
+  exclusionList: "CreateExclusionList2",
+  inclusionList: "CreateInclusionList2",
+  endorsedBy: "CreateEndorsedBy2",
+  orgServes: "CreateOrgServes2",
+  forenames: "CreateForenames2",
+  postalAddress: "CreatePostalAddress2",
+  postCode: "AC2 2CA",
+  phoneNumber: "CreatePhoneNumber2"
 } as unknown as User
 
 describe("DeleteUserUseCase", () => {
