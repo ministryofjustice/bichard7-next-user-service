@@ -1,6 +1,6 @@
 import { IncomingMessage } from "http"
 import parseFormData from "lib/parseFormData"
-import { User } from "lib/User"
+import { User } from "types/User"
 
 export default async (user: User, request: IncomingMessage): Promise<boolean> => {
   const { deleteAccountConfirmation } = (await parseFormData(request)) as { deleteAccountConfirmation: string }

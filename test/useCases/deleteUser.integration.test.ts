@@ -2,7 +2,7 @@
 jest.mock("lib/parseFormData")
 
 import { IncomingMessage } from "http"
-import { User } from "lib/User"
+import { User } from "types/User"
 import parseFormData from "lib/parseFormData"
 import deleteUser from "useCases/deleteUser"
 import getConnection from "lib/getConnection"
