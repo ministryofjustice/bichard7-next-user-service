@@ -6,7 +6,9 @@ import Head from "next/head"
 import TextInput from "components/TextInput"
 import { GetServerSideProps } from "next"
 import parseFormData from "lib/parseFormData"
-import sendVerificationEmail from "lib/sendVerificationEmail"
+import { sendVerificationEmail } from "useCases"
+import getConnection from "lib/getConnection"
+import isError from "lib/isError"
 
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   let invalidEmail = false
@@ -15,7 +17,15 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
     const { emailAddress } = (await parseFormData(req)) as { emailAddress: string }
 
     if (emailAddress) {
-      sendVerificationEmail(emailAddress)
+      const connection = getConnection()
+      const sent = await sendVerificationEmail(connection, emailAddress)
+
+      if (isError(sent)) {
+        console.error(sent)
+        return {
+          props: { invalidEmail: true }
+        }
+      }
 
       return {
         redirect: {
