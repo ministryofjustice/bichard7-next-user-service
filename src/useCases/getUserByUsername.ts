@@ -17,7 +17,7 @@ export default (db: Database, username: string): PromiseResult<User | null> => {
         post_code AS "postCode",
         phone_number AS "phoneNumber"
       FROM br7own.users
-      WHERE username = $1
+      WHERE username = $1 AND deleted_at IS NULL
     `
   return db.oneOrNone<User>(query, [username]).catch((error) => error)
 }
