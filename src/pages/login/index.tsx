@@ -8,7 +8,7 @@ import { GetServerSideProps } from "next"
 import parseFormData from "lib/parseFormData"
 import { sendVerificationEmail } from "useCases"
 import getConnection from "lib/getConnection"
-import isError from "lib/isError"
+import { isError } from "types/Result"
 
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   let invalidEmail = false

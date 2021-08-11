@@ -1,17 +1,18 @@
 import { randomDigits } from "crypto-secure-random-digit"
-import isError from "lib/isError"
 import { EmailTokenPayload, generateEmailToken } from "lib/token/emailToken"
+import Database from "types/Database"
+import { isError } from "types/Result"
 
 const generateVerificationCode = () => {
   return randomDigits(6).join("")
 }
 
-const storeVerificationCode = async (connection: any, emailAddress: string, verificationCode: string) => {
+const storeVerificationCode = async (connection: Database, emailAddress: string, verificationCode: string) => {
   const storeVerificationQuery = `
     UPDATE br7own.users
     SET email_verification_code = $1,
       email_verification_generated = NOW()
-    WHERE email = $2
+    WHERE email = $2 AND deleted_at IS NULL
   `
   try {
     await connection.none(storeVerificationQuery, [verificationCode, emailAddress])
@@ -42,7 +43,7 @@ const sendEmail = (emailAddress: string, verificationCode: string) => {
   return true
 }
 
-const sendVerificationEmail = async (connection: any, emailAddress: string) => {
+const sendVerificationEmail = async (connection: Database, emailAddress: string) => {
   const verificationCode = generateVerificationCode()
   let stored
   try {

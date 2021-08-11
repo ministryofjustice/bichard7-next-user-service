@@ -1,3 +1,5 @@
+import Database from "types/Database"
+
 export type User = {
   username: string
   forenames: string
@@ -8,7 +10,7 @@ export type User = {
 
 export type Users = User[]
 
-const getAllUsers = async (connection: any): Promise<Users> => {
+const getAllUsers = async (connection: Database): Promise<Users> => {
   let users
 
   const getAllUsersQuery = `
@@ -19,6 +21,7 @@ const getAllUsers = async (connection: any): Promise<Users> => {
         phone_number,
         email
       FROM br7own.users
+      WHERE deleted_at IS NULL
     `
   try {
     users = await connection.any(getAllUsersQuery)

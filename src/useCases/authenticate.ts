@@ -2,6 +2,7 @@ import { ITask } from "pg-promise"
 import UserGroup from "types/UserGroup"
 import { compare } from "lib/shiro"
 import config from "lib/config"
+import Database from "types/Database"
 
 const fetchGroups = async (task: ITask<unknown>, emailAddress: string): Promise<UserGroup[]> => {
   const fetchGroupsQuery = `
@@ -11,14 +12,14 @@ const fetchGroups = async (task: ITask<unknown>, emailAddress: string): Promise<
         ON g.id = ug.group_id
       INNER JOIN br7own.users u
         ON ug.user_id = u.id
-      WHERE u.email = $1
+      WHERE u.email = $1 AND u.deleted_at IS NULL
     `
   let groups = await task.any(fetchGroupsQuery, [emailAddress])
   groups = groups.map((group: { name: string }) => group.name.replace(/_grp$/, ""))
   return groups
 }
 
-const getUserWithInterval = async (task: ITask<unknown>, params: any[]) => {
+const getUserWithInterval = async (task: ITask<unknown>, params: unknown[]) => {
   const getUserQuery = `
   SELECT
     username,
@@ -36,7 +37,8 @@ const getUserWithInterval = async (task: ITask<unknown>, params: any[]) => {
     email_verification_code
   FROM br7own.users
   WHERE email = $1
-    AND last_login_attempt < NOW() - INTERVAL '$2 seconds'`
+    AND last_login_attempt < NOW() - INTERVAL '$2 seconds'
+    AND deleted_at IS NULL`
 
   const user = await task.one(getUserQuery, params)
 
@@ -68,7 +70,7 @@ const updateUserLoginTimestamp = async (task: ITask<unknown>, emailAddress: stri
   await task.none(updateUserQuery, [emailAddress])
 }
 
-const authenticate = async (connection: any, emailAddress: string, password: string, verificationCode: string) => {
+const authenticate = async (connection: Database, emailAddress: string, password: string, verificationCode: string) => {
   const invalidCredentialsError = new Error("Invalid credentials or invalid verification")
 
   if (!emailAddress || !password || !verificationCode) {
