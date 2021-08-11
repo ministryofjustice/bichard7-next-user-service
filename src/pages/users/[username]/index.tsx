@@ -1,6 +1,6 @@
 import Layout from "components/Layout"
 import Head from "next/head"
-import { User } from "types/User"
+import User from "types/User"
 import { GetServerSideProps } from "next"
 import { Summary, SummaryItem } from "components/Summary"
 import BackLink from "components/BackLink"

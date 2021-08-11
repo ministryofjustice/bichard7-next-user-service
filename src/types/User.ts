@@ -1,6 +1,6 @@
 import UserGroup from "./UserGroup"
 
-export interface User {
+interface User {
   username: string
   exclusionList: string[]
   inclusionList: string[]
@@ -14,3 +14,5 @@ export interface User {
   phoneNumber: string
   groups: UserGroup[]
 }
+
+export default User
