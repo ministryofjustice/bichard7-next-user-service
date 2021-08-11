@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken"
 import { BichardTokenPayload } from "lib/token/bichardToken"
-import { User } from "lib/User"
+import { User } from "types/User"
 import config from "lib/config"
 
 const getSignedToken = (user: User) => {

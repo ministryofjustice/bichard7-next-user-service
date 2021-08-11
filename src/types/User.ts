@@ -1,16 +1,4 @@
-export interface UserCredentials {
-  emailAddress: string
-  password: string
-  verificationCode: string
-}
-
-export type UserGroup =
-  | "B7Allocator"
-  | "B7Audit"
-  | "B7ExceptionHandler"
-  | "B7GeneralHandler"
-  | "B7Supervisor"
-  | "B7TriggerHandler"
+import UserGroup from "./UserGroup"
 
 export interface User {
   username: string

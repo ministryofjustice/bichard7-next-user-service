@@ -1,4 +1,5 @@
 import Layout from "components/Layout"
+import Button from "components/Button"
 import Head from "next/head"
 import { LinkColumn, Table, TableHeaders } from "components/Table"
 import { GetServerSideProps } from "next"
@@ -46,6 +47,9 @@ const Users = ({ allUsers }: Props) => (
       <title>{"Users"}</title>
     </Head>
     <Layout>
+      <a href="/users/newUser">
+        <Button>{"Add user"}</Button>
+      </a>
       {allUsers && (
         <Table tableHeaders={tableHeaders} tableTitle="Users" tableData={allUsers}>
           <LinkColumn field="username" href={(user) => `users/${(user as User).username}`} />

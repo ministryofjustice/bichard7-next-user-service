@@ -1,5 +1,5 @@
 import { ITask } from "pg-promise"
-import { UserGroup } from "lib/User"
+import UserGroup from "types/UserGroup"
 import { compare } from "lib/shiro"
 import config from "lib/config"
 import Database from "types/Database"
