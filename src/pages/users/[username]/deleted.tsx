@@ -1,6 +1,7 @@
 import Layout from "components/Layout"
 import Head from "next/head"
 import BackLink from "components/BackLink"
+import SuccessBanner from "components/SuccessBanner"
 
 const Deleted = () => (
   <>
@@ -8,14 +9,9 @@ const Deleted = () => (
       <title>{"Users"}</title>
     </Head>
     <Layout>
-      <div className="govuk-grid-row">
-        <div className="govuk-grid-column-two-thirds">
-          <BackLink href="/users" />
+      <BackLink href="/users" />
 
-          <h1 className="govuk-heading-l">{"Deleted"}</h1>
-          <p className="govuk-body">{"User has been deleted successfully."}</p>
-        </div>
-      </div>
+      <SuccessBanner message={"User has been deleted successfully."} />
     </Layout>
   </>
 )
