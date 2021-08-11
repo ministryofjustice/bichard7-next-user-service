@@ -5,6 +5,7 @@ import TextInput from "components/TextInput"
 import SuccessBanner from "components/SuccessBanner"
 import { GetServerSideProps } from "next"
 import { UserCreateDetails } from "lib/UserCreateDetails"
+import getConnection from "lib/getConnection"
 import parseFormData from "lib/parseFormData"
 import createUser from "useCases/createUser"
 
@@ -37,7 +38,8 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
     }
 
     if (!missingMandatory) {
-      const result = await createUser(db, userCreateDetails)
+      const connection = getConnection()
+      const result = await createUser(connection, userCreateDetails)
       errorMessage = result.error.message
       if (errorMessage === "") {
         successMessage = `User ${userCreateDetails.username} has ben successfully created`

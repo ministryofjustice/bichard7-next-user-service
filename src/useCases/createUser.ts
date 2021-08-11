@@ -1,15 +1,14 @@
-import { CreateUserResult } from "lib/UsersResult"
-import Database from "types/Database"
+import { CreateUserResult } from "lib/CreateUserResult"
 import { UserCreateDetails } from "lib/UserCreateDetails"
 import isUsernameUnique from "./isUsernameUnique"
 import isEmailUnique from "./IsEmailUnique"
 
-export default async (db: Database, userCreateDetails: UserCreateDetails): Promise<CreateUserResult> => {
-  let checkData = await isUsernameUnique(userCreateDetails.username)
+export default async (connection: any, userCreateDetails: UserCreateDetails): Promise<CreateUserResult> => {
+  let checkData = await isUsernameUnique(connection, userCreateDetails.username)
   if (checkData.message !== "") {
     return { result: "", error: checkData }
   }
-  checkData = await isEmailUnique(userCreateDetails.emailAddress)
+  checkData = await isEmailUnique(connection, userCreateDetails.emailAddress)
   if (checkData.message !== "") {
     return { result: "", error: checkData }
   }
@@ -49,7 +48,7 @@ export default async (db: Database, userCreateDetails: UserCreateDetails): Promi
   let errorMessage = ""
   let result = ""
   try {
-    result = (await db.any(query)).toString()
+    result = (await connection.any(query)).toString()
   } catch (e) {
     errorMessage = "Error: Failed to add user"
   }
