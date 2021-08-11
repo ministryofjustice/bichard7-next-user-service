@@ -1,5 +1,5 @@
 interface Props {
-  message?: string
+  message: string
 }
 
 const SuccessBanner = ({ message }: Props) => {

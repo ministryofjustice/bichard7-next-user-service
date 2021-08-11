@@ -12,6 +12,17 @@ export default async (connection: any, userCreateDetails: UserCreateDetails): Pr
   if (checkData.message !== "") {
     return { result: "", error: checkData }
   }
+  const {
+    username,
+    forenames,
+    surname,
+    phoneNumber,
+    emailAddress,
+    postCode,
+    postalAddress,
+    endorsedBy,
+    organisation
+  }: UserCreateDetails = userCreateDetails
 
   const query = `
       INSERT INTO br7own.users(
@@ -30,25 +41,37 @@ export default async (connection: any, userCreateDetails: UserCreateDetails): Pr
         org_serves
       )
       VALUES (
-        '${userCreateDetails.username}',
-        '${userCreateDetails.forenames}',
-        '${userCreateDetails.surname}',
-        '${userCreateDetails.phoneNumber}',
-        '${userCreateDetails.emailAddress}',
+        $1,
+        $2,
+        $3,
+        $4,
+        $5,
         true,
         '',
         '',
         '',
-        '${userCreateDetails.postCode}',
-        '${userCreateDetails.postalAddress}',
-        '${userCreateDetails.endorsedBy}',
-        '${userCreateDetails.organisation}'
+        $6,
+        $7,
+        $8,
+        $9
       )
     `
   let errorMessage = ""
   let result = ""
   try {
-    result = (await connection.any(query)).toString()
+    result = (
+      await connection.any(query, [
+        username,
+        forenames,
+        surname,
+        phoneNumber,
+        emailAddress,
+        postCode,
+        postalAddress,
+        endorsedBy,
+        organisation
+      ])
+    ).toString()
   } catch (e) {
     errorMessage = "Error: Failed to add user"
   }
