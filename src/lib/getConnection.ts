@@ -1,9 +1,10 @@
 import config from "lib/config"
 import pgPromise from "pg-promise"
+import Database from "types/Database"
 
-let connection: any
+let connection: Database
 
-const getConnection = (): any => {
+const getConnection = (): Database => {
   if (connection) {
     return connection
   }
