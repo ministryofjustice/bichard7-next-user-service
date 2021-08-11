@@ -6,19 +6,24 @@ import Head from "next/head"
 import TextInput from "components/TextInput"
 import { GetServerSideProps } from "next"
 import parseFormData from "lib/parseFormData"
-import { isError } from "lib/AuthenticationResult"
 import config from "lib/config"
-import Authenticator from "lib/Authenticator"
 import { decodeEmailToken, EmailToken } from "lib/token/emailToken"
+import getConnection from "lib/getConnection"
+import { authenticate } from "useCases"
+import { generateBichardToken } from "lib/token/bichardToken"
+import { isError } from "types/Result"
 
 export const getServerSideProps: GetServerSideProps = async ({ req, query }) => {
   try {
     if (req.method === "POST") {
       const { token, password } = (await parseFormData(req)) as { token: EmailToken; password: string }
       const { emailAddress, verificationCode } = decodeEmailToken(token)
-      const result = await Authenticator.authenticate({ emailAddress, password, verificationCode })
 
-      if (isError(result)) {
+      const connection = getConnection()
+      const user = await authenticate(connection, emailAddress, password, verificationCode)
+
+      if (isError(user)) {
+        console.error(user)
         return {
           props: {
             invalidCredentials: true,
@@ -28,8 +33,10 @@ export const getServerSideProps: GetServerSideProps = async ({ req, query }) => 
         }
       }
 
+      const bichardToken = generateBichardToken(user)
+
       const url = new URL(config.bichardRedirectURL)
-      url.searchParams.append(config.tokenQueryParamName, result)
+      url.searchParams.append(config.tokenQueryParamName, bichardToken)
 
       return {
         redirect: {

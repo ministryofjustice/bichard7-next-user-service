@@ -12,7 +12,7 @@ commands:
             - v1-npm-deps-
       - run:
           name: Install node dependencies
-          command: npm install
+          command: npm ci
 
   run_bichard_database:
     description: Check out the b7-next repo and spin up the postgres database
@@ -61,7 +61,7 @@ jobs:
           name: Run unit tests
           command: npm run test:unit
 
-  ui_test:
+  ui_integration_test:
     machine:
       image: ubuntu-2004:202104-01
       docker_layer_caching: true
@@ -81,13 +81,16 @@ jobs:
           path: ./cypress/videos
       - store_artifacts:
           path: ./cypress/screenshots
+      - run:
+          name: Run integration tests
+          command: npm run test:integration
 
 workflows:
   version: 2
   build-and-test:
     jobs:
       - build
-      - ui_test:
+      - ui_integration_test:
           requires:
             - build
       - unit_test:

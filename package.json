@@ -11,7 +11,8 @@
     "lint:fix": "eslint . --fix",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
-    "test:unit": "jest",
+    "test:unit": "jest --testPathIgnorePatterns=\"integration\" \"e2e\"",
+    "test:integration": "jest --testPathPattern=\"integration\"",
     "test:ui": "concurrently --kill-others --success first npm:start npm:cypress:run"
   },
   "dependencies": {

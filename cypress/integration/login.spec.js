@@ -14,6 +14,10 @@ describe("Logging In", () => {
     })
 
     describe("Log in flow", () => {
+      before(async () => {
+        await cy.task("seedUsers")
+      })
+
       it("should initially only ask for an email", () => {
         cy.visit("/login")
         cy.get("input[type=email]").should("be.visible")
@@ -62,12 +66,15 @@ describe("Logging In", () => {
         cy.get("input[type=password]").should("be.visible")
       })
 
-      it("should display an error message if an incorrect password is entered on the verification page", () => {
-        const token = validToken("bichard01@example.com", "foobar")
-        cy.visit(`/login/verify?token=${token}`)
-        cy.get("input[type=password]").type("foobar")
-        cy.get("button[type=submit]").click()
-        cy.get(".govuk-error-summary").should("be.visible").contains("h2", "Invalid credentials")
+      it("should display an error message if an incorrect password is entered on the verification page", (done) => {
+        cy.task("seedUsers").then(() => {
+          const token = validToken("bichard01@example.com", "foobar")
+          cy.visit(`/login/verify?token=${token}`)
+          cy.get("input[type=password]").type("foobar")
+          cy.get("button[type=submit]").click()
+          cy.get(".govuk-error-summary").should("be.visible").contains("h2", "Invalid credentials")
+          done()
+        })
       })
 
       it("should display an error if password is correct but token contains wrong verification code", () => {
@@ -78,34 +85,36 @@ describe("Logging In", () => {
         cy.get(".govuk-error-summary").should("be.visible").contains("h2", "Invalid credentials")
       })
 
-      it("should redirect to Bichard with a token when password and verification code are correct", () => {
+      it("should redirect to Bichard with a token when password and verification code are correct", (done) => {
         const emailAddress = "bichard01@example.com"
+        const password = "password"
 
-        cy.visit("/login")
-        cy.get("input[type=email]").type(emailAddress)
-        cy.get("button[type=submit]").click()
+        cy.task("seedUsers").then(() => {
+          cy.visit("/login")
+          cy.get("input[type=email]").type(emailAddress)
+          cy.get("button[type=submit]").click()
+          cy.get('h1[data-test="check-email"]').should("exist")
+          cy.task("getVerificationCode", emailAddress).then((verificationCode) => {
+            const token = validToken(emailAddress, verificationCode)
 
-        // Wait for verification token to get written to the database
-        // eslint-disable-next-line cypress/no-unnecessary-waiting
-        cy.wait(5000)
+            cy.visit(`/login/verify?token=${token}`)
 
-        cy.task("getVerificationCode", emailAddress).then((verificationCode) => {
-          const token = validToken(emailAddress, verificationCode)
-
-          cy.request({
-            method: "POST",
-            url: `/login/verify`,
-            form: true,
-            followRedirect: false,
-            body: {
-              token,
-              password: "password"
-            }
-          }).then((response) => {
-            expect(response.status).to.eq(302)
-            const { location } = response.headers
-            expect(location).to.match(/^https:\/\/localhost:9443\/bichard-ui\/Authenticate/)
-            expect(location).to.match(/\?token=[A-Za-z0-9_.]+/)
+            cy.request({
+              method: "POST",
+              url: `/login/verify`,
+              form: true,
+              followRedirect: false,
+              body: {
+                token,
+                password
+              }
+            }).then((response) => {
+              expect(response.status).to.eq(302)
+              const { location } = response.headers
+              expect(location).to.match(/^https:\/\/localhost:9443\/bichard-ui\/Authenticate/)
+              expect(location).to.match(/\?token=[A-Za-z0-9_.]+/)
+              done()
+            })
           })
         })
       })

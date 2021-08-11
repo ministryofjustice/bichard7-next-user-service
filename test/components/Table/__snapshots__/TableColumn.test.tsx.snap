@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`should render the component when component is provided 1`] = `
+exports[`should render the component when custom column component is provided 1`] = `
 <div>
   <table>
     <tbody>
@@ -18,7 +18,7 @@ exports[`should render the component when component is provided 1`] = `
 </div>
 `;
 
-exports[`should render the field value when component is not provided 1`] = `
+exports[`should render the field value when custom column component is not provided 1`] = `
 <div>
   <table>
     <tbody>
