@@ -15,7 +15,7 @@ describe("Logging In", () => {
 
     describe("Log in flow", () => {
       before(async () => {
-        await cy.task("db:seed:users")
+        await cy.task("seedUsers")
       })
 
       it("should initially only ask for an email", () => {
