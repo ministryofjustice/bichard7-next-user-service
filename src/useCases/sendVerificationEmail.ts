@@ -11,7 +11,7 @@ const storeVerificationCode = async (connection: any, emailAddress: string, veri
     UPDATE br7own.users
     SET email_verification_code = $1,
       email_verification_generated = NOW()
-    WHERE email = $2
+    WHERE email = $2 AND deleted_at IS NULL
   `
   try {
     await connection.none(storeVerificationQuery, [verificationCode, emailAddress])

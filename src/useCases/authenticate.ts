@@ -11,7 +11,7 @@ const fetchGroups = async (task: ITask<unknown>, emailAddress: string): Promise<
         ON g.id = ug.group_id
       INNER JOIN br7own.users u
         ON ug.user_id = u.id
-      WHERE u.email = $1
+      WHERE u.email = $1 AND u.deleted_at IS NULL
     `
   let groups = await task.any(fetchGroupsQuery, [emailAddress])
   groups = groups.map((group: { name: string }) => group.name.replace(/_grp$/, ""))
@@ -36,7 +36,8 @@ const getUserWithInterval = async (task: ITask<unknown>, params: any[]) => {
     email_verification_code
   FROM br7own.users
   WHERE email = $1
-    AND last_login_attempt < NOW() - INTERVAL '$2 seconds'`
+    AND last_login_attempt < NOW() - INTERVAL '$2 seconds'
+    AND deleted_at IS NULL`
 
   const user = await task.one(getUserQuery, params)
 

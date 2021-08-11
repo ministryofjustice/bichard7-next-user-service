@@ -19,6 +19,7 @@ const getAllUsers = async (connection: any): Promise<Users> => {
         phone_number,
         email
       FROM br7own.users
+      WHERE deleted_at IS NULL
     `
   try {
     users = await connection.any(getAllUsersQuery)
