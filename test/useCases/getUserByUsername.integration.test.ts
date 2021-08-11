@@ -1,5 +1,5 @@
 import getConnection from "lib/getConnection"
-import { User } from "lib/User"
+import { User } from "types/User"
 import { isError } from "types/Result"
 import getUserByUsername from "useCases/getUserByUsername"
 
