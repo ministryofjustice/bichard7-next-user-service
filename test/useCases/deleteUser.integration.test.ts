@@ -59,7 +59,7 @@ describe("DeleteUserUseCase", () => {
     expect(actualUser.deleted_at).not.toBeNull()
   })
 
-  it("should return deleted response when successfully deletes the user", async () => {
+  it("should not update the deletion date when user is already deleted", async () => {
     const mockedParseFormData = parseFormData as jest.MockedFunction<typeof parseFormData>
     mockedParseFormData.mockResolvedValue({ deleteAccountConfirmation: user.username })
 
