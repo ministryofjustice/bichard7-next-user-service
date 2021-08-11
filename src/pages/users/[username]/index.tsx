@@ -1,6 +1,5 @@
 import Layout from "components/Layout"
 import Head from "next/head"
-import db from "lib/db"
 import { User } from "lib/User"
 import { GetServerSideProps } from "next"
 import { Summary, SummaryItem } from "components/Summary"
@@ -8,10 +7,12 @@ import BackLink from "components/BackLink"
 import Link from "components/Link"
 import ButtonGroup from "components/ButtonGroup"
 import getUserByUsername from "useCases/getUserByUsername"
+import getConnection from "lib/getConnection"
 
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
   const { username } = query
-  const user = await getUserByUsername(db, username as string)
+  const connection = getConnection()
+  const user = await getUserByUsername(connection, username as string)
 
   if (!user) {
     return {
