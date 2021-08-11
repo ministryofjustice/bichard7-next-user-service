@@ -36,7 +36,8 @@ export const getServerSideProps: GetServerSideProps = async ({
     const deleteUserResult = await deleteUser(connection, req, user)
 
     if (deleteUserResult.isDeleted) {
-      return createRedirectResponse(`/users/${user.username}/deleted`)
+      const userFullName = encodeURIComponent(`${user.forenames} ${user.surname}`)
+      return createRedirectResponse(`/users/${user.username}/deleted?name=${userFullName}`)
     }
 
     if (deleteUserResult.validationFailed) {
