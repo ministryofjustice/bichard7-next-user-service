@@ -6,8 +6,8 @@ import { Summary, SummaryItem } from "components/Summary"
 import BackLink from "components/BackLink"
 import Link from "components/Link"
 import ButtonGroup from "components/ButtonGroup"
-import getUserByUsername from "useCases/getUserByUsername"
 import getConnection from "lib/getConnection"
+import { getUserByUsername } from "useCases"
 
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
   const { username } = query
@@ -29,7 +29,7 @@ interface Props {
   user: User
 }
 
-const index = ({ user }: Props) => (
+const Users = ({ user }: Props) => (
   <>
     <Head>
       <title>{"User details"}</title>
@@ -55,4 +55,4 @@ const index = ({ user }: Props) => (
   </>
 )
 
-export default index
+export default Users
