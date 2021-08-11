@@ -1,4 +1,4 @@
-import { User } from "lib/User"
+import { User } from "types/User"
 import Database from "types/Database"
 import PromiseResult from "types/PromiseResult"
 

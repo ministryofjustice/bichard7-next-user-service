@@ -1,5 +1,5 @@
-import { CreateUserResult } from "lib/CreateUserResult"
-import { UserCreateDetails } from "lib/UserCreateDetails"
+import CreateUserResult from "types/CreateUserResult"
+import UserCreateDetails from "types/UserCreateDetails"
 import isUsernameUnique from "./isUsernameUnique"
 import isEmailUnique from "./IsEmailUnique"
 

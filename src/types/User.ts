@@ -1,4 +1,4 @@
-import { UserGroup } from "./UserGroup"
+import UserGroup from "./UserGroup"
 
 export interface User {
   username: string

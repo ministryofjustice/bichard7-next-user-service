@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken"
 import config from "../config"
-import { UserGroup } from "../UserGroup"
+import UserGroup from "../../types/UserGroup"
 
 const signOptions: jwt.SignOptions = {
   issuer: config.tokenIssuer

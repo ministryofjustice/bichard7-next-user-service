@@ -1,4 +1,4 @@
-export interface UserCreateDetails {
+interface UserCreateDetails {
   username: string
   forenames: string
   surname: string
@@ -9,3 +9,5 @@ export interface UserCreateDetails {
   endorsedBy: string
   organisation: string
 }
+
+export default UserCreateDetails

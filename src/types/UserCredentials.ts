@@ -1,5 +1,7 @@
-export interface UserCredentials {
+interface UserCredentials {
   emailAddress: string
   password: string
   verificationCode: string
 }
+
+export default UserCredentials
