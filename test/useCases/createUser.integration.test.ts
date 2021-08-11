@@ -10,29 +10,29 @@ import insertUser from "./insertUser"
 const connection = getConnection()
 
 const previousUser = {
-  username: "DummyUsername",
-  emailAddress: "DummyEmailAddress",
-  exclusionList: "DummyExclusionList",
-  inclusionList: "DummyInclusionList",
-  endorsedBy: "DummyEndorsedBy",
-  orgServes: "DummyOrgServes",
-  forenames: "DummyForenames",
-  postalAddress: "DummyPostalAddress",
-  postCode: "AB1 1BA",
-  phoneNumber: "DummyPhoneNumber"
+  username: "DummyCreateUsername",
+  emailAddress: "DummyCreateEmailAddress",
+  exclusionList: "DummyCreateExclusionList",
+  inclusionList: "DummyCreateInclusionList",
+  endorsedBy: "DummyCreateEndorsedBy",
+  orgServes: "DummyCreateOrgServes",
+  forenames: "DummyCreateForenames",
+  postalAddress: "DummyCreatePostalAddress",
+  postCode: "AB1 1BA Create",
+  phoneNumber: "DummyCreatePhoneNumber"
 } as unknown as User
 
 const newUser = {
-  username: "DummyUsername2",
-  emailAddress: "DummyEmailAddress2",
-  exclusionList: "DummyExclusionList2",
-  inclusionList: "DummyInclusionList2",
-  endorsedBy: "DummyEndorsedBy2",
-  orgServes: "DummyOrgServes2",
-  forenames: "DummyForenames2",
-  postalAddress: "DummyPostalAddress2",
-  postCode: "AB2 2BA",
-  phoneNumber: "DummyPhoneNumber2"
+  username: "DummyCreateUsername2",
+  emailAddress: "DummyCreateEmailAddress2",
+  exclusionList: "DummyCreateExclusionList2",
+  inclusionList: "DummyCreateInclusionList2",
+  endorsedBy: "DummyCreateEndorsedBy2",
+  orgServes: "DummyCreateOrgServes2",
+  forenames: "DummyCreateForenames2",
+  postalAddress: "DummyCreatePostalAddress2",
+  postCode: "AB2 2BA Create",
+  phoneNumber: "DummyCreatePhoneNumber2"
 } as unknown as User
 
 describe("DeleteUserUseCase", () => {
@@ -66,7 +66,7 @@ describe("DeleteUserUseCase", () => {
   it("should return error when adding a user with the same email as one from the database", async () => {
     const expectedError = new Error(`Error: Email address ${previousUser.emailAddress} already exists`)
     const createUserDetails: UserCreateDetails = {
-      username: "NewUsername",
+      username: "NewCreateUsername",
       forenames: previousUser.forenames,
       emailAddress: previousUser.emailAddress,
       endorsedBy: previousUser.endorsedBy,
