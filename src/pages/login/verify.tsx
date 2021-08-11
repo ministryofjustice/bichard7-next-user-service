@@ -6,12 +6,12 @@ import Head from "next/head"
 import TextInput from "components/TextInput"
 import { GetServerSideProps } from "next"
 import parseFormData from "lib/parseFormData"
-import isError from "lib/isError"
 import config from "lib/config"
 import { decodeEmailToken, EmailToken } from "lib/token/emailToken"
 import getConnection from "lib/getConnection"
 import { authenticate } from "useCases"
 import { generateBichardToken } from "lib/token/bichardToken"
+import { isError } from "types/Result"
 
 export const getServerSideProps: GetServerSideProps = async ({ req, query }) => {
   try {

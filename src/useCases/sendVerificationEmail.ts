@@ -1,7 +1,7 @@
 import { randomDigits } from "crypto-secure-random-digit"
-import isError from "lib/isError"
 import { EmailTokenPayload, generateEmailToken } from "lib/token/emailToken"
 import Database from "types/Database"
+import { isError } from "types/Result"
 
 const generateVerificationCode = () => {
   return randomDigits(6).join("")

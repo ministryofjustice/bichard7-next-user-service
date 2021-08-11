@@ -4,9 +4,9 @@ import { LinkColumn, Table, TableHeaders } from "components/Table"
 import { GetServerSideProps } from "next"
 import { getAllUsers } from "useCases"
 import getConnection from "lib/getConnection"
-import isError from "lib/isError"
 import KeyValuePair from "types/KeyValuePair"
 import { User } from "lib/User"
+import { isError } from "types/Result"
 
 export const getServerSideProps: GetServerSideProps = async () => {
   const connection = getConnection()
