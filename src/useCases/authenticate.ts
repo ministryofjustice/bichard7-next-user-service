@@ -53,6 +53,7 @@ const getUserWithInterval = async (task: ITask<unknown>, params: any[]) => {
     postCode: user.post_code,
     phoneNumber: user.phone_number,
     password: user.password,
+    emailVerificationCode: user.email_verification_code,
     groups: await fetchGroups(task, user.email)
   }
 }
@@ -68,9 +69,8 @@ const updateUserLoginTimestamp = async (task: ITask<unknown>, emailAddress: stri
 }
 
 const authenticate = async (connection: any, emailAddress: string, password: string, verificationCode: string) => {
-  
   const invalidCredentialsError = new Error("Invalid credentials or invalid verification")
-  
+
   if (!emailAddress || !password || !verificationCode) {
     return new Error()
   }
@@ -78,18 +78,17 @@ const authenticate = async (connection: any, emailAddress: string, password: str
   try {
     const user = await connection.tx(async (task: ITask<unknown>) => {
       const u = await getUserWithInterval(task, [emailAddress, config.incorrectDelay])
-      updateUserLoginTimestamp(task, emailAddress)
+      await updateUserLoginTimestamp(task, emailAddress)
       return u
     })
 
     const isAuthenticated = await compare(password, user.password)
-    const isVerified = verificationCode === user.verificationCode
+    const isVerified = verificationCode === user.emailVerificationCode
 
     if (isAuthenticated && isVerified) {
       return user
-    } else {
-      return invalidCredentialsError
     }
+    return invalidCredentialsError
   } catch (error) {
     return error
   }

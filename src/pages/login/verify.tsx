@@ -24,7 +24,6 @@ export const getServerSideProps: GetServerSideProps = async ({ req, query }) => 
 
       if (isError(user)) {
         console.error(user)
-
         return {
           props: {
             invalidCredentials: true,

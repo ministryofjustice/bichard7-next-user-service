@@ -3,9 +3,9 @@
 // This example plugins/index.js can be used to load plugins
 //
 // You can change the location of this file or turn off loading
-const createUsers = require("../db/seed/createUsers")
-
 import pgPromise from "pg-promise"
+
+const createUsers = require("../db/seed/createUsers")
 
 /**
  * @type {Cypress.PluginConfig}
@@ -21,8 +21,8 @@ module.exports = async (on, config) => {
       return result.email_verification_code
     },
 
-    async seedUsers(){
-      return await createUsers()
+    async seedUsers() {
+      return createUsers()
     }
   })
 }

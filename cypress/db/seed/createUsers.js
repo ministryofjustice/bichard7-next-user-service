@@ -102,8 +102,7 @@ const createUsers = async () => {
         '2021-08-03 00:00:00-00'
       );
   `
-  // eslint-disable-next-line no-return-await
-  return await connection.none(seedUsersTableQuery)
+  return connection.none(seedUsersTableQuery)
 }
 
 module.exports = createUsers

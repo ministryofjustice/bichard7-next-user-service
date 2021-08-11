@@ -1,4 +1,5 @@
 import { randomDigits } from "crypto-secure-random-digit"
+import isError from "lib/isError"
 import { EmailTokenPayload, generateEmailToken } from "lib/token/emailToken"
 
 const generateVerificationCode = () => {
@@ -14,7 +15,8 @@ const storeVerificationCode = async (connection: any, emailAddress: string, veri
   `
   try {
     await connection.none(storeVerificationQuery, [verificationCode, emailAddress])
-  } catch (error){
+    return true
+  } catch (error) {
     return error
   }
 }
@@ -37,17 +39,23 @@ const sendEmail = (emailAddress: string, verificationCode: string) => {
     ${url.href}
   `)
 
-  return true;
+  return true
 }
 
 const sendVerificationEmail = async (connection: any, emailAddress: string) => {
   const verificationCode = generateVerificationCode()
+  let stored
   try {
-    await storeVerificationCode(connection, emailAddress, verificationCode)
-  } catch (error){
+    stored = await storeVerificationCode(connection, emailAddress, verificationCode)
+
+    if (isError(stored)) {
+      console.error(stored)
+      return stored
+    }
+  } catch (error) {
     return error
   }
-  return sendEmail(emailAddress, verificationCode)
+  return stored && sendEmail(emailAddress, verificationCode)
 }
 
 export default sendVerificationEmail

@@ -1,7 +1,7 @@
 describe("User", () => {
   describe("Display list of users", () => {
-    before(async () => {
-      await cy.task("db:seed:users")
+    before((done) => {
+      cy.task("seedUsers").then(() => done())
     })
 
     it("should display a list of user in tabular form", () => {
