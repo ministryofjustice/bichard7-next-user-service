@@ -7,8 +7,9 @@ import { isError } from "types/Result"
 import { deleteUser } from "useCases"
 import { IncomingMessage } from "http"
 import parseFormData from "lib/parseFormData"
-import dbDeleteUser from "./dbDeleteUser"
-import dbInsertUser from "./dbInsertUser"
+import config from "lib/config"
+import deleteDatabaseUser from "./deleteDatabaseUser"
+import insertDatabaseUser from "./insertDatabaseUser"
 
 jest.mock("lib/parseFormData")
 
@@ -83,18 +84,18 @@ const connection = getConnection()
 
 describe("Authenticator", () => {
   beforeAll(async () => {
-    await dbDeleteUser(connection, expectedUser1.username)
-    await dbDeleteUser(connection, expectedUser2.username)
-    await dbDeleteUser(connection, expectedUser3.username)
-    await dbDeleteUser(connection, expectedUser4.username)
-    await dbDeleteUser(connection, expectedUser5.username)
+    await deleteDatabaseUser(connection, expectedUser1.username)
+    await deleteDatabaseUser(connection, expectedUser2.username)
+    await deleteDatabaseUser(connection, expectedUser3.username)
+    await deleteDatabaseUser(connection, expectedUser4.username)
+    await deleteDatabaseUser(connection, expectedUser5.username)
     const salt = "aM1B7pQrWYUKFz47XN9Laj=="
     const hashedPassword = await hash(correctPassword, salt, 10)
-    await dbInsertUser(connection, expectedUser1, false, `$shiro1$SHA-256$10$${salt}$${hashedPassword}`)
-    await dbInsertUser(connection, expectedUser2, false, `$shiro1$SHA-256$10$${salt}$${hashedPassword}`)
-    await dbInsertUser(connection, expectedUser3, false, `$shiro1$SHA-256$10$${salt}$${hashedPassword}`)
-    await dbInsertUser(connection, expectedUser4, false, `$shiro1$SHA-256$10$${salt}$${hashedPassword}`)
-    await dbInsertUser(connection, expectedUser5, false, `$shiro1$SHA-256$10$${salt}$${hashedPassword}`)
+    await insertDatabaseUser(connection, expectedUser1, false, `$shiro1$SHA-256$10$${salt}$${hashedPassword}`)
+    await insertDatabaseUser(connection, expectedUser2, false, `$shiro1$SHA-256$10$${salt}$${hashedPassword}`)
+    await insertDatabaseUser(connection, expectedUser3, false, `$shiro1$SHA-256$10$${salt}$${hashedPassword}`)
+    await insertDatabaseUser(connection, expectedUser4, false, `$shiro1$SHA-256$10$${salt}$${hashedPassword}`)
+    await insertDatabaseUser(connection, expectedUser5, false, `$shiro1$SHA-256$10$${salt}$${hashedPassword}`)
   })
 
   afterAll(() => {
@@ -140,6 +141,16 @@ describe("Authenticator", () => {
 
     let result = await authenticate(connection, expectedUser4.emailAddress, correctPassword, verificationCode)
     expect(isError(result)).toBe(false)
+
+    // wait until config.incorrectDelay seconds have passed
+    await connection.none(
+      `
+      UPDATE br7own.users
+      SET last_login_attempt = NOW() - INTERVAL '$1 seconds'
+      WHERE email = $2`,
+      [config.incorrectDelay, expectedUser4.emailAddress]
+    )
+
     // login a second time with same logic
     result = await authenticate(connection, expectedUser4.emailAddress, correctPassword, verificationCode)
     expect(isError(result)).toBe(true)

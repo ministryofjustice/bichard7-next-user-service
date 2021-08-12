@@ -16,6 +16,7 @@ interface UserServiceConfig {
   tokenIssuer: string
   tokenQueryParamName: string
   tokenSecret: string
+  verificationCodeLength: number
 }
 
 const config: UserServiceConfig = {
@@ -33,7 +34,8 @@ const config: UserServiceConfig = {
     database: process.env.DB_DATABASE ?? process.env.DB_AUTH_DATABASE ?? "bichard",
     port: parseInt(process.env.DB_PORT ?? process.env.DB_AUTH_PORT ?? "5432", 10),
     ssl: (process.env.DB_SSL ?? process.env.DB_AUTH_SSL) === "true"
-  }
+  },
+  verificationCodeLength: 6
 }
 
 export default config

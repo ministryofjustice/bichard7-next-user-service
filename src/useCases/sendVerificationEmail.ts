@@ -1,13 +1,12 @@
 import { randomDigits } from "crypto-secure-random-digit"
+import config from "lib/config"
 import Database from "types/Database"
 import { isError } from "types/Result"
 import sendEmail from "./sendEmail"
 import storeVerificationCode from "./storeVerificationCode"
 
-export const VerificationCodeLength = 6
-
 const generateVerificationCode = () => {
-  return randomDigits(VerificationCodeLength).join("")
+  return randomDigits(config.verificationCodeLength).join("")
 }
 
 const sendVerificationEmail = async (connection: Database, emailAddress: string) => {

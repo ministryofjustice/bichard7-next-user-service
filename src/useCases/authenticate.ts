@@ -3,7 +3,6 @@ import UserGroup from "types/UserGroup"
 import { compare } from "lib/shiro"
 import config from "lib/config"
 import Database from "types/Database"
-import { VerificationCodeLength } from "./sendVerificationEmail"
 
 const fetchGroups = async (task: ITask<unknown>, emailAddress: string): Promise<UserGroup[]> => {
   const fetchGroupsQuery = `
@@ -38,6 +37,7 @@ const getUserWithInterval = async (task: ITask<unknown>, params: unknown[]) => {
     email_verification_code
   FROM br7own.users
   WHERE email = $1
+    AND last_login_attempt < NOW() - INTERVAL '$2 seconds'
     AND deleted_at IS NULL`
 
   const user = await task.one(getUserQuery, params)
@@ -63,7 +63,7 @@ const getUserWithInterval = async (task: ITask<unknown>, params: unknown[]) => {
 const updateUserLoginTimestamp = async (task: ITask<unknown>, emailAddress: string) => {
   const updateUserQuery = `
       UPDATE br7own.users
-      SET email_verification_code = NULL
+      SET last_login_attempt = NOW()
       WHERE email = $1
     `
 
@@ -73,7 +73,7 @@ const updateUserLoginTimestamp = async (task: ITask<unknown>, emailAddress: stri
 const resetUserVerificationCode = async (connection: Database, emailAddress: string) => {
   const updateUserQuery = `
       UPDATE br7own.users
-      SET last_login_attempt = NOW()
+      SET email_verification_code = NULL
       WHERE email = $1
     `
 
@@ -83,7 +83,7 @@ const resetUserVerificationCode = async (connection: Database, emailAddress: str
 const authenticate = async (connection: Database, emailAddress: string, password: string, verificationCode: string) => {
   const invalidCredentialsError = new Error("Invalid credentials or invalid verification")
 
-  if (!emailAddress || !password || !verificationCode || verificationCode.length !== VerificationCodeLength) {
+  if (!emailAddress || !password || !verificationCode || verificationCode.length !== config.verificationCodeLength) {
     return invalidCredentialsError
   }
 
