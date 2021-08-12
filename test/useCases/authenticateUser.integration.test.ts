@@ -4,18 +4,25 @@ import User from "types/User"
 import storeVerificationCode from "useCases/storeVerificationCode"
 import { hash } from "lib/shiro"
 import { isError } from "types/Result"
+import { deleteUser } from "useCases"
+import { IncomingMessage } from "http"
+import parseFormData from "lib/parseFormData"
+import dbDeleteUser from "./dbDeleteUser"
+import dbInsertUser from "./dbInsertUser"
+
+jest.mock("lib/parseFormData")
 
 const expectedUser = {
-  username: "DummyUsername",
-  emailAddress: "DummyEmailAddress",
-  exclusionList: "DummyExclusionList",
-  inclusionList: "DummyInclusionList",
-  endorsedBy: "DummyEndorsedBy",
-  orgServes: "DummyOrgServes",
-  forenames: "DummyForenames",
-  postalAddress: "DummyPostalAddress",
-  postCode: "AB1 1BA",
-  phoneNumber: "DummyPhoneNumber"
+  username: "AuthUsername",
+  emailAddress: "AuthEmailAddress",
+  exclusionList: "AuthExclusionList",
+  inclusionList: "AuthInclusionList",
+  endorsedBy: "AuthEndorsedBy",
+  orgServes: "AuthOrgServes",
+  forenames: "AuthForenames",
+  postalAddress: "AuthPostalAddress",
+  postCode: "AA1 1AA",
+  phoneNumber: "AuthPhoneNumber"
 } as unknown as User
 
 const correctPassword = "correctPassword"
@@ -24,29 +31,10 @@ const connection = getConnection()
 
 describe("Authenticator", () => {
   beforeAll(async () => {
-    const deleteQuery = `DELETE FROM br7own.users WHERE username = $1`
-    await connection.none(deleteQuery, [expectedUser.username])
-
-    const insertQuery = `
-        INSERT INTO br7own.users(
-          username, email, active, exclusion_list, inclusion_list, challenge_response, created_at, endorsed_by, org_serves, forenames, surname, postal_address, post_code, phone_number, password)
-          VALUES ($1, $2, true, $3, $4, '-', NOW(), $5, $6, $7, $8, $9, $10, $11, $12);
-        `
-    const hashedPassword = await hash(correctPassword, "aM1B7pQrWYUKFz47XN9Laj==", 10)
-    await connection.none(insertQuery, [
-      expectedUser.username,
-      expectedUser.emailAddress,
-      expectedUser.exclusionList,
-      expectedUser.inclusionList,
-      expectedUser.endorsedBy,
-      expectedUser.orgServes,
-      expectedUser.forenames,
-      expectedUser.surname,
-      expectedUser.postalAddress,
-      expectedUser.postCode,
-      expectedUser.phoneNumber,
-      `$shiro1$SHA-256$10$aM1B7pQrWYUKFz47XN9Laj==$${hashedPassword}`
-    ])
+    await dbDeleteUser(connection, expectedUser.username)
+    const salt = "aM1B7pQrWYUKFz47XN9Laj=="
+    const hashedPassword = await hash(correctPassword, salt, 10)
+    dbInsertUser(connection, expectedUser, false, `$shiro1$SHA-256$10$${salt}$${hashedPassword}`)
   })
 
   afterAll(() => {
@@ -93,6 +81,24 @@ describe("Authenticator", () => {
     let result = await authenticate(connection, expectedUser.emailAddress, correctPassword, verificationCode)
     expect(isError(result)).toBe(false)
     // login a second time with same logic
+    result = await authenticate(connection, expectedUser.emailAddress, correctPassword, verificationCode)
+    expect(isError(result)).toBe(true)
+
+    const actualError = <Error>result
+    expect(actualError.message).toBe(expectedError.message)
+  })
+
+  it("should not allow the user to authenticate if their account is soft deleted", async () => {
+    const verificationCode = "CoDeRs"
+    const expectedError = new Error("No data returned from the query.")
+    storeVerificationCode(connection, expectedUser.emailAddress, verificationCode)
+
+    const request = <IncomingMessage>{}
+    const mockedParseFormData = parseFormData as jest.MockedFunction<typeof parseFormData>
+    mockedParseFormData.mockResolvedValue({ deleteAccountConfirmation: expectedUser.username })
+    let result = await deleteUser(connection, request, expectedUser)
+    expect(isError(result)).toBe(false)
+
     result = await authenticate(connection, expectedUser.emailAddress, correctPassword, verificationCode)
     expect(isError(result)).toBe(true)
 
