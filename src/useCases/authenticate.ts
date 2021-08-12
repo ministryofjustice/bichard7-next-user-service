@@ -70,11 +70,21 @@ const updateUserLoginTimestamp = async (task: ITask<unknown>, emailAddress: stri
   await task.none(updateUserQuery, [emailAddress])
 }
 
+const resetUserVerificationCode = async (connection: Database, emailAddress: string) => {
+  const updateUserQuery = `
+      UPDATE br7own.users
+      SET email_verification_code = NULL
+      WHERE email = $1
+    `
+
+  await connection.none(updateUserQuery, [emailAddress])
+}
+
 const authenticate = async (connection: Database, emailAddress: string, password: string, verificationCode: string) => {
   const invalidCredentialsError = new Error("Invalid credentials or invalid verification")
 
-  if (!emailAddress || !password || !verificationCode) {
-    return new Error()
+  if (!emailAddress || !password || !verificationCode || verificationCode.length !== config.verificationCodeLength) {
+    return invalidCredentialsError
   }
 
   try {
@@ -86,8 +96,8 @@ const authenticate = async (connection: Database, emailAddress: string, password
 
     const isAuthenticated = await compare(password, user.password)
     const isVerified = verificationCode === user.emailVerificationCode
-
     if (isAuthenticated && isVerified) {
+      await resetUserVerificationCode(connection, emailAddress)
       return user
     }
     return invalidCredentialsError

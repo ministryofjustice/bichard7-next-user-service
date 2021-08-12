@@ -4,8 +4,8 @@ import createUser from "useCases/createUser"
 import User from "types/User"
 import getUserByUsername from "useCases/getUserByUsername"
 import { isError } from "types/Result"
-import deleteUser from "./deleteUser"
-import insertUser from "./insertUser"
+import deleteDatabaseUser from "./deleteDatabaseUser"
+import insertDatabaseUser from "./insertDatabaseUser"
 
 const connection = getConnection()
 
@@ -37,8 +37,8 @@ const newUser = {
 
 describe("DeleteUserUseCase", () => {
   beforeEach(async () => {
-    await deleteUser(connection, previousUser)
-    await insertUser(connection, previousUser, false)
+    await deleteDatabaseUser(connection, previousUser.username)
+    await insertDatabaseUser(connection, previousUser, false, "")
   })
 
   afterAll(() => {
@@ -82,7 +82,7 @@ describe("DeleteUserUseCase", () => {
   })
 
   it("should be possible to add a user to my force", async () => {
-    await deleteUser(connection, newUser)
+    await deleteDatabaseUser(connection, newUser.username)
     const expectedError = new Error("")
     const createUserDetails: UserCreateDetails = {
       username: newUser.username,

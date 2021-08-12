@@ -2,8 +2,8 @@ import getConnection from "lib/getConnection"
 import User from "types/User"
 import { isError } from "types/Result"
 import getUserByUsername from "useCases/getUserByUsername"
-import deleteUser from "./deleteUser"
-import insertUser from "./insertUser"
+import deleteDatabaseUser from "./deleteDatabaseUser"
+import insertDatabaseUser from "./insertDatabaseUser"
 
 const connection = getConnection()
 
@@ -22,7 +22,7 @@ const expectedUser = {
 
 describe("DeleteUserUseCase", () => {
   beforeEach(async () => {
-    await deleteUser(connection, expectedUser)
+    await deleteDatabaseUser(connection, expectedUser.username)
   })
 
   afterAll(() => {
@@ -30,7 +30,7 @@ describe("DeleteUserUseCase", () => {
   })
 
   it("should return user when user exists in the database", async () => {
-    await insertUser(connection, expectedUser, false)
+    await insertDatabaseUser(connection, expectedUser, false, "")
 
     const result = await getUserByUsername(connection, expectedUser.username)
 
@@ -56,7 +56,7 @@ describe("DeleteUserUseCase", () => {
   })
 
   it("should return null when user is deleted", async () => {
-    await insertUser(connection, expectedUser, true)
+    await insertDatabaseUser(connection, expectedUser, true, "")
 
     const result = await getUserByUsername(connection, expectedUser.username)
 
