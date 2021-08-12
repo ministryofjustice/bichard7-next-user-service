@@ -22,7 +22,7 @@ const expectedUser = {
 
 describe("DeleteUserUseCase", () => {
   beforeEach(async () => {
-    await deleteUser(connection, expectedUser)
+    await deleteUser(connection, expectedUser.username)
   })
 
   afterAll(() => {

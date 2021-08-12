@@ -37,7 +37,7 @@ const newUser = {
 
 describe("DeleteUserUseCase", () => {
   beforeEach(async () => {
-    await deleteUser(connection, previousUser)
+    await deleteUser(connection, previousUser.username)
     await insertUser(connection, previousUser, false)
   })
 
@@ -82,7 +82,7 @@ describe("DeleteUserUseCase", () => {
   })
 
   it("should be possible to add a user to my force", async () => {
-    await deleteUser(connection, newUser)
+    await deleteUser(connection, newUser.username)
     const expectedError = new Error("")
     const createUserDetails: UserCreateDetails = {
       username: newUser.username,

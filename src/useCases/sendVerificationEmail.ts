@@ -4,8 +4,10 @@ import { isError } from "types/Result"
 import sendEmail from "./sendEmail"
 import storeVerificationCode from "./storeVerificationCode"
 
+export const VerificationCodeLength = 6
+
 const generateVerificationCode = () => {
-  return randomDigits(6).join("")
+  return randomDigits(VerificationCodeLength).join("")
 }
 
 const sendVerificationEmail = async (connection: Database, emailAddress: string) => {
