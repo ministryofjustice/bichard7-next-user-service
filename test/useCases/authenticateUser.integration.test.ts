@@ -104,7 +104,7 @@ describe("Authenticator", () => {
 
   it("should allow the user to authenticate with correct code and password", async () => {
     const verificationCode = "CoDeRs"
-    storeVerificationCode(connection, expectedUser1.emailAddress, verificationCode)
+    await storeVerificationCode(connection, expectedUser1.emailAddress, verificationCode)
 
     const result = await authenticate(connection, expectedUser1.emailAddress, correctPassword, verificationCode)
     expect(isError(result)).toBe(false)
@@ -113,7 +113,7 @@ describe("Authenticator", () => {
   it("should not allow the user to authenticate with correct code and incorrect password", async () => {
     const verificationCode = "CoDeRs"
     const expectedError = new Error("Invalid credentials or invalid verification")
-    storeVerificationCode(connection, expectedUser2.emailAddress, verificationCode)
+    await storeVerificationCode(connection, expectedUser2.emailAddress, verificationCode)
 
     const result = await authenticate(connection, expectedUser2.emailAddress, invalidPassword, verificationCode)
     expect(isError(result)).toBe(true)
@@ -125,7 +125,7 @@ describe("Authenticator", () => {
   it("should not allow the user to authenticate with incorrect code and correct password", async () => {
     const verificationCode = "CoDeRs"
     const expectedError = new Error("Invalid credentials or invalid verification")
-    storeVerificationCode(connection, expectedUser3.emailAddress, verificationCode)
+    await storeVerificationCode(connection, expectedUser3.emailAddress, verificationCode)
 
     const result = await authenticate(connection, expectedUser3.emailAddress, correctPassword, "SoElSe")
     expect(isError(result)).toBe(true)
@@ -137,7 +137,7 @@ describe("Authenticator", () => {
   it("should allow the user to authenticate with correct code and password only once", async () => {
     const verificationCode = "CoDeRs"
     const expectedError = new Error("Invalid credentials or invalid verification")
-    storeVerificationCode(connection, expectedUser4.emailAddress, verificationCode)
+    await storeVerificationCode(connection, expectedUser4.emailAddress, verificationCode)
 
     let result = await authenticate(connection, expectedUser4.emailAddress, correctPassword, verificationCode)
     expect(isError(result)).toBe(false)
@@ -151,7 +151,7 @@ describe("Authenticator", () => {
       [config.incorrectDelay, expectedUser4.emailAddress]
     )
 
-    // login a second time with same logic
+    // login a second time with same values
     result = await authenticate(connection, expectedUser4.emailAddress, correctPassword, verificationCode)
     expect(isError(result)).toBe(true)
 
@@ -162,7 +162,7 @@ describe("Authenticator", () => {
   it("should not allow the user to authenticate if their account is soft deleted", async () => {
     const verificationCode = "CoDeRs"
     const expectedError = new Error("No data returned from the query.")
-    storeVerificationCode(connection, expectedUser5.emailAddress, verificationCode)
+    await storeVerificationCode(connection, expectedUser5.emailAddress, verificationCode)
 
     const request = <IncomingMessage>{}
     const mockedParseFormData = parseFormData as jest.MockedFunction<typeof parseFormData>
