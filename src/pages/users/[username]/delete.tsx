@@ -1,6 +1,6 @@
 import Layout from "components/Layout"
 import Head from "next/head"
-import { User } from "types/User"
+import User from "types/User"
 import { GetServerSideProps, GetServerSidePropsResult } from "next"
 import Button from "components/Button"
 import ButtonGroup from "components/ButtonGroup"

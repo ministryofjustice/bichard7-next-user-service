@@ -1,5 +1,5 @@
 import { IncomingMessage } from "http"
-import { User } from "types/User"
+import User from "types/User"
 import Database from "types/Database"
 import { isError } from "types/Result"
 import markUserAsDeleted from "./markUserAsDeleted"
