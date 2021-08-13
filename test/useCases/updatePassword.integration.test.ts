@@ -24,10 +24,6 @@ const user = {
   phoneNumber: "up_phoneNumber"
 } as unknown as User
 
-const getUserPassword = () => {
-  return connection.oneOrNone(`SELECT username, password FROM br7own.users WHERE email = $1`, [user.emailAddress])
-}
-
 describe("updatePassword", () => {
   beforeEach(async () => {
     await deleteDatabaseUser(connection, user.username)
@@ -47,7 +43,9 @@ describe("updatePassword", () => {
     const result = await updatePassword(connection, user.emailAddress, "CreatePasswordMocked")
     expect(isError(result)).toBe(false)
 
-    const actualUser = await getUserPassword()
+    const actualUser = await connection.oneOrNone(`SELECT username, password FROM br7own.users WHERE email = $1`, [
+      user.emailAddress
+    ])
 
     expect(actualUser).toBeDefined()
     expect(actualUser.username).toBe(user.username)
