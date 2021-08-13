@@ -50,15 +50,17 @@ describe("storePasswordResetCode", () => {
     await insertDatabaseUser(connection, user, true, "DummyPassword")
 
     const result = await storePasswordResetCode(connection, user.emailAddress, "654321")
-    expect(isError(result)).toBe(false)
+    expect(isError(result)).toBe(true)
 
-    const actualUser = await connection.oneOrNone(
-      `SELECT username, password_reset_code AS "passwordResetCode" FROM br7own.users WHERE email = $1`,
-      [user.emailAddress]
-    )
+    const actualError = <Error>result
+    expect(actualError.message).toBe("User not found")
+  })
 
-    expect(actualUser).toBeDefined()
-    expect(actualUser.username).toBe(user.username)
-    expect(actualUser.passwordResetCode).toBeNull()
+  it("should not store password reset code when user does not exist", async () => {
+    const result = await storePasswordResetCode(connection, user.emailAddress, "654321")
+    expect(isError(result)).toBe(true)
+
+    const actualError = <Error>result
+    expect(actualError.message).toBe("User not found")
   })
 })
