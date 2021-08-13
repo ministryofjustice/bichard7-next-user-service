@@ -20,7 +20,7 @@ const user = {
   phoneNumber: "sprrc_phoneNumber"
 } as unknown as User
 
-describe("storePasswordResetCode()", () => {
+describe("storePasswordResetCode", () => {
   beforeEach(async () => {
     await deleteDatabaseUser(connection, user.username)
   })
@@ -29,7 +29,7 @@ describe("storePasswordResetCode()", () => {
     connection.$pool.end()
   })
 
-  it("should store password reset code when user is active", async () => {
+  it("should store password reset code when user exists", async () => {
     await insertDatabaseUser(connection, user, false, "DummyPassword")
 
     const expectedPasswordResetCode = "654321"

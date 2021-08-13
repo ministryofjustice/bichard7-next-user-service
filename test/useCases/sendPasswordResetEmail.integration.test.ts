@@ -24,7 +24,7 @@ const user = {
   phoneNumber: "spre_phoneNumber"
 } as unknown as User
 
-describe("sendPasswordResetEmail()", () => {
+describe("sendPasswordResetEmail", () => {
   beforeEach(async () => {
     await deleteDatabaseUser(connection, user.username)
   })
