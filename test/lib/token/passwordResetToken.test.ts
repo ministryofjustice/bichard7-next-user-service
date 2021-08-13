@@ -31,7 +31,7 @@ describe("generatePasswordResetToken()", () => {
   })
 })
 
-describe("", () => {
+describe("decodePasswordResetToken()", () => {
   it("should return decoded token when payload is provided", () => {
     const payload: PasswordResetTokenPayload = {
       passwordResetCode: "123456",
