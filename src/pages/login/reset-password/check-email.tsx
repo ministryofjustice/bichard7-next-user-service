@@ -5,7 +5,7 @@ import BackLink from "components/BackLink"
 const CheckEmail = () => (
   <>
     <Head>
-      <title>{"Users"}</title>
+      <title>{"Forgot Password"}</title>
     </Head>
     <Layout>
       <div className="govuk-grid-row">

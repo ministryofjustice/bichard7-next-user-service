@@ -48,7 +48,7 @@ interface Props {
 const ForgotPassword = ({ invalidEmail }: Props) => (
   <>
     <Head>
-      <title>{"Sign in to Bichard 7"}</title>
+      <title>{"Forgot password"}</title>
     </Head>
     <Layout>
       <GridRow>
