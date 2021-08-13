@@ -1,4 +1,4 @@
-import { compare, hash } from "lib/shiro"
+import { compare, createPassword, hash } from "lib/shiro"
 import "console"
 
 describe("Shiro hash compare function", () => {
@@ -58,5 +58,22 @@ describe("Shiro hash generation function", () => {
     const hash1 = await hash(password, b64Salt, 10)
     const hash2 = await hash(password, b64Salt, 11)
     expect(hash1).not.toEqual(hash2)
+  })
+})
+
+describe("createPassword()", () => {
+  it("should generate password when raw password provided", async () => {
+    const password = createPassword("Dummy@Password")
+
+    expect(password).toBeDefined()
+
+    const parts = (await password).split("$")
+    expect(parts).toHaveLength(6)
+    expect(parts[0]).toBe("")
+    expect(parts[1]).toBe("shiro1")
+    expect(parts[2]).toBe("SHA-256")
+    expect(parseInt(parts[3], 10)).not.toBeNaN()
+    expect(parts[4]).toBeDefined()
+    expect(parts[5]).toBeDefined()
   })
 })
