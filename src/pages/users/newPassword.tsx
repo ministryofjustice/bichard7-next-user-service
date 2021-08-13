@@ -10,34 +10,38 @@ import React from "react"
 import initialiseUserPassword from "useCases/initialiseUserPassword"
 
 export const getServerSideProps: GetServerSideProps = async ({ req, query }) => {
-  const { token } = query as { token: EmailToken }
-  const { emailAddress, verificationCode } = decodeEmailToken(token)
-
-  console.log(emailAddress, verificationCode)
-
   let errorMessage = ""
-  if (req.method === "POST") {
-    const { nPassword, cPassword } = (await parseFormData(req)) as {
-      nPassword: string
-      cPassword: string
-    }
-    if (nPassword === "" || cPassword === "") {
-      errorMessage = "Error: Passords cannot be empty"
-      return {
-        props: { errorMessage }
-      }
-    }
+  try {
+    const { token } = query as { token: EmailToken }
+    const { emailAddress, verificationCode } = decodeEmailToken(token)
 
-    if (nPassword !== cPassword) {
-      errorMessage = "Error: Passords cannot be empty"
-      return {
-        props: { errorMessage }
-      }
-    }
+    console.log(emailAddress, verificationCode)
 
-    const connection = getConnection()
-    const result = initialiseUserPassword(connection, emailAddress, verificationCode, nPassword)
-    console.log(result)
+    if (req.method === "POST") {
+      const { nPassword, cPassword } = (await parseFormData(req)) as {
+        nPassword: string
+        cPassword: string
+      }
+      if (nPassword === "" || cPassword === "") {
+        errorMessage = "Error: Passords cannot be empty"
+        return {
+          props: { errorMessage }
+        }
+      }
+
+      if (nPassword !== cPassword) {
+        errorMessage = "Error: Passords cannot be empty"
+        return {
+          props: { errorMessage }
+        }
+      }
+
+      const connection = getConnection()
+      const result = await initialiseUserPassword(connection, emailAddress, verificationCode, nPassword)
+      console.log(result)
+    }
+  } catch (error) {
+    console.log(error)
   }
 
   return {

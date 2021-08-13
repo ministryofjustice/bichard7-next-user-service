@@ -10,7 +10,7 @@ const validateUserVerificationCode = async (connection: Database, emailAddress: 
     SELECT *
     FROM br7own.users
     WHERE email = $1
-        AND verification_code = $2
+        AND email_verification_code = $2
     `
 
   const result = await connection.none(query, [emailAddress, verificationCode])
