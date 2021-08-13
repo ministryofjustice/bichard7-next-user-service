@@ -62,7 +62,7 @@ const ForgotPassword = ({ invalidEmail }: Props) => (
 
         <form method="post">
           <TextInput id="email" name="emailAddress" label="Email address" type="email" isError={invalidEmail} />
-          <Button>{"Continue"}</Button>
+          <Button noDoubleClick>{"Continue"}</Button>
         </form>
       </GridRow>
     </Layout>
