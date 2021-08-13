@@ -8,6 +8,9 @@ import UserCreateDetails from "types/UserCreateDetails"
 import getConnection from "lib/getConnection"
 import parseFormData from "lib/parseFormData"
 import createUser from "useCases/createUser"
+import sendNewUserEmail from "useCases/sendNewUserEmail"
+import { randomDigits } from "crypto-secure-random-digit"
+import config from "lib/config"
 
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   let missingMandatory = false
@@ -43,6 +46,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
       errorMessage = result.error.message
       if (errorMessage === "") {
         successMessage = `User ${userCreateDetails.username} has ben successfully created`
+        sendNewUserEmail(userCreateDetails.emailAddress, randomDigits(config.verificationCodeLength).join(""))
       }
     } else {
       errorMessage = "Please make sure that all mandatory fields are non empty"
