@@ -1,6 +1,6 @@
-import { User } from "types/User"
 import Database from "types/Database"
 import PromiseResult from "types/PromiseResult"
+import User from "types/User"
 
 export default (db: Database, emailAddress: string): PromiseResult<User | null> => {
   const query = `
