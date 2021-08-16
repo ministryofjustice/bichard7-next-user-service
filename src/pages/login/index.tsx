@@ -10,6 +10,7 @@ import { sendVerificationEmail } from "useCases"
 import getConnection from "lib/getConnection"
 import { isError } from "types/Result"
 import Link from "components/Link"
+import createRedirectResponse from "utils/createRedirectResponse"
 
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   let invalidEmail = false
@@ -28,12 +29,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
         }
       }
 
-      return {
-        redirect: {
-          destination: "/login/check-email",
-          statusCode: 302
-        }
-      }
+      return createRedirectResponse("/login/check-email")
     }
 
     invalidEmail = true

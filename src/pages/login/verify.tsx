@@ -12,6 +12,7 @@ import getConnection from "lib/getConnection"
 import { authenticate } from "useCases"
 import { generateBichardToken } from "lib/token/bichardToken"
 import { isError } from "types/Result"
+import createRedirectResponse from "utils/createRedirectResponse"
 
 export const getServerSideProps: GetServerSideProps = async ({ req, query }) => {
   try {
@@ -38,12 +39,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, query }) => 
       const url = new URL(config.bichardRedirectURL)
       url.searchParams.append(config.tokenQueryParamName, bichardToken)
 
-      return {
-        redirect: {
-          destination: url.href,
-          statusCode: 302
-        }
-      }
+      return createRedirectResponse(url.href)
     }
 
     const { token } = query as { token: EmailToken }
