@@ -159,7 +159,7 @@ Cypress has a UI that enables individual tests to be run and debugged in a visib
 $ npm run cypress:open
 ```
 
-####Snapshot testing for React components
+#### Snapshot testing for React components
 
 Snapshot testing is a very useful tool whenever you want to make sure your UI does not change unexpectedly. So, React components test against a snapshot of the actual DOM nodes.
 
@@ -170,7 +170,7 @@ When you make changes in a React component that results in changes in the DOM no
 To update snapshots run the following command:
 
 ```shell
-npm run test:unit -- -u
+npm run test:unit:update
 ```
 
 Check the snapshot before pushing it to the repository to ensure that the generated markup is as you expect.
