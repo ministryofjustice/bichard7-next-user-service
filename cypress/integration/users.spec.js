@@ -32,7 +32,7 @@ describe("User", () => {
       await cy.task("seedUsers")
     })
 
-    it("should be sccessful if inputs are correct", () => {
+    it("should be successful if all of the inputs are populated", () => {
       cy.visit("users/newUser")
 
       cy.get('input[id="username"]').type("Buser")
@@ -50,7 +50,7 @@ describe("User", () => {
       cy.get("h3").should("have.text", "User Buser has been successfully created")
     })
 
-    it("should add new user in the list of users", () => {
+    it("should show a newly-created user in the list of users", () => {
       cy.visit("users")
 
       cy.get("tbody tr:nth-child(4) td:nth-child(1)").should("have.text", "Buser")
