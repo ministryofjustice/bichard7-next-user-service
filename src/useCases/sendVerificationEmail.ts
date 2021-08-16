@@ -20,13 +20,13 @@ export default async (connection: Database, emailAddress: string): PromiseResult
     return storeVerificationCodeResult
   }
 
-  const createPasswordResetEmailResult = createVerificationEmail(emailAddress, verificationCode)
+  const createVerificationEmailResult = createVerificationEmail(emailAddress, verificationCode)
 
-  if (isError(createPasswordResetEmailResult)) {
-    return createPasswordResetEmailResult
+  if (isError(createVerificationEmailResult)) {
+    return createVerificationEmailResult
   }
 
-  const { subject, body } = createPasswordResetEmailResult
+  const { subject, body } = createVerificationEmailResult
   const sendEmailResult = await sendEmail(emailAddress, subject, body)
 
   return sendEmailResult
