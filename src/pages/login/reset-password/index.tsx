@@ -23,6 +23,7 @@ export const getServerSideProps: GetServerSideProps = async ({
       props: {
         token,
         invalidToken: true,
+        invalidPassword: false,
         passwordMismatch: false
       }
     }
@@ -34,11 +35,23 @@ export const getServerSideProps: GetServerSideProps = async ({
       confirmPassword: string
     }
 
+    if (!newPassword) {
+      return {
+        props: {
+          token,
+          invalidToken: false,
+          invalidPassword: true,
+          passwordMismatch: false
+        }
+      }
+    }
+
     if (newPassword !== confirmPassword) {
       return {
         props: {
           token,
           invalidToken: false,
+          invalidPassword: false,
           passwordMismatch: true
         }
       }
@@ -59,6 +72,7 @@ export const getServerSideProps: GetServerSideProps = async ({
     props: {
       token,
       passwordMismatch: false,
+      invalidPassword: false,
       invalidToken: false
     }
   }
@@ -67,10 +81,11 @@ export const getServerSideProps: GetServerSideProps = async ({
 interface Props {
   token: string
   passwordMismatch: boolean
+  invalidPassword: boolean
   invalidToken: boolean
 }
 
-const ResetPassword = ({ token, passwordMismatch, invalidToken }: Props) => (
+const ResetPassword = ({ token, passwordMismatch, invalidPassword, invalidToken }: Props) => (
   <>
     <Head>
       <title>{"Reset Password"}</title>
@@ -88,14 +103,30 @@ const ResetPassword = ({ token, passwordMismatch, invalidToken }: Props) => (
             </ErrorSummary>
           )}
 
+          {invalidPassword && (
+            <ErrorSummary title="Password field is mandatory">{"Password fields cannot be empty."}</ErrorSummary>
+          )}
+
           {passwordMismatch && (
             <ErrorSummary title="Passwords do not match">{"Provided new passwords do not match."}</ErrorSummary>
           )}
 
           {!invalidToken && (
             <form method="post">
-              <TextInput id="newPassword" name="newPassword" label="New password" type="password" />
-              <TextInput id="configmPassword" name="confirmPassword" label="Confirm new password" type="password" />
+              <TextInput
+                id="newPassword"
+                name="newPassword"
+                label="New password"
+                type="password"
+                isError={invalidPassword || passwordMismatch}
+              />
+              <TextInput
+                id="configmPassword"
+                name="confirmPassword"
+                label="Confirm new password"
+                type="password"
+                isError={passwordMismatch}
+              />
               <input type="hidden" id="token" name="token" value={token} />
               <Button noDoubleClick>{"Reset password"}</Button>
             </form>
