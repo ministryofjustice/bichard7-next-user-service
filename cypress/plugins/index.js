@@ -23,6 +23,11 @@ module.exports = async (on, config) => {
       return result.email_verification_code
     },
 
+    async getPasswordResetCode(emailAddress) {
+      const result = await db.one("SELECT password_reset_code FROM br7own.users WHERE email = $1", emailAddress)
+      return result.password_reset_code
+    },
+
     async seedUsers() {
       return createUsers()
     }
