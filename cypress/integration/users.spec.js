@@ -26,7 +26,7 @@ describe("User", () => {
       cy.get("tbody tr:nth-child(3) td:nth-child(5)").should("have.text", "bichard03@example.com")
     })
 
-    it("should display new user after it was created", () => {
+    it("should be able to create a new user", () => {
       cy.visit("users/newUser")
 
       cy.get('input[id="username"]').type("Buser")
@@ -42,7 +42,9 @@ describe("User", () => {
 
       cy.get("button").click()
       cy.get("h3").should("have.text", "User Buser has ben successfully created")
+    })
 
+    it("should be able to view a newly created user", () => {
       cy.visit("users")
 
       cy.get("tbody tr:nth-child(1) td:nth-child(1)").should("have.text", "Bichard01")
