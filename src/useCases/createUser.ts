@@ -1,5 +1,5 @@
 import CreateUserResult from "types/CreateUserResult"
-import UserCreateDetails from "types/UserCreateDetails"
+import UserCreateDetails from "types/UserDetails"
 import isUsernameUnique from "./isUsernameUnique"
 import isEmailUnique from "./IsEmailUnique"
 

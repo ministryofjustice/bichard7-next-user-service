@@ -4,10 +4,10 @@ import User from "types/User"
 import { GetServerSideProps } from "next"
 import { Summary, SummaryItem } from "components/Summary"
 import BackLink from "components/BackLink"
-import Link from "components/Link"
 import ButtonGroup from "components/ButtonGroup"
 import getConnection from "lib/getConnection"
 import { getUserByUsername } from "useCases"
+import Link from "components/Link"
 
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
   const { username } = query
@@ -49,6 +49,9 @@ const Users = ({ user }: Props) => (
         <SummaryItem label="Organisation" value={user.orgServes} />
       </Summary>
       <ButtonGroup>
+        <Link data-test="edit-user-view" href={`${user.username}/edit`}>
+          {"Edit details"}
+        </Link>
         <Link href={`${user.username}/delete`}>{"Delete account"}</Link>
       </ButtonGroup>
     </Layout>

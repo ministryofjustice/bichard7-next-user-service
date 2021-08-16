@@ -1,5 +1,5 @@
 import getConnection from "lib/getConnection"
-import UserCreateDetails from "types/UserCreateDetails"
+import UserCreateDetails from "types/UserDetails"
 import createUser from "useCases/createUser"
 import User from "types/User"
 import getUserByUsername from "useCases/getUserByUsername"

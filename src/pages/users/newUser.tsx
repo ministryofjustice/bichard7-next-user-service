@@ -1,16 +1,17 @@
 import Button from "components/Button"
 import Layout from "components/Layout"
 import Head from "next/head"
-import TextInput from "components/TextInput"
 import SuccessBanner from "components/SuccessBanner"
 import { GetServerSideProps } from "next"
-import UserCreateDetails from "types/UserCreateDetails"
+import UserCreateDetails from "types/UserDetails"
 import getConnection from "lib/getConnection"
 import parseFormData from "lib/parseFormData"
 import createUser from "useCases/createUser"
+import userFormIsValid from "lib/userFormIsValid"
+import UserForm from "components/users/userForm"
 
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
-  let missingMandatory = false
+  const missingMandatory = false
   let errorMessage = ""
   let successMessage = ""
 
@@ -27,17 +28,9 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
       organisation: string
     }
 
-    if (
-      userCreateDetails.username === "" ||
-      userCreateDetails.forenames === "" ||
-      userCreateDetails.surname === "" ||
-      userCreateDetails.phoneNumber === "" ||
-      userCreateDetails.emailAddress === ""
-    ) {
-      missingMandatory = true
-    }
+    const formIsValid = userFormIsValid(userCreateDetails)
 
-    if (!missingMandatory) {
+    if (formIsValid) {
       const connection = getConnection()
       const result = await createUser(connection, userCreateDetails)
       errorMessage = result.error.message
@@ -70,22 +63,12 @@ const newUser = ({ errorMessage, successMessage, missingMandatory }: Props) => (
       </span>
       {successMessage && <SuccessBanner message={successMessage} />}
       <form method="post">
-        <TextInput id="username" name="username" label="Username *" type="text" isError={missingMandatory} />
-        <TextInput id="forenames" name="forenames" label="Forename(s) *" type="text" isError={missingMandatory} />
-        <TextInput id="surname" name="surname" label="Surname *" type="text" isError={missingMandatory} />
-        <TextInput id="phoneNumber" name="phoneNumber" label="Phone number *" type="text" isError={missingMandatory} />
-        <TextInput
-          id="emailAddress"
-          name="emailAddress"
-          label="Email address *"
-          type="email"
-          isError={missingMandatory}
+        <UserForm
+          missingUsername={missingMandatory}
+          missingForenames={missingMandatory}
+          missingPhoneNumber={missingMandatory}
+          missingEmail={missingMandatory}
         />
-
-        <TextInput id="postalAddress" name="postalAddress" label="Postal address" type="text" />
-        <TextInput id="postCode" name="postCode" label="Postcode" type="text" />
-        <TextInput id="endorsedBy" name="endorsedBy" label="Endorsed by" type="text" />
-        <TextInput id="orgServes" name="orgServes" label="Organisation" type="text" />
 
         <Button noDoubleClick>{"Add user"}</Button>
       </form>
