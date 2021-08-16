@@ -1,7 +1,9 @@
 import { randomDigits } from "crypto-secure-random-digit"
 import config from "lib/config"
 import Database from "types/Database"
+import PromiseResult from "types/PromiseResult"
 import { isError } from "types/Result"
+import createVerificationEmail from "./createVerificationEmail"
 import sendEmail from "./sendEmail"
 import storeVerificationCode from "./storeVerificationCode"
 
@@ -9,20 +11,23 @@ const generateVerificationCode = () => {
   return randomDigits(config.verificationCodeLength).join("")
 }
 
-const sendVerificationEmail = async (connection: Database, emailAddress: string) => {
+export default async (connection: Database, emailAddress: string): PromiseResult<void> => {
   const verificationCode = generateVerificationCode()
-  let stored
-  try {
-    stored = await storeVerificationCode(connection, emailAddress, verificationCode)
+  const storeVerificationCodeResult = await storeVerificationCode(connection, emailAddress, verificationCode)
 
-    if (isError(stored)) {
-      console.error(stored)
-      return stored
-    }
-  } catch (error) {
-    return error
+  if (isError(storeVerificationCodeResult)) {
+    console.error(storeVerificationCodeResult)
+    return storeVerificationCodeResult
   }
-  return stored && sendEmail(emailAddress, verificationCode)
-}
 
-export default sendVerificationEmail
+  const createPasswordResetEmailResult = createVerificationEmail(emailAddress, verificationCode)
+
+  if (isError(createPasswordResetEmailResult)) {
+    return createPasswordResetEmailResult
+  }
+
+  const { subject, body } = createPasswordResetEmailResult
+  const sendEmailResult = await sendEmail(emailAddress, subject, body)
+
+  return sendEmailResult
+}
