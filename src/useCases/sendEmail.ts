@@ -1,24 +1,10 @@
-import { EmailTokenPayload, generateEmailToken } from "lib/token/emailToken"
+import { PromiseResult } from "types/Result"
 
-const sendEmail = (emailAddress: string, verificationCode: string) => {
-  const payload: EmailTokenPayload = {
-    emailAddress,
-    verificationCode
-  }
+export default (emailAddress: string, subject: string, body: string): PromiseResult<void> => {
+  console.log("Recipient: ", emailAddress)
+  console.log("Subject: ", subject)
+  console.log("Body:")
+  console.log(body)
 
-  const token = generateEmailToken(payload)
-  const url = new URL("/login/verify", "http://localhost:3000")
-  url.searchParams.append("token", token)
-
-  // eslint-disable-next-line no-console
-  console.log(`
-    TO: ${emailAddress}
-
-    Click here to log in to Bichard:
-    ${url.href}
-  `)
-
-  return true
+  return Promise.resolve()
 }
-
-export default sendEmail

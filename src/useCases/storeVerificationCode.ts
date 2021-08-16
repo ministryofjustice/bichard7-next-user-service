@@ -1,18 +1,25 @@
 import Database from "types/Database"
+import PromiseResult from "types/PromiseResult"
+import { isError } from "types/Result"
 
-const storeVerificationCode = async (connection: Database, emailAddress: string, verificationCode: string) => {
+export default async (connection: Database, emailAddress: string, verificationCode: string): PromiseResult<void> => {
   const storeVerificationQuery = `
     UPDATE br7own.users
     SET email_verification_code = $1,
       email_verification_generated = NOW()
     WHERE email = $2 AND deleted_at IS NULL
   `
-  try {
-    await connection.none(storeVerificationQuery, [verificationCode, emailAddress])
-    return true
-  } catch (error) {
-    return error
-  }
-}
+  const result = await connection
+    .result(storeVerificationQuery, [verificationCode, emailAddress])
+    .catch((error) => error)
 
-export default storeVerificationCode
+  if (isError(result)) {
+    return result
+  }
+
+  if (result.rowCount === 0) {
+    return Error("User not found")
+  }
+
+  return undefined
+}

@@ -20,7 +20,7 @@ const expectedUser = {
   phoneNumber: "DummyPhoneNumber"
 } as unknown as User
 
-describe("DeleteUserUseCase", () => {
+describe("getUserByUsername", () => {
   beforeEach(async () => {
     await deleteDatabaseUser(connection, expectedUser.username)
   })
