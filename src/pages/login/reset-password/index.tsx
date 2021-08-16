@@ -92,12 +92,14 @@ const ResetPassword = ({ token, passwordMismatch, invalidToken }: Props) => (
             <ErrorSummary title="Passwords do not match">{"Provided new passwords do not match."}</ErrorSummary>
           )}
 
-          <form method="post">
-            <TextInput id="newPassword" name="newPassword" label="New password" type="password" />
-            <TextInput id="configmPassword" name="confirmPassword" label="Confirm new password" type="password" />
-            <input type="hidden" id="token" name="token" value={token} />
-            <Button noDoubleClick>{"Reset password"}</Button>
-          </form>
+          {!invalidToken && (
+            <form method="post">
+              <TextInput id="newPassword" name="newPassword" label="New password" type="password" />
+              <TextInput id="configmPassword" name="confirmPassword" label="Confirm new password" type="password" />
+              <input type="hidden" id="token" name="token" value={token} />
+              <Button noDoubleClick>{"Reset password"}</Button>
+            </form>
+          )}
         </div>
       </div>
     </Layout>
