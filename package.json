@@ -12,6 +12,7 @@
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
     "test:unit": "jest --testPathIgnorePatterns=\"integration\" \"e2e\"",
+    "test:unit:update": "npm run test:unit -- -u",
     "test:integration": "jest --testPathPattern=\"integration\"",
     "test:ui": "concurrently --kill-others --success first npm:start npm:cypress:run"
   },

@@ -1,6 +1,6 @@
 import { GetServerSidePropsResult } from "next"
 
-export default <T>(url: string): GetServerSidePropsResult<T> => {
+export default <Props>(url: string): GetServerSidePropsResult<Props> => {
   return {
     redirect: {
       destination: url,

@@ -45,7 +45,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
       const result = await createUser(connection, userCreateDetails)
       errorMessage = result.error.message
       if (errorMessage === "") {
-        successMessage = `User ${userCreateDetails.username} has ben successfully created`
+        successMessage = `User ${userCreateDetails.username} has been successfully created`
         sendNewUserEmail(userCreateDetails.emailAddress, randomDigits(config.verificationCodeLength).join(""))
       }
     } else {

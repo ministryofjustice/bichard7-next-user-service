@@ -5,6 +5,7 @@ interface Props {
   href: (item: unknown) => string
   item?: KeyValuePair<string, string>
 }
+
 const LinkColumn = ({ field, href, item }: Props) => {
   if (!item) {
     return <>{"Error while rendering LinkColumn component. Item must have value."}</>
