@@ -11,16 +11,17 @@ const initialiseUserPassword = async (
 ) => {
   // check if we have the correct user
   const validated = await validateUserVerificationCode(connection, emailAddress, verificationCode)
-  console.log(validated)
+  console.log(validated, "validate")
   if (!validated) {
     return new Error("Error: Invalid verification code")
   }
   // set verification code to
-  resetUserVerificationCode(connection, emailAddress)
+  let result = await resetUserVerificationCode(connection, emailAddress)
+  console.log(result, "reset user ver")
 
   // set the new password
-  const result = await updateUserPassword(connection, emailAddress, password)
-  console.log(result)
+  result = await updateUserPassword(connection, emailAddress, password)
+  console.log(result, "update user pass")
   return result
 }
 
