@@ -9,6 +9,7 @@ import parseFormData from "lib/parseFormData"
 import { sendVerificationEmail } from "useCases"
 import getConnection from "lib/getConnection"
 import { isError } from "types/Result"
+import Link from "components/Link"
 
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   let invalidEmail = false
@@ -62,6 +63,9 @@ const Index = ({ invalidEmail }: Props) => (
 
         <form method="post">
           <TextInput id="email" name="emailAddress" label="Email address" type="email" />
+          <p>
+            <Link href="/login/forgot-password">{"Forgot your password?"}</Link>
+          </p>
           <Button>{"Sign in"}</Button>
         </form>
       </GridRow>
