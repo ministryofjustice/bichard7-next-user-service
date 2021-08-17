@@ -3,7 +3,7 @@ import Layout from "components/Layout"
 import TextInput from "components/TextInput"
 import getConnection from "lib/getConnection"
 import parseFormData from "lib/parseFormData"
-import { decodeEmailToken, EmailToken } from "lib/token/emailToken"
+import { decodeEmailVerificationToken, EmailVerificationToken } from "lib/token/emailVerificationToken"
 import { GetServerSideProps } from "next"
 import Head from "next/head"
 import React from "react"
@@ -32,8 +32,8 @@ export const getServerSideProps: GetServerSideProps = async ({ req, query }) => 
         props: { errorMessage }
       }
     }
-    const { token } = query as { token: EmailToken }
-    const { emailAddress, verificationCode } = decodeEmailToken(token)
+    const { token } = query as { token: EmailVerificationToken }
+    const { emailAddress, verificationCode } = decodeEmailVerificationToken(token)
 
     const connection = getConnection()
     const result = await initialiseUserPassword(connection, emailAddress, verificationCode, nPassword)

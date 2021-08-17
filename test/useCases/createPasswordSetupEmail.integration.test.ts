@@ -1,5 +1,5 @@
 /* eslint-disable import/first */
-jest.mock("lib/token/emailToken")
+jest.mock("lib/token/emailVerificationToken")
 
 import User from "types/User"
 import UserCreateDetails from "types/UserCreateDetails"
@@ -10,7 +10,7 @@ import { isError } from "types/Result"
 import initialiseUserPassword from "useCases/initialiseUserPassword"
 import storePasswordResetCode from "useCases/storePasswordResetCode"
 import EmailResult from "types/EmailResult"
-import { generateEmailToken } from "lib/token/emailToken"
+import { generateEmailVerificationToken } from "lib/token/emailVerificationToken"
 import deleteDatabaseUser from "./deleteDatabaseUser"
 
 const connection = getConnection()
@@ -40,7 +40,9 @@ describe("AccountSetup", () => {
   })
 
   it("should generate the email subject and body to request user to setup password", async () => {
-    const mockedGeneratePasswordResetToken = generateEmailToken as jest.MockedFunction<typeof generateEmailToken>
+    const mockedGeneratePasswordResetToken = generateEmailVerificationToken as jest.MockedFunction<
+      typeof generateEmailVerificationToken
+    >
     mockedGeneratePasswordResetToken.mockReturnValue("DUMMY_TOKEN")
 
     const createUserDetails: UserCreateDetails = {
