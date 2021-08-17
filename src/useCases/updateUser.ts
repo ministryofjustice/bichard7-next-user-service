@@ -1,7 +1,7 @@
 import Database from "types/Database"
 import User from "types/User"
 
-const updateUser = async (connection: Database, userDetails: Partial<User>): Promise<Partial<User>> => {
+const updateUser = async (connection: Database, userDetails: Partial<User>): Promise<boolean | Error> => {
   const updateUserQuery = `
     UPDATE br7own.users
 	    SET 
@@ -17,7 +17,7 @@ const updateUser = async (connection: Database, userDetails: Partial<User>): Pro
 	    WHERE id = $1
     `
 
-  const getUserQuery = `
+  /* const getUserQuery = `
     SELECT
       id,
       username, 
@@ -31,10 +31,10 @@ const updateUser = async (connection: Database, userDetails: Partial<User>): Pro
       email
       FROM br7own.users
     WHERE id = $1
-  `
+  ` */
 
   try {
-    await connection.none(updateUserQuery, [
+    const rowsUpdated = await connection.result(updateUserQuery, [
       userDetails.id,
       userDetails.username,
       userDetails.forenames,
@@ -47,20 +47,11 @@ const updateUser = async (connection: Database, userDetails: Partial<User>): Pro
       userDetails.emailAddress
     ])
 
-    const user = await connection.one(getUserQuery, [userDetails.id])
-
-    return {
-      id: user.id,
-      username: user.username,
-      forenames: user.forenames,
-      surname: user.surname,
-      phoneNumber: user.phone_number,
-      postCode: user.post_code,
-      postalAddress: user.postal_address,
-      endorsedBy: user.endorsed_by,
-      orgServes: user.org_serves,
-      emailAddress: user.email
+    if (rowsUpdated.rowCount === 0) {
+      return Error("Error updating user")
     }
+
+    return true
   } catch (error) {
     return error
   }

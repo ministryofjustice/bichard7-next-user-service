@@ -46,10 +46,24 @@ export const getServerSideProps: GetServerSideProps = async ({ query, req }) => 
         }
       }
 
+      const updatedUser = await getUserById(connection, userDetails.id as string)
+
+      console.log("updatedUser", updateUser)
+
+      if (isError(updatedUser)) {
+        console.error(updateUser)
+
+        return {
+          props: {
+            errorMessage: "There was an error retrieving the user details"
+          }
+        }
+      }
+
       return {
         props: {
           successMessage: "The user was updated successfully",
-          user: userUpdated
+          user: updatedUser
         }
       }
     }
