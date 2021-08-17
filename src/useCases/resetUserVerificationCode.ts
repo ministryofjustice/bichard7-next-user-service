@@ -6,6 +6,7 @@ const resetUserVerificationCode = async (connection: Database, emailAddress: str
         UPDATE br7own.users
         SET email_verification_code = NULL
         WHERE email = $1
+          AND deleted_at IS NULL
       `
 
   const result = await connection.result(updateUserQuery, [emailAddress]).catch((error) => error)

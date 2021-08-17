@@ -14,7 +14,8 @@ const validateUserVerificationCode = async (
     SELECT *
     FROM br7own.users
     WHERE email = $1
-        AND password_reset_code = $2
+      AND password_reset_code = $2
+      AND deleted_at IS NULL
     `
 
   const result = await connection.result(query, [emailAddress, verificationCode])
