@@ -30,7 +30,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, query }) => 
       }
 
       if (nPassword !== cPassword) {
-        errorMessage = "Error: Passords cannot be empty"
+        errorMessage = "Error: Passords are mismatching"
         return {
           props: { errorMessage }
         }

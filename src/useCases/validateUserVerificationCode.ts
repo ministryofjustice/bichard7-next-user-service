@@ -1,23 +1,32 @@
 import config from "lib/config"
 import Database from "types/Database"
+import { isError, PromiseResult } from "types/Result"
 
-const validateUserVerificationCode = async (connection: Database, emailAddress: string, verificationCode: string) => {
+const validateUserVerificationCode = async (
+  connection: Database,
+  emailAddress: string,
+  verificationCode: string
+): PromiseResult<void> => {
   if (verificationCode.length !== config.verificationCodeLength) {
-    return new Error("No blip")
+    return new Error("Error: Invalid Verification Code ")
   }
-
   const query = `
     SELECT *
     FROM br7own.users
     WHERE email = $1
-        AND email_verification_code = $2
+        AND password_reset_code = $2
     `
 
-  const result = await connection.none(query, [emailAddress, verificationCode])
+  const result = await connection.result(query, [emailAddress, verificationCode])
+  if (isError(result)) {
+    return result
+  }
 
-  console.log(result)
+  if (result.rowCount === 0) {
+    return Error("Error: No results")
+  }
 
-  return result
+  return undefined
 }
 
 export default validateUserVerificationCode

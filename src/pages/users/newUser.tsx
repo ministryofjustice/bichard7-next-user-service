@@ -7,15 +7,12 @@ import { GetServerSideProps } from "next"
 import UserCreateDetails from "types/UserCreateDetails"
 import getConnection from "lib/getConnection"
 import parseFormData from "lib/parseFormData"
-import createUser from "useCases/createUser"
-import sendNewUserEmail from "useCases/sendNewUserEmail"
-import { randomDigits } from "crypto-secure-random-digit"
-import config from "lib/config"
+import setupNewUser from "useCases/setupNewUser"
+import { isError } from "types/Result"
 
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   let missingMandatory = false
   let errorMessage = ""
-  let successMessage = ""
 
   if (req.method === "POST") {
     const userCreateDetails: UserCreateDetails = (await parseFormData(req)) as {
@@ -42,18 +39,20 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
 
     if (!missingMandatory) {
       const connection = getConnection()
-      const result = await createUser(connection, userCreateDetails)
-      errorMessage = result.error.message
-      if (errorMessage === "") {
-        successMessage = `User ${userCreateDetails.username} has been successfully created`
-        sendNewUserEmail(userCreateDetails.emailAddress, randomDigits(config.verificationCodeLength).join(""))
+      const result = await setupNewUser(connection, userCreateDetails)
+      if (isError(result)) {
+        return {
+          props: { errorMessage: result.message, successMessage: "", missingMandatory }
+        }
       }
-    } else {
-      errorMessage = "Please make sure that all mandatory fields are non empty"
+      return {
+        props: { errorMessage: result.errorMessage, successMessage: result.successMessage, missingMandatory }
+      }
     }
+    errorMessage = "Please make sure that all mandatory fields are non empty"
   }
   return {
-    props: { errorMessage, successMessage, missingMandatory }
+    props: { errorMessage, successMessage: "", missingMandatory }
   }
 }
 

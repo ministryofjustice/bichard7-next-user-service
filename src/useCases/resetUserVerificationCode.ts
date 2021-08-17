@@ -8,7 +8,7 @@ const resetUserVerificationCode = async (connection: Database, emailAddress: str
         WHERE email = $1
       `
 
-  const result = await connection.none(updateUserQuery, [emailAddress]).catch((error) => error)
+  const result = await connection.result(updateUserQuery, [emailAddress]).catch((error) => error)
   return result
 }
 
