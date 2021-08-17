@@ -1,4 +1,4 @@
-describe("Update user", () => {
+describe("Edit user", () => {
   before(async () => {
     await cy.task("seedUsers")
   })

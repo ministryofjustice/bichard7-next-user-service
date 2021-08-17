@@ -19,7 +19,7 @@ const getConnection = (): Database => {
     database,
     user,
     password,
-    ssl
+    ssl: ssl ? { rejectUnauthorized: false } : false
   })
 
   return connection

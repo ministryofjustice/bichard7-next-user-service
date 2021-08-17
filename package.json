@@ -12,6 +12,7 @@
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
     "test:unit": "jest --testPathIgnorePatterns=\"integration\" \"e2e\"",
+    "test:unit:update": "npm run test:unit -- -u",
     "test:integration": "jest --testPathPattern=\"integration\"",
     "test:ui": "concurrently --kill-others --success first npm:start npm:cypress:run"
   },
@@ -20,7 +21,7 @@
     "crypto-secure-random-digit": "^1.0.9",
     "govuk-frontend": "^3.12.0",
     "jsonwebtoken": "^8.5.1",
-    "next": "^10.2.0",
+    "next": "^11.1.0",
     "pg-promise": "^10.10.2",
     "qs": "^6.5.2",
     "raw-body": "^2.4.1",

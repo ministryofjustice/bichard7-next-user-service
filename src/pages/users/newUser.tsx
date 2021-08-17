@@ -8,10 +8,9 @@ import getConnection from "lib/getConnection"
 import parseFormData from "lib/parseFormData"
 import createUser from "useCases/createUser"
 import userFormIsValid from "lib/userFormIsValid"
-import UserForm from "components/users/userForm"
+import UserForm from "components/users/UserForm"
 
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
-  const missingMandatory = false
   let errorMessage = ""
   let successMessage = ""
 
@@ -35,14 +34,14 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
       const result = await createUser(connection, userCreateDetails)
       errorMessage = result.error.message
       if (errorMessage === "") {
-        successMessage = `User ${userCreateDetails.username} has ben successfully created`
+        successMessage = `User ${userCreateDetails.username} has been successfully created`
       }
     } else {
       errorMessage = "Please make sure that all mandatory fields are non empty"
     }
   }
   return {
-    props: { errorMessage, successMessage, missingMandatory }
+    props: { errorMessage, successMessage, missingMandatory: true }
   }
 }
 

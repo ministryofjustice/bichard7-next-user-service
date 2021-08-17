@@ -1,4 +1,4 @@
-import { createHash } from "crypto"
+import { createHash, randomBytes } from "crypto"
 
 interface ShiroHash {
   version: string
@@ -49,4 +49,13 @@ export async function compare(password: string, passwordHash: string): Promise<b
   const newHash = await hash(password, shiroHash.salt, shiroHash.iterations)
 
   return newHash === shiroHash.passwordHash
+}
+
+export const createPassword = async (password: string): Promise<string> => {
+  const salt = randomBytes(16).toString("base64")
+  const iterations = (Math.floor(Math.random() * 6) + 1) * 100000
+  const passwordHash = await hash(password, salt, iterations)
+  const parts = ["shiro1", "SHA-256", iterations, salt, passwordHash]
+
+  return `$${parts.join("$")}`
 }

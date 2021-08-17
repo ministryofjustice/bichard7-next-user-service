@@ -13,6 +13,7 @@ const getAllUsers = async (connection: Database): Promise<Partial<User>[]> => {
         email
       FROM br7own.users
       WHERE deleted_at IS NULL
+      ORDER BY username
     `
   try {
     users = await connection.any(getAllUsersQuery)
