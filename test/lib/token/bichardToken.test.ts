@@ -35,8 +35,6 @@ describe("generateBichardToken()", () => {
       username: user.username,
       exclusionList: user.exclusionList,
       inclusionList: user.inclusionList,
-      forenames: user.forenames,
-      surname: user.surname,
       emailAddress: user.emailAddress,
       groups: user.groups
     }
@@ -50,6 +48,8 @@ describe("generateBichardToken()", () => {
 
     expect(payload).not.toHaveProperty("endorsedBy")
     expect(payload).not.toHaveProperty("orgServes")
+    expect(payload).not.toHaveProperty("forenames")
+    expect(payload).not.toHaveProperty("surname")
     expect(payload).not.toHaveProperty("postalAddress")
     expect(payload).not.toHaveProperty("postCode")
     expect(payload).not.toHaveProperty("phoneNumber")

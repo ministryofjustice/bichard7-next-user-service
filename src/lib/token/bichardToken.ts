@@ -13,8 +13,6 @@ export interface BichardTokenPayload {
   username: string
   exclusionList: string[]
   inclusionList: string[]
-  forenames: string
-  surname: string
   emailAddress: string
   groups: UserGroup[]
 }
@@ -29,8 +27,6 @@ export function generateBichardToken(user: User): BichardToken {
     username: user.username,
     exclusionList: user.exclusionList,
     inclusionList: user.inclusionList,
-    forenames: user.forenames,
-    surname: user.surname,
     emailAddress: user.emailAddress,
     groups: user.groups
   }
