@@ -1,4 +1,5 @@
 import jwt from "jsonwebtoken"
+import User from "types/User"
 import config from "../config"
 import UserGroup from "../../types/UserGroup"
 
@@ -18,10 +19,20 @@ export interface BichardTokenPayload {
   groups: UserGroup[]
 }
 
-export function generateBichardToken(payload: BichardTokenPayload): BichardToken {
+export function generateBichardToken(user: User): BichardToken {
   const options: jwt.SignOptions = {
     expiresIn: config.tokenExpiresIn,
     ...signOptions
+  }
+
+  const payload: BichardTokenPayload = {
+    username: user.username,
+    exclusionList: user.exclusionList,
+    inclusionList: user.inclusionList,
+    forenames: user.forenames,
+    surname: user.surname,
+    emailAddress: user.emailAddress,
+    groups: user.groups
   }
 
   return jwt.sign(payload, config.tokenSecret, options)
