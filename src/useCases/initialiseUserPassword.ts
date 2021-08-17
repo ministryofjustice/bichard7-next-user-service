@@ -13,7 +13,7 @@ const initialiseUserPassword = async (
   // check if we have the correct user
   const validatedResult = await validateUserVerificationCode(connection, emailAddress, verificationCode)
   if (isError(validatedResult)) {
-    return new Error("Error: Invalid verification code")
+    return new Error("Error: Invalid or expired verification code")
   }
   // set verification code to empty string
   const resetResult = await storePasswordResetCode(connection, emailAddress, null)

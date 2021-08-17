@@ -1,19 +1,19 @@
-import { generatePasswordResetToken, PasswordResetTokenPayload } from "lib/token/passwordResetToken"
+import { EmailTokenPayload, generateEmailToken } from "lib/token/emailToken"
 import EmailResult from "types/EmailResult"
 import { isError, Result } from "types/Result"
 import UserCreateDetails from "types/UserCreateDetails"
 
 export default (user: UserCreateDetails, verificationCode: string): Result<EmailResult> => {
-  const payload: PasswordResetTokenPayload = {
+  const payload: EmailTokenPayload = {
     emailAddress: user.emailAddress,
-    passwordResetCode: verificationCode
+    verificationCode
   }
 
-  const token = generatePasswordResetToken(payload)
+  const token = generateEmailToken(payload)
   if (isError(token)) {
     return token
   }
-  const url = new URL("/users/newPassword", "http://localhost:3000")
+  const url = new URL("/login/new-password", "http://localhost:3000")
   url.searchParams.append("token", token)
 
   const subject = "Finish account setup"

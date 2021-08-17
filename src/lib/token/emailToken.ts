@@ -17,7 +17,11 @@ export interface EmailTokenPayload {
 }
 
 export function decodeEmailToken(token: EmailToken): EmailTokenPayload {
-  return jwt.verify(token, config.tokenSecret, verifyOptions) as EmailTokenPayload
+  try {
+    return jwt.verify(token, config.tokenSecret, verifyOptions) as EmailTokenPayload
+  } catch (error) {
+    return error
+  }
 }
 
 export function generateEmailToken(payload: EmailTokenPayload): EmailToken {
@@ -26,5 +30,9 @@ export function generateEmailToken(payload: EmailTokenPayload): EmailToken {
     ...signOptions
   }
 
-  return jwt.sign(payload, config.tokenSecret, options)
+  try {
+    return jwt.sign(payload, config.tokenSecret, options)
+  } catch (error) {
+    return error
+  }
 }

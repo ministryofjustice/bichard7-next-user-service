@@ -11,7 +11,7 @@ export default (user: UserCreateDetails, passwordResetCode: string): Result<Emai
     return token
   }
 
-  const url = new URL("/login/newPassword", "http://localhost:3000")
+  const url = new URL("/login/new-password", "http://localhost:3000")
   url.searchParams.append("token", token)
 
   const subject = "Finish account setup"
