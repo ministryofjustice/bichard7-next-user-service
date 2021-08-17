@@ -17,22 +17,6 @@ const updateUser = async (connection: Database, userDetails: Partial<User>): Pro
 	    WHERE id = $1
     `
 
-  /* const getUserQuery = `
-    SELECT
-      id,
-      username, 
-      forenames, 
-      surname, 
-      phone_number, 
-      post_code, 
-      postal_address, 
-      endorsed_by,
-      org_serves,
-      email
-      FROM br7own.users
-    WHERE id = $1
-  ` */
-
   try {
     const rowsUpdated = await connection.result(updateUserQuery, [
       userDetails.id,
