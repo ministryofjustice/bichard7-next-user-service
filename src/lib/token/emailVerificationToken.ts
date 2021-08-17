@@ -9,22 +9,22 @@ const verifyOptions: jwt.SignOptions = {
   issuer: config.tokenIssuer
 }
 
-export type EmailToken = string
+export type EmailVerificationToken = string
 
-export interface EmailTokenPayload {
+export interface EmailVerificationTokenPayload {
   emailAddress: string
   verificationCode: string
 }
 
-export function decodeEmailToken(token: EmailToken): EmailTokenPayload {
+export function decodeEmailVerificationToken(token: EmailVerificationToken): EmailVerificationTokenPayload {
   try {
-    return jwt.verify(token, config.tokenSecret, verifyOptions) as EmailTokenPayload
+    return jwt.verify(token, config.tokenSecret, verifyOptions) as EmailVerificationTokenPayload
   } catch (error) {
     return error
   }
 }
 
-export function generateEmailToken(payload: EmailTokenPayload): EmailToken {
+export function generateEmailVerificationToken(payload: EmailVerificationTokenPayload): EmailVerificationToken {
   const options: jwt.SignOptions = {
     expiresIn: `${config.emailVerificationExpiresIn} minutes`,
     ...signOptions

@@ -7,18 +7,18 @@ import TextInput from "components/TextInput"
 import { GetServerSideProps } from "next"
 import parseFormData from "lib/parseFormData"
 import config from "lib/config"
-import { decodeEmailToken, EmailToken } from "lib/token/emailToken"
+import { decodeEmailVerificationToken, EmailVerificationToken } from "lib/token/emailVerificationToken"
 import getConnection from "lib/getConnection"
 import { authenticate } from "useCases"
-import { generateBichardToken } from "lib/token/bichardToken"
+import { generateAuthenticationToken } from "lib/token/authenticationToken"
 import { isError } from "types/Result"
 import createRedirectResponse from "utils/createRedirectResponse"
 
 export const getServerSideProps: GetServerSideProps = async ({ req, query }) => {
   try {
     if (req.method === "POST") {
-      const { token, password } = (await parseFormData(req)) as { token: EmailToken; password: string }
-      const { emailAddress, verificationCode } = decodeEmailToken(token)
+      const { token, password } = (await parseFormData(req)) as { token: EmailVerificationToken; password: string }
+      const { emailAddress, verificationCode } = decodeEmailVerificationToken(token)
 
       const connection = getConnection()
       const user = await authenticate(connection, emailAddress, password, verificationCode)
@@ -34,16 +34,16 @@ export const getServerSideProps: GetServerSideProps = async ({ req, query }) => 
         }
       }
 
-      const bichardToken = generateBichardToken(user)
+      const authToken = generateAuthenticationToken(user)
 
       const url = new URL(config.bichardRedirectURL)
-      url.searchParams.append(config.tokenQueryParamName, bichardToken)
+      url.searchParams.append(config.tokenQueryParamName, authToken)
 
       return createRedirectResponse(url.href)
     }
 
-    const { token } = query as { token: EmailToken }
-    const { emailAddress } = decodeEmailToken(token)
+    const { token } = query as { token: EmailVerificationToken }
+    const { emailAddress } = decodeEmailVerificationToken(token)
 
     if (!token || !emailAddress) {
       throw new Error()

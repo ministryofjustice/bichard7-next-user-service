@@ -14,16 +14,16 @@ import insertDatabaseUser from "./insertDatabaseUser"
 const connection = getConnection()
 
 const user = {
-  username: "gprc_username",
-  emailAddress: "gprc_emailAddress",
-  exclusionList: "gprc_exclusionList",
-  inclusionList: "gprc_inclusionList",
-  endorsedBy: "gprc_endorsedBy",
-  orgServes: "gprc_orgServes",
-  forenames: "gprc_forenames",
-  postalAddress: "gprc_postalAddress",
+  username: "rp_username",
+  emailAddress: "rp_emailAddress",
+  exclusionList: "rp_exclusionList",
+  inclusionList: "rp_inclusionList",
+  endorsedBy: "rp_endorsedBy",
+  orgServes: "rp_orgServes",
+  forenames: "rp_forenames",
+  postalAddress: "rp_postalAddress",
   postCode: "QW2 2WQ",
-  phoneNumber: "gprc_phoneNumber"
+  phoneNumber: "rp_phoneNumber"
 } as unknown as User
 
 describe("resetPassword", () => {
