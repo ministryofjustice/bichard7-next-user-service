@@ -1,13 +1,13 @@
-import { EmailTokenPayload, generateEmailToken } from "lib/token/emailToken"
+import { EmailVerificationTokenPayload, generateEmailVerificationToken } from "lib/token/emailVerificationToken"
 import EmailResult from "types/EmailResult"
 
 export default (emailAddress: string, verificationCode: string): EmailResult => {
-  const payload: EmailTokenPayload = {
+  const payload: EmailVerificationTokenPayload = {
     emailAddress,
     verificationCode
   }
 
-  const token = generateEmailToken(payload)
+  const token = generateEmailVerificationToken(payload)
   const url = new URL("/login/verify", "http://localhost:3000")
   url.searchParams.append("token", token)
 
