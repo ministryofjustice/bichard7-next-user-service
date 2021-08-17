@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken"
 import config from "lib/config"
-import { generateBichardToken } from "lib/token/bichardToken"
+import { generateAuthenticationToken } from "lib/token/authenticationToken"
 import User from "types/User"
 import UserCredentials from "types/UserCredentials"
 
@@ -21,14 +21,14 @@ const user: User & UserCredentials = {
   verificationCode: "123456"
 }
 
-describe("generateBichardToken()", () => {
+describe("generateAuthenticationToken()", () => {
   it("should return a string that looks like a token", () => {
-    const result = generateBichardToken(user)
+    const result = generateAuthenticationToken(user)
     expect(result).toEqual(expect.stringMatching(/^[a-z0-9]+\.[a-z0-9]+\.[a-z0-9_-]+$/i))
   })
 
   it("should return a token that can be successfully decoded and verified", () => {
-    const token = generateBichardToken(user)
+    const token = generateAuthenticationToken(user)
     const payload = jwt.verify(token, config.tokenSecret, { issuer: config.tokenIssuer })
 
     const expectedPayload = {
@@ -43,7 +43,7 @@ describe("generateBichardToken()", () => {
   })
 
   it("should return a token only containing the minimum information", () => {
-    const token = generateBichardToken(user)
+    const token = generateAuthenticationToken(user)
     const payload = jwt.decode(token)
 
     expect(payload).not.toHaveProperty("endorsedBy")

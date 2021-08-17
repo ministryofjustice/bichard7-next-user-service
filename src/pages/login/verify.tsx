@@ -10,7 +10,7 @@ import config from "lib/config"
 import { decodeEmailToken, EmailToken } from "lib/token/emailToken"
 import getConnection from "lib/getConnection"
 import { authenticate } from "useCases"
-import { generateBichardToken } from "lib/token/bichardToken"
+import { generateAuthenticationToken } from "lib/token/authenticationToken"
 import { isError } from "types/Result"
 import createRedirectResponse from "utils/createRedirectResponse"
 
@@ -34,10 +34,10 @@ export const getServerSideProps: GetServerSideProps = async ({ req, query }) => 
         }
       }
 
-      const bichardToken = generateBichardToken(user)
+      const authToken = generateAuthenticationToken(user)
 
       const url = new URL(config.bichardRedirectURL)
-      url.searchParams.append(config.tokenQueryParamName, bichardToken)
+      url.searchParams.append(config.tokenQueryParamName, authToken)
 
       return createRedirectResponse(url.href)
     }

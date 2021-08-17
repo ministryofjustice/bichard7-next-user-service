@@ -7,9 +7,9 @@ const signOptions: jwt.SignOptions = {
   issuer: config.tokenIssuer
 }
 
-export type BichardToken = string
+export type AuthenticationToken = string
 
-export interface BichardTokenPayload {
+export interface AuthenticationTokenPayload {
   username: string
   exclusionList: string[]
   inclusionList: string[]
@@ -17,13 +17,13 @@ export interface BichardTokenPayload {
   groups: UserGroup[]
 }
 
-export function generateBichardToken(user: User): BichardToken {
+export function generateAuthenticationToken(user: User): AuthenticationToken {
   const options: jwt.SignOptions = {
     expiresIn: config.tokenExpiresIn,
     ...signOptions
   }
 
-  const payload: BichardTokenPayload = {
+  const payload: AuthenticationTokenPayload = {
     username: user.username,
     exclusionList: user.exclusionList,
     inclusionList: user.inclusionList,
