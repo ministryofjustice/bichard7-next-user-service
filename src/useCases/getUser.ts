@@ -17,7 +17,7 @@ const getUser = async (connection: Database, username: string): Promise<Partial<
         org_serves,
         email
       FROM br7own.users
-      WHERE username = $1
+      WHERE username = $1 AND deleted_at IS NULL
     `
   try {
     user = await connection.one(getUserQuery, [username])

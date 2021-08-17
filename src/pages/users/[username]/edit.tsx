@@ -48,8 +48,6 @@ export const getServerSideProps: GetServerSideProps = async ({ query, req }) => 
 
       const updatedUser = await getUserById(connection, userDetails.id as string)
 
-      console.log("updatedUser", updateUser)
-
       if (isError(updatedUser)) {
         console.error(updateUser)
 

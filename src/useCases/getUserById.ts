@@ -17,7 +17,7 @@ const getUserById = async (connection: Database, id: string): Promise<Partial<Us
         org_serves,
         email
       FROM br7own.users
-      WHERE id = $1
+      WHERE id = $1 AND deleted_at IS NULL
     `
   try {
     user = await connection.one(getUser, [id])
