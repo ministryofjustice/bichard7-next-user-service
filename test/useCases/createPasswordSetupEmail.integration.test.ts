@@ -58,8 +58,7 @@ describe("AccountSetup", () => {
     }
 
     const result = await createUser(connection, createUserDetails)
-    const actualError = <Error>result.error
-    expect(actualError.message).toBe("")
+    expect(isError(result)).toBe(false)
 
     const passwordSetCodeResult = await storePasswordResetCode(
       connection,

@@ -9,7 +9,6 @@ import sendEmail from "./sendEmail"
 import storePasswordResetCode from "./storePasswordResetCode"
 
 export interface newUserSetupResult {
-  errorMessage: string
   successMessage: string
 }
 
@@ -17,28 +16,27 @@ export default async (
   connection: Database,
   userCreateDetails: UserCreateDetails
 ): PromiseResult<newUserSetupResult> => {
-  let errorMessage = ""
-  let successMessage = ""
   const result = await createUser(connection, userCreateDetails)
-  errorMessage = result.error.message
-  if (errorMessage === "") {
-    successMessage = `User ${userCreateDetails.username} has been successfully created`
-    const passwordSetCode = randomDigits(config.verificationCodeLength).join("")
-    const passwordSetCodeResult = await storePasswordResetCode(
-      connection,
-      userCreateDetails.emailAddress,
-      passwordSetCode
-    )
-    if (isError(passwordSetCodeResult)) {
-      return passwordSetCodeResult
-    }
-
-    const createNewUserEmailResult = createNewUserEmail(userCreateDetails, passwordSetCode)
-    if (isError(createNewUserEmailResult)) {
-      return createNewUserEmailResult
-    }
-    const { subject, body } = createNewUserEmailResult
-    await sendEmail(userCreateDetails.emailAddress, subject, body)
+  if (isError(result)) {
+    return result
   }
-  return { errorMessage, successMessage }
+  const successMessage = `User ${userCreateDetails.username} has been successfully created`
+  const passwordSetCode = randomDigits(config.verificationCodeLength).join("")
+  const passwordSetCodeResult = await storePasswordResetCode(
+    connection,
+    userCreateDetails.emailAddress,
+    passwordSetCode
+  )
+  if (isError(passwordSetCodeResult)) {
+    return passwordSetCodeResult
+  }
+
+  const createNewUserEmailResult = createNewUserEmail(userCreateDetails, passwordSetCode)
+  if (isError(createNewUserEmailResult)) {
+    return createNewUserEmailResult
+  }
+  const { subject, body } = createNewUserEmailResult
+  await sendEmail(userCreateDetails.emailAddress, subject, body)
+
+  return { successMessage }
 }
