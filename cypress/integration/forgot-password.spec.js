@@ -8,7 +8,7 @@ describe("Forgot password", () => {
       cy.viewport(1280, 720)
     })
 
-    it.only("should prompt the user to check their email after entering an email address", () => {
+    it("should prompt the user to check their email after entering an email address", () => {
       cy.visit("/login")
       cy.get("a[href='/login/forgot-password']").click()
       cy.get("body").contains(/forgot password/i)
