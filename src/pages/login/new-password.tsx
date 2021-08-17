@@ -15,28 +15,34 @@ export const getServerSideProps: GetServerSideProps = async ({ req, query }) => 
   let errorMessage = ""
 
   if (req.method === "POST") {
-    const { nPassword, cPassword } = (await parseFormData(req)) as {
-      nPassword: string
-      cPassword: string
+    const { newPassword, confirmPassword } = (await parseFormData(req)) as {
+      newPassword: string
+      confirmPassword: string
     }
-    if (nPassword === "" || cPassword === "") {
+    if (newPassword === "" || confirmPassword === "") {
       errorMessage = "Error: Passwords cannot be empty"
       return {
         props: { errorMessage }
       }
     }
 
-    if (nPassword !== cPassword) {
+    if (newPassword !== confirmPassword) {
       errorMessage = "Error: Passwords are mismatching"
       return {
         props: { errorMessage }
       }
     }
     const { token } = query as { token: EmailVerificationToken }
-    const { emailAddress, verificationCode } = decodeEmailVerificationToken(token)
+    const translatedToken = decodeEmailVerificationToken(token)
+    if (isError(translatedToken)) {
+      return {
+        props: { errorMessage: "Error: Invalid token link" }
+      }
+    }
+    const { emailAddress, verificationCode } = translatedToken
 
     const connection = getConnection()
-    const result = await initialiseUserPassword(connection, emailAddress, verificationCode, nPassword)
+    const result = await initialiseUserPassword(connection, emailAddress, verificationCode, newPassword)
     if (!isError(result)) {
       return createRedirectResponse("/login/reset-password/success")
     }
@@ -64,8 +70,8 @@ const NewPassword = ({ errorMessage }: Props) => {
             {errorMessage}
           </span>
 
-          <TextInput id="nPassword" name="nPassword" label="New Password" type="password" width="20" />
-          <TextInput id="cPassword" name="cPassword" label="Confirm Password" type="password" width="20" />
+          <TextInput id="newPassword" name="newPassword" label="New Password" type="password" width="20" />
+          <TextInput id="confirmPassword" name="confirmPassword" label="Confirm Password" type="password" width="20" />
 
           <Button noDoubleClick>{"Set password"}</Button>
         </form>
