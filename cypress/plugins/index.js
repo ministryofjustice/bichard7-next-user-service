@@ -19,12 +19,18 @@ module.exports = async (on, config) => {
 
   on("task", {
     async getVerificationCode(emailAddress) {
-      const result = await db.one("SELECT email_verification_code FROM br7own.users WHERE email = $1", emailAddress)
+      const result = await db
+        .one("SELECT email_verification_code FROM br7own.users WHERE email = $1", emailAddress)
+        .catch(console.error)
+
       return result.email_verification_code
     },
 
     async getPasswordResetCode(emailAddress) {
-      const result = await db.one("SELECT password_reset_code FROM br7own.users WHERE email = $1", emailAddress)
+      const result = await db
+        .one("SELECT password_reset_code FROM br7own.users WHERE email = $1", emailAddress)
+        .catch(console.error)
+
       return result.password_reset_code
     },
 
