@@ -1,7 +1,6 @@
-export default interface Email {
+import EmailContent from "./EmailContent"
+
+export default interface Email extends EmailContent {
   from: string
   to: string
-  subject: string
-  text: string
-  html: string
 }

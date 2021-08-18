@@ -1,10 +1,10 @@
 import { randomDigits } from "crypto-secure-random-digit"
 import config from "lib/config"
+import getEmailer from "lib/getEmailer"
 import Database from "types/Database"
 import { isError, PromiseResult } from "types/Result"
 import UserCreateDetails from "types/UserDetails"
 import createNewUserEmail from "./createNewUserEmail"
-import sendEmail from "./sendEmail"
 import createUser from "./createUser"
 import storePasswordResetCode from "./storePasswordResetCode"
 
@@ -40,9 +40,11 @@ export default async (
   const email = createNewUserEmailResult
   const emailer = getEmailer()
 
-  return await sendEmail({
-    from: "Bichard <bichard@cjse.org>",
-    to: userCreateDetails.emailAddress,
-    ...email
-  })
+  return emailer
+    .sendMail({
+      from: config.emailFrom,
+      to: userCreateDetails.emailAddress,
+      ...email
+    })
+    .catch((error: Error) => error)
 }

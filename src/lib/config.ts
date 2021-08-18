@@ -1,11 +1,20 @@
 import CsrfConfig from "types/CsrfConfig"
 import DatabaseConfig from "./DatabaseConfig"
 
+interface SmtpConfig {
+  host: string
+  user: string
+  password: string
+  port: number
+  tls: boolean
+}
+
 interface UserServiceConfig {
   bichardRedirectURL: string
   database: DatabaseConfig
   emailVerificationExpiresIn: number
   incorrectDelay: number
+  smtp: SmtpConfig
   tokenExpiresIn: string
   tokenIssuer: string
   tokenQueryParamName: string
@@ -22,6 +31,7 @@ const config: UserServiceConfig = {
   tokenIssuer: process.env.TOKEN_ISSUER ?? "Bichard",
   tokenQueryParamName: process.env.TOKEN_QUERY_PARAM_NAME ?? "token",
   tokenSecret: process.env.TOKEN_SECRET ?? "OliverTwist",
+  verificationCodeLength: 6,
   csrf: {
     tokenName: process.env.CSRF_COOKIE_NAME ?? "XSRF-TOKEN",
     cookieSecret: process.env.CSRF_TOKEN_SECRET ?? "OliverTwist1",
@@ -36,7 +46,13 @@ const config: UserServiceConfig = {
     port: parseInt(process.env.DB_PORT ?? process.env.DB_AUTH_PORT ?? "5432", 10),
     ssl: (process.env.DB_SSL ?? process.env.DB_AUTH_SSL) === "true"
   },
-  verificationCodeLength: 6
+  smtp: {
+    host: process.env.SMTP_HOST ?? "console",
+    user: process.env.SMTP_USER ?? "bichard",
+    password: process.env.SMTP_PASSWORD ?? "password",
+    port: parseInt(process.env.SMTP_PORT ?? "587", 10),
+    tls: process.env.SMTP_TLS === "true"
+  }
 }
 
 export default config
