@@ -1,7 +1,7 @@
 import Layout from "components/Layout"
 import Head from "next/head"
 import User from "types/User"
-import { GetServerSideProps, GetServerSidePropsResult } from "next"
+import { GetServerSidePropsResult } from "next"
 import Button from "components/Button"
 import ButtonGroup from "components/ButtonGroup"
 import Link from "components/Link"
@@ -13,11 +13,12 @@ import { isError } from "types/Result"
 import createRedirectResponse from "utils/createRedirectResponse"
 import getConnection from "lib/getConnection"
 import { deleteUser, getUserByUsername } from "useCases"
+import Form from "components/Form"
+import { useCsrfServerSideProps } from "hooks"
+import CsrfServerSidePropsContext from "types/CsrfServerSidePropsContext"
 
-export const getServerSideProps: GetServerSideProps = async ({
-  query,
-  req
-}): Promise<GetServerSidePropsResult<Props>> => {
+export const getServerSideProps = useCsrfServerSideProps(async (context): Promise<GetServerSidePropsResult<Props>> => {
+  const { query, req, formData, csrfToken } = context as CsrfServerSidePropsContext
   const { username } = query
   const connection = getConnection()
   const user = await getUserByUsername(connection, username as string)
@@ -33,20 +34,23 @@ export const getServerSideProps: GetServerSideProps = async ({
   }
 
   if (req.method === "POST") {
-    const deleteUserResult = await deleteUser(connection, req, user)
+    const { deleteAccountConfirmation } = formData as { deleteAccountConfirmation: string }
+
+    if (user.username !== deleteAccountConfirmation) {
+      return {
+        props: {
+          user,
+          showInputNotMatchingError: true,
+          csrfToken
+        }
+      }
+    }
+
+    const deleteUserResult = await deleteUser(connection, user)
 
     if (deleteUserResult.isDeleted) {
       const userFullName = encodeURIComponent(`${user.forenames} ${user.surname}`)
       return createRedirectResponse(`/users/${user.username}/deleted?name=${userFullName}`)
-    }
-
-    if (deleteUserResult.validationFailed) {
-      return {
-        props: {
-          user,
-          showInputNotMatchingError: true
-        }
-      }
     }
 
     if (deleteUserResult.serverSideError) {
@@ -55,16 +59,17 @@ export const getServerSideProps: GetServerSideProps = async ({
   }
 
   return {
-    props: { user }
+    props: { user, csrfToken }
   }
-}
+})
 
 interface Props {
   user: User
   showInputNotMatchingError?: boolean
+  csrfToken: string
 }
 
-const Delete = ({ user, showInputNotMatchingError }: Props) => {
+const Delete = ({ user, showInputNotMatchingError, csrfToken }: Props) => {
   const fullName = `${user.forenames} ${user.surname}`
 
   return (
@@ -79,7 +84,7 @@ const Delete = ({ user, showInputNotMatchingError }: Props) => {
           </ErrorSummary>
         )}
 
-        <form action="#" method="post">
+        <Form method="post" csrfToken={csrfToken}>
           <Fieldset>
             <FieldsetLegend>{`Are you sure you want to delete ${fullName}?`}</FieldsetLegend>
             <FieldsetHint>
@@ -99,7 +104,7 @@ const Delete = ({ user, showInputNotMatchingError }: Props) => {
             </Button>
             <Link href={`/users/${user.username}`}>{"Cancel"}</Link>
           </ButtonGroup>
-        </form>
+        </Form>
       </Layout>
     </>
   )

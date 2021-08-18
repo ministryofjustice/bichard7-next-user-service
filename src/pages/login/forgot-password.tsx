@@ -3,23 +3,27 @@ import GridRow from "components/GridRow"
 import Layout from "components/Layout"
 import Head from "next/head"
 import TextInput from "components/TextInput"
-import { GetServerSideProps, GetServerSidePropsResult } from "next"
+import { GetServerSidePropsResult } from "next"
 import BackLink from "components/BackLink"
-import parseFormData from "lib/parseFormData"
 import ErrorSummary from "components/ErrorSummary"
 import getConnection from "lib/getConnection"
 import { sendPasswordResetEmail } from "useCases"
 import { isError } from "types/Result"
 import createRedirectResponse from "utils/createRedirectResponse"
+import { useCsrfServerSideProps } from "hooks"
+import Form from "components/Form"
+import CsrfServerSidePropsContext from "types/CsrfServerSidePropsContext"
 
-export const getServerSideProps: GetServerSideProps = async ({ req }): Promise<GetServerSidePropsResult<Props>> => {
+export const getServerSideProps = useCsrfServerSideProps(async (context): Promise<GetServerSidePropsResult<Props>> => {
+  const { req, formData, csrfToken } = context as CsrfServerSidePropsContext
   if (req.method === "POST") {
-    const { emailAddress } = (await parseFormData(req)) as { emailAddress: string }
+    const { emailAddress } = formData as { emailAddress: string }
 
     if (!emailAddress) {
       return {
         props: {
-          invalidEmail: true
+          invalidEmail: true,
+          csrfToken
         }
       }
     }
@@ -36,16 +40,18 @@ export const getServerSideProps: GetServerSideProps = async ({ req }): Promise<G
 
   return {
     props: {
-      invalidEmail: false
+      invalidEmail: false,
+      csrfToken
     }
   }
-}
+})
 
 interface Props {
   invalidEmail: boolean
+  csrfToken: string
 }
 
-const ForgotPassword = ({ invalidEmail }: Props) => (
+const ForgotPassword = ({ invalidEmail, csrfToken }: Props) => (
   <>
     <Head>
       <title>{"Forgot password"}</title>
@@ -60,10 +66,10 @@ const ForgotPassword = ({ invalidEmail }: Props) => (
           <ErrorSummary title="Invalid email">{"The supplied email address is not valid."}</ErrorSummary>
         )}
 
-        <form method="post">
+        <Form method="post" csrfToken={csrfToken}>
           <TextInput id="email" name="emailAddress" label="Email address" type="email" isError={invalidEmail} />
           <Button noDoubleClick>{"Continue"}</Button>
-        </form>
+        </Form>
       </GridRow>
     </Layout>
   </>

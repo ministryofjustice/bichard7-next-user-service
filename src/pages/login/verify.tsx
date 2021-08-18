@@ -4,8 +4,6 @@ import GridRow from "components/GridRow"
 import Layout from "components/Layout"
 import Head from "next/head"
 import TextInput from "components/TextInput"
-import { GetServerSideProps } from "next"
-import parseFormData from "lib/parseFormData"
 import config from "lib/config"
 import { decodeEmailToken, EmailToken } from "lib/token/emailToken"
 import getConnection from "lib/getConnection"
@@ -13,11 +11,16 @@ import { authenticate } from "useCases"
 import { generateBichardToken } from "lib/token/bichardToken"
 import { isError } from "types/Result"
 import createRedirectResponse from "utils/createRedirectResponse"
+import { useCsrfServerSideProps } from "hooks"
+import Form from "components/Form"
+import CsrfServerSidePropsContext from "types/CsrfServerSidePropsContext"
 
-export const getServerSideProps: GetServerSideProps = async ({ req, query }) => {
+export const getServerSideProps = useCsrfServerSideProps(async (context) => {
+  const { req, query, formData, csrfToken } = context as CsrfServerSidePropsContext
+
   try {
     if (req.method === "POST") {
-      const { token, password } = (await parseFormData(req)) as { token: EmailToken; password: string }
+      const { token, password } = formData as { token: EmailToken; password: string }
       const { emailAddress, verificationCode } = decodeEmailToken(token)
 
       const connection = getConnection()
@@ -29,7 +32,8 @@ export const getServerSideProps: GetServerSideProps = async ({ req, query }) => 
           props: {
             invalidCredentials: true,
             emailAddress,
-            token
+            token,
+            csrfToken
           }
         }
       }
@@ -49,20 +53,21 @@ export const getServerSideProps: GetServerSideProps = async ({ req, query }) => 
       throw new Error()
     }
 
-    return { props: { emailAddress, token } }
+    return { props: { emailAddress, token, csrfToken } }
   } catch {
-    return { props: { invalidVerification: true } }
+    return { props: { invalidVerification: true, csrfToken } }
   }
-}
+})
 
 interface Props {
   emailAddress?: string
   invalidCredentials?: boolean
   invalidVerification?: boolean
   token?: string
+  csrfToken: string
 }
 
-const VerifyEmail = ({ emailAddress, invalidCredentials, invalidVerification, token }: Props) => (
+const VerifyEmail = ({ emailAddress, invalidCredentials, invalidVerification, token, csrfToken }: Props) => (
   <>
     <Head>
       <title>{"Sign in to Bichard 7"}</title>
@@ -84,7 +89,7 @@ const VerifyEmail = ({ emailAddress, invalidCredentials, invalidVerification, to
         )}
 
         {!invalidVerification && (
-          <form method="post">
+          <Form method="post" csrfToken={csrfToken}>
             <p className="govuk-body">
               {"You are signing in as "}
               <b>{emailAddress}</b>
@@ -93,7 +98,7 @@ const VerifyEmail = ({ emailAddress, invalidCredentials, invalidVerification, to
             <TextInput id="password" name="password" label="Password" type="password" />
             <input type="hidden" id="token" name="token" value={token} />
             <Button>{"Sign in"}</Button>
-          </form>
+          </Form>
         )}
       </GridRow>
     </Layout>

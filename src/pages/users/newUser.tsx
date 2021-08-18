@@ -3,19 +3,22 @@ import Layout from "components/Layout"
 import Head from "next/head"
 import TextInput from "components/TextInput"
 import SuccessBanner from "components/SuccessBanner"
-import { GetServerSideProps } from "next"
+import { GetServerSidePropsResult } from "next"
 import UserCreateDetails from "types/UserCreateDetails"
 import getConnection from "lib/getConnection"
-import parseFormData from "lib/parseFormData"
 import createUser from "useCases/createUser"
+import { useCsrfServerSideProps } from "hooks"
+import CsrfServerSidePropsContext from "types/CsrfServerSidePropsContext"
+import Form from "components/Form"
 
-export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+export const getServerSideProps = useCsrfServerSideProps(async (context): Promise<GetServerSidePropsResult<Props>> => {
+  const { req, formData, csrfToken } = context as CsrfServerSidePropsContext
   let missingMandatory = false
   let errorMessage = ""
   let successMessage = ""
 
   if (req.method === "POST") {
-    const userCreateDetails: UserCreateDetails = (await parseFormData(req)) as {
+    const userCreateDetails: UserCreateDetails = formData as {
       username: string
       forenames: string
       surname: string
@@ -49,17 +52,18 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
     }
   }
   return {
-    props: { errorMessage, successMessage, missingMandatory }
+    props: { errorMessage, successMessage, missingMandatory, csrfToken }
   }
-}
+})
 
 interface Props {
   errorMessage: string
   successMessage: string
   missingMandatory: boolean
+  csrfToken: string
 }
 
-const newUser = ({ errorMessage, successMessage, missingMandatory }: Props) => (
+const newUser = ({ errorMessage, successMessage, missingMandatory, csrfToken }: Props) => (
   <>
     <Head>
       <title>{"New User"}</title>
@@ -69,7 +73,7 @@ const newUser = ({ errorMessage, successMessage, missingMandatory }: Props) => (
         {errorMessage}
       </span>
       {successMessage && <SuccessBanner message={successMessage} />}
-      <form method="post">
+      <Form method="post" csrfToken={csrfToken}>
         <TextInput id="username" name="username" label="Username *" type="text" isError={missingMandatory} />
         <TextInput id="forenames" name="forenames" label="Forename(s) *" type="text" isError={missingMandatory} />
         <TextInput id="surname" name="surname" label="Surname *" type="text" isError={missingMandatory} />
@@ -88,7 +92,7 @@ const newUser = ({ errorMessage, successMessage, missingMandatory }: Props) => (
         <TextInput id="orgServes" name="orgServes" label="Organisation" type="text" />
 
         <Button noDoubleClick>{"Add user"}</Button>
-      </form>
+      </Form>
 
       <a href="/users" className="govuk-back-link">
         {" "}
