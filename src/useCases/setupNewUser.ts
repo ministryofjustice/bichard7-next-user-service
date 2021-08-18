@@ -2,7 +2,7 @@ import { randomDigits } from "crypto-secure-random-digit"
 import config from "lib/config"
 import Database from "types/Database"
 import { isError, PromiseResult } from "types/Result"
-import UserDetails from "types/UserDetails"
+import UserCreateDetails from "types/UserDetails"
 import createUser from "./createUser"
 import createNewUserEmail from "./createNewUserEmail"
 import sendEmail from "./sendEmail"
@@ -12,7 +12,10 @@ export interface newUserSetupResult {
   successMessage: string
 }
 
-export default async (connection: Database, userCreateDetails: UserDetails): PromiseResult<newUserSetupResult> => {
+export default async (
+  connection: Database,
+  userCreateDetails: UserCreateDetails
+): PromiseResult<newUserSetupResult> => {
   const result = await createUser(connection, userCreateDetails)
   if (isError(result)) {
     return result

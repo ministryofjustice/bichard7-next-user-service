@@ -1,10 +1,10 @@
 import CreateUserResult from "types/CreateUserResult"
-import UserDetails from "types/UserDetails"
+import UserCreateDetails from "types/UserDetails"
 import PromiseResult from "types/PromiseResult"
 import isUsernameUnique from "./isUsernameUnique"
 import isEmailUnique from "./IsEmailUnique"
 
-export default async (connection: any, userDetails: UserDetails): PromiseResult<CreateUserResult> => {
+export default async (connection: any, userDetails: UserCreateDetails): PromiseResult<CreateUserResult> => {
   let checkData = await isUsernameUnique(connection, userDetails.username)
   if (checkData.message !== "") {
     return new Error(checkData.message)
@@ -23,7 +23,7 @@ export default async (connection: any, userDetails: UserDetails): PromiseResult<
     postalAddress,
     endorsedBy,
     organisation
-  }: UserDetails = userDetails
+  }: UserCreateDetails = userDetails
 
   const query = `
       INSERT INTO br7own.users(
