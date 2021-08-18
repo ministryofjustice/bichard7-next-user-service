@@ -99,5 +99,9 @@ describe("User", () => {
       cy.get("button").click()
       cy.get('span[id="event-name-error"]').should("have.text", "Error: Username Bichard01 already exists")
     })
+
+    it("should respond with unauthorized response code when CSRF tokens are invalid in new user page", (done) => {
+      cy.checkCsrf("/users/newUser", "POST").then(() => done())
+    })
   })
 })
