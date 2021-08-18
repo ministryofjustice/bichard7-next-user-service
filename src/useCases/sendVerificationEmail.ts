@@ -16,7 +16,6 @@ export default async (connection: Database, emailAddress: string): PromiseResult
   const storeVerificationCodeResult = await storeVerificationCode(connection, emailAddress, verificationCode)
 
   if (isError(storeVerificationCodeResult)) {
-    console.error(storeVerificationCodeResult)
     return storeVerificationCodeResult
   }
 
@@ -26,8 +25,10 @@ export default async (connection: Database, emailAddress: string): PromiseResult
     return createVerificationEmailResult
   }
 
-  const { subject, body } = createVerificationEmailResult
-  const sendEmailResult = await sendEmail(emailAddress, subject, body)
-
-  return sendEmailResult
+  const emailContent = createVerificationEmailResult
+  return sendEmail({
+    to: emailAddress,
+    from: "Bichard <bichard@cjse.org>",
+    ...emailContent
+  })
 }

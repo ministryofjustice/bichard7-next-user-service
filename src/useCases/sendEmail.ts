@@ -1,10 +1,11 @@
-import { PromiseResult } from "types/Result"
+import Email from "types/Email"
 
-export default (emailAddress: string, subject: string, body: string): PromiseResult<void> => {
-  console.log("Recipient: ", emailAddress)
-  console.log("Subject: ", subject)
+/* eslint-disable no-console */
+// eslint-disable-next-line require-await
+export default async (email: Email) => {
+  console.log("From: ", email.from)
+  console.log("To: ", email.to)
+  console.log("Subject: ", email.subject)
   console.log("Body:")
-  console.log(body)
-
-  return Promise.resolve()
+  console.log(email.text)
 }

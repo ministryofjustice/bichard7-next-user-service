@@ -2,16 +2,16 @@
 jest.mock("lib/token/emailVerificationToken")
 
 import User from "types/User"
-import UserCreateDetails from "types/UserCreateDetails"
+import UserCreateDetails from "types/UserDetails"
 import getConnection from "lib/getConnection"
 import createUser from "useCases/createUser"
 import createNewUserEmail from "useCases/createNewUserEmail"
 import { isError } from "types/Result"
 import initialiseUserPassword from "useCases/initialiseUserPassword"
 import storePasswordResetCode from "useCases/storePasswordResetCode"
-import EmailResult from "types/EmailResult"
 import { generateEmailVerificationToken } from "lib/token/emailVerificationToken"
 import deleteDatabaseUser from "./deleteDatabaseUser"
+import EmailContent from "types/EmailContent"
 
 const connection = getConnection()
 
@@ -70,9 +70,10 @@ describe("AccountSetup", () => {
     const newUserEmailResult = createNewUserEmail(createUserDetails, verificationCode)
     expect(isError(newUserEmailResult)).toBe(false)
 
-    const { subject, body } = <EmailResult>newUserEmailResult
-    expect(subject).toMatchSnapshot()
-    expect(body).toMatchSnapshot()
+    const email = newUserEmailResult as EmailContent
+    expect(email.subject).toMatchSnapshot()
+    expect(email.text).toMatchSnapshot()
+    expect(email.html).toMatchSnapshot()
   })
 
   it("should be able to setup a password using the details from the email", async () => {

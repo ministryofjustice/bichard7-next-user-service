@@ -30,8 +30,10 @@ export default async (connection: Database, emailAddress: string): PromiseResult
     return createPasswordResetEmailResult
   }
 
-  const { subject, body } = createPasswordResetEmailResult
-  const sendEmailResult = await sendEmail(emailAddress, subject, body)
-
-  return sendEmailResult
+  const email = createPasswordResetEmailResult
+  return sendEmail({
+    from: "Bichard <bichard@cjse.org>",
+    to: emailAddress,
+    ...email
+  })
 }

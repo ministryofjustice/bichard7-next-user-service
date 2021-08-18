@@ -1,11 +1,11 @@
 /* eslint-disable import/first */
 jest.mock("lib/token/passwordResetToken")
 
-import EmailResult from "types/EmailResult"
 import { isError } from "types/Result"
 import User from "types/User"
 import createPasswordResetEmail from "useCases/createPasswordResetEmail"
 import { generatePasswordResetToken } from "lib/token/passwordResetToken"
+import EmailContent from "types/EmailContent"
 
 it("should generate the email subject and body", () => {
   const mockedGeneratePasswordResetToken = generatePasswordResetToken as jest.MockedFunction<
@@ -24,7 +24,8 @@ it("should generate the email subject and body", () => {
 
   expect(isError(result)).toBe(false)
 
-  const { subject, body } = result as EmailResult
-  expect(subject).toMatchSnapshot()
-  expect(body).toMatchSnapshot()
+  const email = result as EmailContent
+  expect(email.subject).toMatchSnapshot()
+  expect(email.text).toMatchSnapshot()
+  expect(email.html).toMatchSnapshot()
 })
