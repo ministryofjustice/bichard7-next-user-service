@@ -1,28 +1,9 @@
-import config from "lib/config"
-import pgPromise from "pg-promise"
 import Database from "types/Database"
-
-let connection: Database
+import config from "./config"
+import createSingletonConnection from "./createSingletonConnection"
 
 const getConnection = (): Database => {
-  if (connection) {
-    return connection
-  }
-
-  const {
-    database: { host, port, database, user, password, ssl }
-  } = config
-
-  connection = pgPromise()({
-    host,
-    port,
-    database,
-    user,
-    password,
-    ssl: ssl ? { rejectUnauthorized: false } : false
-  })
-
-  return connection
+  return createSingletonConnection("users-service-connection", config.database)
 }
 
 export default getConnection
