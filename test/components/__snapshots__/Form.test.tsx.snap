@@ -1,0 +1,18 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`should render form component and its children 1`] = `
+<div>
+  <form
+    method="POST"
+  >
+    <input
+      type="text"
+    />
+    <input
+      name="XSRF-TOKEN"
+      type="hidden"
+      value="Dummy-CSRF-Token"
+    />
+  </form>
+</div>
+`;
