@@ -1,7 +1,7 @@
 import { EmailVerificationTokenPayload, generateEmailVerificationToken } from "lib/token/emailVerificationToken"
 import EmailResult from "types/EmailResult"
 import { isError, Result } from "types/Result"
-import UserCreateDetails from "types/UserCreateDetails"
+import UserCreateDetails from "types/UserDetails"
 
 export default (user: UserCreateDetails, verificationCode: string): Result<EmailResult> => {
   const payload: EmailVerificationTokenPayload = {
