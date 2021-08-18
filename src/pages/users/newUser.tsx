@@ -6,7 +6,8 @@ import SuccessBanner from "components/SuccessBanner"
 import { GetServerSidePropsResult } from "next"
 import UserCreateDetails from "types/UserCreateDetails"
 import getConnection from "lib/getConnection"
-import createUser from "useCases/createUser"
+import setupNewUser from "useCases/setupNewUser"
+import { isError } from "types/Result"
 import { useCsrfServerSideProps } from "hooks"
 import CsrfServerSidePropsContext from "types/CsrfServerSidePropsContext"
 import Form from "components/Form"
@@ -14,8 +15,8 @@ import Form from "components/Form"
 export const getServerSideProps = useCsrfServerSideProps(async (context): Promise<GetServerSidePropsResult<Props>> => {
   const { req, formData, csrfToken } = context as CsrfServerSidePropsContext
   let missingMandatory = false
-  let errorMessage = ""
-  let successMessage = ""
+  let message = ""
+  let isSuccess = true
 
   if (req.method === "POST") {
     const userCreateDetails: UserCreateDetails = formData as {
@@ -42,37 +43,43 @@ export const getServerSideProps = useCsrfServerSideProps(async (context): Promis
 
     if (!missingMandatory) {
       const connection = getConnection()
-      const result = await createUser(connection, userCreateDetails)
-      errorMessage = result.error.message
-      if (errorMessage === "") {
-        successMessage = `User ${userCreateDetails.username} has been successfully created`
+      const result = await setupNewUser(connection, userCreateDetails)
+      if (isError(result)) {
+        return {
+          props: { message: result.message, isSuccess: false, missingMandatory, csrfToken }
+        }
       }
-    } else {
-      errorMessage = "Please make sure that all mandatory fields are non empty"
+      return {
+        props: { message: result.successMessage, isSuccess: true, missingMandatory, csrfToken }
+      }
     }
+    message = "Please make sure that all mandatory fields are non empty"
+    isSuccess = false
   }
   return {
-    props: { errorMessage, successMessage, missingMandatory, csrfToken }
+    props: { message, isSuccess, missingMandatory, csrfToken }
   }
 })
 
 interface Props {
-  errorMessage: string
-  successMessage: string
+  message: string
+  isSuccess: boolean
   missingMandatory: boolean
   csrfToken: string
 }
 
-const newUser = ({ errorMessage, successMessage, missingMandatory, csrfToken }: Props) => (
+const newUser = ({ message, isSuccess, missingMandatory, csrfToken }: Props) => (
   <>
     <Head>
       <title>{"New User"}</title>
     </Head>
     <Layout>
-      <span id="event-name-error" className="govuk-error-message">
-        {errorMessage}
-      </span>
-      {successMessage && <SuccessBanner message={successMessage} />}
+      {!isSuccess && (
+        <span id="event-name-error" className="govuk-error-message">
+          {message}
+        </span>
+      )}
+      {isSuccess && message && <SuccessBanner message={message} />}
       <Form method="post" csrfToken={csrfToken}>
         <TextInput id="username" name="username" label="Username *" type="text" isError={missingMandatory} />
         <TextInput id="forenames" name="forenames" label="Forename(s) *" type="text" isError={missingMandatory} />

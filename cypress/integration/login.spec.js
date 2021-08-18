@@ -41,15 +41,15 @@ describe("Logging In", () => {
 
       it("should show an error message if visiting verification page with no token", () => {
         cy.visit("/login/verify")
-        cy.get(".govuk-error-summary").should("be.visible").contains("h2", "Unable to verify")
+        cy.get(".govuk-error-summary").should("be.visible").contains("h2", "Invalid credentials")
       })
 
       it("should show an error message if visiting verification page with an invalid token", () => {
         cy.visit("/login/verify?token=foobar")
-        cy.get(".govuk-error-summary").should("be.visible").contains("h2", "Unable to verify")
+        cy.get(".govuk-error-summary").should("be.visible").contains("h2", "Invalid credentials")
 
         cy.visit(`/login/verify?token=${invalidToken()}`)
-        cy.get(".govuk-error-summary").should("be.visible").contains("h2", "Unable to verify")
+        cy.get(".govuk-error-summary").should("be.visible").contains("h2", "Unable to verify email address")
       })
 
       it("should display the user's email address when they visit the verification link", () => {

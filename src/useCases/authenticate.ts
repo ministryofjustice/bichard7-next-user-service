@@ -3,6 +3,7 @@ import UserGroup from "types/UserGroup"
 import { compare } from "lib/shiro"
 import config from "lib/config"
 import Database from "types/Database"
+import resetUserVerificationCode from "./resetUserVerificationCode"
 
 const fetchGroups = async (task: ITask<unknown>, emailAddress: string): Promise<UserGroup[]> => {
   const fetchGroupsQuery = `
@@ -68,16 +69,6 @@ const updateUserLoginTimestamp = async (task: ITask<unknown>, emailAddress: stri
     `
 
   await task.none(updateUserQuery, [emailAddress])
-}
-
-const resetUserVerificationCode = async (connection: Database, emailAddress: string) => {
-  const updateUserQuery = `
-      UPDATE br7own.users
-      SET email_verification_code = NULL
-      WHERE email = $1
-    `
-
-  await connection.none(updateUserQuery, [emailAddress])
 }
 
 const authenticate = async (connection: Database, emailAddress: string, password: string, verificationCode: string) => {

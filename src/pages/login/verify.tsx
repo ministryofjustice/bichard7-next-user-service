@@ -5,10 +5,10 @@ import Layout from "components/Layout"
 import Head from "next/head"
 import TextInput from "components/TextInput"
 import config from "lib/config"
-import { decodeEmailToken, EmailToken } from "lib/token/emailToken"
+import { decodeEmailVerificationToken, EmailVerificationToken } from "lib/token/emailVerificationToken"
 import getConnection from "lib/getConnection"
 import { authenticate } from "useCases"
-import { generateBichardToken } from "lib/token/bichardToken"
+import { generateAuthenticationToken } from "lib/token/authenticationToken"
 import { isError } from "types/Result"
 import createRedirectResponse from "utils/createRedirectResponse"
 import { useCsrfServerSideProps } from "hooks"
@@ -20,8 +20,16 @@ export const getServerSideProps = useCsrfServerSideProps(async (context) => {
 
   try {
     if (req.method === "POST") {
-      const { token, password } = formData as { token: EmailToken; password: string }
-      const { emailAddress, verificationCode } = decodeEmailToken(token)
+      const { token, password } = formData as { token: EmailVerificationToken; password: string }
+      const translatedToken = decodeEmailVerificationToken(token)
+      if (isError(translatedToken)) {
+        return {
+          props: {
+            invalidCredentials: true
+          }
+        }
+      }
+      const { emailAddress, verificationCode } = translatedToken
 
       const connection = getConnection()
       const user = await authenticate(connection, emailAddress, password, verificationCode)
@@ -38,16 +46,24 @@ export const getServerSideProps = useCsrfServerSideProps(async (context) => {
         }
       }
 
-      const bichardToken = generateBichardToken(user)
+      const authToken = generateAuthenticationToken(user)
 
       const url = new URL(config.bichardRedirectURL)
-      url.searchParams.append(config.tokenQueryParamName, bichardToken)
+      url.searchParams.append(config.tokenQueryParamName, authToken)
 
       return createRedirectResponse(url.href)
     }
 
-    const { token } = query as { token: EmailToken }
-    const { emailAddress } = decodeEmailToken(token)
+    const { token } = query as { token: EmailVerificationToken }
+    const translatedToken = decodeEmailVerificationToken(token)
+    if (isError(translatedToken)) {
+      return {
+        props: {
+          invalidCredentials: true
+        }
+      }
+    }
+    const { emailAddress } = translatedToken
 
     if (!token || !emailAddress) {
       throw new Error()

@@ -1,13 +1,5 @@
 import CsrfConfig from "types/CsrfConfig"
-
-interface DatabaseConfig {
-  host: string
-  user: string
-  password: string
-  database: string
-  port: number
-  ssl: boolean
-}
+import DatabaseConfig from "./DatabaseConfig"
 
 interface UserServiceConfig {
   bichardRedirectURL: string
