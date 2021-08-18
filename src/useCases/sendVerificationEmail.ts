@@ -30,7 +30,7 @@ export default async (connection: Database, emailAddress: string): PromiseResult
   const emailer = getEmailer()
   return emailer
     .sendMail({
-      from: "Bichard <bichard@cjse.org>",
+      from: config.emailFrom,
       to: emailAddress,
       ...emailContent
     })

@@ -1,4 +1,5 @@
 import { randomDigits } from "crypto-secure-random-digit"
+import config from "lib/config"
 import getEmailer from "lib/getEmailer"
 import Database from "types/Database"
 import { isError, PromiseResult } from "types/Result"
@@ -35,7 +36,7 @@ export default async (connection: Database, emailAddress: string): PromiseResult
   const emailer = getEmailer()
   return emailer
     .sendMail({
-      from: "Bichard <bichard@cjse.org>",
+      from: config.emailFrom,
       to: emailAddress,
       ...email
     })

@@ -51,6 +51,7 @@ The application makes use of the following environment variables to permit confi
 | `$DB_DATABASE`                   | `"bichard"`                                        | The name of the database containing the user information                                             |
 | `$DB_PORT`                       | `5432`                                             | The port number to connect to the database on                                                        |
 | `$DB_SSL`                        | `false`                                            | Whether to use SSL when connecting to the database                                                   |
+| `$EMAIL_FROM`                    | `bichard@cjse.org`                                 | The email address to send emails from                                                                |
 | `$EMAIL_VERIFICATION_EXPIRES_IN` | `30`                                               | The number of minutes after which the email verification links will expire                           |
 | `$INCORRECT_DELAY`               | `10`                                               | The amount of time (in seconds) to wait between successive login attemps for the same user           |
 | `$SMTP_HOST`                     | `"console"`                                        | The hostname of the SMTP server. If set to `console`, emails will be printed to the console instead. |
