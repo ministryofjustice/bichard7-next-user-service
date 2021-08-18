@@ -59,7 +59,8 @@ describe("DeleteUserUseCase", () => {
       postalAddress: previousUser.postalAddress
     }
     const result = await createUser(connection, createUserDetails)
-    const actualError = <Error>result.error
+    expect(isError(result)).toBe(true)
+    const actualError = <Error>result
     expect(actualError.message).toBe(expectedError.message)
   })
 
@@ -77,13 +78,13 @@ describe("DeleteUserUseCase", () => {
       postalAddress: previousUser.postalAddress
     }
     const result = await createUser(connection, createUserDetails)
-    const actualError = <Error>result.error
+    expect(isError(result)).toBe(true)
+    const actualError = <Error>result
     expect(actualError.message).toBe(expectedError.message)
   })
 
   it("should be possible to add a user to my force", async () => {
     await deleteDatabaseUser(connection, newUser.username)
-    const expectedError = new Error("")
     const createUserDetails: UserCreateDetails = {
       username: newUser.username,
       forenames: newUser.forenames,
@@ -96,8 +97,7 @@ describe("DeleteUserUseCase", () => {
       postalAddress: newUser.postalAddress
     }
     const createResult = await createUser(connection, createUserDetails)
-    const actualError = <Error>createResult.error
-    expect(actualError.message).toBe(expectedError.message)
+    expect(isError(createResult)).toBe(false)
 
     const getResult = await getUserByUsername(connection, newUser.username)
     expect(isError(getResult)).toBe(false)

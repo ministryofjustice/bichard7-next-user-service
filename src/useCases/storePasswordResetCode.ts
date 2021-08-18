@@ -1,14 +1,24 @@
 import Database from "types/Database"
 import { isError, PromiseResult } from "types/Result"
 
-export default async (connection: Database, emailAddress: string, passwordResetCode: string): PromiseResult<void> => {
-  const updateUserQuery = `
+export default async (
+  connection: Database,
+  emailAddress: string,
+  passwordResetCode: string | null
+): PromiseResult<void> => {
+  let updateUserQuery = `
     UPDATE br7own.users
     SET password_reset_code = $1
     WHERE email = $2 AND deleted_at IS NULL
   `
+  if (passwordResetCode === null) {
+    updateUserQuery = `
+      UPDATE br7own.users
+      SET password_reset_code = NULL
+      WHERE email = $2 AND deleted_at IS NULL
+    `
+  }
   const result = await connection.result(updateUserQuery, [passwordResetCode, emailAddress]).catch((error) => error)
-
   if (isError(result)) {
     return result
   }
