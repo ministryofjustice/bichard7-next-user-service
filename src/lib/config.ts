@@ -1,3 +1,5 @@
+import CsrfConfig from "types/CsrfConfig"
+
 interface DatabaseConfig {
   host: string
   user: string
@@ -17,6 +19,7 @@ interface UserServiceConfig {
   tokenQueryParamName: string
   tokenSecret: string
   verificationCodeLength: number
+  csrf: CsrfConfig
 }
 
 const config: UserServiceConfig = {
@@ -27,6 +30,11 @@ const config: UserServiceConfig = {
   tokenIssuer: process.env.TOKEN_ISSUER ?? "Bichard",
   tokenQueryParamName: process.env.TOKEN_QUERY_PARAM_NAME ?? "token",
   tokenSecret: process.env.TOKEN_SECRET ?? "OliverTwist",
+  csrf: {
+    tokenName: process.env.CSRF_COOKIE_NAME ?? "XSRF-TOKEN",
+    cookieSecret: process.env.CSRF_TOKEN_SECRET ?? "OliverTwist1",
+    formSecret: process.env.CSRF_TOKEN_SECRET ?? "OliverTwist2"
+  },
   database: {
     host: process.env.DB_HOST ?? process.env.DB_AUTH_HOST ?? "localhost",
     user: process.env.DB_USER ?? process.env.DB_AUTH_USER ?? "bichard",
