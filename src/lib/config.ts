@@ -17,6 +17,8 @@ interface UserServiceConfig {
   tokenQueryParamName: string
   tokenSecret: string
   verificationCodeLength: number
+  numberWordsSuggestedPassword: number
+  minLengthPerWordSuggestedPassword: number
 }
 
 const config: UserServiceConfig = {
@@ -35,7 +37,9 @@ const config: UserServiceConfig = {
     port: parseInt(process.env.DB_PORT ?? process.env.DB_AUTH_PORT ?? "5432", 10),
     ssl: (process.env.DB_SSL ?? process.env.DB_AUTH_SSL) === "true"
   },
-  verificationCodeLength: 6
+  verificationCodeLength: 6,
+  numberWordsSuggestedPassword: 3,
+  minLengthPerWordSuggestedPassword: 4
 }
 
 export default config
