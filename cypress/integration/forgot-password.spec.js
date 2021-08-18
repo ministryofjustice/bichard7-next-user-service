@@ -25,7 +25,7 @@ describe("Forgot password", () => {
       cy.url().should("match", /\/forgot-password\/?$/)
     })
 
-    it("should respond with unauthorized response code when CSRF tokens are invalid in forgot password page", (done) => {
+    it("should respond with forbidden response code when CSRF tokens are invalid in forgot password page", (done) => {
       cy.checkCsrf("/login/forgot-password", "POST").then(() => done())
     })
   })

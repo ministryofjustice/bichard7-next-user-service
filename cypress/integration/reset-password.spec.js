@@ -81,7 +81,7 @@ describe("Reset password", () => {
       cy.get("input[type=text]").should("not.exist")
     })
 
-    it("should respond with unauthorized response code when CSRF tokens are invalid in reset password page", (done) => {
+    it("should respond with forbidden response code when CSRF tokens are invalid in reset password page", (done) => {
       cy.checkCsrf("/login/reset-password", "POST").then(() => done())
     })
   })

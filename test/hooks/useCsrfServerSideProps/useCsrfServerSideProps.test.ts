@@ -34,7 +34,7 @@ it("should include form data and CSRF token in the context", async () => {
   await handler(dummyContext)
 })
 
-it("should set unauthorized response code when CSRF token verification fails", async () => {
+it("should set forbidden response code when CSRF token verification fails", async () => {
   const mockedVerifyCsrfToken = verifyCsrfToken as jest.MockedFunction<typeof verifyCsrfToken>
 
   const dummyFormData = <QueryString.ParsedQs>{ "Dummy-Form-Field": "DummyValue" }
