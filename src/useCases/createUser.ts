@@ -1,16 +1,17 @@
 import CreateUserResult from "types/CreateUserResult"
-import UserCreateDetails from "types/UserDetails"
+import UserDetails from "types/UserDetails"
+import PromiseResult from "types/PromiseResult"
 import isUsernameUnique from "./isUsernameUnique"
 import isEmailUnique from "./IsEmailUnique"
 
-export default async (connection: any, userCreateDetails: UserCreateDetails): Promise<CreateUserResult> => {
-  let checkData = await isUsernameUnique(connection, userCreateDetails.username)
+export default async (connection: any, userDetails: UserDetails): PromiseResult<CreateUserResult> => {
+  let checkData = await isUsernameUnique(connection, userDetails.username)
   if (checkData.message !== "") {
-    return { result: "", error: checkData }
+    return new Error(checkData.message)
   }
-  checkData = await isEmailUnique(connection, userCreateDetails.emailAddress)
+  checkData = await isEmailUnique(connection, userDetails.emailAddress)
   if (checkData.message !== "") {
-    return { result: "", error: checkData }
+    return new Error(checkData.message)
   }
   const {
     username,
@@ -22,7 +23,7 @@ export default async (connection: any, userCreateDetails: UserCreateDetails): Pr
     postalAddress,
     endorsedBy,
     organisation
-  }: UserCreateDetails = userCreateDetails
+  }: UserDetails = userDetails
 
   const query = `
       INSERT INTO br7own.users(
@@ -56,7 +57,6 @@ export default async (connection: any, userCreateDetails: UserCreateDetails): Pr
         $9
       )
     `
-  let errorMessage = ""
   let result = ""
   try {
     result = (
@@ -73,8 +73,8 @@ export default async (connection: any, userCreateDetails: UserCreateDetails): Pr
       ])
     ).toString()
   } catch (e) {
-    errorMessage = "Error: Failed to add user"
+    return new Error("Error: Failed to add user")
   }
 
-  return { result, error: { name: "Failed Add User", message: errorMessage } }
+  return { result } as any
 }
