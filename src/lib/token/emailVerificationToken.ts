@@ -31,9 +31,5 @@ export function generateEmailVerificationToken(payload: EmailVerificationTokenPa
     ...signOptions
   }
 
-  try {
-    return jwt.sign(payload, config.tokenSecret, options)
-  } catch (error) {
-    return error
-  }
+  return jwt.sign(payload, config.tokenSecret, options)
 }

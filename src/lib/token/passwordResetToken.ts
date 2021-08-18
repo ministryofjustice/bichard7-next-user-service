@@ -29,9 +29,5 @@ export function generatePasswordResetToken(payload: PasswordResetTokenPayload): 
     ...signOptions
   }
 
-  try {
-    return jwt.sign(payload, config.tokenSecret, options)
-  } catch (error) {
-    return error
-  }
+  return jwt.sign(payload, config.tokenSecret, options)
 }
