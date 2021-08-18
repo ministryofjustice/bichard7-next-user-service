@@ -31,7 +31,7 @@ Cypress.Commands.add("checkCsrf", (url, method) => {
       method,
       url,
       headers: {
-        cookies: "XSRF-TOKEN%2Flogin=7tyFoLsw-L1-NzWTjPCnTf7YjDNGMAbd8KmU.cmu8gTFgJjXa8insESx4fsNn9jBJL9R3uD%2Be0yb26Es"
+        cookie: "XSRF-TOKEN%2Flogin=7tyFoLsw-L1-NzWTjPCnTf7YjDNGMAbd8KmU.cmu8gTFgJjXa8insESx4fsNn9jBJL9R3uD%2Be0yb26Es"
       },
       form: true,
       followRedirect: false,
