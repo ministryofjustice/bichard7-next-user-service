@@ -18,7 +18,15 @@ export const getServerSideProps: GetServerSideProps = async ({ req, query }) => 
   try {
     if (req.method === "POST") {
       const { token, password } = (await parseFormData(req)) as { token: EmailVerificationToken; password: string }
-      const { emailAddress, verificationCode } = decodeEmailVerificationToken(token)
+      const translatedToken = decodeEmailVerificationToken(token)
+      if (isError(translatedToken)) {
+        return {
+          props: {
+            invalidCredentials: true
+          }
+        }
+      }
+      const { emailAddress, verificationCode } = translatedToken
 
       const connection = getConnection()
       const user = await authenticate(connection, emailAddress, password, verificationCode)
@@ -43,7 +51,15 @@ export const getServerSideProps: GetServerSideProps = async ({ req, query }) => 
     }
 
     const { token } = query as { token: EmailVerificationToken }
-    const { emailAddress } = decodeEmailVerificationToken(token)
+    const translatedToken = decodeEmailVerificationToken(token)
+    if (isError(translatedToken)) {
+      return {
+        props: {
+          invalidCredentials: true
+        }
+      }
+    }
+    const { emailAddress } = translatedToken
 
     if (!token || !emailAddress) {
       throw new Error()

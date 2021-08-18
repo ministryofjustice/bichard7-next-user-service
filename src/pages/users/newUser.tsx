@@ -7,12 +7,13 @@ import { GetServerSideProps } from "next"
 import UserCreateDetails from "types/UserCreateDetails"
 import getConnection from "lib/getConnection"
 import parseFormData from "lib/parseFormData"
-import createUser from "useCases/createUser"
+import setupNewUser from "useCases/setupNewUser"
+import { isError } from "types/Result"
 
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   let missingMandatory = false
-  let errorMessage = ""
-  let successMessage = ""
+  let message = ""
+  let isSuccess = true
 
   if (req.method === "POST") {
     const userCreateDetails: UserCreateDetails = (await parseFormData(req)) as {
@@ -39,36 +40,42 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
 
     if (!missingMandatory) {
       const connection = getConnection()
-      const result = await createUser(connection, userCreateDetails)
-      errorMessage = result.error.message
-      if (errorMessage === "") {
-        successMessage = `User ${userCreateDetails.username} has been successfully created`
+      const result = await setupNewUser(connection, userCreateDetails)
+      if (isError(result)) {
+        return {
+          props: { message: result.message, isSuccess: false, missingMandatory }
+        }
       }
-    } else {
-      errorMessage = "Please make sure that all mandatory fields are non empty"
+      return {
+        props: { message: result.successMessage, isSuccess: true, missingMandatory }
+      }
     }
+    message = "Please make sure that all mandatory fields are non empty"
+    isSuccess = false
   }
   return {
-    props: { errorMessage, successMessage, missingMandatory }
+    props: { message, isSuccess, missingMandatory }
   }
 }
 
 interface Props {
-  errorMessage: string
-  successMessage: string
+  message: string
+  isSuccess: boolean
   missingMandatory: boolean
 }
 
-const newUser = ({ errorMessage, successMessage, missingMandatory }: Props) => (
+const newUser = ({ message, isSuccess, missingMandatory }: Props) => (
   <>
     <Head>
       <title>{"New User"}</title>
     </Head>
     <Layout>
-      <span id="event-name-error" className="govuk-error-message">
-        {errorMessage}
-      </span>
-      {successMessage && <SuccessBanner message={successMessage} />}
+      {!isSuccess && (
+        <span id="event-name-error" className="govuk-error-message">
+          {message}
+        </span>
+      )}
+      {isSuccess && message && <SuccessBanner message={message} />}
       <form method="post">
         <TextInput id="username" name="username" label="Username *" type="text" isError={missingMandatory} />
         <TextInput id="forenames" name="forenames" label="Forename(s) *" type="text" isError={missingMandatory} />

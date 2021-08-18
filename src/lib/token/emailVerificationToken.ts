@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken"
 import config from "lib/config"
+import { Result } from "types/Result"
 
 const signOptions: jwt.SignOptions = {
   issuer: config.tokenIssuer
@@ -16,15 +17,23 @@ export interface EmailVerificationTokenPayload {
   verificationCode: string
 }
 
-export function decodeEmailVerificationToken(token: EmailVerificationToken): EmailVerificationTokenPayload {
-  return jwt.verify(token, config.tokenSecret, verifyOptions) as EmailVerificationTokenPayload
+export function decodeEmailVerificationToken(token: EmailVerificationToken): Result<EmailVerificationTokenPayload> {
+  try {
+    return jwt.verify(token, config.tokenSecret, verifyOptions) as EmailVerificationTokenPayload
+  } catch (error) {
+    return error
+  }
 }
 
-export function generateEmailVerificationToken(payload: EmailVerificationTokenPayload): EmailVerificationToken {
+export function generateEmailVerificationToken(payload: EmailVerificationTokenPayload): Result<EmailVerificationToken> {
   const options: jwt.SignOptions = {
     expiresIn: `${config.emailVerificationExpiresIn} minutes`,
     ...signOptions
   }
 
-  return jwt.sign(payload, config.tokenSecret, options)
+  try {
+    return jwt.sign(payload, config.tokenSecret, options)
+  } catch (error) {
+    return error
+  }
 }
