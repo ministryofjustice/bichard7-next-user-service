@@ -7,7 +7,7 @@ import getConnection from "lib/getConnection"
 import parseFormData from "lib/parseFormData"
 import userFormIsValid from "lib/userFormIsValid"
 import UserForm from "components/users/UserForm"
-import { getUser, updateUser, getUserById } from "useCases"
+import { updateUser, getUserById, getUserByUsername } from "useCases"
 import { isError } from "types/Result"
 import User from "types/User"
 
@@ -20,7 +20,7 @@ export const getServerSideProps: GetServerSideProps = async ({ query, req }) => 
 
   if (req.method === "POST") {
     const userDetails: Partial<User> = await parseFormData(req)
-    const user = await getUserById(connection, userDetails.id as string)
+    const user = await getUserById(connection, userDetails.id as number)
 
     if (isError(user)) {
       console.error(user)
@@ -46,7 +46,9 @@ export const getServerSideProps: GetServerSideProps = async ({ query, req }) => 
         }
       }
 
-      const updatedUser = await getUserById(connection, userDetails.id as string)
+      const updatedUser = await getUserById(connection, userDetails.id as number)
+
+      console.log("updatedUser", updatedUser)
 
       if (isError(updatedUser)) {
         console.error(updateUser)
@@ -75,7 +77,7 @@ export const getServerSideProps: GetServerSideProps = async ({ query, req }) => 
   }
 
   const { username } = query
-  const user = await getUser(connection, username as string)
+  const user = await getUserByUsername(connection, username as string)
 
   if (isError(user)) {
     console.error(user)

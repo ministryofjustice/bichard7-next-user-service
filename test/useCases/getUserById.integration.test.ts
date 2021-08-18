@@ -1,9 +1,9 @@
 import getConnection from "lib/getConnection"
 import User from "types/User"
 import { isError } from "types/Result"
-import getUserByUsername from "useCases/getUserByUsername"
-import deleteDatabaseUser from "./deleteDatabaseUser"
+import getUserById from "useCases/getUserById"
 import insertDatabaseUser from "./insertDatabaseUser"
+import deleteDatabaseUserById from "./deleteDatabaseUserById"
 
 const connection = getConnection()
 
@@ -11,19 +11,20 @@ const expectedUser = {
   id: 1234,
   username: "DummyUsername",
   emailAddress: "DummyEmailAddress",
-  exclusionList: "DummyExclusionList",
-  inclusionList: "DummyInclusionList",
   endorsedBy: "DummyEndorsedBy",
   orgServes: "DummyOrgServes",
   forenames: "DummyForenames",
   postalAddress: "DummyPostalAddress",
+  exclusionList: "exclusionList",
+  inclusionList: "inclusionList",
   postCode: "AB1 1BA",
-  phoneNumber: "DummyPhoneNumber"
+  phoneNumber: "DummyPhoneNumber",
+  surname: "DummuSurname"
 } as unknown as User
 
-describe("getUserByUsername", () => {
+describe("getUserById", () => {
   beforeEach(async () => {
-    await deleteDatabaseUser(connection, expectedUser.username)
+    await deleteDatabaseUserById(connection, expectedUser.id)
   })
 
   afterAll(() => {
@@ -33,7 +34,7 @@ describe("getUserByUsername", () => {
   it("should return user when user exists in the database", async () => {
     await insertDatabaseUser(connection, expectedUser, false, "")
 
-    const result = await getUserByUsername(connection, expectedUser.username)
+    const result = await getUserById(connection, expectedUser.id)
 
     expect(isError(result)).toBe(false)
 
@@ -41,8 +42,6 @@ describe("getUserByUsername", () => {
     expect(actualUser.id).toBe(1234)
     expect(actualUser.emailAddress).toBe(expectedUser.emailAddress)
     expect(actualUser.username).toBe(expectedUser.username)
-    expect(actualUser.exclusionList).toBe(expectedUser.exclusionList)
-    expect(actualUser.inclusionList).toBe(expectedUser.inclusionList)
     expect(actualUser.endorsedBy).toBe(expectedUser.endorsedBy)
     expect(actualUser.orgServes).toBe(expectedUser.orgServes)
     expect(actualUser.forenames).toBe(expectedUser.forenames)
@@ -51,17 +50,17 @@ describe("getUserByUsername", () => {
     expect(actualUser.phoneNumber).toBe(expectedUser.phoneNumber)
   })
 
-  it("should return null when user does not exist in the database", async () => {
-    const result = await getUserByUsername(connection, "InvalidUsername")
+  it("should return error when user does not exist in the database", async () => {
+    const result = await getUserById(connection, 0)
 
-    expect(result).toBeNull()
+    expect((result as any).message).toBe("No data returned from the query.")
   })
 
-  it("should return null when user is deleted", async () => {
+  it("should return error when user is deleted", async () => {
     await insertDatabaseUser(connection, expectedUser, true, "")
 
-    const result = await getUserByUsername(connection, expectedUser.username)
+    const result = await getUserById(connection, expectedUser.id)
 
-    expect(result).toBeNull()
+    expect((result as any).message).toBe("No data returned from the query.")
   })
 })

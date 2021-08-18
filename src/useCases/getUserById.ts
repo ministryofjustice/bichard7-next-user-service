@@ -1,13 +1,14 @@
 import Database from "types/Database"
 import User from "types/User"
+import PromiseResult from "types/PromiseResult"
 
-const getUserById = async (connection: Database, id: string): Promise<Partial<User>> => {
+const getUserById = async (connection: Database, id: number): PromiseResult<Partial<User>> => {
   let user
 
-  const getUser = `
+  const getUserByIdQuery = `
       SELECT
         id,
-        username,
+        username ,
         forenames,
         surname,
         phone_number,
@@ -19,8 +20,9 @@ const getUserById = async (connection: Database, id: string): Promise<Partial<Us
       FROM br7own.users
       WHERE id = $1 AND deleted_at IS NULL
     `
+
   try {
-    user = await connection.one(getUser, [id])
+    user = await connection.one(getUserByIdQuery, [id])
   } catch (error) {
     return error
   }

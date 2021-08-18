@@ -38,7 +38,7 @@ const newUser = {
 describe("DeleteUserUseCase", () => {
   beforeEach(async () => {
     await deleteDatabaseUser(connection, previousUser.username)
-    await insertDatabaseUser(connection, previousUser, false, "")
+    await await insertDatabaseUser(connection, previousUser, false, "")
   })
 
   afterAll(() => {
@@ -49,14 +49,14 @@ describe("DeleteUserUseCase", () => {
     const expectedError = new Error(`Error: Username ${previousUser.username} already exists`)
     const createUserDetails: UserCreateDetails = {
       username: previousUser.username,
-      forenames: previousUser.forenames,
-      emailAddress: previousUser.emailAddress,
-      endorsedBy: previousUser.endorsedBy,
-      surname: previousUser.surname,
-      organisation: previousUser.orgServes,
-      postCode: previousUser.postCode,
-      phoneNumber: previousUser.phoneNumber,
-      postalAddress: previousUser.postalAddress
+      forenames: newUser.forenames,
+      emailAddress: newUser.emailAddress,
+      endorsedBy: newUser.endorsedBy,
+      surname: newUser.surname,
+      organisation: newUser.orgServes,
+      postCode: newUser.postCode,
+      phoneNumber: newUser.phoneNumber,
+      postalAddress: newUser.postalAddress
     }
     const result = await createUser(connection, createUserDetails)
     expect(isError(result)).toBe(true)
