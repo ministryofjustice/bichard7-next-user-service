@@ -14,7 +14,7 @@
     "test:unit": "jest --testPathIgnorePatterns=\"integration\" \"e2e\"",
     "test:unit:update": "npm run test:unit -- -u",
     "test:integration": "jest --testPathPattern=\"integration\"",
-    "test:ui": "concurrently --kill-others --success first npm:start npm:cypress:run"
+    "test:ui": "./scripts/run-test-ui.sh"
   },
   "dependencies": {
     "@types/qs": "^6.9.6",
