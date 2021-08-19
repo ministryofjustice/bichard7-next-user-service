@@ -67,6 +67,12 @@
       "rules": {
         "filenames/match-exported": "off"
       }
+    },
+    {
+      "files": ["cypress/**/*.js"],
+      "rules": {
+        "no-unused-expressions":"off"
+      }
     }
   ]
 }
