@@ -114,7 +114,7 @@ describe("Logging In", () => {
       })
 
       it("should respond with forbidden response code when CSRF tokens are invalid in login page", (done) => {
-        cy.checkCsrf("/login/verify", "POST").then(() => done())
+        cy.checkCsrf("/login", "POST").then(() => done())
       })
     })
   })
