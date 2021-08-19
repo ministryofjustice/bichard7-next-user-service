@@ -1,4 +1,4 @@
-interface UserCreateDetails {
+interface UserDetails {
   username: string
   forenames: string
   surname: string
@@ -10,4 +10,4 @@ interface UserCreateDetails {
   organisation: string
 }
 
-export default UserCreateDetails
+export default UserDetails

@@ -1,7 +1,7 @@
 describe("Forgot password", () => {
   context("720p resolution", () => {
-    before(() => {
-      cy.task("seedUsers")
+    before(async () => {
+      await cy.task("seedUsers")
     })
 
     beforeEach(() => {

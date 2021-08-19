@@ -5,10 +5,11 @@ export default async (connection: any, expectedUser: User, isDeleted: boolean, p
 
   const insertQuery = `
     INSERT INTO br7own.users(
-      username, email, active, exclusion_list, inclusion_list, challenge_response, created_at, endorsed_by, org_serves, forenames, surname, postal_address, post_code, phone_number, deleted_at, password)
-      VALUES ($1, $2, true, $3, $4, '-', NOW(), $5, $6, $7, $8, $9, $10, $11, $12, $13);
+      id, username, email, active, exclusion_list, inclusion_list, challenge_response, created_at, endorsed_by, org_serves, forenames, surname, postal_address, post_code, phone_number, deleted_at, password)
+      VALUES ($1, $2, $3, true, $4, $5, '-', NOW(), $6, $7, $8, $9, $10, $11, $12, $13, $14);
   `
   await connection.none(insertQuery, [
+    expectedUser.id || Math.floor(Math.random() * 1000),
     expectedUser.username,
     expectedUser.emailAddress,
     expectedUser.exclusionList,
