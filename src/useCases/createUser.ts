@@ -1,15 +1,15 @@
 import CreateUserResult from "types/CreateUserResult"
-import UserCreateDetails from "types/UserCreateDetails"
+import UserCreateDetails from "types/UserDetails"
 import PromiseResult from "types/PromiseResult"
 import isUsernameUnique from "./isUsernameUnique"
 import isEmailUnique from "./IsEmailUnique"
 
-export default async (connection: any, userCreateDetails: UserCreateDetails): PromiseResult<CreateUserResult> => {
-  let checkData = await isUsernameUnique(connection, userCreateDetails.username)
+export default async (connection: any, userDetails: UserCreateDetails): PromiseResult<CreateUserResult> => {
+  let checkData = await isUsernameUnique(connection, userDetails.username)
   if (checkData.message !== "") {
     return new Error(checkData.message)
   }
-  checkData = await isEmailUnique(connection, userCreateDetails.emailAddress)
+  checkData = await isEmailUnique(connection, userDetails.emailAddress)
   if (checkData.message !== "") {
     return new Error(checkData.message)
   }
@@ -23,7 +23,7 @@ export default async (connection: any, userCreateDetails: UserCreateDetails): Pr
     postalAddress,
     endorsedBy,
     organisation
-  }: UserCreateDetails = userCreateDetails
+  }: UserCreateDetails = userDetails
 
   const query = `
       INSERT INTO br7own.users(
@@ -76,5 +76,5 @@ export default async (connection: any, userCreateDetails: UserCreateDetails): Pr
     return new Error("Error: Failed to add user")
   }
 
-  return { result }
+  return { result } as any
 }

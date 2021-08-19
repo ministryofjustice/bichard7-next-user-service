@@ -1,6 +1,7 @@
 import UserGroup from "./UserGroup"
 
 interface User {
+  id: number
   username: string
   exclusionList: string[]
   inclusionList: string[]

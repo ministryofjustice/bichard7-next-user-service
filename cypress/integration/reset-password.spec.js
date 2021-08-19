@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken"
 
 const tokenSecret = "OliverTwist"
 
-const generatePasswordRestToken = (emailAddress, passwordResetCode) =>
+const generatePasswordResetToken = (emailAddress, passwordResetCode) =>
   jwt.sign({ emailAddress, passwordResetCode }, tokenSecret, { issuer: "Bichard" })
 
 const generateLoginVerificationToken = (emailAddress, verificationCode) =>
@@ -28,7 +28,7 @@ describe("Reset password", () => {
       cy.get("button[type=submit]").click()
       cy.get("body").contains(/check your email/i)
       cy.task("getPasswordResetCode", emailAddress).then((passwordResetCode) => {
-        const passwordResetToken = generatePasswordRestToken(emailAddress, passwordResetCode)
+        const passwordResetToken = generatePasswordResetToken(emailAddress, passwordResetCode)
         cy.visit(`/login/reset-password?token=${passwordResetToken}`)
         cy.get("body").contains(/reset password/i)
         cy.get("input[type=password][name=newPassword]").type(newPassword)
@@ -55,7 +55,7 @@ describe("Reset password", () => {
 
     it("should not allow submission when password is empty", () => {
       cy.task("getPasswordResetCode", ["bichard01@example.com", "foobar"]).then(() => {
-        const token = generatePasswordRestToken("bichard01@example.com", "foobar")
+        const token = generatePasswordResetToken("bichard01@example.com", "foobar")
         cy.visit(`/login/reset-password?token=${token}`)
         cy.get("body").contains(/reset password/i)
         cy.get("button[type=submit]").click()
@@ -65,7 +65,7 @@ describe("Reset password", () => {
 
     it("should not allow submission when passwords do not match", () => {
       cy.task("getPasswordResetCode", ["bichard01@example.com", "foobar"]).then(() => {
-        const token = generatePasswordRestToken("bichard01@example.com", "foobar")
+        const token = generatePasswordResetToken("bichard01@example.com", "foobar")
         cy.visit(`/login/reset-password?token=${token}`)
         cy.get("body").contains(/reset password/i)
         cy.get("input[type=password][name=newPassword]").type("Test@123456")
