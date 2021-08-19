@@ -16,17 +16,28 @@ it("should include form data and CSRF token in the context", async () => {
 
   const dummyFormData = <QueryString.ParsedQs>{ "Dummy-Form-Field": "DummyValue" }
   mockedVerifyCsrfToken.mockResolvedValue({ formData: dummyFormData, isValid: true })
-  mockedGenerateCsrfToken.mockReturnValue("DummyCSRFToken")
+  const dummyTokens = { formToken: "DummyFormToken", cookieToken: "DummyCookieToken", cookieName: "DummyCookieName" }
+  mockedGenerateCsrfToken.mockReturnValue(dummyTokens)
 
-  const dummyContext = { req: {} } as GetServerSidePropsContext<ParsedUrlQuery>
+  let cookie: string
+  let cookieAction: string
+  const dummyResponse = {
+    setHeader: (action: string, cookieValue: string) => {
+      cookieAction = action
+      cookie = cookieValue
+    }
+  }
+  const dummyContext = { req: {}, res: dummyResponse } as GetServerSidePropsContext<ParsedUrlQuery>
 
   const handler = useCsrfServerSideProps((context) => {
     const { formData, csrfToken, req } = context as CsrfServerSidePropsContext
 
     expect(req).toBeDefined()
-    expect(csrfToken).toBe("DummyCSRFToken")
+    expect(csrfToken).toBe("DummyFormToken")
     expect(formData).toBeDefined()
     expect(formData["Dummy-Form-Field"]).toBe("DummyValue")
+    expect(cookieAction).toBe("Set-Cookie")
+    expect(cookie).toContain("DummyCookieName=DummyCookieToken")
 
     return undefined as never
   })

@@ -26,7 +26,7 @@ const config: UserServiceConfig = {
     tokenName: process.env.CSRF_COOKIE_NAME ?? "XSRF-TOKEN",
     cookieSecret: process.env.CSRF_TOKEN_SECRET ?? "OliverTwist1",
     formSecret: process.env.CSRF_TOKEN_SECRET ?? "OliverTwist2",
-    cookieTokenMaximumAgeInSeconds: parseInt(process.env.CSRF_COOKIE_TOKEN_MAX_AGE ?? "1800", 10)
+    maximumTokenAgeInSeconds: parseInt(process.env.CSRF_TOKEN_MAX_AGE ?? "600", 10)
   },
   database: {
     host: process.env.DB_HOST ?? process.env.DB_AUTH_HOST ?? "localhost",

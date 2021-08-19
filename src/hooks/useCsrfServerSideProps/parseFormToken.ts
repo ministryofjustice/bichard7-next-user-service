@@ -32,5 +32,14 @@ export default (formData: QueryString.ParsedQs): Result<ParseFormTokenResult> =>
   const cookieName = formTokenParts[0]
   const formTokenValue = formTokenParts.splice(1).join("=")
 
-  return { cookieName, formToken: formTokenValue }
+  const formTokenValueParts = formTokenValue.split(".")
+  const formTokenExpiryDate = new Date(Number(formTokenValueParts[0]))
+
+  if (formTokenExpiryDate < new Date()) {
+    return Error("Expired form token.")
+  }
+
+  const csrfFormToken = formTokenValueParts.splice(1).join(".")
+
+  return { cookieName, formToken: csrfFormToken }
 }

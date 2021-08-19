@@ -1,3 +1,5 @@
+import { serialize } from "cookie"
+import config from "lib/config"
 import { GetServerSideProps, GetServerSidePropsContext, GetServerSidePropsResult } from "next"
 import { ParsedUrlQuery } from "querystring"
 import CsrfServerSidePropsContext from "types/CsrfServerSidePropsContext"
@@ -17,9 +19,14 @@ export default <Props>(getServerSidePropsFunction: GetServerSideProps<Props>): G
       return res.end() as never
     }
 
-    const csrfToken = generateCsrfToken(req, res)
+    const { maximumTokenAgeInSeconds } = config.csrf
+    const { formToken, cookieToken, cookieName } = generateCsrfToken(req)
+    res.setHeader(
+      "Set-Cookie",
+      serialize(cookieName, cookieToken, { httpOnly: true, maxAge: maximumTokenAgeInSeconds })
+    )
 
-    return getServerSidePropsFunction({ ...context, formData, csrfToken } as CsrfServerSidePropsContext)
+    return getServerSidePropsFunction({ ...context, formData, csrfToken: formToken } as CsrfServerSidePropsContext)
   }
 
   return result

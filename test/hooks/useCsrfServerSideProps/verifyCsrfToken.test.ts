@@ -1,6 +1,8 @@
 /* eslint-disable import/first */
 jest.mock("lib/parseFormData")
 
+import { serialize } from "cookie"
+import generateCsrfToken from "hooks/useCsrfServerSideProps/generateCsrfToken"
 import verifyCsrfToken from "hooks/useCsrfServerSideProps/verifyCsrfToken"
 import { IncomingMessage } from "http"
 import parseFormData from "lib/parseFormData"
@@ -30,14 +32,23 @@ const expectFormDataToBeValid = (formData: QueryString.ParsedQs, formToken: stri
   expect(formData["Dummy-Form-Field"]).toBe("DummyValue")
 }
 
-const formToken = "XSRF-TOKEN%2Flogin=VfyI1c88-__KLP0wgpxue6xFzVozwuKsLxAA.BTiziIFDSI1QVRr5aDJaeNARk9D4824mHOgnj7ybeHU"
-const cookie =
-  "XSRF-TOKEN%2Flogin=VfyI1c88-__KLP0wgpxue6xFzVozwuKsLxAA.M8YyQuvpv66ecZXEQUrL%2BLF%2BsR3g%2Fw0ysplz47bdeVE"
-const invalidCookieForFormToken =
-  "XSRF-TOKEN%2Flogin=lvjAfaAq-ki2oJx2BUrlf5TE8-PmK8eZFmPA.VSn3xZ7%2FsbAJ1du6WpHdXLTn9dXspnxF8FJgHOkR4JQ"
+const dummyRequest = <IncomingMessage>{ url: "/login" }
+const {
+  formToken: validFormToken,
+  cookieToken: validCookieToken,
+  cookieName: validCookieName
+} = generateCsrfToken(dummyRequest)
+const cookie = serialize(validCookieName, validCookieToken)
+
+const { cookieToken: anotherCookieToken, cookieName: anotherCookieName } = generateCsrfToken(dummyRequest)
+const invalidCookieForFormToken = serialize(anotherCookieName, anotherCookieToken)
+
+const expiredCookie = "QO60fsUX-KKkGnqboM90s8VS9C5zSdrysjrg.FuBXqXqFzbs6JWUZIC5jIZztpbZ8gYdD4Q2%2FF569Qr4"
+const expiredFormToken =
+  "XSRF-TOKEN%2Flogin=1629370536933.QO60fsUX-KKkGnqboM90s8VS9C5zSdrysjrg.31NFF0UFt3Pa7IAeRDiagzG8BPM45cIH8EMynKUlpzY"
 
 it("should be valid when request method is GET", async () => {
-  mockParseFormData(formToken)
+  mockParseFormData(validFormToken)
   const request = <IncomingMessage>{ method: "GET" }
 
   const result = await verifyCsrfToken(request)
@@ -46,11 +57,11 @@ it("should be valid when request method is GET", async () => {
 
   const { isValid, formData } = result
   expect(isValid).toBe(true)
-  expectFormDataToBeValid(formData, formToken)
+  expectFormDataToBeValid(formData, validFormToken)
 })
 
 it("should be valid when form token and cookie token are equal", async () => {
-  mockParseFormData(formToken)
+  mockParseFormData(validFormToken)
   const request = createRequest(cookie)
 
   const result = await verifyCsrfToken(request)
@@ -59,11 +70,11 @@ it("should be valid when form token and cookie token are equal", async () => {
 
   const { isValid, formData } = result
   expect(isValid).toBe(true)
-  expectFormDataToBeValid(formData, formToken)
+  expectFormDataToBeValid(formData, validFormToken)
 })
 
 it("should be invalid when form token and cookie token are not equal", async () => {
-  mockParseFormData(formToken)
+  mockParseFormData(validFormToken)
   const request = createRequest(invalidCookieForFormToken)
 
   const result = await verifyCsrfToken(request)
@@ -72,7 +83,20 @@ it("should be invalid when form token and cookie token are not equal", async () 
 
   const { isValid, formData } = result
   expect(isValid).toBe(false)
-  expectFormDataToBeValid(formData, formToken)
+  expectFormDataToBeValid(formData, validFormToken)
+})
+
+it("should be invalid when form token is expired", async () => {
+  mockParseFormData(expiredFormToken)
+  const request = createRequest(expiredCookie)
+
+  const result = await verifyCsrfToken(request)
+
+  expect(result).toBeDefined()
+
+  const { isValid, formData } = result
+  expect(isValid).toBe(false)
+  expectFormDataToBeValid(formData, expiredFormToken)
 })
 
 it("should be invalid when form token returns error", async () => {
