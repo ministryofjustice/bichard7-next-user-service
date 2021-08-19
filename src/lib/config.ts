@@ -3,27 +3,30 @@ import DatabaseConfig from "./DatabaseConfig"
 
 interface UserServiceConfig {
   bichardRedirectURL: string
+  csrf: CsrfConfig
   database: DatabaseConfig
   emailVerificationExpiresIn: number
   incorrectDelay: number
+  suggestedPasswordNumWords: number
+  suggestedPasswordMinWordLength: number
   tokenExpiresIn: string
   tokenIssuer: string
   tokenQueryParamName: string
   tokenSecret: string
   verificationCodeLength: number
-  numberWordsSuggestedPassword: number
-  minLengthPerWordSuggestedPassword: number
-  csrf: CsrfConfig
 }
 
 const config: UserServiceConfig = {
   bichardRedirectURL: process.env.BICHARD_REDIRECT_URL ?? "https://localhost:9443/bichard-ui/Authenticate",
   emailVerificationExpiresIn: parseInt(process.env.EMAIL_VERIFICATION_EXPIRY ?? "30", 10),
   incorrectDelay: parseInt(process.env.INCORRECT_DELAY ?? "10", 10),
+  suggestedPasswordNumWords: 3,
+  suggestedPasswordMinWordLength: 4,
   tokenExpiresIn: process.env.TOKEN_EXPIRES_IN ?? "5 seconds",
   tokenIssuer: process.env.TOKEN_ISSUER ?? "Bichard",
   tokenQueryParamName: process.env.TOKEN_QUERY_PARAM_NAME ?? "token",
   tokenSecret: process.env.TOKEN_SECRET ?? "OliverTwist",
+  verificationCodeLength: 6,
   csrf: {
     tokenName: process.env.CSRF_COOKIE_NAME ?? "XSRF-TOKEN",
     cookieSecret: process.env.CSRF_TOKEN_SECRET ?? "OliverTwist1",
@@ -37,10 +40,7 @@ const config: UserServiceConfig = {
     database: process.env.DB_DATABASE ?? process.env.DB_AUTH_DATABASE ?? "bichard",
     port: parseInt(process.env.DB_PORT ?? process.env.DB_AUTH_PORT ?? "5432", 10),
     ssl: (process.env.DB_SSL ?? process.env.DB_AUTH_SSL) === "true"
-  },
-  verificationCodeLength: 6,
-  numberWordsSuggestedPassword: 3,
-  minLengthPerWordSuggestedPassword: 4
+  }
 }
 
 export default config
