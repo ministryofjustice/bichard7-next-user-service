@@ -52,7 +52,11 @@ const Users = ({ allUsers }: Props) => (
       </a>
       {allUsers && (
         <Table tableHeaders={tableHeaders} tableTitle="Users" tableData={allUsers}>
-          <LinkColumn field="username" href={(user) => `users/${(user as User).username}`} />
+          <LinkColumn
+            data-test="link-to-user-view"
+            field="username"
+            href={(user) => `users/${(user as User).username}`}
+          />
         </Table>
       )}
     </Layout>

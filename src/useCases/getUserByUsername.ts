@@ -2,9 +2,10 @@ import User from "types/User"
 import Database from "types/Database"
 import PromiseResult from "types/PromiseResult"
 
-export default (db: Database, username: string): PromiseResult<User | null> => {
+export default (db: Database, username: string): PromiseResult<User | null | Error> => {
   const query = `
       SELECT
+        id,
         username,
         email AS "emailAddress",
         exclusion_list AS "exclusionList",
@@ -19,5 +20,10 @@ export default (db: Database, username: string): PromiseResult<User | null> => {
       FROM br7own.users
       WHERE username = $1 AND deleted_at IS NULL
     `
-  return db.oneOrNone<User>(query, [username]).catch((error) => error)
+
+  try {
+    return db.oneOrNone<User>(query, [username]).catch((error) => error)
+  } catch (error) {
+    return error
+  }
 }

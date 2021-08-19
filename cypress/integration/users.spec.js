@@ -1,3 +1,10 @@
+import jwt from "jsonwebtoken"
+
+const tokenSecret = "OliverTwist"
+
+const generateNewPasswordToken = (emailAddress, verificationCode) =>
+  jwt.sign({ emailAddress, verificationCode }, tokenSecret, { issuer: "Bichard" })
+
 describe("User", () => {
   describe("Display list of users", () => {
     before(async () => {
@@ -48,6 +55,32 @@ describe("User", () => {
 
       cy.get("button").click()
       cy.get("h3").should("have.text", "User Buser has been successfully created")
+    })
+
+    it("should allow the new user to set their password via a link", () => {
+      const emailAddress = "bemail1@example.com"
+      const newPassword = "Test@123456"
+      cy.task("getPasswordResetCode", emailAddress).then((passwordResetCode) => {
+        const newPasswordToken = generateNewPasswordToken(emailAddress, passwordResetCode)
+        cy.visit(`/login/new-password?token=${newPasswordToken}`)
+        cy.get("input[type=password][name=newPassword]").type(newPassword)
+        cy.get("input[type=password][name=confirmPassword]").type(newPassword)
+        cy.get("button[type=submit]").click()
+        cy.get("h3").should("have.text", "You can now sign in with your new password.")
+      })
+    })
+
+    it("should not possible for the new user to set their password a second time using the same link", () => {
+      const emailAddress = "bemail1@example.com"
+      const newPassword = "Test@123456"
+      cy.task("getPasswordResetCode", emailAddress).then((passwordResetCode) => {
+        const newPasswordToken = generateNewPasswordToken(emailAddress, passwordResetCode)
+        cy.visit(`/login/new-password?token=${newPasswordToken}`)
+        cy.get("input[type=password][name=newPassword]").type(newPassword)
+        cy.get("input[type=password][name=confirmPassword]").type(newPassword)
+        cy.get("button[type=submit]").click()
+        cy.get('span[id="event-name-error"]').should("have.text", "Error: Invalid or expired verification code")
+      })
     })
 
     it("should show a newly-created user in the list of users", () => {

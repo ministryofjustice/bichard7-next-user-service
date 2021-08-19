@@ -1,16 +1,7 @@
 import Database from "types/Database"
+import User from "types/User"
 
-export type User = {
-  username: string
-  forenames: string
-  surname: string
-  phoneNumber: string
-  emailAddress: string
-}
-
-export type Users = User[]
-
-const getAllUsers = async (connection: Database): Promise<Users> => {
+const getAllUsers = async (connection: Database): Promise<Partial<User>[]> => {
   let users
 
   const getAllUsersQuery = `
