@@ -7,7 +7,7 @@ const validateUserVerificationCode = async (
   emailAddress: string,
   verificationCode: string
 ): PromiseResult<void> => {
-  if (verificationCode.length !== config.verificationCodeLength) {
+  if (!verificationCode || verificationCode.length !== config.verificationCodeLength) {
     return new Error("Error: Invalid Verification Code ")
   }
   const query = `
