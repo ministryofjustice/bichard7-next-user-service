@@ -56,4 +56,8 @@ describe("Edit user", () => {
     cy.get('button[type="submit"]').click()
     cy.get('span[id="event-name-error"]').contains("This user name has been taken please enter another")
   })
+
+  it("should respond with forbidden response code when CSRF tokens are invalid in edit page", (done) => {
+    cy.checkCsrf("/users/Bichard01/edit", "POST").then(() => done())
+  })
 })
