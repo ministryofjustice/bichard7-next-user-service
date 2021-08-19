@@ -2,31 +2,35 @@ import Button from "components/Button"
 import Layout from "components/Layout"
 import Head from "next/head"
 import SuccessBanner from "components/SuccessBanner"
-import { GetServerSideProps } from "next"
 import getConnection from "lib/getConnection"
-import parseFormData from "lib/parseFormData"
 import userFormIsValid from "lib/userFormIsValid"
 import UserForm from "components/users/UserForm"
 import { updateUser, getUserById, getUserByUsername } from "useCases"
 import { isError } from "types/Result"
 import User from "types/User"
+import { useCsrfServerSideProps } from "hooks"
+import CsrfServerSidePropsContext from "types/CsrfServerSidePropsContext"
+import Form from "components/Form"
+import { GetServerSidePropsResult } from "next"
 
 const errorMessageMap = {
   unique_users_username_idx: "This user name has been taken please enter another"
 }
 
-export const getServerSideProps: GetServerSideProps = async ({ query, req }) => {
+export const getServerSideProps = useCsrfServerSideProps(async (context): Promise<GetServerSidePropsResult<Props>> => {
+  const { query, req, formData, csrfToken } = context as CsrfServerSidePropsContext
   const connection = getConnection()
 
   if (req.method === "POST") {
-    const userDetails: Partial<User> = await parseFormData(req)
+    const userDetails: Partial<User> = formData
     const user = await getUserById(connection, userDetails.id as number)
 
     if (isError(user)) {
       console.error(user)
       return {
         props: {
-          errorMessage: "Error getting user details please try again"
+          errorMessage: "Error getting user details please try again",
+          csrfToken
         }
       }
     }
@@ -41,7 +45,8 @@ export const getServerSideProps: GetServerSideProps = async ({ query, req }) => 
 
         return {
           props: {
-            errorMessage: (errorMessageMap as any)[(userUpdated as any).constraint]
+            errorMessage: (errorMessageMap as any)[(userUpdated as any).constraint],
+            csrfToken
           }
         }
       }
@@ -55,7 +60,8 @@ export const getServerSideProps: GetServerSideProps = async ({ query, req }) => 
 
         return {
           props: {
-            errorMessage: "There was an error retrieving the user details"
+            errorMessage: "There was an error retrieving the user details",
+            csrfToken
           }
         }
       }
@@ -63,7 +69,8 @@ export const getServerSideProps: GetServerSideProps = async ({ query, req }) => 
       return {
         props: {
           successMessage: "The user was updated successfully",
-          user: updatedUser
+          user: updatedUser,
+          csrfToken
         }
       }
     }
@@ -71,7 +78,8 @@ export const getServerSideProps: GetServerSideProps = async ({ query, req }) => 
       props: {
         errorMessage: "Please fill in all mandatory fields",
         missingMandatory: true,
-        user: { ...user, ...userDetails }
+        user: { ...user, ...userDetails },
+        csrfToken
       }
     }
   }
@@ -85,7 +93,8 @@ export const getServerSideProps: GetServerSideProps = async ({ query, req }) => 
     return {
       props: {
         errorMessage: "Error retrieving user please go back and make sure you have the correct details",
-        missingMandatory: false
+        missingMandatory: false,
+        csrfToken
       }
     }
   }
@@ -93,19 +102,21 @@ export const getServerSideProps: GetServerSideProps = async ({ query, req }) => 
   return {
     props: {
       missingMandatory: false,
-      user
+      user,
+      csrfToken
     }
   }
-}
+})
 
 interface Props {
-  errorMessage: string
-  successMessage: string
-  missingMandatory: boolean
-  user: User
+  errorMessage?: string
+  successMessage?: string
+  missingMandatory?: boolean
+  user?: Partial<User> | null
+  csrfToken: string
 }
 
-const editUser = ({ errorMessage, successMessage, missingMandatory, user }: Props) => (
+const editUser = ({ errorMessage, successMessage, missingMandatory, user, csrfToken }: Props) => (
   <>
     <Head>
       <title>{"Edit User"}</title>
@@ -116,7 +127,7 @@ const editUser = ({ errorMessage, successMessage, missingMandatory, user }: Prop
       </span>
       {successMessage && <SuccessBanner message={successMessage} />}
       {user && (
-        <form method="post">
+        <Form method="post" csrfToken={csrfToken}>
           <UserForm
             /* eslint-disable-next-line react/jsx-props-no-spreading */
             {...user}
@@ -128,7 +139,7 @@ const editUser = ({ errorMessage, successMessage, missingMandatory, user }: Prop
           />
           <input type="hidden" name="id" value={user.id} />
           <Button noDoubleClick>{"Update user"}</Button>
-        </form>
+        </Form>
       )}
 
       <a href="/users" className="govuk-back-link">

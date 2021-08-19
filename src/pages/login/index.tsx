@@ -4,19 +4,22 @@ import GridRow from "components/GridRow"
 import Layout from "components/Layout"
 import Head from "next/head"
 import TextInput from "components/TextInput"
-import { GetServerSideProps } from "next"
-import parseFormData from "lib/parseFormData"
+import { GetServerSidePropsResult } from "next"
 import { sendVerificationEmail } from "useCases"
 import getConnection from "lib/getConnection"
 import { isError } from "types/Result"
 import Link from "components/Link"
 import createRedirectResponse from "utils/createRedirectResponse"
+import Form from "components/Form"
+import { useCsrfServerSideProps } from "hooks"
+import CsrfServerSidePropsContext from "types/CsrfServerSidePropsContext"
 
-export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+export const getServerSideProps = useCsrfServerSideProps(async (context): Promise<GetServerSidePropsResult<Props>> => {
+  const { req, formData, csrfToken } = context as CsrfServerSidePropsContext
   let invalidEmail = false
 
   if (req.method === "POST") {
-    const { emailAddress } = (await parseFormData(req)) as { emailAddress: string }
+    const { emailAddress } = formData as { emailAddress: string }
 
     if (emailAddress) {
       const connection = getConnection()
@@ -25,7 +28,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
       if (isError(sent)) {
         console.error(sent)
         return {
-          props: { invalidEmail: true }
+          props: { invalidEmail: true, csrfToken }
         }
       }
 
@@ -36,15 +39,16 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   }
 
   return {
-    props: { invalidEmail }
+    props: { invalidEmail, csrfToken }
   }
-}
+})
 
 interface Props {
   invalidEmail?: boolean
+  csrfToken: string
 }
 
-const Index = ({ invalidEmail }: Props) => (
+const Index = ({ invalidEmail, csrfToken }: Props) => (
   <>
     <Head>
       <title>{"Sign in to Bichard 7"}</title>
@@ -57,13 +61,13 @@ const Index = ({ invalidEmail }: Props) => (
           <ErrorSummary title="Invalid email">{"The supplied email address is not valid."}</ErrorSummary>
         )}
 
-        <form method="post">
+        <Form method="post" csrfToken={csrfToken}>
           <TextInput id="email" name="emailAddress" label="Email address" type="email" />
           <p>
             <Link href="/login/forgot-password">{"Forgot your password?"}</Link>
           </p>
           <Button>{"Sign in"}</Button>
-        </form>
+        </Form>
       </GridRow>
     </Layout>
   </>

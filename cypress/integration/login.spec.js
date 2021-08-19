@@ -98,25 +98,23 @@ describe("Logging In", () => {
             const token = validToken(emailAddress, verificationCode)
 
             cy.visit(`/login/verify?token=${token}`)
-
-            cy.request({
-              method: "POST",
-              url: `/login/verify`,
-              form: true,
-              followRedirect: false,
-              body: {
-                token,
-                password
-              }
-            }).then((response) => {
-              expect(response.status).to.eq(302)
-              const { location } = response.headers
-              expect(location).to.match(/^https:\/\/localhost:9443\/bichard-ui\/Authenticate/)
-              expect(location).to.match(/\?token=[A-Za-z0-9_.]+/)
+            cy.get("input[type=password][name=password]").type(password)
+            cy.get("button[type=submit]").click()
+            cy.url().then((url) => {
+              expect(url).to.match(/^http:\/\/localhost:3000\/bichard-ui\/Authenticate/)
+              expect(url).to.match(/\?token=[A-Za-z0-9_.]+/)
               done()
             })
           })
         })
+      })
+
+      it("should respond with forbidden response code when CSRF tokens are invalid in verify page", (done) => {
+        cy.checkCsrf("/login/verify", "POST").then(() => done())
+      })
+
+      it("should respond with forbidden response code when CSRF tokens are invalid in login page", (done) => {
+        cy.checkCsrf("/login", "POST").then(() => done())
       })
     })
   })

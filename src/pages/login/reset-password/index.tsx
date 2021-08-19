@@ -3,18 +3,18 @@ import Head from "next/head"
 import TextInput from "components/TextInput"
 import Button from "components/Button"
 import ErrorSummary from "components/ErrorSummary"
-import { GetServerSideProps, GetServerSidePropsResult } from "next"
-import parseFormData from "lib/parseFormData"
+import { GetServerSidePropsResult } from "next"
 import { decodePasswordResetToken } from "lib/token/passwordResetToken"
 import getConnection from "lib/getConnection"
 import { isError } from "types/Result"
 import createRedirectResponse from "utils/createRedirectResponse"
 import resetPassword, { ResetPasswordOptions } from "useCases/resetPassword"
+import Form from "components/Form"
+import { useCsrfServerSideProps } from "hooks"
+import CsrfServerSidePropsContext from "types/CsrfServerSidePropsContext"
 
-export const getServerSideProps: GetServerSideProps = async ({
-  req,
-  query
-}): Promise<GetServerSidePropsResult<Props>> => {
+export const getServerSideProps = useCsrfServerSideProps(async (context): Promise<GetServerSidePropsResult<Props>> => {
+  const { req, query, formData, csrfToken } = context as CsrfServerSidePropsContext
   const { token } = query as { token: string }
   const payload = decodePasswordResetToken(token)
 
@@ -24,13 +24,14 @@ export const getServerSideProps: GetServerSideProps = async ({
         token,
         invalidToken: true,
         invalidPassword: false,
-        passwordMismatch: false
+        passwordMismatch: false,
+        csrfToken
       }
     }
   }
 
   if (req.method === "POST") {
-    const { newPassword, confirmPassword } = (await parseFormData(req)) as {
+    const { newPassword, confirmPassword } = formData as {
       newPassword: string
       confirmPassword: string
     }
@@ -41,7 +42,8 @@ export const getServerSideProps: GetServerSideProps = async ({
           token,
           invalidToken: false,
           invalidPassword: true,
-          passwordMismatch: false
+          passwordMismatch: false,
+          csrfToken
         }
       }
     }
@@ -52,7 +54,8 @@ export const getServerSideProps: GetServerSideProps = async ({
           token,
           invalidToken: false,
           invalidPassword: false,
-          passwordMismatch: true
+          passwordMismatch: true,
+          csrfToken
         }
       }
     }
@@ -73,19 +76,21 @@ export const getServerSideProps: GetServerSideProps = async ({
       token,
       passwordMismatch: false,
       invalidPassword: false,
-      invalidToken: false
+      invalidToken: false,
+      csrfToken
     }
   }
-}
+})
 
 interface Props {
   token: string
+  csrfToken: string
   passwordMismatch: boolean
   invalidPassword: boolean
   invalidToken: boolean
 }
 
-const ResetPassword = ({ token, passwordMismatch, invalidPassword, invalidToken }: Props) => (
+const ResetPassword = ({ token, csrfToken, passwordMismatch, invalidPassword, invalidToken }: Props) => (
   <>
     <Head>
       <title>{"Reset Password"}</title>
@@ -112,7 +117,7 @@ const ResetPassword = ({ token, passwordMismatch, invalidPassword, invalidToken 
           )}
 
           {!invalidToken && (
-            <form method="post">
+            <Form method="post" csrfToken={csrfToken}>
               <TextInput
                 id="newPassword"
                 name="newPassword"
@@ -129,7 +134,7 @@ const ResetPassword = ({ token, passwordMismatch, invalidPassword, invalidToken 
               />
               <input type="hidden" id="token" name="token" value={token} />
               <Button noDoubleClick>{"Reset password"}</Button>
-            </form>
+            </Form>
           )}
         </div>
       </div>
