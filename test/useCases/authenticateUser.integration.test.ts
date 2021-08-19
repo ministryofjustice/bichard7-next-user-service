@@ -164,10 +164,9 @@ describe("Authenticator", () => {
     const expectedError = new Error("No data returned from the query.")
     await storeVerificationCode(connection, expectedUser5.emailAddress, verificationCode)
 
-    const request = <IncomingMessage>{}
     const mockedParseFormData = parseFormData as jest.MockedFunction<typeof parseFormData>
     mockedParseFormData.mockResolvedValue({ deleteAccountConfirmation: expectedUser5.username })
-    let result = await deleteUser(connection, request, expectedUser5)
+    let result = await deleteUser(connection, expectedUser5)
     expect(isError(result)).toBe(false)
 
     result = await authenticate(connection, expectedUser5.emailAddress, correctPassword, verificationCode)

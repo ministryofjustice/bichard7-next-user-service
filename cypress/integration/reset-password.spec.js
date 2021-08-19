@@ -42,20 +42,11 @@ describe("Reset password", () => {
         cy.task("getVerificationCode", emailAddress).then((verificationCode) => {
           const verificationToken = generateLoginVerificationToken(emailAddress, verificationCode)
           cy.visit(`/login/verify?token=${verificationToken}`)
-
-          cy.request({
-            method: "POST",
-            url: `/login/verify`,
-            form: true,
-            followRedirect: false,
-            body: {
-              token: verificationToken,
-              password: newPassword
-            }
-          }).then((response) => {
-            const { location } = response.headers
-            expect(location).to.match(/^https:\/\/localhost:9443\/bichard-ui\/Authenticate/)
-            expect(location).to.match(/\?token=[A-Za-z0-9_.]+/)
+          cy.get("input[type=password][name=password]").type(newPassword)
+          cy.get("button[type=submit]").click()
+          cy.url().then((url) => {
+            expect(url).to.match(/^http:\/\/localhost:3000\/bichard-ui\/Authenticate/)
+            expect(url).to.match(/\?token=[A-Za-z0-9_.]+/)
             done()
           })
         })
@@ -99,6 +90,10 @@ describe("Reset password", () => {
         cy.get("a[class=govuk-link]").click()
         cy.get(".govuk-hint").should("not.be.empty")
       })
+    })
+
+    it("should respond with forbidden response code when CSRF tokens are invalid in reset password page", (done) => {
+      cy.checkCsrf("/login/reset-password", "POST").then(() => done())
     })
   })
 })

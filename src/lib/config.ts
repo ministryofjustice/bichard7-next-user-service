@@ -1,3 +1,4 @@
+import CsrfConfig from "types/CsrfConfig"
 import DatabaseConfig from "./DatabaseConfig"
 
 interface UserServiceConfig {
@@ -12,6 +13,7 @@ interface UserServiceConfig {
   verificationCodeLength: number
   numberWordsSuggestedPassword: number
   minLengthPerWordSuggestedPassword: number
+  csrf: CsrfConfig
 }
 
 const config: UserServiceConfig = {
@@ -22,6 +24,12 @@ const config: UserServiceConfig = {
   tokenIssuer: process.env.TOKEN_ISSUER ?? "Bichard",
   tokenQueryParamName: process.env.TOKEN_QUERY_PARAM_NAME ?? "token",
   tokenSecret: process.env.TOKEN_SECRET ?? "OliverTwist",
+  csrf: {
+    tokenName: process.env.CSRF_COOKIE_NAME ?? "XSRF-TOKEN",
+    cookieSecret: process.env.CSRF_TOKEN_SECRET ?? "OliverTwist1",
+    formSecret: process.env.CSRF_TOKEN_SECRET ?? "OliverTwist2",
+    maximumTokenAgeInSeconds: parseInt(process.env.CSRF_TOKEN_MAX_AGE ?? "600", 10)
+  },
   database: {
     host: process.env.DB_HOST ?? process.env.DB_AUTH_HOST ?? "localhost",
     user: process.env.DB_USER ?? process.env.DB_AUTH_USER ?? "bichard",

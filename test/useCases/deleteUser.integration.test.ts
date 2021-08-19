@@ -1,9 +1,4 @@
-/* eslint-disable import/first */
-jest.mock("lib/parseFormData")
-
-import { IncomingMessage } from "http"
 import User from "types/User"
-import parseFormData from "lib/parseFormData"
 import deleteUser from "useCases/deleteUser"
 import getConnection from "lib/getConnection"
 
@@ -13,7 +8,6 @@ const user = <User>{
   username: "DeleteUserUseCaseTest",
   emailAddress: "DeleteUserUseCaseTest@example.com"
 }
-const request = <IncomingMessage>{}
 
 const createUser = async (deletedAt: Date | null) => {
   const insertQuery = `
@@ -37,11 +31,8 @@ describe("DeleteUserUseCase", () => {
   })
 
   it("should return deleted response when successfully deletes the user", async () => {
-    const mockedParseFormData = parseFormData as jest.MockedFunction<typeof parseFormData>
-    mockedParseFormData.mockResolvedValue({ deleteAccountConfirmation: user.username })
-
     await createUser(null)
-    const result = await deleteUser(connection, request, user)
+    const result = await deleteUser(connection, user)
 
     expect(result).toBeDefined()
 
@@ -60,12 +51,9 @@ describe("DeleteUserUseCase", () => {
   })
 
   it("should not update the deletion date when user is already deleted", async () => {
-    const mockedParseFormData = parseFormData as jest.MockedFunction<typeof parseFormData>
-    mockedParseFormData.mockResolvedValue({ deleteAccountConfirmation: user.username })
-
     const expectedDeletedAt = new Date()
     await createUser(expectedDeletedAt)
-    const result = await deleteUser(connection, request, user)
+    const result = await deleteUser(connection, user)
 
     expect(result).toBeDefined()
 

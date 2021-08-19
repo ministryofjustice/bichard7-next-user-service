@@ -3,26 +3,25 @@ import Head from "next/head"
 import TextInput from "components/TextInput"
 import Button from "components/Button"
 import ErrorSummary from "components/ErrorSummary"
-import { GetServerSideProps, GetServerSidePropsResult } from "next"
-import parseFormData from "lib/parseFormData"
+import { GetServerSidePropsResult } from "next"
 import { decodePasswordResetToken } from "lib/token/passwordResetToken"
 import getConnection from "lib/getConnection"
 import { isError } from "types/Result"
 import createRedirectResponse from "utils/createRedirectResponse"
 import resetPassword, { ResetPasswordOptions } from "useCases/resetPassword"
-import SuggestPassword from "components/SuggestPassword"
+import Form from "components/Form"
+import { useCsrfServerSideProps } from "hooks"
+import CsrfServerSidePropsContext from "types/CsrfServerSidePropsContext"
 import generateRandomPassword from "useCases/generateRandomPassword"
+import SuggestPassword from "components/SuggestPassword"
 
-export const getServerSideProps: GetServerSideProps = async ({
-  req,
-  query
-}): Promise<GetServerSidePropsResult<Props>> => {
+export const getServerSideProps = useCsrfServerSideProps(async (context): Promise<GetServerSidePropsResult<Props>> => {
+  const { req, query, formData, csrfToken } = context as CsrfServerSidePropsContext
   const { token, suggestPassword } = query as { token: string; suggestPassword: string }
   const generatePassword = new URL("/login/reset-password", "http://localhost:3000")
   generatePassword.searchParams.append("token", token)
   generatePassword.searchParams.append("suggestPassword", "true")
   const suggestedPasswordUrl = generatePassword.href
-
   const payload = decodePasswordResetToken(token)
   let suggestedPassword = ""
 
@@ -33,6 +32,7 @@ export const getServerSideProps: GetServerSideProps = async ({
         invalidToken: true,
         invalidPassword: false,
         passwordMismatch: false,
+        csrfToken,
         suggestedPassword,
         suggestedPasswordUrl
       }
@@ -40,7 +40,7 @@ export const getServerSideProps: GetServerSideProps = async ({
   }
 
   if (req.method === "POST") {
-    const { newPassword, confirmPassword } = (await parseFormData(req)) as {
+    const { newPassword, confirmPassword } = formData as {
       newPassword: string
       confirmPassword: string
     }
@@ -52,6 +52,7 @@ export const getServerSideProps: GetServerSideProps = async ({
           invalidToken: false,
           invalidPassword: true,
           passwordMismatch: false,
+          csrfToken,
           suggestedPassword,
           suggestedPasswordUrl
         }
@@ -65,6 +66,7 @@ export const getServerSideProps: GetServerSideProps = async ({
           invalidToken: false,
           invalidPassword: false,
           passwordMismatch: true,
+          csrfToken,
           suggestedPassword,
           suggestedPasswordUrl
         }
@@ -91,14 +93,16 @@ export const getServerSideProps: GetServerSideProps = async ({
       passwordMismatch: false,
       invalidPassword: false,
       invalidToken: false,
+      csrfToken,
       suggestedPassword,
       suggestedPasswordUrl
     }
   }
-}
+})
 
 interface Props {
   token: string
+  csrfToken: string
   passwordMismatch: boolean
   invalidPassword: boolean
   invalidToken: boolean
@@ -108,6 +112,7 @@ interface Props {
 
 const ResetPassword = ({
   token,
+  csrfToken,
   passwordMismatch,
   invalidPassword,
   invalidToken,
@@ -140,7 +145,7 @@ const ResetPassword = ({
           )}
 
           {!invalidToken && (
-            <form method="post">
+            <Form method="post" csrfToken={csrfToken}>
               <TextInput
                 id="newPassword"
                 name="newPassword"
@@ -158,7 +163,7 @@ const ResetPassword = ({
               <input type="hidden" id="token" name="token" value={token} />
               <Button noDoubleClick>{"Reset password"}</Button>
               <SuggestPassword suggestedPassword={suggestedPassword} suggestedPasswordUrl={suggestedPasswordUrl} />
-            </form>
+            </Form>
           )}
         </div>
       </div>

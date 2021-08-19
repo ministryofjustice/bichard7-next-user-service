@@ -14,11 +14,14 @@
     "test:unit": "jest --testPathIgnorePatterns=\"integration\" \"e2e\"",
     "test:unit:update": "npm run test:unit -- -u",
     "test:integration": "jest --testPathPattern=\"integration\"",
-    "test:ui": "concurrently --kill-others --success first npm:start npm:cypress:run"
+    "test:ui": "./scripts/run-test-ui.sh"
   },
   "dependencies": {
     "@types/qs": "^6.9.6",
+    "cookie": "^0.4.1",
+    "cookie-signature": "^1.1.0",
     "crypto-secure-random-digit": "^1.0.9",
+    "csrf": "^3.1.0",
     "govuk-frontend": "^3.12.0",
     "jsonwebtoken": "^8.5.1",
     "next": "^11.1.0",
@@ -31,6 +34,9 @@
   },
   "devDependencies": {
     "@testing-library/react": "^12.0.0",
+    "@types/cookie": "^0.4.1",
+    "@types/cookie-signature": "^1.0.3",
+    "@types/csrf": "^3.1.0",
     "@types/jest": "^26.0.23",
     "@types/jsonwebtoken": "^8.5.1",
     "@types/node": "^15.3.0",
