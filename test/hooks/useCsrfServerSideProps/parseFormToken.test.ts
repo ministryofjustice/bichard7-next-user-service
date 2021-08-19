@@ -27,6 +27,17 @@ it("should return error when token does not exist in form data", () => {
   expect(actualError.message).toBe("Token not found in the form data.")
 })
 
+it("should return error when token is empty in form data", () => {
+  const formData = <QueryString.ParsedQs>{ "XSRF-TOKEN": "" }
+
+  const result = parseFormToken(formData)
+
+  expect(isError(result)).toBe(true)
+
+  const actualError = <Error>result
+  expect(actualError.message).toBe("Token is empty in the form data.")
+})
+
 it("should return error when token format is invalid", () => {
   const formData = <QueryString.ParsedQs>{
     "XSRF-TOKEN": "Invalid format"

@@ -12,10 +12,14 @@ export default (formData: QueryString.ParsedQs): Result<ParseFormTokenResult> =>
   const { tokenName, formSecret } = config.csrf
 
   // eslint-disable-next-line no-prototype-builtins
-  const formToken = (formData.hasOwnProperty(tokenName) ? formData[tokenName] : null) as string
+  if (!formData.hasOwnProperty(tokenName)) {
+    return Error("Token not found in the form data.")
+  }
+
+  const formToken = formData[tokenName]?.toString()
 
   if (!formToken) {
-    return Error("Token not found in the form data.")
+    return Error("Token is empty in the form data.")
   }
 
   const unsignedFormToken = unsign(formToken, formSecret)
