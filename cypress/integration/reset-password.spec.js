@@ -89,5 +89,16 @@ describe("Reset password", () => {
       cy.get(".govuk-error-summary").should("be.visible").contains("h2", "Unable to verify")
       cy.get("input[type=text]").should("not.exist")
     })
+
+    it("should allow user to generate a random password", () => {
+      cy.task("getPasswordResetCode", ["bichard01@example.com", "foobar"]).then(() => {
+        const token = generatePasswordResetToken("bichard01@example.com", "foobar")
+        cy.visit(`/login/reset-password?token=${token}`)
+        cy.get("body").contains(/reset password/i)
+        cy.get(".govuk-hint").should("be.empty")
+        cy.get("a[class=govuk-link]").click()
+        cy.get(".govuk-hint").should("not.be.empty")
+      })
+    })
   })
 })

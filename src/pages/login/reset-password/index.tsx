@@ -10,13 +10,21 @@ import getConnection from "lib/getConnection"
 import { isError } from "types/Result"
 import createRedirectResponse from "utils/createRedirectResponse"
 import resetPassword, { ResetPasswordOptions } from "useCases/resetPassword"
+import SuggestPassword from "components/SuggestPassword"
+import generateRandomPassword from "useCases/generateRandomPassword"
 
 export const getServerSideProps: GetServerSideProps = async ({
   req,
   query
 }): Promise<GetServerSidePropsResult<Props>> => {
-  const { token } = query as { token: string }
+  const { token, suggestPassword } = query as { token: string; suggestPassword: string }
+  const generatePassword = new URL("/login/reset-password", "http://localhost:3000")
+  generatePassword.searchParams.append("token", token)
+  generatePassword.searchParams.append("suggestPassword", "true")
+  const suggestedPasswordUrl = generatePassword.href
+
   const payload = decodePasswordResetToken(token)
+  let suggestedPassword = ""
 
   if (isError(payload)) {
     return {
@@ -24,7 +32,9 @@ export const getServerSideProps: GetServerSideProps = async ({
         token,
         invalidToken: true,
         invalidPassword: false,
-        passwordMismatch: false
+        passwordMismatch: false,
+        suggestedPassword,
+        suggestedPasswordUrl
       }
     }
   }
@@ -41,7 +51,9 @@ export const getServerSideProps: GetServerSideProps = async ({
           token,
           invalidToken: false,
           invalidPassword: true,
-          passwordMismatch: false
+          passwordMismatch: false,
+          suggestedPassword,
+          suggestedPasswordUrl
         }
       }
     }
@@ -52,7 +64,9 @@ export const getServerSideProps: GetServerSideProps = async ({
           token,
           invalidToken: false,
           invalidPassword: false,
-          passwordMismatch: true
+          passwordMismatch: true,
+          suggestedPassword,
+          suggestedPasswordUrl
         }
       }
     }
@@ -67,13 +81,18 @@ export const getServerSideProps: GetServerSideProps = async ({
 
     return createRedirectResponse("/login/reset-password/success")
   }
+  if (suggestPassword === "true") {
+    suggestedPassword = generateRandomPassword()
+  }
 
   return {
     props: {
       token,
       passwordMismatch: false,
       invalidPassword: false,
-      invalidToken: false
+      invalidToken: false,
+      suggestedPassword,
+      suggestedPasswordUrl
     }
   }
 }
@@ -83,9 +102,18 @@ interface Props {
   passwordMismatch: boolean
   invalidPassword: boolean
   invalidToken: boolean
+  suggestedPassword: string
+  suggestedPasswordUrl: string
 }
 
-const ResetPassword = ({ token, passwordMismatch, invalidPassword, invalidToken }: Props) => (
+const ResetPassword = ({
+  token,
+  passwordMismatch,
+  invalidPassword,
+  invalidToken,
+  suggestedPassword,
+  suggestedPasswordUrl
+}: Props) => (
   <>
     <Head>
       <title>{"Reset Password"}</title>
@@ -129,6 +157,7 @@ const ResetPassword = ({ token, passwordMismatch, invalidPassword, invalidToken 
               />
               <input type="hidden" id="token" name="token" value={token} />
               <Button noDoubleClick>{"Reset password"}</Button>
+              <SuggestPassword suggestedPassword={suggestedPassword} suggestedPasswordUrl={suggestedPasswordUrl} />
             </form>
           )}
         </div>
