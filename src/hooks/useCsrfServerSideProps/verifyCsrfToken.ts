@@ -27,7 +27,7 @@ export default async (request: IncomingMessage): Promise<VerifyCsrfTokenResult> 
 
   const cookieToken = parseCookieToken(request, cookieName)
 
-  if (isError(formTokenResult)) {
+  if (isError(cookieToken)) {
     return { isValid: false, formData }
   }
 
