@@ -25,22 +25,29 @@
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
 Cypress.Commands.add("checkCsrf", (url, method) => {
-  return cy
-    .request({
+  cy.request({
+    failOnStatusCode: false,
+    method,
+    url,
+    headers: {
+      cookie: "XSRF-TOKEN%2Flogin=7tyFoLsw-L1-NzWTjPCnTf7YjDNGMAbd8KmU.cmu8gTFgJjXa8insESx4fsNn9jBJL9R3uD%2Be0yb26Es"
+    },
+    form: true,
+    followRedirect: false,
+    body: {
+      "XSRF-TOKEN":
+        "XSRF-TOKEN%2Flogin=TsRDivzH-KLjL_PkicOeXYK0velCTKJz7tBo.sN/lvve0ApcIfIShux0He7AVY1KIbLPlIPhEkATJqiU"
+    }
+  }).then((withTokensResponse) => {
+    expect(withTokensResponse.status).to.eq(403)
+    cy.request({
       failOnStatusCode: false,
       method,
       url,
-      headers: {
-        cookie: "XSRF-TOKEN%2Flogin=7tyFoLsw-L1-NzWTjPCnTf7YjDNGMAbd8KmU.cmu8gTFgJjXa8insESx4fsNn9jBJL9R3uD%2Be0yb26Es"
-      },
       form: true,
-      followRedirect: false,
-      body: {
-        "XSRF-TOKEN":
-          "XSRF-TOKEN%2Flogin=TsRDivzH-KLjL_PkicOeXYK0velCTKJz7tBo.sN/lvve0ApcIfIShux0He7AVY1KIbLPlIPhEkATJqiU"
-      }
+      followRedirect: false
+    }).then((withoutTokensResponse) => {
+      expect(withoutTokensResponse.status).to.eq(403)
     })
-    .then((response) => {
-      expect(response.status).to.eq(403)
-    })
+  })
 })
