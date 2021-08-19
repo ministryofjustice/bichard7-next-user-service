@@ -71,7 +71,7 @@
     {
       "files": ["cypress/**/*.js"],
       "rules": {
-        "no-unused-expressions":"off"
+        "no-unused-expressions": "off"
       }
     }
   ]
