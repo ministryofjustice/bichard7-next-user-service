@@ -17,6 +17,7 @@
     "test:ui": "./scripts/run-test-ui.sh"
   },
   "dependencies": {
+    "@trust/webcrypto": "^0.9.2",
     "@types/qs": "^6.9.6",
     "cookie": "^0.4.1",
     "cookie-signature": "^1.1.0",
