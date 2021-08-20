@@ -20,11 +20,11 @@ export const getServerSideProps = useCsrfServerSideProps(async (context): Promis
   const { req, formData, csrfToken } = context as CsrfServerSidePropsContext
   const connection = getConnection()
   let allUsers = null
+  const { filter } = formData as {
+    filter: string
+  }
 
-  if (req.method === "POST") {
-    const { filter } = formData as {
-      filter: string
-    }
+  if (req.method === "POST" && filter) {
     allUsers = await getFilteredUsers(connection, filter)
   } else {
     allUsers = await getAllUsers(connection)
