@@ -7,8 +7,7 @@ import TextInput from "components/TextInput"
 import config from "lib/config"
 import { decodeEmailVerificationToken, EmailVerificationToken } from "lib/token/emailVerificationToken"
 import getConnection from "lib/getConnection"
-import { authenticate } from "useCases"
-import { generateAuthenticationToken } from "lib/token/authenticationToken"
+import { authenticate, signInUser } from "useCases"
 import { isError } from "types/Result"
 import createRedirectResponse from "utils/createRedirectResponse"
 import { useCsrfServerSideProps } from "hooks"
@@ -16,7 +15,7 @@ import Form from "components/Form"
 import CsrfServerSidePropsContext from "types/CsrfServerSidePropsContext"
 
 export const getServerSideProps = useCsrfServerSideProps(async (context) => {
-  const { req, query, formData, csrfToken } = context as CsrfServerSidePropsContext
+  const { req, res, query, formData, csrfToken } = context as CsrfServerSidePropsContext
 
   try {
     if (req.method === "POST") {
@@ -46,7 +45,7 @@ export const getServerSideProps = useCsrfServerSideProps(async (context) => {
         }
       }
 
-      const authToken = generateAuthenticationToken(user)
+      const authToken = signInUser(res, user)
 
       const url = new URL(config.bichardRedirectURL)
       url.searchParams.append(config.tokenQueryParamName, authToken)
