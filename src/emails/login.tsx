@@ -1,17 +1,21 @@
 import ReactDOMServer from "react-dom/server"
 import EmailContent from "types/EmailContent"
+import EmailLayout from "./EmailLayout"
 
 interface Props {
   url: string
 }
 
 const LoginEmail = ({ url }: Props) => (
-  <>
-    <h1>{"Sign in to Bichard"}</h1>
-
-    <p>{"Click here to sign in to Bichard:"}</p>
-    <p>{url}</p>
-  </>
+  <EmailLayout
+    actionUrl={url}
+    buttonLabel={"Sign in"}
+    paragraphs={[
+      "In order to sign in to Bichard, you need to confirm your email address. Please confirm your email address by clicking the button below.",
+      "If you didn't request this email, you can safely ignore it."
+    ]}
+    title={"Sign in to Bichard"}
+  />
 )
 
 const LoginEmailText = ({ url }: Props) =>

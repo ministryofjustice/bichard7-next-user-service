@@ -10,8 +10,8 @@ import { isError } from "types/Result"
 import initialiseUserPassword from "useCases/initialiseUserPassword"
 import storePasswordResetCode from "useCases/storePasswordResetCode"
 import { generateEmailVerificationToken } from "lib/token/emailVerificationToken"
-import deleteDatabaseUser from "./deleteDatabaseUser"
 import EmailContent from "types/EmailContent"
+import deleteDatabaseUser from "./deleteDatabaseUser"
 
 const connection = getConnection()
 
