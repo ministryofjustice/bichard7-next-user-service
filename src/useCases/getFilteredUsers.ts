@@ -3,7 +3,6 @@ import UserDetails from "types/UserDetails"
 
 const getFilteredUsers = async (connection: Database, filter: string): Promise<Partial<UserDetails>[]> => {
   let users
-  console.log(filter)
   const getAllUsersQuery = `
       SELECT
         id,
@@ -21,9 +20,7 @@ const getFilteredUsers = async (connection: Database, filter: string): Promise<P
       ORDER BY username
     `
   try {
-    console.log(getAllUsersQuery)
     users = await connection.any(getAllUsersQuery, [`%${filter}%`])
-    console.log(users)
   } catch (error) {
     return error
   }

@@ -2,6 +2,7 @@ import getConnection from "lib/getConnection"
 import User from "types/User"
 import { isError } from "types/Result"
 import getFilteredUsers from "useCases/getFilteredUsers"
+import { deleteUser } from "useCases"
 import insertDatabaseUser from "./insertDatabaseUser"
 import deleteDatabaseUserById from "./deleteDatabaseUserById"
 
@@ -53,7 +54,7 @@ const user3 = {
 } as unknown as User
 
 describe("getFilteredUsers", () => {
-  beforeEach(async () => {
+  beforeAll(async () => {
     await deleteDatabaseUserById(connection, user1.id)
     await deleteDatabaseUserById(connection, user2.id)
     await deleteDatabaseUserById(connection, user3.id)
@@ -88,5 +89,14 @@ describe("getFilteredUsers", () => {
     expect(result.length).toBe(1)
     actualUser = <User>result[0]
     expect(actualUser.id).toBe(12342)
+  })
+
+  it("should not return items that were previously deleted", async () => {
+    const deleteResult = await deleteUser(connection, user2)
+    expect(deleteResult).toBeDefined()
+
+    const filterResult = await getFilteredUsers(connection, "Filter2Surname")
+    expect(isError(filterResult)).toBe(false)
+    expect(filterResult.length).toBe(0)
   })
 })
