@@ -14,6 +14,7 @@ import createRedirectResponse from "utils/createRedirectResponse"
 import { useCsrfServerSideProps } from "hooks"
 import Form from "components/Form"
 import CsrfServerSidePropsContext from "types/CsrfServerSidePropsContext"
+import getValidRedirectUrl from "lib/getRedirectUrl"
 
 export const getServerSideProps = useCsrfServerSideProps(async (context) => {
   const { req, query, formData, csrfToken } = context as CsrfServerSidePropsContext
@@ -47,8 +48,10 @@ export const getServerSideProps = useCsrfServerSideProps(async (context) => {
       }
 
       const authToken = generateAuthenticationToken(user)
+      const redirectUrl = getValidRedirectUrl(query, config)
+      const bichardUrl = redirectUrl || config.bichardRedirectURL
 
-      const url = new URL(config.bichardRedirectURL)
+      const url = new URL(bichardUrl as string)
       url.searchParams.append(config.tokenQueryParamName, authToken)
 
       return createRedirectResponse(url.href)

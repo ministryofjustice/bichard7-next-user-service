@@ -13,9 +13,11 @@ import createRedirectResponse from "utils/createRedirectResponse"
 import Form from "components/Form"
 import { useCsrfServerSideProps } from "hooks"
 import CsrfServerSidePropsContext from "types/CsrfServerSidePropsContext"
+import getRedirectUrl from "lib/getRedirectUrl"
+import config from "lib/config"
 
 export const getServerSideProps = useCsrfServerSideProps(async (context): Promise<GetServerSidePropsResult<Props>> => {
-  const { req, formData, csrfToken } = context as CsrfServerSidePropsContext
+  const { req, formData, csrfToken, query } = context as CsrfServerSidePropsContext
   let invalidEmail = false
 
   if (req.method === "POST") {
@@ -23,7 +25,9 @@ export const getServerSideProps = useCsrfServerSideProps(async (context): Promis
 
     if (emailAddress) {
       const connection = getConnection()
-      const sent = await sendVerificationEmail(connection, emailAddress)
+
+      const redirectUrl = getRedirectUrl(query, config)
+      const sent = await sendVerificationEmail(connection, emailAddress, redirectUrl as string)
 
       if (isError(sent)) {
         console.error(sent)

@@ -2,7 +2,7 @@ import { EmailVerificationTokenPayload, generateEmailVerificationToken } from "l
 import EmailResult from "types/EmailResult"
 import { isError, Result } from "types/Result"
 
-export default (emailAddress: string, verificationCode: string): Result<EmailResult> => {
+export default (emailAddress: string, verificationCode: string, redirectUrl?: string): Result<EmailResult> => {
   const payload: EmailVerificationTokenPayload = {
     emailAddress,
     verificationCode
@@ -13,6 +13,10 @@ export default (emailAddress: string, verificationCode: string): Result<EmailRes
   }
   const url = new URL("/login/verify", "http://localhost:3000")
   url.searchParams.append("token", token)
+
+  if (redirectUrl) {
+    url.searchParams.append("redirect", redirectUrl)
+  }
 
   const subject = "Sign in to Bichard"
   const body = `

@@ -1,8 +1,9 @@
 import CsrfConfig from "types/CsrfConfig"
 import DatabaseConfig from "./DatabaseConfig"
 
-interface UserServiceConfig {
+export interface UserServiceConfig {
   bichardRedirectURL: string
+  redirectAccessList: string
   database: DatabaseConfig
   emailVerificationExpiresIn: number
   incorrectDelay: number
@@ -16,6 +17,7 @@ interface UserServiceConfig {
 
 const config: UserServiceConfig = {
   bichardRedirectURL: process.env.BICHARD_REDIRECT_URL ?? "https://localhost:9443/bichard-ui/Authenticate",
+  redirectAccessList: process.env.BICHARD_REDIRECT_ACCESS_LIST ?? "localhost,",
   emailVerificationExpiresIn: parseInt(process.env.EMAIL_VERIFICATION_EXPIRY ?? "30", 10),
   incorrectDelay: parseInt(process.env.INCORRECT_DELAY ?? "10", 10),
   tokenExpiresIn: process.env.TOKEN_EXPIRES_IN ?? "5 seconds",
