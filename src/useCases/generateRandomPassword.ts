@@ -1,15 +1,14 @@
 import config from "lib/config"
+import wordListPath from "word-list"
+import fs from "fs"
 
-import randomWords from "random-words"
+const wordArray = fs.readFileSync(wordListPath, "utf8").split("\n")
 
 export default () => {
   let result = ""
   let i = config.suggestedPasswordNumWords
   while (i > 0) {
-    // unfortunately randomWords does not have option to specify the min length of the words generated
-    // because of this, for each word, we need to ensure that it meets the minimum length requirement
-    // in theory we should never enter an infinite loop ...
-    const randomWord = randomWords({ exactly: 1 })[0]
+    const randomWord = wordArray[Math.floor(Math.random() * wordArray.length)]
     if (randomWord.length >= config.suggestedPasswordMinWordLength) {
       i -= 1
       result += randomWord
