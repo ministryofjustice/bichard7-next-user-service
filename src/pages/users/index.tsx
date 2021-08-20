@@ -70,12 +70,14 @@ const Users = ({ allUsers, csrfToken }: Props) => (
       <Form method="post" csrfToken={csrfToken}>
         <ButtonGroup>
           <TextInput id="filter" name="filter" type="text" />
-          <Button noDoubleClick>{"Filter"}</Button>
+          <Button noDoubleClick id="filter">
+            {"Filter"}
+          </Button>
         </ButtonGroup>
       </Form>
 
       <a href="/users/newUser">
-        <Button>{"Add user"}</Button>
+        <Button id="add">{"Add user"}</Button>
       </a>
       {allUsers && (
         <Table tableHeaders={tableHeaders} tableTitle="Users" tableData={allUsers}>
