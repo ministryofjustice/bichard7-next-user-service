@@ -2,7 +2,7 @@
 jest.mock("lib/token/emailVerificationToken")
 
 import User from "types/User"
-import UserCreateDetails from "types/UserCreateDetails"
+import UserCreateDetails from "types/UserDetails"
 import getConnection from "lib/getConnection"
 import createUser from "useCases/createUser"
 import createNewUserEmail from "useCases/createNewUserEmail"
@@ -73,6 +73,13 @@ describe("AccountSetup", () => {
     const { subject, body } = <EmailResult>newUserEmailResult
     expect(subject).toMatchSnapshot()
     expect(body).toMatchSnapshot()
+  })
+
+  it("should be able to setup a password using the details from the email", async () => {
+    const result = await initialiseUserPassword(connection, setupUser.emailAddress, verificationCode, "shorty")
+    expect(result).toBeDefined()
+    const actualError = <Error>result
+    expect(actualError.message).toBe("Error: Password is too short")
   })
 
   it("should be able to setup a password using the details from the email", async () => {

@@ -64,6 +64,25 @@ describe("resetPassword", () => {
     expect(actualUser.password).toBe(expectedPassword)
   })
 
+  it("should return error when password is not secure enough", async () => {
+    await insertDatabaseUser(connection, user, false, "DummyPassword")
+
+    const passwordResetCode = "664422"
+    await storePasswordResetCode(connection, user.emailAddress, passwordResetCode)
+
+    const resetPasswordOptions: ResetPasswordOptions = {
+      emailAddress: user.emailAddress,
+      newPassword: "shorty",
+      passwordResetCode
+    }
+    const result = await resetPassword(connection, resetPasswordOptions)
+
+    expect(isError(result)).toBe(true)
+
+    const actualError = <Error>result
+    expect(actualError.message).toBe("Error: Password is too short")
+  })
+
   it("should return error when password reset code is not valid", async () => {
     await insertDatabaseUser(connection, user, false, "DummyPassword")
 
