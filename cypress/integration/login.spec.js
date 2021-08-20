@@ -103,7 +103,17 @@ describe("Logging In", () => {
             cy.url().then((url) => {
               expect(url).to.match(/^http:\/\/localhost:3000\/bichard-ui\/Authenticate/)
               expect(url).to.match(/\?token=[A-Za-z0-9_.]+/)
-              done()
+
+              cy.visit("/")
+              cy.getCookie(".AUTH").then((cookie) => {
+                expect(cookie).is.not.undefined
+                const { value, httpOnly } = cookie
+                expect(value).is.not.undefined
+                expect(value).is.not.empty
+                expect(value).match(/.+\..+\..+/)
+                expect(httpOnly).to.be.true
+                done()
+              })
             })
           })
         })

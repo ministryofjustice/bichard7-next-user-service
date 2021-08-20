@@ -22,7 +22,7 @@ const config: UserServiceConfig = {
   incorrectDelay: parseInt(process.env.INCORRECT_DELAY ?? "10", 10),
   suggestedPasswordNumWords: 3,
   suggestedPasswordMinWordLength: 4,
-  tokenExpiresIn: process.env.TOKEN_EXPIRES_IN ?? "5 seconds",
+  tokenExpiresIn: process.env.TOKEN_EXPIRES_IN ?? "15 seconds",
   tokenIssuer: process.env.TOKEN_ISSUER ?? "Bichard",
   tokenQueryParamName: process.env.TOKEN_QUERY_PARAM_NAME ?? "token",
   tokenSecret: process.env.TOKEN_SECRET ?? "OliverTwist",

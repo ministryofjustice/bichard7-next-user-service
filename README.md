@@ -53,7 +53,7 @@ The application makes use of the following environment variables to permit confi
 | `$DB_SSL`                        | `false`                                            | Whether to use SSL when connecting to the database                                         |
 | `$EMAIL_VERIFICATION_EXPIRES_IN` | `30`                                               | The number of minutes after which the email verification links will expire                 |
 | `$INCORRECT_DELAY`               | `10`                                               | The amount of time (in seconds) to wait between successive login attemps for the same user |
-| `$TOKEN_EXPIRES_IN`              | `"5 seconds"`                                      | The amount of time the tokens should be valid for after issuing                            |
+| `$TOKEN_EXPIRES_IN`              | `"15 seconds"`                                     | The amount of time the tokens should be valid for after issuing                            |
 | `$TOKEN_ISSUER`                  | `"Bichard"`                                        | The string to use as the token issuer (`iss`)                                              |
 | `$TOKEN_QUERY_PARAM_NAME`        | `"token"`                                          | The name to use for the token query parameter when redirecting to `$BICHARD_REDIRECT_URL`  |
 | `$TOKEN_SECRET`                  | `"OliverTwist"`                                    | The HMAC secret to use for signing the tokens                                              |

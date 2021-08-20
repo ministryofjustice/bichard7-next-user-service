@@ -52,7 +52,9 @@ const Users = ({ user }: Props) => (
         <Link data-test="edit-user-view" href={`${user.username}/edit`}>
           {"Edit details"}
         </Link>
-        <Link href={`${user.username}/delete`}>{"Delete account"}</Link>
+        <Link data-test="delete-user-view" href={`${user.username}/delete`}>
+          {"Delete account"}
+        </Link>
       </ButtonGroup>
     </Layout>
   </>
