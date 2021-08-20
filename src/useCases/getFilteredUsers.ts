@@ -6,6 +6,7 @@ const getFilteredUsers = async (connection: Database, filter: string): Promise<P
   console.log(filter)
   const getAllUsersQuery = `
       SELECT
+        id,
         username,
         forenames,
         surname,
@@ -28,6 +29,7 @@ const getFilteredUsers = async (connection: Database, filter: string): Promise<P
   }
 
   return users.map((r: any) => ({
+    id: r.id,
     username: r.username,
     forenames: r.forenames,
     surname: r.surname,
