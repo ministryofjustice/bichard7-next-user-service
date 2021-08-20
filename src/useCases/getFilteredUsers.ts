@@ -1,11 +1,11 @@
 import Database from "types/Database"
 import UserDetails from "types/UserDetails"
 
-const getAllUsers = async (connection: Database): Promise<Partial<UserDetails>[]> => {
+const getFilteredUsers = async (connection: Database, filter: string): Promise<Partial<UserDetails>[]> => {
   let users
-
   const getAllUsersQuery = `
       SELECT
+        id,
         username,
         forenames,
         surname,
@@ -13,15 +13,20 @@ const getAllUsers = async (connection: Database): Promise<Partial<UserDetails>[]
         email
       FROM br7own.users
       WHERE deleted_at IS NULL
+        AND (LOWER(username) LIKE LOWER($1) OR
+        LOWER(email) LIKE LOWER($1) OR
+        LOWER(forenames) LIKE LOWER($1) OR
+        LOWER(surname) LIKE LOWER($1) )
       ORDER BY username
     `
   try {
-    users = await connection.any(getAllUsersQuery)
+    users = await connection.any(getAllUsersQuery, [`%${filter}%`])
   } catch (error) {
     return error
   }
 
   return users.map((r: any) => ({
+    id: r.id,
     username: r.username,
     forenames: r.forenames,
     surname: r.surname,
@@ -30,4 +35,4 @@ const getAllUsers = async (connection: Database): Promise<Partial<UserDetails>[]
   }))
 }
 
-export default getAllUsers
+export default getFilteredUsers

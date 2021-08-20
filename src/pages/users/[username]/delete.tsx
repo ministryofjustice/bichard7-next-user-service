@@ -102,7 +102,9 @@ const Delete = ({ user, showInputNotMatchingError, csrfToken }: Props) => {
             <Button variant="warning" noDoubleClick>
               {"Delete account"}
             </Button>
-            <Link href={`/users/${user.username}`}>{"Cancel"}</Link>
+            <Link data-test="cancel" href={`/users/${user.username}`}>
+              {"Cancel"}
+            </Link>
           </ButtonGroup>
         </Form>
       </Layout>

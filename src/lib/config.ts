@@ -20,7 +20,7 @@ const config: UserServiceConfig = {
   redirectAccessList: process.env.BICHARD_REDIRECT_ACCESS_LIST ?? "localhost,",
   emailVerificationExpiresIn: parseInt(process.env.EMAIL_VERIFICATION_EXPIRY ?? "30", 10),
   incorrectDelay: parseInt(process.env.INCORRECT_DELAY ?? "10", 10),
-  tokenExpiresIn: process.env.TOKEN_EXPIRES_IN ?? "5 seconds",
+  tokenExpiresIn: process.env.TOKEN_EXPIRES_IN ?? "15 seconds",
   tokenIssuer: process.env.TOKEN_ISSUER ?? "Bichard",
   tokenQueryParamName: process.env.TOKEN_QUERY_PARAM_NAME ?? "token",
   tokenSecret: process.env.TOKEN_SECRET ?? "OliverTwist",
