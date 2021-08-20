@@ -53,8 +53,6 @@ export const getServerSideProps = useCsrfServerSideProps(async (context): Promis
 
       const updatedUser = await getUserById(connection, userDetails.id as number)
 
-      console.log("updatedUser", updatedUser)
-
       if (isError(updatedUser)) {
         console.error(updateUser)
 
