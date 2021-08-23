@@ -10,12 +10,12 @@ import { isError } from "types/Result"
 import createRedirectResponse from "utils/createRedirectResponse"
 import resetPassword, { ResetPasswordOptions } from "useCases/resetPassword"
 import Form from "components/Form"
-import { useCsrfServerSideProps } from "hooks"
 import CsrfServerSidePropsContext from "types/CsrfServerSidePropsContext"
+import { withCsrf } from "middleware"
 import generateRandomPassword from "useCases/generateRandomPassword"
 import SuggestPassword from "components/SuggestPassword"
 
-export const getServerSideProps = useCsrfServerSideProps(async (context): Promise<GetServerSidePropsResult<Props>> => {
+export const getServerSideProps = withCsrf(async (context): Promise<GetServerSidePropsResult<Props>> => {
   const { req, query, formData, csrfToken } = context as CsrfServerSidePropsContext
   const { token, suggestPassword } = query as { token: string; suggestPassword: string }
   const generatePassword = new URL("/login/reset-password", "http://localhost:3000")
