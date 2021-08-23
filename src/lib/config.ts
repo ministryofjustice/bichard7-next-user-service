@@ -22,6 +22,7 @@ export interface UserServiceConfig {
   redirectAccessList: string
   suggestedPasswordNumWords: number
   suggestedPasswordMinWordLength: number
+  suggestedPasswordMaxWordLength: number
   smtp: SmtpConfig
   tokenExpiresIn: string
   tokenIssuer: string
@@ -41,6 +42,7 @@ const config: UserServiceConfig = {
   redirectAccessList: process.env.REDIRECT_ACCESS_LIST ?? "localhost,",
   suggestedPasswordNumWords: 3,
   suggestedPasswordMinWordLength: 4,
+  suggestedPasswordMaxWordLength: 8,
   tokenExpiresIn: process.env.TOKEN_EXPIRES_IN ?? "15 seconds",
   tokenIssuer: process.env.TOKEN_ISSUER ?? "Bichard",
   tokenQueryParamName: process.env.TOKEN_QUERY_PARAM_NAME ?? "token",
