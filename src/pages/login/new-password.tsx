@@ -1,5 +1,6 @@
 import Button from "components/Button"
 import Layout from "components/Layout"
+import SuggestPassword from "components/SuggestPassword"
 import TextInput from "components/TextInput"
 import getConnection from "lib/getConnection"
 import parseFormData from "lib/parseFormData"
@@ -8,12 +9,18 @@ import { GetServerSideProps } from "next"
 import Head from "next/head"
 import React from "react"
 import { isError } from "types/Result"
+import generateRandomPassword from "useCases/generateRandomPassword"
 import initialiseUserPassword from "useCases/initialiseUserPassword"
 import createRedirectResponse from "utils/createRedirectResponse"
 
 export const getServerSideProps: GetServerSideProps = async ({ req, query }) => {
   let errorMessage = ""
-
+  let suggestedPassword = ""
+  const { token, suggestPassword } = query as { token: EmailVerificationToken; suggestPassword: string }
+  const generatePassword = new URL("/login/new-password", "http://localhost:3000")
+  generatePassword.searchParams.append("token", token)
+  generatePassword.searchParams.append("suggestPassword", "true")
+  const suggestedPasswordUrl = generatePassword.href
   if (req.method === "POST") {
     const { newPassword, confirmPassword } = (await parseFormData(req)) as {
       newPassword: string
@@ -32,7 +39,6 @@ export const getServerSideProps: GetServerSideProps = async ({ req, query }) => 
         props: { errorMessage }
       }
     }
-    const { token } = query as { token: EmailVerificationToken }
     const translatedToken = decodeEmailVerificationToken(token)
     if (isError(translatedToken)) {
       return {
@@ -47,34 +53,50 @@ export const getServerSideProps: GetServerSideProps = async ({ req, query }) => 
       return createRedirectResponse("/login/reset-password/success")
     }
     errorMessage = result.message
+  } else if (suggestPassword === "true") {
+    suggestedPassword = generateRandomPassword()
   }
 
   return {
-    props: { errorMessage }
+    props: { errorMessage, suggestedPassword, suggestedPasswordUrl }
   }
 }
 
 interface Props {
   errorMessage: string
+  suggestedPassword: string
+  suggestedPasswordUrl: string
 }
 
-const NewPassword = ({ errorMessage }: Props) => {
+const NewPassword = ({ errorMessage, suggestedPassword, suggestedPasswordUrl }: Props) => {
   return (
     <>
       <Head>
         <title>{"First time password setup"}</title>
       </Head>
       <Layout>
-        <form method="post">
-          <span id="event-name-error" className="govuk-error-message">
-            {errorMessage}
-          </span>
+        <div className="govuk-grid-row">
+          <h3 data-test="check-email" className="govuk-heading-xl">
+            {"First time password setup"}
+          </h3>
+          <form method="post">
+            <span id="event-name-error" className="govuk-error-message">
+              {errorMessage}
+            </span>
 
-          <TextInput id="newPassword" name="newPassword" label="New Password" type="password" width="20" />
-          <TextInput id="confirmPassword" name="confirmPassword" label="Confirm Password" type="password" width="20" />
+            <TextInput id="newPassword" name="newPassword" label="New Password" type="password" width="20" />
+            <TextInput
+              id="confirmPassword"
+              name="confirmPassword"
+              label="Confirm Password"
+              type="password"
+              width="20"
+            />
 
-          <Button noDoubleClick>{"Set password"}</Button>
-        </form>
+            <Button noDoubleClick>{"Set password"}</Button>
+            <SuggestPassword suggestedPassword={suggestedPassword} suggestedPasswordUrl={suggestedPasswordUrl} />
+          </form>
+        </div>
       </Layout>
     </>
   )
