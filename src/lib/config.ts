@@ -11,6 +11,7 @@ interface SmtpConfig {
 
 export interface UserServiceConfig {
   authenticationCookieName: string
+  baseUrl: string
   bichardRedirectURL: string
   csrf: CsrfConfig
   database: DatabaseConfig
@@ -30,6 +31,7 @@ export interface UserServiceConfig {
 
 const config: UserServiceConfig = {
   authenticationCookieName: process.env.AUTH_COOKIE_NAME ?? ".AUTH",
+  baseUrl: process.env.BASE_URL ?? "http://localhost:3000",
   bichardRedirectURL: process.env.BICHARD_REDIRECT_URL ?? "https://localhost:9443/bichard-ui/Authenticate",
   emailFrom: `Bichard <${process.env.EMAIL_FROM ?? "bichard@cjse.org"}>`,
   emailVerificationExpiresIn: parseInt(process.env.EMAIL_VERIFICATION_EXPIRY ?? "30", 10),

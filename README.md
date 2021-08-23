@@ -44,6 +44,7 @@ The application makes use of the following environment variables to permit confi
 
 | Variable                         | Default                                            | Description                                                                                          |
 |----------------------------------|----------------------------------------------------|------------------------------------------------------------------------------------------------------|
+| `$BASE_URL`                      | `http://localhost:3000`                            | The URL that the user-service is being served from. Used for generating email links.                 |
 | `$BICHARD_REDIRECT_URL`          | `"https://localhost:9443/bichard-ui/Authenticate"` | The URL to redirect to with a token as a GET parameter when authentication is successful             |
 | `$DB_HOST`                       | `"localhost"`                                      | The hostname of the database server                                                                  |
 | `$DB_USER`                       | `"bichard"`                                        | The username to use when connecting to the database                                                  |

@@ -14,11 +14,12 @@ import CsrfServerSidePropsContext from "types/CsrfServerSidePropsContext"
 import { withCsrf } from "middleware"
 import generateRandomPassword from "useCases/generateRandomPassword"
 import SuggestPassword from "components/SuggestPassword"
+import config from "lib/config"
 
 export const getServerSideProps = withCsrf(async (context): Promise<GetServerSidePropsResult<Props>> => {
   const { req, query, formData, csrfToken } = context as CsrfServerSidePropsContext
   const { token, suggestPassword } = query as { token: string; suggestPassword: string }
-  const generatePassword = new URL("/login/reset-password", "http://localhost:3000")
+  const generatePassword = new URL("/login/reset-password", config.baseUrl)
   generatePassword.searchParams.append("token", token)
   generatePassword.searchParams.append("suggestPassword", "true")
   const suggestedPasswordUrl = generatePassword.href
