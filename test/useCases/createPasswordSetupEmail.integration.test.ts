@@ -1,6 +1,3 @@
-/* eslint-disable import/first */
-jest.mock("lib/token/emailVerificationToken")
-
 import User from "types/User"
 import UserCreateDetails from "types/UserDetails"
 import getConnection from "lib/getConnection"
@@ -12,6 +9,8 @@ import storePasswordResetCode from "useCases/storePasswordResetCode"
 import { generateEmailVerificationToken } from "lib/token/emailVerificationToken"
 import EmailContent from "types/EmailContent"
 import deleteDatabaseUser from "./deleteDatabaseUser"
+
+jest.mock("lib/token/emailVerificationToken")
 
 const connection = getConnection()
 

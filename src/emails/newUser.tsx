@@ -1,6 +1,7 @@
 import ReactDOMServer from "react-dom/server"
 import EmailContent from "types/EmailContent"
 import UserDetails from "types/UserDetails"
+import EmailLayout from "./EmailLayout"
 
 interface Props {
   url: string
@@ -8,24 +9,22 @@ interface Props {
 }
 
 const NewUserEmail = ({ url, user }: Props) => (
-  <>
-    <h1>{"Finish Bichard account setup"}</h1>
-
-    <p>
-      {"Hi "}
-      {user.forenames} {user.surname}
-      {","}
-    </p>
-
-    <p>{"Click here to set your password:"}</p>
-    <p>{url}</p>
-  </>
+  <EmailLayout
+    actionUrl={url}
+    buttonLabel={"Create password"}
+    paragraphs={[
+      `Hi ${user.forenames} ${user.surname},`,
+      "In order to finish setting up your Bichard account, you need to verify your email address and create a password. You can do this by clicking the button below."
+    ]}
+    title={"Finish setting up your Bichard account"}
+  />
 )
 
 const NewUserEmailText = ({ url, user }: Props) =>
   `Hi ${user.forenames} ${user.surname},
 
-  Click here to set your password:
+  In order to finish setting up your Bichard account, you need to verify your email address and create a password. You can do this by clicking the link below.
+
   ${url}
   `
 

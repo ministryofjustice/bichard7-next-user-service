@@ -1,6 +1,7 @@
 import ReactDOMServer from "react-dom/server"
 import EmailContent from "types/EmailContent"
 import User from "types/User"
+import EmailLayout from "./EmailLayout"
 
 interface Props {
   url: string
@@ -8,24 +9,25 @@ interface Props {
 }
 
 const PasswordResetEmail = ({ url, user }: Props) => (
-  <>
-    <h1>{"Bichard password reset"}</h1>
-
-    <p>
-      {"Hi "}
-      {user.forenames} {user.surname}
-      {","}
-    </p>
-
-    <p>{"Click here to reset your password:"}</p>
-    <p>{url}</p>
-  </>
+  <EmailLayout
+    actionUrl={url}
+    buttonLabel={"Reset password"}
+    paragraphs={[
+      `Hi ${user.forenames} ${user.surname},`,
+      "A request has been received to change the password for your Bichard account.",
+      "Please confirm this was you by clicking the button below."
+    ]}
+    title={"Bichard password reset"}
+  />
 )
 
 const PasswordResetEmailText = ({ url, user }: Props) =>
   `Hi ${user.forenames} ${user.surname},
 
-  Click here to reset your password:
+  A request has been received to change the password for your Bichard account.
+
+  Please confirm this was you by click the link below.
+
   ${url}
   `
 

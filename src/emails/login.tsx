@@ -19,8 +19,13 @@ const LoginEmail = ({ url }: Props) => (
 )
 
 const LoginEmailText = ({ url }: Props) =>
-  `Click here to log in to Bichard:
+  `Sign in to Bichard
+
+  In order to sign in to Bichard, you need to confirm your email address. Please confirm your email address by clicking the link below.
+
   ${url}
+
+  If you didn't request this email, you can safely ignore it.
   `
 
 export default function generateLoginEmail(props: Props): EmailContent {
