@@ -8,70 +8,79 @@ import setupNewUser from "useCases/setupNewUser"
 import { isError } from "types/Result"
 import userFormIsValid from "lib/userFormIsValid"
 import UserForm from "components/users/UserForm"
-import { useCsrfServerSideProps } from "hooks"
 import CsrfServerSidePropsContext from "types/CsrfServerSidePropsContext"
 import Form from "components/Form"
-import { GetServerSidePropsResult } from "next"
+import { GetServerSidePropsContext, GetServerSidePropsResult } from "next"
+import { withAuthentication, withCsrf, withMultipleServerSideProps } from "middleware"
+import { ParsedUrlQuery } from "querystring"
+import AuthenticationServerSidePropsContext from "types/AuthenticationServerSidePropsContext"
+import User from "types/User"
 
-export const getServerSideProps = useCsrfServerSideProps(async (context): Promise<GetServerSidePropsResult<Props>> => {
-  const { req, formData, csrfToken } = context as CsrfServerSidePropsContext
-  const missingMandatory = false
-  let message = ""
-  let isSuccess = true
+export const getServerSideProps = withMultipleServerSideProps(
+  withAuthentication,
+  withCsrf,
+  async (context: GetServerSidePropsContext<ParsedUrlQuery>): Promise<GetServerSidePropsResult<Props>> => {
+    const { req, formData, csrfToken, currentUser } = context as CsrfServerSidePropsContext &
+      AuthenticationServerSidePropsContext
+    const missingMandatory = false
+    let message = ""
+    let isSuccess = true
 
-  if (req.method === "POST") {
-    const userCreateDetails: UserCreateDetails = formData as {
-      username: string
-      forenames: string
-      surname: string
-      phoneNumber: string
-      emailAddress: string
-      postCode: string
-      postalAddress: string
-      endorsedBy: string
-      organisation: string
-    }
+    if (req.method === "POST") {
+      const userCreateDetails: UserCreateDetails = formData as {
+        username: string
+        forenames: string
+        surname: string
+        phoneNumber: string
+        emailAddress: string
+        postCode: string
+        postalAddress: string
+        endorsedBy: string
+        organisation: string
+      }
 
-    const formIsValid = userFormIsValid(userCreateDetails)
+      const formIsValid = userFormIsValid(userCreateDetails)
 
-    if (formIsValid) {
-      const connection = getConnection()
-      const result = await setupNewUser(connection, userCreateDetails)
+      if (formIsValid) {
+        const connection = getConnection()
+        const result = await setupNewUser(connection, userCreateDetails)
 
-      if (isError(result)) {
+        if (isError(result)) {
+          return {
+            props: { message: result.message, isSuccess: false, missingMandatory, csrfToken, currentUser }
+          }
+        }
+
+        message = `User ${userCreateDetails.username} has been successfully created`
         return {
-          props: { message: result.message, isSuccess: false, missingMandatory, csrfToken }
+          props: { message, isSuccess: true, missingMandatory, csrfToken, currentUser }
         }
       }
 
-      message = `User ${userCreateDetails.username} has been successfully created`
-      return {
-        props: { message, isSuccess: true, missingMandatory, csrfToken }
-      }
+      message = "Please make sure that all mandatory fields are non empty"
+      isSuccess = false
     }
 
-    message = "Please make sure that all mandatory fields are non empty"
-    isSuccess = false
+    return {
+      props: { message, isSuccess, missingMandatory, csrfToken, currentUser }
+    }
   }
-
-  return {
-    props: { message, isSuccess, missingMandatory, csrfToken }
-  }
-})
+)
 
 interface Props {
   message: string
   isSuccess: boolean
   missingMandatory: boolean
   csrfToken: string
+  currentUser?: Partial<User>
 }
 
-const newUser = ({ message, isSuccess, missingMandatory, csrfToken }: Props) => (
+const newUser = ({ message, isSuccess, missingMandatory, csrfToken, currentUser }: Props) => (
   <>
     <Head>
       <title>{"New User"}</title>
     </Head>
-    <Layout>
+    <Layout user={currentUser}>
       {!isSuccess && (
         <span id="event-name-error" className="govuk-error-message">
           {message}

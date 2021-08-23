@@ -1,5 +1,8 @@
+import User from "types/User"
+
 interface HeaderProps {
   serviceName: string
+  user?: Partial<User>
 }
 
 const HeaderLogo = () => {
@@ -32,7 +35,7 @@ const HeaderLogo = () => {
   )
 }
 
-const Header = ({ serviceName }: HeaderProps) => (
+const Header = ({ serviceName, user }: HeaderProps) => (
   <header className="govuk-header" role="banner" data-module="govuk-header">
     <div className="govuk-header__container govuk-width-container">
       <HeaderLogo />
@@ -40,6 +43,17 @@ const Header = ({ serviceName }: HeaderProps) => (
         <a href="/" className="govuk-header__link govuk-header__link--service-name">
           {serviceName}
         </a>
+        {user && (
+          <nav>
+            <ul id="navigation" className="govuk-header__navigation " aria-label="Navigation menu">
+              <li className="govuk-header__navigation-item govuk-header__navigation-item--active">
+                <a className="govuk-header__link" href="/change-password">
+                  {"Change Password"}
+                </a>
+              </li>
+            </ul>
+          </nav>
+        )}
       </div>
     </div>
   </header>
