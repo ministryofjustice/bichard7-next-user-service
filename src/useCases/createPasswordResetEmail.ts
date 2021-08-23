@@ -1,4 +1,5 @@
 import generatePasswordResetEmail from "emails/passwordReset"
+import config from "lib/config"
 import { generatePasswordResetToken, PasswordResetTokenPayload } from "lib/token/passwordResetToken"
 import EmailContent from "types/EmailContent"
 import { isError, Result } from "types/Result"
@@ -12,7 +13,7 @@ export default (user: User, passwordResetCode: string): Result<EmailContent> => 
     return token
   }
 
-  const url = new URL("/login/reset-password", "http://localhost:3000")
+  const url = new URL("/login/reset-password", config.baseUrl)
   url.searchParams.append("token", token)
 
   return generatePasswordResetEmail({ url: url.href, user })
