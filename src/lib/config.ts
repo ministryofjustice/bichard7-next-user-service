@@ -9,8 +9,9 @@ interface SmtpConfig {
   tls: boolean
 }
 
-interface UserServiceConfig {
+export interface UserServiceConfig {
   bichardRedirectURL: string
+  redirectAccessList: string
   database: DatabaseConfig
   emailFrom: string
   emailVerificationExpiresIn: number
@@ -26,6 +27,7 @@ interface UserServiceConfig {
 
 const config: UserServiceConfig = {
   bichardRedirectURL: process.env.BICHARD_REDIRECT_URL ?? "https://localhost:9443/bichard-ui/Authenticate",
+  redirectAccessList: process.env.BICHARD_REDIRECT_ACCESS_LIST ?? "localhost,",
   emailFrom: `Bichard <${process.env.EMAIL_FROM ?? "bichard@cjse.org"}>`,
   emailVerificationExpiresIn: parseInt(process.env.EMAIL_VERIFICATION_EXPIRY ?? "30", 10),
   incorrectDelay: parseInt(process.env.INCORRECT_DELAY ?? "10", 10),

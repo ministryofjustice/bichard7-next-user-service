@@ -11,7 +11,7 @@ const generateVerificationCode = () => {
   return randomDigits(config.verificationCodeLength).join("")
 }
 
-export default async (connection: Database, emailAddress: string): PromiseResult<void> => {
+export default async (connection: Database, emailAddress: string, redirectUrl?: string): PromiseResult<void> => {
   const verificationCode = generateVerificationCode()
   const storeVerificationCodeResult = await storeVerificationCode(connection, emailAddress, verificationCode)
 
@@ -19,7 +19,7 @@ export default async (connection: Database, emailAddress: string): PromiseResult
     return storeVerificationCodeResult
   }
 
-  const createVerificationEmailResult = createVerificationEmail(emailAddress, verificationCode)
+  const createVerificationEmailResult = createVerificationEmail(emailAddress, verificationCode, redirectUrl)
 
   if (isError(createVerificationEmailResult)) {
     return createVerificationEmailResult
