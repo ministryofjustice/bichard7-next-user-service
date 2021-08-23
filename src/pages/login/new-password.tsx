@@ -4,7 +4,6 @@ import Layout from "components/Layout"
 import SuggestPassword from "components/SuggestPassword"
 import TextInput from "components/TextInput"
 import getConnection from "lib/getConnection"
-import parseFormData from "lib/parseFormData"
 import { decodeEmailVerificationToken, EmailVerificationToken } from "lib/token/emailVerificationToken"
 import { withCsrf } from "middleware"
 import { GetServerSidePropsResult } from "next"
@@ -17,7 +16,7 @@ import initialiseUserPassword from "useCases/initialiseUserPassword"
 import createRedirectResponse from "utils/createRedirectResponse"
 
 export const getServerSideProps = withCsrf(async (context): Promise<GetServerSidePropsResult<Props>> => {
-  const { req, query, csrfToken } = context as CsrfServerSidePropsContext
+  const { req, query, formData, csrfToken } = context as CsrfServerSidePropsContext
   let errorMessage = ""
   let suggestedPassword = ""
   const { token, suggestPassword } = query as { token: EmailVerificationToken; suggestPassword: string }
@@ -26,7 +25,7 @@ export const getServerSideProps = withCsrf(async (context): Promise<GetServerSid
   generatePassword.searchParams.append("suggestPassword", "true")
   const suggestedPasswordUrl = generatePassword.href
   if (req.method === "POST") {
-    const { newPassword, confirmPassword } = (await parseFormData(req)) as {
+    const { newPassword, confirmPassword } = formData as {
       newPassword: string
       confirmPassword: string
     }
