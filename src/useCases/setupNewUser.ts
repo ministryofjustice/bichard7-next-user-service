@@ -1,11 +1,11 @@
 import { randomDigits } from "crypto-secure-random-digit"
 import config from "lib/config"
+import getEmailer from "lib/getEmailer"
 import Database from "types/Database"
 import { isError, PromiseResult } from "types/Result"
 import UserCreateDetails from "types/UserDetails"
-import createUser from "./createUser"
 import createNewUserEmail from "./createNewUserEmail"
-import sendEmail from "./sendEmail"
+import createUser from "./createUser"
 import storePasswordResetCode from "./storePasswordResetCode"
 
 export interface newUserSetupResult {
@@ -20,13 +20,14 @@ export default async (
   if (isError(result)) {
     return result
   }
-  const successMessage = `User ${userCreateDetails.username} has been successfully created`
+
   const passwordSetCode = randomDigits(config.verificationCodeLength).join("")
   const passwordSetCodeResult = await storePasswordResetCode(
     connection,
     userCreateDetails.emailAddress,
     passwordSetCode
   )
+
   if (isError(passwordSetCodeResult)) {
     return passwordSetCodeResult
   }
@@ -35,8 +36,15 @@ export default async (
   if (isError(createNewUserEmailResult)) {
     return createNewUserEmailResult
   }
-  const { subject, body } = createNewUserEmailResult
-  await sendEmail(userCreateDetails.emailAddress, subject, body)
 
-  return { successMessage }
+  const email = createNewUserEmailResult
+  const emailer = getEmailer()
+
+  return emailer
+    .sendMail({
+      from: config.emailFrom,
+      to: userCreateDetails.emailAddress,
+      ...email
+    })
+    .catch((error: Error) => error)
 }

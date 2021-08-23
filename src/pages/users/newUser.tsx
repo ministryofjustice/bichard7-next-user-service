@@ -44,18 +44,23 @@ export const getServerSideProps = withMultipleServerSideProps(
       if (formIsValid) {
         const connection = getConnection()
         const result = await setupNewUser(connection, userCreateDetails)
+
         if (isError(result)) {
           return {
             props: { message: result.message, isSuccess: false, missingMandatory, csrfToken, currentUser }
           }
         }
+
+        message = `User ${userCreateDetails.username} has been successfully created`
         return {
-          props: { message: result.successMessage, isSuccess: true, missingMandatory, csrfToken, currentUser }
+          props: { message, isSuccess: true, missingMandatory, csrfToken, currentUser }
         }
       }
+
       message = "Please make sure that all mandatory fields are non empty"
       isSuccess = false
     }
+
     return {
       props: { message, isSuccess, missingMandatory, csrfToken, currentUser }
     }
@@ -81,6 +86,7 @@ const newUser = ({ message, isSuccess, missingMandatory, csrfToken, currentUser 
           {message}
         </span>
       )}
+
       {isSuccess && message && <SuccessBanner message={message} />}
       <Form method="post" csrfToken={csrfToken}>
         <UserForm

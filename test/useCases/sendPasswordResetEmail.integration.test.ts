@@ -1,13 +1,12 @@
-/* eslint-disable import/first */
-jest.mock("useCases/sendEmail")
-
 import getConnection from "lib/getConnection"
 import { isError } from "types/Result"
 import User from "types/User"
-import sendEmail from "useCases/sendEmail"
+import getEmailer from "lib/getEmailer"
 import sendPasswordResetEmail from "useCases/sendPasswordResetEmail"
 import deleteDatabaseUser from "./deleteDatabaseUser"
 import insertDatabaseUser from "./insertDatabaseUser"
+
+jest.mock("lib/getEmailer")
 
 const connection = getConnection()
 
@@ -36,46 +35,56 @@ describe("sendPasswordResetEmail", () => {
   it("should send the email when user exists", async () => {
     await insertDatabaseUser(connection, user, false, "DummyPassword")
 
-    const mockedSendEmail = sendEmail as jest.MockedFunction<typeof sendEmail>
-    mockedSendEmail.mockResolvedValue()
+    const mockedGetEmailer = getEmailer as jest.MockedFunction<typeof getEmailer>
+    const mockedSendMail = jest.fn().mockResolvedValue(null)
+    mockedGetEmailer.mockReturnValue({ sendMail: mockedSendMail })
 
     const result = await sendPasswordResetEmail(connection, user.emailAddress)
 
     expect(isError(result)).toBe(false)
+    expect(mockedSendMail).toHaveBeenCalledTimes(1)
   })
 
   it("should not send the email and not return error when user does not exist", async () => {
-    const mockedSendEmail = sendEmail as jest.MockedFunction<typeof sendEmail>
-    mockedSendEmail.mockResolvedValue(Error("It should not send email"))
+    const mockedGetEmailer = getEmailer as jest.MockedFunction<typeof getEmailer>
+    const mockedSendMail = jest.fn().mockResolvedValue(null)
+    mockedGetEmailer.mockReturnValue({ sendMail: mockedSendMail })
 
     const result = await sendPasswordResetEmail(connection, user.emailAddress)
 
     expect(isError(result)).toBe(false)
+    expect(mockedSendMail).not.toHaveBeenCalled()
   })
 
   it("should not send email and not return error when user is deleted", async () => {
     await insertDatabaseUser(connection, user, true, "DummyPassword")
 
-    const mockedSendEmail = sendEmail as jest.MockedFunction<typeof sendEmail>
-    mockedSendEmail.mockResolvedValue(Error("It should not send email"))
+    const mockedGetEmailer = getEmailer as jest.MockedFunction<typeof getEmailer>
+    const mockedSendMail = jest.fn().mockResolvedValue(null)
+    mockedGetEmailer.mockReturnValue({ sendMail: mockedSendMail })
 
     const result = await sendPasswordResetEmail(connection, user.emailAddress)
 
     expect(isError(result)).toBe(false)
+    expect(mockedSendMail).not.toHaveBeenCalled()
   })
 
   it("should return error when it fails to send the email", async () => {
     await insertDatabaseUser(connection, user, false, "DummyPassword")
 
     const expectedError = Error("Expected error message")
-    const mockedSendEmail = sendEmail as jest.MockedFunction<typeof sendEmail>
-    mockedSendEmail.mockResolvedValue(expectedError)
+    const mockedGetEmailer = getEmailer as jest.MockedFunction<typeof getEmailer>
+    // eslint-disable-next-line require-await
+    const mockedSendMail = jest.fn().mockImplementation(async () => {
+      throw expectedError
+    })
+    mockedGetEmailer.mockReturnValue({ sendMail: mockedSendMail })
 
     const result = await sendPasswordResetEmail(connection, user.emailAddress)
 
     expect(isError(result)).toBe(true)
 
-    const actualError = <Error>result
+    const actualError = result as Error
     expect(actualError.message).toBe(expectedError.message)
   })
 })
