@@ -81,6 +81,17 @@ describe("Reset password", () => {
       cy.get("input[type=text]").should("not.exist")
     })
 
+    it("should allow user to generate a random password", () => {
+      cy.task("getPasswordResetCode", ["bichard01@example.com", "foobar"]).then(() => {
+        const token = generatePasswordResetToken("bichard01@example.com", "foobar")
+        cy.visit(`/login/reset-password?token=${token}`)
+        cy.get("body").contains(/reset password/i)
+        cy.get(".govuk-hint").should("be.empty")
+        cy.get("a[class=govuk-link]").click()
+        cy.get(".govuk-hint").should("not.be.empty")
+      })
+    })
+
     it("should respond with forbidden response code when CSRF tokens are invalid in reset password page", (done) => {
       cy.checkCsrf("/login/reset-password", "POST").then(() => done())
     })

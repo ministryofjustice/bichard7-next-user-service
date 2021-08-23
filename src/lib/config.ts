@@ -12,18 +12,20 @@ interface SmtpConfig {
 export interface UserServiceConfig {
   authenticationCookieName: string
   bichardRedirectURL: string
+  csrf: CsrfConfig
   database: DatabaseConfig
   emailFrom: string
   emailVerificationExpiresIn: number
   incorrectDelay: number
   redirectAccessList: string
+  suggestedPasswordNumWords: number
+  suggestedPasswordMinWordLength: number
   smtp: SmtpConfig
   tokenExpiresIn: string
   tokenIssuer: string
   tokenQueryParamName: string
   tokenSecret: string
   verificationCodeLength: number
-  csrf: CsrfConfig
 }
 
 const config: UserServiceConfig = {
@@ -33,6 +35,8 @@ const config: UserServiceConfig = {
   emailVerificationExpiresIn: parseInt(process.env.EMAIL_VERIFICATION_EXPIRY ?? "30", 10),
   incorrectDelay: parseInt(process.env.INCORRECT_DELAY ?? "10", 10),
   redirectAccessList: process.env.BICHARD_REDIRECT_ACCESS_LIST ?? "localhost,",
+  suggestedPasswordNumWords: 3,
+  suggestedPasswordMinWordLength: 4,
   tokenExpiresIn: process.env.TOKEN_EXPIRES_IN ?? "15 seconds",
   tokenIssuer: process.env.TOKEN_ISSUER ?? "Bichard",
   tokenQueryParamName: process.env.TOKEN_QUERY_PARAM_NAME ?? "token",

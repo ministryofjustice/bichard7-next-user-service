@@ -12,11 +12,18 @@ import resetPassword, { ResetPasswordOptions } from "useCases/resetPassword"
 import Form from "components/Form"
 import CsrfServerSidePropsContext from "types/CsrfServerSidePropsContext"
 import { withCsrf } from "middleware"
+import generateRandomPassword from "useCases/generateRandomPassword"
+import SuggestPassword from "components/SuggestPassword"
 
 export const getServerSideProps = withCsrf(async (context): Promise<GetServerSidePropsResult<Props>> => {
   const { req, query, formData, csrfToken } = context as CsrfServerSidePropsContext
-  const { token } = query as { token: string }
+  const { token, suggestPassword } = query as { token: string; suggestPassword: string }
+  const generatePassword = new URL("/login/reset-password", "http://localhost:3000")
+  generatePassword.searchParams.append("token", token)
+  generatePassword.searchParams.append("suggestPassword", "true")
+  const suggestedPasswordUrl = generatePassword.href
   const payload = decodePasswordResetToken(token)
+  let suggestedPassword = ""
 
   if (isError(payload)) {
     return {
@@ -25,7 +32,9 @@ export const getServerSideProps = withCsrf(async (context): Promise<GetServerSid
         invalidToken: true,
         invalidPassword: false,
         passwordMismatch: false,
-        csrfToken
+        csrfToken,
+        suggestedPassword,
+        suggestedPasswordUrl
       }
     }
   }
@@ -43,7 +52,9 @@ export const getServerSideProps = withCsrf(async (context): Promise<GetServerSid
           invalidToken: false,
           invalidPassword: true,
           passwordMismatch: false,
-          csrfToken
+          csrfToken,
+          suggestedPassword,
+          suggestedPasswordUrl
         }
       }
     }
@@ -55,7 +66,9 @@ export const getServerSideProps = withCsrf(async (context): Promise<GetServerSid
           invalidToken: false,
           invalidPassword: false,
           passwordMismatch: true,
-          csrfToken
+          csrfToken,
+          suggestedPassword,
+          suggestedPasswordUrl
         }
       }
     }
@@ -70,6 +83,9 @@ export const getServerSideProps = withCsrf(async (context): Promise<GetServerSid
 
     return createRedirectResponse("/login/reset-password/success")
   }
+  if (suggestPassword === "true") {
+    suggestedPassword = generateRandomPassword()
+  }
 
   return {
     props: {
@@ -77,7 +93,9 @@ export const getServerSideProps = withCsrf(async (context): Promise<GetServerSid
       passwordMismatch: false,
       invalidPassword: false,
       invalidToken: false,
-      csrfToken
+      csrfToken,
+      suggestedPassword,
+      suggestedPasswordUrl
     }
   }
 })
@@ -88,9 +106,19 @@ interface Props {
   passwordMismatch: boolean
   invalidPassword: boolean
   invalidToken: boolean
+  suggestedPassword: string
+  suggestedPasswordUrl: string
 }
 
-const ResetPassword = ({ token, csrfToken, passwordMismatch, invalidPassword, invalidToken }: Props) => (
+const ResetPassword = ({
+  token,
+  csrfToken,
+  passwordMismatch,
+  invalidPassword,
+  invalidToken,
+  suggestedPassword,
+  suggestedPasswordUrl
+}: Props) => (
   <>
     <Head>
       <title>{"Reset Password"}</title>
@@ -134,6 +162,7 @@ const ResetPassword = ({ token, csrfToken, passwordMismatch, invalidPassword, in
               />
               <input type="hidden" id="token" name="token" value={token} />
               <Button noDoubleClick>{"Reset password"}</Button>
+              <SuggestPassword suggestedPassword={suggestedPassword} suggestedPasswordUrl={suggestedPasswordUrl} />
             </Form>
           )}
         </div>
