@@ -1,19 +1,23 @@
 import Button from "components/Button"
+import Form from "components/Form"
 import Layout from "components/Layout"
 import SuggestPassword from "components/SuggestPassword"
 import TextInput from "components/TextInput"
 import getConnection from "lib/getConnection"
 import parseFormData from "lib/parseFormData"
 import { decodeEmailVerificationToken, EmailVerificationToken } from "lib/token/emailVerificationToken"
-import { GetServerSideProps } from "next"
+import { withCsrf } from "middleware"
+import { GetServerSidePropsResult } from "next"
 import Head from "next/head"
 import React from "react"
+import CsrfServerSidePropsContext from "types/CsrfServerSidePropsContext"
 import { isError } from "types/Result"
 import generateRandomPassword from "useCases/generateRandomPassword"
 import initialiseUserPassword from "useCases/initialiseUserPassword"
 import createRedirectResponse from "utils/createRedirectResponse"
 
-export const getServerSideProps: GetServerSideProps = async ({ req, query }) => {
+export const getServerSideProps = withCsrf(async (context): Promise<GetServerSidePropsResult<Props>> => {
+  const { req, query, csrfToken } = context as CsrfServerSidePropsContext
   let errorMessage = ""
   let suggestedPassword = ""
   const { token, suggestPassword } = query as { token: EmailVerificationToken; suggestPassword: string }
@@ -29,20 +33,20 @@ export const getServerSideProps: GetServerSideProps = async ({ req, query }) => 
     if (newPassword === "" || confirmPassword === "") {
       errorMessage = "Error: Passwords cannot be empty"
       return {
-        props: { errorMessage }
+        props: { errorMessage, csrfToken }
       }
     }
 
     if (newPassword !== confirmPassword) {
       errorMessage = "Error: Passwords are mismatching"
       return {
-        props: { errorMessage }
+        props: { errorMessage, csrfToken }
       }
     }
     const translatedToken = decodeEmailVerificationToken(token)
     if (isError(translatedToken)) {
       return {
-        props: { errorMessage: "Error: Invalid token link" }
+        props: { errorMessage: "Error: Invalid token link", csrfToken }
       }
     }
     const { emailAddress, verificationCode } = translatedToken
@@ -58,17 +62,18 @@ export const getServerSideProps: GetServerSideProps = async ({ req, query }) => 
   }
 
   return {
-    props: { errorMessage, suggestedPassword, suggestedPasswordUrl }
+    props: { errorMessage, suggestedPassword, suggestedPasswordUrl, csrfToken }
   }
-}
+})
 
 interface Props {
+  csrfToken: string
   errorMessage: string
-  suggestedPassword: string
-  suggestedPasswordUrl: string
+  suggestedPassword?: string
+  suggestedPasswordUrl?: string
 }
 
-const NewPassword = ({ errorMessage, suggestedPassword, suggestedPasswordUrl }: Props) => {
+const NewPassword = ({ csrfToken, errorMessage, suggestedPassword, suggestedPasswordUrl }: Props) => {
   return (
     <>
       <Head>
@@ -79,7 +84,7 @@ const NewPassword = ({ errorMessage, suggestedPassword, suggestedPasswordUrl }: 
           <h3 data-test="check-email" className="govuk-heading-xl">
             {"First time password setup"}
           </h3>
-          <form method="post">
+          <Form method="post" csrfToken={csrfToken}>
             <span id="event-name-error" className="govuk-error-message">
               {errorMessage}
             </span>
@@ -95,7 +100,7 @@ const NewPassword = ({ errorMessage, suggestedPassword, suggestedPasswordUrl }: 
 
             <Button noDoubleClick>{"Set password"}</Button>
             <SuggestPassword suggestedPassword={suggestedPassword} suggestedPasswordUrl={suggestedPasswordUrl} />
-          </form>
+          </Form>
         </div>
       </Layout>
     </>
