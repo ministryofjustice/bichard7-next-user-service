@@ -1,5 +1,5 @@
-import generateCsrfToken from "hooks/useCsrfServerSideProps/generateCsrfToken"
-import parseFormToken, { ParseFormTokenResult } from "hooks/useCsrfServerSideProps/parseFormToken"
+import generateCsrfToken from "middleware/withCsrf/generateCsrfToken"
+import parseFormToken, { ParseFormTokenResult } from "middleware/withCsrf/parseFormToken"
 import { IncomingMessage } from "http"
 import QueryString from "qs"
 import { isError } from "types/Result"
