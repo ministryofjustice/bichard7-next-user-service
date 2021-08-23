@@ -1,11 +1,4 @@
-import jwt from "jsonwebtoken"
-
-const tokenSecret = "OliverTwist"
-
-const invalidToken = () => jwt.sign({ foo: "bar" }, tokenSecret, { issuer: "Bichard" })
-
-const validToken = (emailAddress, verificationCode) =>
-  jwt.sign({ emailAddress, verificationCode }, tokenSecret, { issuer: "Bichard" })
+import { invalidToken, validToken } from "../helpers/tokens"
 
 describe("Logging In", () => {
   context("720p resolution", () => {

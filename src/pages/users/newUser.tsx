@@ -37,18 +37,23 @@ export const getServerSideProps = useCsrfServerSideProps(async (context): Promis
     if (formIsValid) {
       const connection = getConnection()
       const result = await setupNewUser(connection, userCreateDetails)
+
       if (isError(result)) {
         return {
           props: { message: result.message, isSuccess: false, missingMandatory, csrfToken }
         }
       }
+
+      message = `User ${userCreateDetails.username} has been successfully created`
       return {
-        props: { message: result.successMessage, isSuccess: true, missingMandatory, csrfToken }
+        props: { message, isSuccess: true, missingMandatory, csrfToken }
       }
     }
+
     message = "Please make sure that all mandatory fields are non empty"
     isSuccess = false
   }
+
   return {
     props: { message, isSuccess, missingMandatory, csrfToken }
   }
@@ -72,6 +77,7 @@ const newUser = ({ message, isSuccess, missingMandatory, csrfToken }: Props) => 
           {message}
         </span>
       )}
+
       {isSuccess && message && <SuccessBanner message={message} />}
       <Form method="post" csrfToken={csrfToken}>
         <UserForm

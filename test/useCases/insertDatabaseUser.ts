@@ -9,7 +9,7 @@ export default async (connection: any, expectedUser: User, isDeleted: boolean, p
       VALUES ($1, $2, $3, true, $4, $5, '-', NOW(), $6, $7, $8, $9, $10, $11, $12, $13, $14);
   `
   await connection.none(insertQuery, [
-    expectedUser.id || Math.floor(Math.random() * 1000),
+    expectedUser.id || Math.floor(Math.random() * 100000),
     expectedUser.username,
     expectedUser.emailAddress,
     expectedUser.exclusionList,
