@@ -1,3 +1,4 @@
+import config from "lib/config"
 import ButtonGroup from "./ButtonGroup"
 import Link from "./Link"
 
@@ -7,8 +8,10 @@ interface Props {
 }
 
 const SuggestPassword = ({ suggestedPassword, suggestedPasswordUrl }: Props) => {
+  const passwordRules = `Please ensure that your password has at least ${config.passwordMinLength} characters`
   return (
     <>
+      <p>{passwordRules}</p>
       <ButtonGroup>
         <Link href={suggestedPasswordUrl}>{suggestedPassword ? "Suggest another password" : "Suggest a password"}</Link>
       </ButtonGroup>
