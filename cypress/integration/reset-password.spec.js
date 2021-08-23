@@ -36,7 +36,7 @@ describe("Reset password", () => {
         cy.get("input[type=password][name=newPassword]").type("shorty")
         cy.get("input[type=password][name=confirmPassword]").type("shorty")
         cy.get("button[type=submit]").click()
-        cy.get(".govuk-error-summary").should("be.visible").contains("h2", "Passwords do not match")
+        cy.get(".govuk-error-summary").should("be.visible").contains("h2", "Password is too short")
       })
     })
 
