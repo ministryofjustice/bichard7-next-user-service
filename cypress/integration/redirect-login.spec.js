@@ -29,6 +29,4 @@ describe("Redirection log in", () => {
       })
     })
   })
-
-  it("should not include the redirect url in ")
 })
