@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken"
 import User from "types/User"
+import { Result } from "types/Result"
 import config from "../config"
 import UserGroup from "../../types/UserGroup"
 
@@ -32,4 +33,12 @@ export function generateAuthenticationToken(user: User): AuthenticationToken {
   }
 
   return jwt.sign(payload, config.tokenSecret, options)
+}
+
+export function decodeAuthenticationToken(token: string): Result<AuthenticationTokenPayload> {
+  try {
+    return jwt.verify(token, config.tokenSecret, signOptions) as AuthenticationTokenPayload
+  } catch (error) {
+    return error
+  }
 }
