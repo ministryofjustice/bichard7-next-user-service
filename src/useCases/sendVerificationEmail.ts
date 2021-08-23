@@ -1,10 +1,10 @@
 import { randomDigits } from "crypto-secure-random-digit"
 import config from "lib/config"
+import getEmailer from "lib/getEmailer"
 import Database from "types/Database"
 import PromiseResult from "types/PromiseResult"
 import { isError } from "types/Result"
 import createVerificationEmail from "./createVerificationEmail"
-import sendEmail from "./sendEmail"
 import storeVerificationCode from "./storeVerificationCode"
 
 const generateVerificationCode = () => {
@@ -16,7 +16,6 @@ export default async (connection: Database, emailAddress: string, redirectUrl?: 
   const storeVerificationCodeResult = await storeVerificationCode(connection, emailAddress, verificationCode)
 
   if (isError(storeVerificationCodeResult)) {
-    console.error(storeVerificationCodeResult)
     return storeVerificationCodeResult
   }
 
@@ -26,8 +25,14 @@ export default async (connection: Database, emailAddress: string, redirectUrl?: 
     return createVerificationEmailResult
   }
 
-  const { subject, body } = createVerificationEmailResult
-  const sendEmailResult = await sendEmail(emailAddress, subject, body)
+  const emailContent = createVerificationEmailResult
 
-  return sendEmailResult
+  const emailer = getEmailer()
+  return emailer
+    .sendMail({
+      from: config.emailFrom,
+      to: emailAddress,
+      ...emailContent
+    })
+    .catch((error: Error) => error)
 }
