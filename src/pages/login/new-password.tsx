@@ -2,6 +2,7 @@ import Button from "components/Button"
 import Layout from "components/Layout"
 import SuggestPassword from "components/SuggestPassword"
 import TextInput from "components/TextInput"
+import config from "lib/config"
 import getConnection from "lib/getConnection"
 import parseFormData from "lib/parseFormData"
 import { decodeEmailVerificationToken, EmailVerificationToken } from "lib/token/emailVerificationToken"
@@ -17,7 +18,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, query }) => 
   let errorMessage = ""
   let suggestedPassword = ""
   const { token, suggestPassword } = query as { token: EmailVerificationToken; suggestPassword: string }
-  const generatePassword = new URL("/login/new-password", "http://localhost:3000")
+  const generatePassword = new URL("/login/new-password", config.baseUrl)
   generatePassword.searchParams.append("token", token)
   generatePassword.searchParams.append("suggestPassword", "true")
   const suggestedPasswordUrl = generatePassword.href
