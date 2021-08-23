@@ -11,10 +11,10 @@ export default <Props>(getServerSidePropsFunction: GetServerSideProps<Props>): G
   ): Promise<GetServerSidePropsResult<Props>> => {
     const { req } = context
 
-    let currentUser: Result<Partial<User>> | undefined = getUserFromCookie(req)
+    let currentUser: Result<Partial<User>> | null = getUserFromCookie(req)
 
     if (isError(currentUser)) {
-      currentUser = undefined
+      currentUser = null
     }
 
     return Promise.resolve(
