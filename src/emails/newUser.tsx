@@ -23,10 +23,10 @@ const NewUserEmail = ({ url, user }: Props) => (
 const NewUserEmailText = ({ url, user }: Props) =>
   `Hi ${user.forenames} ${user.surname},
 
-  In order to finish setting up your Bichard account, you need to verify your email address and create a password. You can do this by clicking the link below.
+In order to finish setting up your Bichard account, you need to verify your email address and create a password. You can do this by clicking the link below.
 
-  ${url}
-  `
+${url}
+`
 
 export default function generateNewUserEmail(props: Props): EmailContent {
   // eslint-disable-next-line react/jsx-props-no-spreading

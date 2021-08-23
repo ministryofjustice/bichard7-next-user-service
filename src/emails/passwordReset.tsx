@@ -24,12 +24,12 @@ const PasswordResetEmail = ({ url, user }: Props) => (
 const PasswordResetEmailText = ({ url, user }: Props) =>
   `Hi ${user.forenames} ${user.surname},
 
-  A request has been received to change the password for your Bichard account.
+A request has been received to change the password for your Bichard account.
 
-  Please confirm this was you by click the link below.
+Please confirm this was you by click the link below.
 
-  ${url}
-  `
+${url}
+`
 
 export default function generatePasswordResetEmail(props: Props): EmailContent {
   // eslint-disable-next-line react/jsx-props-no-spreading

@@ -21,12 +21,12 @@ const LoginEmail = ({ url }: Props) => (
 const LoginEmailText = ({ url }: Props) =>
   `Sign in to Bichard
 
-  In order to sign in to Bichard, you need to confirm your email address. Please confirm your email address by clicking the link below.
+In order to sign in to Bichard, you need to confirm your email address. Please confirm your email address by clicking the link below.
 
-  ${url}
+${url}
 
-  If you didn't request this email, you can safely ignore it.
-  `
+If you didn't request this email, you can safely ignore it.
+`
 
 export default function generateLoginEmail(props: Props): EmailContent {
   // eslint-disable-next-line react/jsx-props-no-spreading
