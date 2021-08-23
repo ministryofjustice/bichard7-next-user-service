@@ -16,7 +16,8 @@ export default <Props>(getServerSidePropsFunction: GetServerSideProps<Props>): G
     if (!isValid) {
       res.statusCode = 403
       res.statusMessage = "Invalid CSRF-token"
-      return res.end() as never
+      res.end()
+      return { props: {} } as unknown as GetServerSidePropsResult<Props>
     }
 
     const { maximumTokenAgeInSeconds } = config.csrf
