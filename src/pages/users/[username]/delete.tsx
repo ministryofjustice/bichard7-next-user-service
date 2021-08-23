@@ -1,7 +1,7 @@
 import Layout from "components/Layout"
 import Head from "next/head"
 import User from "types/User"
-import { GetServerSidePropsResult } from "next"
+import { GetServerSidePropsContext, GetServerSidePropsResult } from "next"
 import Button from "components/Button"
 import ButtonGroup from "components/ButtonGroup"
 import Link from "components/Link"
@@ -14,62 +14,71 @@ import createRedirectResponse from "utils/createRedirectResponse"
 import getConnection from "lib/getConnection"
 import { deleteUser, getUserByUsername } from "useCases"
 import Form from "components/Form"
-import { useCsrfServerSideProps } from "hooks"
+import { withAuthentication, withCsrf, withMultipleServerSideProps } from "middleware"
 import CsrfServerSidePropsContext from "types/CsrfServerSidePropsContext"
+import { ParsedUrlQuery } from "querystring"
+import AuthenticationServerSideProps from "types/AuthenticationServerSideProps"
 
-export const getServerSideProps = useCsrfServerSideProps(async (context): Promise<GetServerSidePropsResult<Props>> => {
-  const { query, req, formData, csrfToken } = context as CsrfServerSidePropsContext
-  const { username } = query
-  const connection = getConnection()
-  const user = await getUserByUsername(connection, username as string)
+export const getServerSideProps = withMultipleServerSideProps(
+  withAuthentication,
+  withCsrf,
+  async (context: GetServerSidePropsContext<ParsedUrlQuery>): Promise<GetServerSidePropsResult<Props>> => {
+    const { query, req, formData, csrfToken, currentUser } = context as CsrfServerSidePropsContext &
+      AuthenticationServerSideProps
+    const { username } = query
+    const connection = getConnection()
+    const user = await getUserByUsername(connection, username as string)
 
-  if (!user) {
-    return {
-      notFound: true
-    }
-  }
-
-  if (isError(user)) {
-    return createRedirectResponse("/error")
-  }
-
-  if (req.method === "POST") {
-    const { deleteAccountConfirmation } = formData as { deleteAccountConfirmation: string }
-
-    if (user.username !== deleteAccountConfirmation) {
+    if (!user) {
       return {
-        props: {
-          user,
-          showInputNotMatchingError: true,
-          csrfToken
-        }
+        notFound: true
       }
     }
 
-    const deleteUserResult = await deleteUser(connection, user)
-
-    if (deleteUserResult.isDeleted) {
-      const userFullName = encodeURIComponent(`${user.forenames} ${user.surname}`)
-      return createRedirectResponse(`/users/${user.username}/deleted?name=${userFullName}`)
-    }
-
-    if (deleteUserResult.serverSideError) {
+    if (isError(user)) {
       return createRedirectResponse("/error")
     }
-  }
 
-  return {
-    props: { user, csrfToken }
+    if (req.method === "POST") {
+      const { deleteAccountConfirmation } = formData as { deleteAccountConfirmation: string }
+
+      if (user.username !== deleteAccountConfirmation) {
+        return {
+          props: {
+            user,
+            showInputNotMatchingError: true,
+            csrfToken,
+            currentUser
+          }
+        }
+      }
+
+      const deleteUserResult = await deleteUser(connection, user)
+
+      if (deleteUserResult.isDeleted) {
+        const userFullName = encodeURIComponent(`${user.forenames} ${user.surname}`)
+        return createRedirectResponse(`/users/${user.username}/deleted?name=${userFullName}`)
+      }
+
+      if (deleteUserResult.serverSideError) {
+        return createRedirectResponse("/error")
+      }
+    }
+
+    return {
+      props: { user, csrfToken, currentUser }
+    }
   }
-})
+)
 
 interface Props {
   user: User
   showInputNotMatchingError?: boolean
   csrfToken: string
+  currentUser?: Partial<User>
 }
 
-const Delete = ({ user, showInputNotMatchingError, csrfToken }: Props) => {
+const Delete = ({ user, showInputNotMatchingError, csrfToken, currentUser }: Props) => {
   const fullName = `${user.forenames} ${user.surname}`
 
   return (
@@ -77,7 +86,7 @@ const Delete = ({ user, showInputNotMatchingError, csrfToken }: Props) => {
       <Head>
         <title>{"Users"}</title>
       </Head>
-      <Layout>
+      <Layout user={currentUser}>
         {showInputNotMatchingError && (
           <ErrorSummary title="Username mismatch">
             {"The provided username in the confirmation box does not match."}

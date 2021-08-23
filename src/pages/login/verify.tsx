@@ -10,11 +10,11 @@ import getConnection from "lib/getConnection"
 import { authenticate, signInUser } from "useCases"
 import { isError } from "types/Result"
 import createRedirectResponse from "utils/createRedirectResponse"
-import { useCsrfServerSideProps } from "hooks"
 import Form from "components/Form"
 import CsrfServerSidePropsContext from "types/CsrfServerSidePropsContext"
+import { withCsrf } from "middleware"
 
-export const getServerSideProps = useCsrfServerSideProps(async (context) => {
+export const getServerSideProps = withCsrf(async (context) => {
   const { req, res, query, formData, csrfToken } = context as CsrfServerSidePropsContext
 
   try {

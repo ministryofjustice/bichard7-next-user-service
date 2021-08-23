@@ -11,10 +11,10 @@ import { isError } from "types/Result"
 import Link from "components/Link"
 import createRedirectResponse from "utils/createRedirectResponse"
 import Form from "components/Form"
-import { useCsrfServerSideProps } from "hooks"
 import CsrfServerSidePropsContext from "types/CsrfServerSidePropsContext"
+import { withCsrf } from "middleware"
 
-export const getServerSideProps = useCsrfServerSideProps(async (context): Promise<GetServerSidePropsResult<Props>> => {
+export const getServerSideProps = withCsrf(async (context): Promise<GetServerSidePropsResult<Props>> => {
   const { req, formData, csrfToken } = context as CsrfServerSidePropsContext
   let invalidEmail = false
 

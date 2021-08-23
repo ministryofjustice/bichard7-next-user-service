@@ -1,40 +1,54 @@
 import Layout from "components/Layout"
 import Head from "next/head"
 import User from "types/User"
-import { GetServerSideProps } from "next"
+import { GetServerSidePropsContext, GetServerSidePropsResult } from "next"
 import { Summary, SummaryItem } from "components/Summary"
 import BackLink from "components/BackLink"
 import ButtonGroup from "components/ButtonGroup"
 import getConnection from "lib/getConnection"
 import { getUserByUsername } from "useCases"
 import Link from "components/Link"
+import { withAuthentication, withMultipleServerSideProps } from "middleware"
+import { ParsedUrlQuery } from "querystring"
+import { isError } from "types/Result"
+import createRedirectResponse from "utils/createRedirectResponse"
+import AuthenticationServerSideProps from "types/AuthenticationServerSideProps"
 
-export const getServerSideProps: GetServerSideProps = async ({ query }) => {
-  const { username } = query
-  const connection = getConnection()
-  const user = await getUserByUsername(connection, username as string)
+export const getServerSideProps = withMultipleServerSideProps(
+  withAuthentication,
+  async (context: GetServerSidePropsContext<ParsedUrlQuery>): Promise<GetServerSidePropsResult<Props>> => {
+    const { query, currentUser } = context as AuthenticationServerSideProps
+    const { username } = query
+    const connection = getConnection()
+    const user = await getUserByUsername(connection, username as string)
 
-  if (!user) {
+    if (isError(user)) {
+      return createRedirectResponse("/error")
+    }
+
+    if (!user) {
+      return {
+        notFound: true
+      }
+    }
+
     return {
-      notFound: true
+      props: { user, currentUser }
     }
   }
-
-  return {
-    props: { user }
-  }
-}
+)
 
 interface Props {
   user: User
+  currentUser?: Partial<User>
 }
 
-const Users = ({ user }: Props) => (
+const Users = ({ user, currentUser }: Props) => (
   <>
     <Head>
       <title>{"User details"}</title>
     </Head>
-    <Layout>
+    <Layout user={currentUser}>
       <BackLink href="/users" />
       <h2 className="govuk-heading-m">{"User details"}</h2>
       <Summary>
