@@ -18,9 +18,11 @@ export interface UserServiceConfig {
   emailFrom: string
   emailVerificationExpiresIn: number
   incorrectDelay: number
+  passwordMinLength: number
   redirectAccessList: string
   suggestedPasswordNumWords: number
   suggestedPasswordMinWordLength: number
+  suggestedPasswordMaxWordLength: number
   smtp: SmtpConfig
   tokenExpiresIn: string
   tokenIssuer: string
@@ -36,9 +38,11 @@ const config: UserServiceConfig = {
   emailFrom: `Bichard <${process.env.EMAIL_FROM ?? "bichard@cjse.org"}>`,
   emailVerificationExpiresIn: parseInt(process.env.EMAIL_VERIFICATION_EXPIRY ?? "30", 10),
   incorrectDelay: parseInt(process.env.INCORRECT_DELAY ?? "10", 10),
+  passwordMinLength: 10,
   redirectAccessList: process.env.REDIRECT_ACCESS_LIST ?? "localhost,",
   suggestedPasswordNumWords: 3,
   suggestedPasswordMinWordLength: 4,
+  suggestedPasswordMaxWordLength: 8,
   tokenExpiresIn: process.env.TOKEN_EXPIRES_IN ?? "15 seconds",
   tokenIssuer: process.env.TOKEN_ISSUER ?? "Bichard",
   tokenQueryParamName: process.env.TOKEN_QUERY_PARAM_NAME ?? "token",
