@@ -39,7 +39,7 @@ it("should set current user to undefined in the context when there is an error g
     const { currentUser, req } = context as AuthenticationServerSidePropsContext
 
     expect(req).toBeDefined()
-    expect(currentUser).toBeUndefined()
+    expect(currentUser).toBeNull()
     return undefined as never
   })
 
