@@ -1,9 +1,10 @@
 import { randomDigits } from "crypto-secure-random-digit"
+import config from "lib/config"
+import getEmailer from "lib/getEmailer"
 import Database from "types/Database"
 import { isError, PromiseResult } from "types/Result"
 import createPasswordResetEmail from "./createPasswordResetEmail"
 import getUserByEmailAddress from "./getUserByEmailAddress"
-import sendEmail from "./sendEmail"
 import storePasswordResetCode from "./storePasswordResetCode"
 
 export default async (connection: Database, emailAddress: string): PromiseResult<void> => {
@@ -30,8 +31,14 @@ export default async (connection: Database, emailAddress: string): PromiseResult
     return createPasswordResetEmailResult
   }
 
-  const { subject, body } = createPasswordResetEmailResult
-  const sendEmailResult = await sendEmail(emailAddress, subject, body)
+  const email = createPasswordResetEmailResult
 
-  return sendEmailResult
+  const emailer = getEmailer()
+  return emailer
+    .sendMail({
+      from: config.emailFrom,
+      to: emailAddress,
+      ...email
+    })
+    .catch((error: Error) => error)
 }
