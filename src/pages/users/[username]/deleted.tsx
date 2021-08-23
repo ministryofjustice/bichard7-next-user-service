@@ -5,13 +5,13 @@ import SuccessBanner from "components/SuccessBanner"
 import { GetServerSidePropsContext, GetServerSidePropsResult } from "next"
 import { withAuthentication, withMultipleServerSideProps } from "middleware"
 import { ParsedUrlQuery } from "querystring"
-import AuthenticationServerSideProps from "types/AuthenticationServerSideProps"
+import AuthenticationServerSidePropsContext from "types/AuthenticationServerSidePropsContext"
 import User from "types/User"
 
 export const getServerSideProps = withMultipleServerSideProps(
   withAuthentication,
   (context: GetServerSidePropsContext<ParsedUrlQuery>): Promise<GetServerSidePropsResult<Props>> => {
-    const { query, currentUser } = context as AuthenticationServerSideProps
+    const { query, currentUser } = context as AuthenticationServerSidePropsContext
     const { name } = query
 
     const result = {

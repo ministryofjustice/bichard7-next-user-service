@@ -13,7 +13,7 @@ import Form from "components/Form"
 import { GetServerSidePropsContext, GetServerSidePropsResult } from "next"
 import { withAuthentication, withCsrf, withMultipleServerSideProps } from "middleware"
 import { ParsedUrlQuery } from "querystring"
-import AuthenticationServerSideProps from "types/AuthenticationServerSideProps"
+import AuthenticationServerSidePropsContext from "types/AuthenticationServerSidePropsContext"
 import User from "types/User"
 
 export const getServerSideProps = withMultipleServerSideProps(
@@ -21,7 +21,7 @@ export const getServerSideProps = withMultipleServerSideProps(
   withCsrf,
   async (context: GetServerSidePropsContext<ParsedUrlQuery>): Promise<GetServerSidePropsResult<Props>> => {
     const { req, formData, csrfToken, currentUser } = context as CsrfServerSidePropsContext &
-      AuthenticationServerSideProps
+      AuthenticationServerSidePropsContext
     const missingMandatory = false
     let message = ""
     let isSuccess = true

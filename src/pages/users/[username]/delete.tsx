@@ -17,14 +17,14 @@ import Form from "components/Form"
 import { withAuthentication, withCsrf, withMultipleServerSideProps } from "middleware"
 import CsrfServerSidePropsContext from "types/CsrfServerSidePropsContext"
 import { ParsedUrlQuery } from "querystring"
-import AuthenticationServerSideProps from "types/AuthenticationServerSideProps"
+import AuthenticationServerSidePropsContext from "types/AuthenticationServerSidePropsContext"
 
 export const getServerSideProps = withMultipleServerSideProps(
   withAuthentication,
   withCsrf,
   async (context: GetServerSidePropsContext<ParsedUrlQuery>): Promise<GetServerSidePropsResult<Props>> => {
     const { query, req, formData, csrfToken, currentUser } = context as CsrfServerSidePropsContext &
-      AuthenticationServerSideProps
+      AuthenticationServerSidePropsContext
     const { username } = query
     const connection = getConnection()
     const user = await getUserByUsername(connection, username as string)

@@ -12,12 +12,12 @@ import { withAuthentication, withMultipleServerSideProps } from "middleware"
 import { ParsedUrlQuery } from "querystring"
 import { isError } from "types/Result"
 import createRedirectResponse from "utils/createRedirectResponse"
-import AuthenticationServerSideProps from "types/AuthenticationServerSideProps"
+import AuthenticationServerSidePropsContext from "types/AuthenticationServerSidePropsContext"
 
 export const getServerSideProps = withMultipleServerSideProps(
   withAuthentication,
   async (context: GetServerSidePropsContext<ParsedUrlQuery>): Promise<GetServerSidePropsResult<Props>> => {
-    const { query, currentUser } = context as AuthenticationServerSideProps
+    const { query, currentUser } = context as AuthenticationServerSidePropsContext
     const { username } = query
     const connection = getConnection()
     const user = await getUserByUsername(connection, username as string)

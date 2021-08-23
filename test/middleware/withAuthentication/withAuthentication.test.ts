@@ -5,7 +5,7 @@ import { withAuthentication } from "middleware"
 import getUserFromCookie from "middleware/withAuthentication/getUserFromCookie"
 import { GetServerSidePropsContext } from "next"
 import { ParsedUrlQuery } from "querystring"
-import AuthenticationServerSideProps from "types/AuthenticationServerSideProps"
+import AuthenticationServerSidePropsContext from "types/AuthenticationServerSidePropsContext"
 import User from "types/User"
 
 it("should include current user in the context when successfully get the user", async () => {
@@ -15,7 +15,7 @@ it("should include current user in the context when successfully get the user", 
   const dummyContext = { req: {} } as GetServerSidePropsContext<ParsedUrlQuery>
 
   const handler = withAuthentication((context) => {
-    const { currentUser, req } = context as AuthenticationServerSideProps
+    const { currentUser, req } = context as AuthenticationServerSidePropsContext
 
     expect(req).toBeDefined()
     expect(currentUser).toBeDefined()
@@ -36,7 +36,7 @@ it("should set current user to undefined in the context when there is an error g
   const dummyContext = { req: {} } as GetServerSidePropsContext<ParsedUrlQuery>
 
   const handler = withAuthentication((context) => {
-    const { currentUser, req } = context as AuthenticationServerSideProps
+    const { currentUser, req } = context as AuthenticationServerSidePropsContext
 
     expect(req).toBeDefined()
     expect(currentUser).toBeUndefined()

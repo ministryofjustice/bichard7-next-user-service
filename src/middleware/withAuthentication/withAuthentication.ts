@@ -1,6 +1,6 @@
 import { GetServerSideProps, GetServerSidePropsContext, GetServerSidePropsResult } from "next"
 import { ParsedUrlQuery } from "querystring"
-import AuthenticationServerSideProps from "types/AuthenticationServerSideProps"
+import AuthenticationServerSidePropsContext from "types/AuthenticationServerSidePropsContext"
 import { isError, Result } from "types/Result"
 import User from "types/User"
 import getUserFromCookie from "./getUserFromCookie"
@@ -17,7 +17,9 @@ export default <Props>(getServerSidePropsFunction: GetServerSideProps<Props>): G
       currentUser = undefined
     }
 
-    return Promise.resolve(getServerSidePropsFunction({ ...context, currentUser } as AuthenticationServerSideProps))
+    return Promise.resolve(
+      getServerSidePropsFunction({ ...context, currentUser } as AuthenticationServerSidePropsContext)
+    )
   }
 
   return result

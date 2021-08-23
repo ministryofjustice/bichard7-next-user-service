@@ -14,7 +14,7 @@ import ButtonGroup from "components/ButtonGroup"
 import CsrfServerSidePropsContext from "types/CsrfServerSidePropsContext"
 import getFilteredUsers from "useCases/getFilteredUsers"
 import { withMultipleServerSideProps, withAuthentication, withCsrf } from "middleware"
-import AuthenticationServerSideProps from "types/AuthenticationServerSideProps"
+import AuthenticationServerSidePropsContext from "types/AuthenticationServerSidePropsContext"
 import { ParsedUrlQuery } from "querystring"
 import KeyValuePair from "types/KeyValuePair"
 
@@ -23,7 +23,7 @@ export const getServerSideProps = withMultipleServerSideProps(
   withCsrf,
   async (context: GetServerSidePropsContext<ParsedUrlQuery>): Promise<GetServerSidePropsResult<Props>> => {
     const { req, formData, csrfToken, currentUser } = context as CsrfServerSidePropsContext &
-      AuthenticationServerSideProps
+      AuthenticationServerSidePropsContext
     const connection = getConnection()
     let allUsers = null
     const { filter } = formData as {

@@ -13,7 +13,7 @@ import Form from "components/Form"
 import { GetServerSidePropsContext, GetServerSidePropsResult } from "next"
 import { withAuthentication, withCsrf, withMultipleServerSideProps } from "middleware"
 import { ParsedUrlQuery } from "querystring"
-import AuthenticationServerSideProps from "types/AuthenticationServerSideProps"
+import AuthenticationServerSidePropsContext from "types/AuthenticationServerSidePropsContext"
 
 const errorMessageMap = {
   unique_users_username_idx: "This user name has been taken please enter another"
@@ -24,7 +24,7 @@ export const getServerSideProps = withMultipleServerSideProps(
   withCsrf,
   async (context: GetServerSidePropsContext<ParsedUrlQuery>): Promise<GetServerSidePropsResult<Props>> => {
     const { query, req, formData, csrfToken, currentUser } = context as CsrfServerSidePropsContext &
-      AuthenticationServerSideProps
+      AuthenticationServerSidePropsContext
     const connection = getConnection()
 
     if (req.method === "POST") {
