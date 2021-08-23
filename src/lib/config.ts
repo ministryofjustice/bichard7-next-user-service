@@ -36,7 +36,7 @@ const config: UserServiceConfig = {
   emailFrom: `Bichard <${process.env.EMAIL_FROM ?? "bichard@cjse.org"}>`,
   emailVerificationExpiresIn: parseInt(process.env.EMAIL_VERIFICATION_EXPIRY ?? "30", 10),
   incorrectDelay: parseInt(process.env.INCORRECT_DELAY ?? "10", 10),
-  redirectAccessList: process.env.BICHARD_REDIRECT_ACCESS_LIST ?? "localhost,",
+  redirectAccessList: process.env.REDIRECT_ACCESS_LIST ?? "localhost,",
   suggestedPasswordNumWords: 3,
   suggestedPasswordMinWordLength: 4,
   tokenExpiresIn: process.env.TOKEN_EXPIRES_IN ?? "15 seconds",
