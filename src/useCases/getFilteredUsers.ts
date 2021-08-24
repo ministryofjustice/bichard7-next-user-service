@@ -6,7 +6,7 @@ import UserDetails from "types/UserDetails"
 const getFilteredUsers = async (
   connection: Database,
   filter: string,
-  page: number
+  page = 0
 ): Promise<PaginatedResult<Partial<UserDetails>[]>> => {
   let users
   const getFilteredUsersQuery = `

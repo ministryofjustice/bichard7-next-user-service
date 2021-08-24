@@ -51,20 +51,15 @@ export const getServerSideProps = withMultipleServerSideProps(
       }
     }
 
+    let queryResult
     if (previousFilter) {
-      const { result, totalElements } = await getFilteredUsers(connection, previousFilter, pageNumber)
-      allUsers = result
-      totalUsers = totalElements
-      console.log("filterd users", totalElements)
+      queryResult = await getFilteredUsers(connection, previousFilter, pageNumber)
     } else {
-      const { result, totalElements } = await getAllUsers(connection, pageNumber)
-      allUsers = result
-      totalUsers = totalElements
-      console.log("all users", totalElements)
+      queryResult = await getAllUsers(connection, pageNumber)
     }
 
-    if (isError(allUsers)) {
-      console.error(allUsers)
+    if (isError(queryResult)) {
+      console.error(queryResult)
       return {
         props: {
           allUsers: null,
@@ -76,6 +71,9 @@ export const getServerSideProps = withMultipleServerSideProps(
         }
       }
     }
+    const { result, totalElements } = queryResult
+    allUsers = result
+    totalUsers = totalElements
 
     return {
       props: {

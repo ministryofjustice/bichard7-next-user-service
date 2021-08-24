@@ -69,25 +69,25 @@ describe("getFilteredUsers", () => {
     await insertDatabaseUser(connection, user2, false, "")
     await insertDatabaseUser(connection, user3, false, "")
 
-    let result = await getFilteredUsers(connection, "")
-    expect(isError(result)).toBe(false)
+    let queryResult = await getFilteredUsers(connection, "")
+    expect(isError(queryResult)).toBe(false)
 
-    result = await getFilteredUsers(connection, "Filter3Username")
-    expect(isError(result)).toBe(false)
-    expect(result.length).toBe(1)
-    let actualUser = <User>result[0]
+    queryResult = await getFilteredUsers(connection, "Filter3Username")
+    expect(isError(queryResult)).toBe(false)
+    expect(queryResult.result.length).toBe(1)
+    let actualUser = <User>queryResult.result[0]
     expect(actualUser.id).toBe(12343)
 
-    result = await getFilteredUsers(connection, "Filter1EmailAddress")
-    expect(isError(result)).toBe(false)
-    expect(result.length).toBe(1)
-    actualUser = <User>result[0]
+    queryResult = await getFilteredUsers(connection, "Filter1EmailAddress")
+    expect(isError(queryResult)).toBe(false)
+    expect(queryResult.result.length).toBe(1)
+    actualUser = <User>queryResult.result[0]
     expect(actualUser.id).toBe(12341)
 
-    result = await getFilteredUsers(connection, "Filter2Surname")
-    expect(isError(result)).toBe(false)
-    expect(result.length).toBe(1)
-    actualUser = <User>result[0]
+    queryResult = await getFilteredUsers(connection, "Filter2Surname")
+    expect(isError(queryResult)).toBe(false)
+    expect(queryResult.result.length).toBe(1)
+    actualUser = <User>queryResult.result[0]
     expect(actualUser.id).toBe(12342)
   })
 
@@ -97,6 +97,6 @@ describe("getFilteredUsers", () => {
 
     const filterResult = await getFilteredUsers(connection, "Filter2Surname")
     expect(isError(filterResult)).toBe(false)
-    expect(filterResult.length).toBe(0)
+    expect(filterResult.result.length).toBe(0)
   })
 })
