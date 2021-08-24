@@ -11,6 +11,7 @@ export default async (db: Database, emailAddress: string, password: string): Pro
   const queryResult = await db.one(query, [emailAddress]).catch((error) => error)
 
   if (isError(queryResult)) {
+    console.error(queryResult)
     return queryResult
   }
 
