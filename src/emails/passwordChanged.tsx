@@ -8,17 +8,21 @@ interface Props {
   url: string
 }
 
-const PasswordChangedEmail = ({ url, user }: Props) => (
-  <EmailLayout
-    actionUrl={url}
-    buttonLabel={"Login"}
-    paragraphs={[
-      `Hi ${user.forenames} ${user.surname},`,
-      "Your password has been changed successfully. You can now login to your Bichard account with your new password."
-    ]}
-    title={"Bichard password changed"}
-  />
-)
+const PasswordChangedEmail = ({ url, user }: Props) => {
+  const { forenames, surname } = user
+
+  return (
+    <EmailLayout
+      actionUrl={url}
+      buttonLabel={"Login"}
+      paragraphs={[
+        `Hi ${forenames} ${surname},`,
+        "Your password has been changed successfully. You can now login to your Bichard account with your new password."
+      ]}
+      title={"Bichard password changed"}
+    />
+  )
+}
 
 const PasswordResetEmailText = ({ url, user }: Props) =>
   `Hi ${user.forenames} ${user.surname},
