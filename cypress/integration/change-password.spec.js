@@ -19,7 +19,7 @@ describe("Change password", () => {
       })
     })
 
-    it("should not allow submission when passwords are too short", () => {
+    it("should not allow submission when passwords are too short", (done) => {
       cy.seedUsersAndLogin("bichard01@example.com", "password").then(() => {
         cy.visit("/account/change-password")
         cy.get("body").contains(/change password/i)
@@ -28,19 +28,21 @@ describe("Change password", () => {
         cy.get("input[type=password][name=confirmPassword]").type("shorty")
         cy.get("button[type=submit]").click()
         cy.get('span[id="event-name-error"]').should("have.text", "Error: Password is too short")
+        done()
       })
     })
 
-    it("should not allow submission when password is empty", () => {
+    it("should not allow submission when password is empty", (done) => {
       cy.seedUsersAndLogin("bichard01@example.com", "password").then(() => {
         cy.visit("/account/change-password")
         cy.get("body").contains(/change password/i)
         cy.get("button[type=submit]").click()
         cy.get('span[id="event-name-error"]').should("have.text", "Error: Passwords cannot be empty")
+        done()
       })
     })
 
-    it("should not allow submission when passwords do not match", () => {
+    it("should not allow submission when passwords do not match", (done) => {
       cy.seedUsersAndLogin("bichard01@example.com", "password").then(() => {
         cy.visit("/account/change-password")
         cy.get("body").contains(/change password/i)
@@ -49,16 +51,18 @@ describe("Change password", () => {
         cy.get("input[type=password][name=confirmPassword]").type("DifferentNewPassword")
         cy.get("button[type=submit]").click()
         cy.get('span[id="event-name-error"]').should("have.text", "Error: Passwords are mismatching")
+        done()
       })
     })
 
-    it("should allow user to generate a random password", () => {
+    it("should allow user to generate a random password", (done) => {
       cy.seedUsersAndLogin("bichard01@example.com", "password").then(() => {
         cy.visit("/account/change-password")
         cy.get("body").contains(/change password/i)
         cy.get(".govuk-hint").should("be.empty")
         cy.get("a[class=govuk-link]").click()
         cy.get(".govuk-hint").should("not.be.empty")
+        done()
       })
     })
 
