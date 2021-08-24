@@ -101,6 +101,19 @@ describe("User", () => {
       })
     })
 
+    it("should not possible for the new user to set their password if it is not secure enough", () => {
+      const emailAddress = "bemail1@example.com"
+      const newPassword = "shorty"
+      cy.task("getPasswordResetCode", emailAddress).then((passwordResetCode) => {
+        const newPasswordToken = generateNewPasswordToken(emailAddress, passwordResetCode)
+        cy.visit(`/login/new-password?token=${newPasswordToken}`)
+        cy.get("input[type=password][name=newPassword]").type(newPassword)
+        cy.get("input[type=password][name=confirmPassword]").type(newPassword)
+        cy.get("button[type=submit]").click()
+        cy.get('span[id="event-name-error"]').should("have.text", "Error: Password is too short")
+      })
+    })
+
     it("should respond with forbidden response code when CSRF tokens are invalid in new password page", (done) => {
       const emailAddress = "bemail1@example.com"
       cy.task("getPasswordResetCode", emailAddress).then((passwordResetCode) => {

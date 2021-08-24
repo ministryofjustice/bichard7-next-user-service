@@ -18,15 +18,31 @@ describe("Reset password", () => {
       cy.viewport(1280, 720)
     })
 
-    it("should prompt the user that password reset was successful when provided password is valid", (done) => {
+    it("should send out email to reset password", () => {
       const emailAddress = "bichard01@example.com"
-      const newPassword = "Test@123456"
       cy.visit("/login")
       cy.get("a[href='/login/forgot-password']").click()
       cy.get("body").contains(/forgot password/i)
       cy.get("input[type=email]").type(emailAddress)
       cy.get("button[type=submit]").click()
       cy.get("body").contains(/check your email/i)
+    })
+
+    it("should not allow submission when passwords are too short", () => {
+      cy.task("getPasswordResetCode", ["bichard01@example.com", "foobar"]).then(() => {
+        const token = generatePasswordResetToken("bichard01@example.com", "foobar")
+        cy.visit(`/login/reset-password?token=${token}`)
+        cy.get("body").contains(/reset password/i)
+        cy.get("input[type=password][name=newPassword]").type("shorty")
+        cy.get("input[type=password][name=confirmPassword]").type("shorty")
+        cy.get("button[type=submit]").click()
+        cy.get(".govuk-error-summary").should("be.visible").contains("h2", "Password is too short")
+      })
+    })
+
+    it("should prompt the user that password reset was successful when provided password is valid", (done) => {
+      const emailAddress = "bichard01@example.com"
+      const newPassword = "Test@123456"
       cy.task("getPasswordResetCode", emailAddress).then((passwordResetCode) => {
         const passwordResetToken = generatePasswordResetToken(emailAddress, passwordResetCode)
         cy.visit(`/login/reset-password?token=${passwordResetToken}`)

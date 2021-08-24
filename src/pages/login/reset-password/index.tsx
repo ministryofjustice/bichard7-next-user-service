@@ -11,6 +11,7 @@ import createRedirectResponse from "utils/createRedirectResponse"
 import resetPassword, { ResetPasswordOptions } from "useCases/resetPassword"
 import Form from "components/Form"
 import CsrfServerSidePropsContext from "types/CsrfServerSidePropsContext"
+import passwordSecurityCheck from "useCases/passwordSecurityCheck"
 import { withCsrf } from "middleware"
 import generateRandomPassword from "useCases/generateRandomPassword"
 import SuggestPassword from "components/SuggestPassword"
@@ -33,6 +34,7 @@ export const getServerSideProps = withCsrf(async (context): Promise<GetServerSid
         invalidToken: true,
         invalidPassword: false,
         passwordMismatch: false,
+        passwordInsecure: false,
         csrfToken,
         suggestedPassword,
         suggestedPasswordUrl
@@ -53,6 +55,7 @@ export const getServerSideProps = withCsrf(async (context): Promise<GetServerSid
           invalidToken: false,
           invalidPassword: true,
           passwordMismatch: false,
+          passwordInsecure: false,
           csrfToken,
           suggestedPassword,
           suggestedPasswordUrl
@@ -67,6 +70,23 @@ export const getServerSideProps = withCsrf(async (context): Promise<GetServerSid
           invalidToken: false,
           invalidPassword: false,
           passwordMismatch: true,
+          passwordInsecure: false,
+          csrfToken,
+          suggestedPassword,
+          suggestedPasswordUrl
+        }
+      }
+    }
+
+    const passwordCheckResult = passwordSecurityCheck(newPassword)
+    if (isError(passwordCheckResult)) {
+      return {
+        props: {
+          token,
+          invalidToken: false,
+          invalidPassword: false,
+          passwordMismatch: false,
+          passwordInsecure: true,
           csrfToken,
           suggestedPassword,
           suggestedPasswordUrl
@@ -94,6 +114,7 @@ export const getServerSideProps = withCsrf(async (context): Promise<GetServerSid
       passwordMismatch: false,
       invalidPassword: false,
       invalidToken: false,
+      passwordInsecure: false,
       csrfToken,
       suggestedPassword,
       suggestedPasswordUrl
@@ -107,6 +128,7 @@ interface Props {
   passwordMismatch: boolean
   invalidPassword: boolean
   invalidToken: boolean
+  passwordInsecure: boolean
   suggestedPassword: string
   suggestedPasswordUrl: string
 }
@@ -117,6 +139,7 @@ const ResetPassword = ({
   passwordMismatch,
   invalidPassword,
   invalidToken,
+  passwordInsecure,
   suggestedPassword,
   suggestedPasswordUrl
 }: Props) => (
@@ -143,6 +166,10 @@ const ResetPassword = ({
 
           {passwordMismatch && (
             <ErrorSummary title="Passwords do not match">{"Provided new passwords do not match."}</ErrorSummary>
+          )}
+
+          {passwordInsecure && (
+            <ErrorSummary title="Password is too short">{"Provided a longer password."}</ErrorSummary>
           )}
 
           {!invalidToken && (
