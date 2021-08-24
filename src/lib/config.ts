@@ -28,6 +28,7 @@ export interface UserServiceConfig {
   tokenIssuer: string
   tokenQueryParamName: string
   tokenSecret: string
+  maxUsersPerPage: number
   verificationCodeLength: number
 }
 
@@ -47,6 +48,7 @@ const config: UserServiceConfig = {
   tokenIssuer: process.env.TOKEN_ISSUER ?? "Bichard",
   tokenQueryParamName: process.env.TOKEN_QUERY_PARAM_NAME ?? "token",
   tokenSecret: process.env.TOKEN_SECRET ?? "OliverTwist",
+  maxUsersPerPage: 10,
   verificationCodeLength: 6,
   csrf: {
     tokenName: process.env.CSRF_COOKIE_NAME ?? "XSRF-TOKEN",

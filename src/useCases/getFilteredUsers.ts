@@ -1,9 +1,15 @@
+import config from "lib/config"
 import Database from "types/Database"
+import PaginatedResult from "types/PaginatedResult"
 import UserDetails from "types/UserDetails"
 
-const getFilteredUsers = async (connection: Database, filter: string): Promise<Partial<UserDetails>[]> => {
+const getFilteredUsers = async (
+  connection: Database,
+  filter: string,
+  page: number
+): Promise<PaginatedResult<Partial<UserDetails>[]>> => {
   let users
-  const getAllUsersQuery = `
+  const getFilteredUsersQuery = `
       SELECT
         id,
         username,
@@ -18,21 +24,26 @@ const getFilteredUsers = async (connection: Database, filter: string): Promise<P
         LOWER(forenames) LIKE LOWER($1) OR
         LOWER(surname) LIKE LOWER($1) )
       ORDER BY username
+        OFFSET ${page * config.maxUsersPerPage} ROWS
+        FETCH NEXT ${config.maxUsersPerPage} ROWS ONLY
     `
   try {
-    users = await connection.any(getAllUsersQuery, [`%${filter}%`])
+    users = await connection.any(getFilteredUsersQuery, [`%${filter}%`])
   } catch (error) {
     return error
   }
 
-  return users.map((r: any) => ({
-    id: r.id,
-    username: r.username,
-    forenames: r.forenames,
-    surname: r.surname,
-    phoneNumber: r.phone_number,
-    emailAddress: r.email
-  }))
+  return {
+    result: users.map((r: any) => ({
+      id: r.id,
+      username: r.username,
+      forenames: r.forenames,
+      surname: r.surname,
+      phoneNumber: r.phone_number,
+      emailAddress: r.email
+    })),
+    totalElements: users.length === 0 ? 0 : users[0].all_users
+  }
 }
 
 export default getFilteredUsers
