@@ -2,9 +2,9 @@
 jest.mock("hooks/useCsrfServerSideProps/verifyCsrfToken")
 jest.mock("hooks/useCsrfServerSideProps/generateCsrfToken")
 
-import { useCsrfServerSideProps } from "hooks"
-import generateCsrfToken from "hooks/useCsrfServerSideProps/generateCsrfToken"
-import verifyCsrfToken from "hooks/useCsrfServerSideProps/verifyCsrfToken"
+import { withCsrf } from "middleware"
+import generateCsrfToken from "middleware/withCsrf/generateCsrfToken"
+import verifyCsrfToken from "middleware/withCsrf/verifyCsrfToken"
 import { GetServerSidePropsContext } from "next"
 import QueryString from "qs"
 import { ParsedUrlQuery } from "querystring"
@@ -29,7 +29,7 @@ it("should include form data and CSRF token in the context", async () => {
   }
   const dummyContext = { req: {}, res: dummyResponse } as GetServerSidePropsContext<ParsedUrlQuery>
 
-  const handler = useCsrfServerSideProps((context) => {
+  const handler = withCsrf((context) => {
     const { formData, csrfToken, req } = context as CsrfServerSidePropsContext
 
     expect(req).toBeDefined()
@@ -62,7 +62,7 @@ it("should set forbidden response code when CSRF token verification fails", asyn
     }
   } as GetServerSidePropsContext<ParsedUrlQuery>
 
-  const handler = useCsrfServerSideProps(() => undefined as never)
+  const handler = withCsrf(() => undefined as never)
 
   await handler(dummyContext)
 

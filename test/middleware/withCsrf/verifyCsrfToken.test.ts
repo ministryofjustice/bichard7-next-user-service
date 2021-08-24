@@ -2,8 +2,8 @@
 jest.mock("lib/parseFormData")
 
 import { serialize } from "cookie"
-import generateCsrfToken from "hooks/useCsrfServerSideProps/generateCsrfToken"
-import verifyCsrfToken from "hooks/useCsrfServerSideProps/verifyCsrfToken"
+import generateCsrfToken from "middleware/withCsrf/generateCsrfToken"
+import verifyCsrfToken from "middleware/withCsrf/verifyCsrfToken"
 import { IncomingMessage } from "http"
 import parseFormData from "lib/parseFormData"
 import QueryString from "qs"

@@ -76,6 +76,18 @@ describe("User", () => {
       cy.get("h3").should("have.text", "User Buser has been successfully created")
     })
 
+    it("should allow user to generate a random password", () => {
+      const emailAddress = "bemail1@example.com"
+      cy.task("getPasswordResetCode", emailAddress).then((passwordResetCode) => {
+        const newPasswordToken = generateNewPasswordToken(emailAddress, passwordResetCode)
+        cy.visit(`/login/new-password?token=${newPasswordToken}`)
+        cy.get("body").contains(/first time password setup/i)
+        cy.get(".govuk-hint").should("be.empty")
+        cy.get("a[class=govuk-link]").click()
+        cy.get(".govuk-hint").should("not.be.empty")
+      })
+    })
+
     it("should allow the new user to set their password via a link", () => {
       const emailAddress = "bemail1@example.com"
       const newPassword = "Test@123456"
@@ -86,6 +98,19 @@ describe("User", () => {
         cy.get("input[type=password][name=confirmPassword]").type(newPassword)
         cy.get("button[type=submit]").click()
         cy.get("h3").should("have.text", "You can now sign in with your new password.")
+      })
+    })
+
+    it("should not possible for the new user to set their password if it is not secure enough", () => {
+      const emailAddress = "bemail1@example.com"
+      const newPassword = "shorty"
+      cy.task("getPasswordResetCode", emailAddress).then((passwordResetCode) => {
+        const newPasswordToken = generateNewPasswordToken(emailAddress, passwordResetCode)
+        cy.visit(`/login/new-password?token=${newPasswordToken}`)
+        cy.get("input[type=password][name=newPassword]").type(newPassword)
+        cy.get("input[type=password][name=confirmPassword]").type(newPassword)
+        cy.get("button[type=submit]").click()
+        cy.get('span[id="event-name-error"]').should("have.text", "Error: Password is too short")
       })
     })
 

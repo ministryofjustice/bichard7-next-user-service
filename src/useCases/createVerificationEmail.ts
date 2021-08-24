@@ -1,8 +1,10 @@
+import generateLoginEmail from "emails/login"
+import config from "lib/config"
 import { EmailVerificationTokenPayload, generateEmailVerificationToken } from "lib/token/emailVerificationToken"
-import EmailResult from "types/EmailResult"
+import EmailContent from "types/EmailContent"
 import { isError, Result } from "types/Result"
 
-export default (emailAddress: string, verificationCode: string): Result<EmailResult> => {
+export default (emailAddress: string, verificationCode: string, redirectUrl?: string): Result<EmailContent> => {
   const payload: EmailVerificationTokenPayload = {
     emailAddress,
     verificationCode
@@ -11,16 +13,12 @@ export default (emailAddress: string, verificationCode: string): Result<EmailRes
   if (isError(token)) {
     return token
   }
-  const url = new URL("/login/verify", "http://localhost:3000")
+  const url = new URL("/login/verify", config.baseUrl)
   url.searchParams.append("token", token)
 
-  const subject = "Sign in to Bichard"
-  const body = `
-    TO: ${emailAddress}
+  if (redirectUrl) {
+    url.searchParams.append("redirect", redirectUrl)
+  }
 
-    Click here to log in to Bichard:
-    ${url.href}
-  `
-
-  return { subject, body }
+  return generateLoginEmail({ url: url.href })
 }

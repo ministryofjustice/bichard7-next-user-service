@@ -1,27 +1,53 @@
 import CsrfConfig from "types/CsrfConfig"
 import DatabaseConfig from "./DatabaseConfig"
 
-interface UserServiceConfig {
+interface SmtpConfig {
+  host: string
+  user: string
+  password: string
+  port: number
+  tls: boolean
+}
+
+export interface UserServiceConfig {
+  authenticationCookieName: string
+  baseUrl: string
   bichardRedirectURL: string
+  csrf: CsrfConfig
   database: DatabaseConfig
+  emailFrom: string
   emailVerificationExpiresIn: number
   incorrectDelay: number
+  passwordMinLength: number
+  redirectAccessList: string
+  suggestedPasswordNumWords: number
+  suggestedPasswordMinWordLength: number
+  suggestedPasswordMaxWordLength: number
+  smtp: SmtpConfig
   tokenExpiresIn: string
   tokenIssuer: string
   tokenQueryParamName: string
   tokenSecret: string
   verificationCodeLength: number
-  csrf: CsrfConfig
 }
 
 const config: UserServiceConfig = {
+  authenticationCookieName: process.env.AUTH_COOKIE_NAME ?? ".AUTH",
+  baseUrl: process.env.BASE_URL ?? "http://localhost:3000",
   bichardRedirectURL: process.env.BICHARD_REDIRECT_URL ?? "https://localhost:9443/bichard-ui/Authenticate",
+  emailFrom: `Bichard <${process.env.EMAIL_FROM ?? "bichard@cjse.org"}>`,
   emailVerificationExpiresIn: parseInt(process.env.EMAIL_VERIFICATION_EXPIRY ?? "30", 10),
   incorrectDelay: parseInt(process.env.INCORRECT_DELAY ?? "10", 10),
+  passwordMinLength: 10,
+  redirectAccessList: process.env.REDIRECT_ACCESS_LIST ?? "localhost,",
+  suggestedPasswordNumWords: 3,
+  suggestedPasswordMinWordLength: 4,
+  suggestedPasswordMaxWordLength: 8,
   tokenExpiresIn: process.env.TOKEN_EXPIRES_IN ?? "15 seconds",
   tokenIssuer: process.env.TOKEN_ISSUER ?? "Bichard",
   tokenQueryParamName: process.env.TOKEN_QUERY_PARAM_NAME ?? "token",
   tokenSecret: process.env.TOKEN_SECRET ?? "OliverTwist",
+  verificationCodeLength: 6,
   csrf: {
     tokenName: process.env.CSRF_COOKIE_NAME ?? "XSRF-TOKEN",
     cookieSecret: process.env.CSRF_TOKEN_SECRET ?? "OliverTwist1",
@@ -36,7 +62,13 @@ const config: UserServiceConfig = {
     port: parseInt(process.env.DB_PORT ?? process.env.DB_AUTH_PORT ?? "5432", 10),
     ssl: (process.env.DB_SSL ?? process.env.DB_AUTH_SSL) === "true"
   },
-  verificationCodeLength: 6
+  smtp: {
+    host: process.env.SMTP_HOST ?? "console",
+    user: process.env.SMTP_USER ?? "bichard",
+    password: process.env.SMTP_PASSWORD ?? "password",
+    port: parseInt(process.env.SMTP_PORT ?? "587", 10),
+    tls: process.env.SMTP_TLS === "true"
+  }
 }
 
 export default config

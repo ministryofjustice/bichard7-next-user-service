@@ -10,11 +10,11 @@ import getConnection from "lib/getConnection"
 import { sendPasswordResetEmail } from "useCases"
 import { isError } from "types/Result"
 import createRedirectResponse from "utils/createRedirectResponse"
-import { useCsrfServerSideProps } from "hooks"
 import Form from "components/Form"
 import CsrfServerSidePropsContext from "types/CsrfServerSidePropsContext"
+import { withCsrf } from "middleware"
 
-export const getServerSideProps = useCsrfServerSideProps(async (context): Promise<GetServerSidePropsResult<Props>> => {
+export const getServerSideProps = withCsrf(async (context): Promise<GetServerSidePropsResult<Props>> => {
   const { req, formData, csrfToken } = context as CsrfServerSidePropsContext
   if (req.method === "POST") {
     const { emailAddress } = formData as { emailAddress: string }

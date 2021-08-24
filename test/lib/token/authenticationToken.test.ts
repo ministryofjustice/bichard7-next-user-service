@@ -1,10 +1,16 @@
 import jwt from "jsonwebtoken"
 import config from "lib/config"
-import { generateAuthenticationToken } from "lib/token/authenticationToken"
+import {
+  AuthenticationTokenPayload,
+  decodeAuthenticationToken,
+  generateAuthenticationToken
+} from "lib/token/authenticationToken"
+import { isError } from "types/Result"
 import User from "types/User"
 import UserCredentials from "types/UserCredentials"
 
 const user: User & UserCredentials = {
+  id: 1,
   username: "bichard01",
   exclusionList: ["1", "2", "3", "4"],
   inclusionList: ["5", "6", "7", "8"],
@@ -55,5 +61,32 @@ describe("generateAuthenticationToken()", () => {
     expect(payload).not.toHaveProperty("phoneNumber")
     expect(payload).not.toHaveProperty("password")
     expect(payload).not.toHaveProperty("verificationCode")
+  })
+})
+
+describe("decodePasswordResetToken()", () => {
+  it("should return decoded token when payload is provided", () => {
+    const token = generateAuthenticationToken(user) as string
+    const result = decodeAuthenticationToken(token)
+
+    expect(result).toBeDefined()
+    expect(isError(result)).toBe(false)
+
+    const { username, emailAddress, inclusionList, exclusionList, groups } = result as AuthenticationTokenPayload
+    expect(emailAddress).toBe(user.emailAddress)
+    expect(username).toBe(user.username)
+    expect(inclusionList).toEqual(user.inclusionList)
+    expect(exclusionList).toEqual(user.exclusionList)
+    expect(groups).toEqual(user.groups)
+  })
+
+  it("should return error when token is not valid", () => {
+    const result = decodeAuthenticationToken("Invalid token")
+
+    expect(result).toBeDefined()
+    expect(isError(result)).toBe(true)
+
+    const actualError = <Error>result
+    expect(actualError.message).toBe("jwt malformed")
   })
 })

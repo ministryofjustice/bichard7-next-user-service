@@ -1,4 +1,4 @@
-import parseCookieToken from "hooks/useCsrfServerSideProps/parseCookieToken"
+import parseCookieToken from "middleware/withCsrf/parseCookieToken"
 import { IncomingMessage } from "http"
 import { isError } from "types/Result"
 

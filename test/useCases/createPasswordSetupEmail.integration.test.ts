@@ -6,13 +6,13 @@ import createNewUserEmail from "useCases/createNewUserEmail"
 import { isError } from "types/Result"
 import initialiseUserPassword from "useCases/initialiseUserPassword"
 import storePasswordResetCode from "useCases/storePasswordResetCode"
-import EmailResult from "types/EmailResult"
 import { generateEmailVerificationToken } from "lib/token/emailVerificationToken"
 import insertIntoTable from "../../testFixtures/database/insertIntoTable"
 import deleteFromTable from "../../testFixtures/database/deleteFromTable"
 import getTestConnection from "../../testFixtures/getTestConnection"
 import { Tables } from "../../testFixtures/database/types"
 import { users } from "../../testFixtures/database/data/users"
+import EmailContent from "types/EmailContent"
 
 const verificationCode = "123456"
 
@@ -64,9 +64,18 @@ describe("AccountSetup", () => {
     const newUserEmailResult = createNewUserEmail(user, verificationCode)
     expect(isError(newUserEmailResult)).toBe(false)
 
-    const { subject, body } = <EmailResult>newUserEmailResult
-    expect(subject).toMatchSnapshot()
-    expect(body).toMatchSnapshot()
+    const email = newUserEmailResult as EmailContent
+    expect(email.subject).toMatchSnapshot()
+    expect(email.text).toMatchSnapshot()
+    expect(email.html).toMatchSnapshot()
+  })
+
+  it("should be able to setup a password using the details from the email", async () => {
+    await insertIntoTable(users)
+    const result = await initialiseUserPassword(connection, 'bichard01@example.com', verificationCode, "shorty")
+    expect(result).toBeDefined()
+    const actualError = <Error>result
+    expect(actualError.message).toBe("Error: Password is too short")
   })
 
   it("should be able to setup a password using the details from the email", async () => {
@@ -83,6 +92,7 @@ describe("AccountSetup", () => {
     const _ = await initialiseUserPassword(connection, "bichard01@exmaple.com", verificationCode, "NewPassword")
 
     const secondResult = await initialiseUserPassword(
+// import insertDatabaseUser from "./insertDatabaseUser"
       connection,
       "bichard01@exmaple.com",
       verificationCode,

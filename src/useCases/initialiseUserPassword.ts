@@ -1,5 +1,6 @@
 import Database from "types/Database"
 import { isError, PromiseResult } from "types/Result"
+import passwordSecurityCheck from "./passwordSecurityCheck"
 import storePasswordResetCode from "./storePasswordResetCode"
 import updateUserPassword from "./updateUserPassword"
 import validateUserVerificationCode from "./validateUserVerificationCode"
@@ -10,11 +11,17 @@ const initialiseUserPassword = async (
   verificationCode: string,
   password: string
 ): PromiseResult<void> => {
+  const passwordCheckResult = passwordSecurityCheck(password)
+  if (isError(passwordCheckResult)) {
+    return passwordCheckResult
+  }
+
   // check if we have the correct user
-  const validatedResult = await validateUserVerificationCode(connection, emailAddress, verificationCode)
-  if (isError(validatedResult)) {
+  const validatedCodeResult = await validateUserVerificationCode(connection, emailAddress, verificationCode)
+  if (isError(validatedCodeResult)) {
     return new Error("Error: Invalid or expired verification code")
   }
+
   // set verification code to empty string
   const resetResult = await storePasswordResetCode(connection, emailAddress, null)
   if (isError(resetResult)) {

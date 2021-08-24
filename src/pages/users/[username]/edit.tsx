@@ -8,103 +8,117 @@ import UserForm from "components/users/UserForm"
 import { updateUser, getUserById, getUserByUsername } from "useCases"
 import { isError } from "types/Result"
 import User from "types/User"
-import { useCsrfServerSideProps } from "hooks"
 import CsrfServerSidePropsContext from "types/CsrfServerSidePropsContext"
 import Form from "components/Form"
-import { GetServerSidePropsResult } from "next"
+import { GetServerSidePropsContext, GetServerSidePropsResult } from "next"
+import { withAuthentication, withCsrf, withMultipleServerSideProps } from "middleware"
+import { ParsedUrlQuery } from "querystring"
+import AuthenticationServerSidePropsContext from "types/AuthenticationServerSidePropsContext"
 
 const errorMessageMap = {
   unique_users_username_idx: "This user name has been taken please enter another"
 }
 
-export const getServerSideProps = useCsrfServerSideProps(async (context): Promise<GetServerSidePropsResult<Props>> => {
-  const { query, req, formData, csrfToken } = context as CsrfServerSidePropsContext
-  const connection = getConnection()
+export const getServerSideProps = withMultipleServerSideProps(
+  withAuthentication,
+  withCsrf,
+  async (context: GetServerSidePropsContext<ParsedUrlQuery>): Promise<GetServerSidePropsResult<Props>> => {
+    const { query, req, formData, csrfToken, currentUser } = context as CsrfServerSidePropsContext &
+      AuthenticationServerSidePropsContext
+    const connection = getConnection()
 
-  if (req.method === "POST") {
-    const userDetails: Partial<User> = formData
-    const user = await getUserById(connection, userDetails.id as number)
+    if (req.method === "POST") {
+      const userDetails: Partial<User> = formData
+      const user = await getUserById(connection, userDetails.id as number)
+
+      if (isError(user)) {
+        console.error(user)
+        return {
+          props: {
+            errorMessage: "Error getting user details please try again",
+            csrfToken,
+            currentUser
+          }
+        }
+      }
+
+      const formIsValid = userFormIsValid(userDetails)
+
+      if (formIsValid) {
+        const userUpdated = await updateUser(connection, userDetails)
+
+        if (isError(userUpdated)) {
+          console.error(userUpdated)
+
+          return {
+            props: {
+              errorMessage: (errorMessageMap as any)[(userUpdated as any).constraint],
+              csrfToken,
+              currentUser
+            }
+          }
+        }
+
+        const updatedUser = await getUserById(connection, userDetails.id as number)
+
+        if (isError(updatedUser)) {
+          console.error(updateUser)
+
+          return {
+            props: {
+              errorMessage: "There was an error retrieving the user details",
+              csrfToken,
+              currentUser
+            }
+          }
+        }
+
+        return {
+          props: {
+            successMessage: "The user was updated successfully",
+            user: updatedUser,
+            csrfToken,
+            currentUser
+          }
+        }
+      }
+      return {
+        props: {
+          errorMessage: "Please fill in all mandatory fields",
+          missingMandatory: true,
+          user: { ...user, ...userDetails },
+          csrfToken,
+          currentUser
+        }
+      }
+    }
+
+    const { username } = query
+    const user = await getUserByUsername(connection, username as string)
 
     if (isError(user)) {
       console.error(user)
-      return {
-        props: {
-          errorMessage: "Error getting user details please try again",
-          csrfToken
-        }
-      }
-    }
-
-    const formIsValid = userFormIsValid(userDetails)
-
-    if (formIsValid) {
-      const userUpdated = await updateUser(connection, userDetails)
-
-      if (isError(userUpdated)) {
-        console.error(userUpdated)
-
-        return {
-          props: {
-            errorMessage: (errorMessageMap as any)[(userUpdated as any).constraint],
-            csrfToken
-          }
-        }
-      }
-
-      const updatedUser = await getUserById(connection, userDetails.id as number)
-
-      if (isError(updatedUser)) {
-        console.error(updateUser)
-
-        return {
-          props: {
-            errorMessage: "There was an error retrieving the user details",
-            csrfToken
-          }
-        }
-      }
 
       return {
         props: {
-          successMessage: "The user was updated successfully",
-          user: updatedUser,
-          csrfToken
+          errorMessage: "Error retrieving user please go back and make sure you have the correct details",
+          missingMandatory: false,
+          csrfToken,
+          currentUser
         }
       }
     }
-    return {
-      props: {
-        errorMessage: "Please fill in all mandatory fields",
-        missingMandatory: true,
-        user: { ...user, ...userDetails },
-        csrfToken
-      }
-    }
-  }
-
-  const { username } = query
-  const user = await getUserByUsername(connection, username as string)
-
-  if (isError(user)) {
-    console.error(user)
 
     return {
       props: {
-        errorMessage: "Error retrieving user please go back and make sure you have the correct details",
         missingMandatory: false,
-        csrfToken
+        user,
+        csrfToken,
+        currentUser
       }
     }
   }
-
-  return {
-    props: {
-      missingMandatory: false,
-      user,
-      csrfToken
-    }
-  }
-})
+)
 
 interface Props {
   errorMessage?: string
@@ -112,14 +126,15 @@ interface Props {
   missingMandatory?: boolean
   user?: Partial<User> | null
   csrfToken: string
+  currentUser?: Partial<User>
 }
 
-const editUser = ({ errorMessage, successMessage, missingMandatory, user, csrfToken }: Props) => (
+const editUser = ({ errorMessage, successMessage, missingMandatory, user, csrfToken, currentUser }: Props) => (
   <>
     <Head>
       <title>{"Edit User"}</title>
     </Head>
-    <Layout>
+    <Layout user={currentUser}>
       <span id="event-name-error" className="govuk-error-message">
         {errorMessage}
       </span>

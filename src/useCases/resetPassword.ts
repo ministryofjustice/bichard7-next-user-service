@@ -11,8 +11,8 @@ export interface ResetPasswordOptions {
 
 export default async (connection: Database, options: ResetPasswordOptions): PromiseResult<void> => {
   const { emailAddress, passwordResetCode, newPassword } = options
-  const userPasswordResetCode = await getPasswordResetCode(connection, emailAddress)
 
+  const userPasswordResetCode = await getPasswordResetCode(connection, emailAddress)
   if (isError(userPasswordResetCode)) {
     return userPasswordResetCode
   }
@@ -22,7 +22,6 @@ export default async (connection: Database, options: ResetPasswordOptions): Prom
   }
 
   const updatePasswordResult = await updatePassword(connection, emailAddress, newPassword)
-
   if (isError(updatePasswordResult)) {
     return updatePasswordResult
   }
