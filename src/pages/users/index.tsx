@@ -115,6 +115,8 @@ const Users = ({ allUsers, csrfToken, currentUser, previousFilter, pageNumber, t
   const prevPage = new URL("/users", config.baseUrl)
   prevPage.searchParams.append("filter", previousFilter)
   prevPage.searchParams.append("page", (pageNumber - 1).toString())
+
+  const pageString = `    Page ${pageNumber + 1} of ${Math.ceil(totalUsers / config.maxUsersPerPage)}    `
   return (
     <>
       <Head>
@@ -145,7 +147,7 @@ const Users = ({ allUsers, csrfToken, currentUser, previousFilter, pageNumber, t
 
         <div className="govuk-hint">
           <Link href={prevPage.toString()}>{pageNumber > 0 && "< Prev"}</Link>
-          {pageNumber}
+          {pageString}
           <Link href={nextPage.toString()}>
             {pageNumber + 1 < (totalUsers - 1) / config.maxUsersPerPage && "Next >"}
           </Link>

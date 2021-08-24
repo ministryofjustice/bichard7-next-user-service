@@ -16,7 +16,8 @@ const getFilteredUsers = async (
         forenames,
         surname,
         phone_number,
-        email
+        email,
+        COUNT(*) OVER() as all_users
       FROM br7own.users
       WHERE deleted_at IS NULL
         AND (LOWER(username) LIKE LOWER($1) OR
