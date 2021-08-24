@@ -1,9 +1,6 @@
 /* eslint-disable import/first */
 jest.mock("lib/token/emailVerificationToken")
 
-import User from "types/User"
-import UserCreateDetails from "types/UserCreateDetails"
-import getConnection from "lib/getConnection"
 import createUser from "useCases/createUser"
 import createNewUserEmail from "useCases/createNewUserEmail"
 import { isError } from "types/Result"
@@ -11,28 +8,29 @@ import initialiseUserPassword from "useCases/initialiseUserPassword"
 import storePasswordResetCode from "useCases/storePasswordResetCode"
 import EmailResult from "types/EmailResult"
 import { generateEmailVerificationToken } from "lib/token/emailVerificationToken"
-import deleteDatabaseUser from "./deleteDatabaseUser"
-
-const connection = getConnection()
-
-const setupUser = {
-  username: "SetupUsername",
-  emailAddress: "SetupEmailAddress",
-  exclusionList: "SetupExclusionList",
-  inclusionList: "SetupInclusionList",
-  endorsedBy: "SetupEndorsedBy",
-  orgServes: "SetupOrgServes",
-  forenames: "SetupForenames",
-  postalAddress: "SetupPostalAddress",
-  postCode: "AS2 2SA",
-  phoneNumber: "SetupPhoneNumber"
-} as unknown as User
+import insertIntoTable from "../../testFixtures/database/insertIntoTable"
+import deleteFromTable from "../../testFixtures/database/deleteFromTable"
+import getTestConnection from "../../testFixtures/getTestConnection"
+import { Tables } from "../../testFixtures/database/types"
+import { users } from "../../testFixtures/database/data/users"
 
 const verificationCode = "123456"
 
+const mapUserWithVerficationCode = (users: any) =>
+  [users[0]].map((u) => ({
+    ...u,
+    password_reset_code: verificationCode
+  }))
+
 describe("AccountSetup", () => {
-  beforeAll(async () => {
-    await deleteDatabaseUser(connection, setupUser.username)
+  let connection: any
+
+  beforeAll(() => {
+    connection = getTestConnection()
+  })
+
+  beforeEach(async () => {
+    await deleteFromTable(Tables.Users)
   })
 
   afterAll(() => {
@@ -45,29 +43,25 @@ describe("AccountSetup", () => {
     >
     mockedGeneratePasswordResetToken.mockReturnValue("DUMMY_TOKEN")
 
-    const createUserDetails: UserCreateDetails = {
-      username: setupUser.username,
-      forenames: setupUser.forenames,
-      emailAddress: setupUser.emailAddress,
-      endorsedBy: setupUser.endorsedBy,
-      surname: setupUser.surname,
-      organisation: setupUser.orgServes,
-      postCode: setupUser.postCode,
-      phoneNumber: setupUser.phoneNumber,
-      postalAddress: setupUser.postalAddress
-    }
+    const user = [users[0]].map((u) => ({
+      username: u.username,
+      forenames: u.forenames,
+      emailAddress: u.email,
+      endorsedBy: u.endorsed_by,
+      surname: u.surname,
+      organisation: u.org_serves,
+      postCode: u.post_code,
+      phoneNumber: u.phone_number,
+      postalAddress: u.postal_address
+    }))[0]
 
-    const result = await createUser(connection, createUserDetails)
+    const result = await createUser(connection, user)
     expect(isError(result)).toBe(false)
 
-    const passwordSetCodeResult = await storePasswordResetCode(
-      connection,
-      createUserDetails.emailAddress,
-      verificationCode
-    )
+    const passwordSetCodeResult = await storePasswordResetCode(connection, "bichard01@example.com", verificationCode)
     expect(isError(passwordSetCodeResult)).toBe(false)
 
-    const newUserEmailResult = createNewUserEmail(createUserDetails, verificationCode)
+    const newUserEmailResult = createNewUserEmail(user, verificationCode)
     expect(isError(newUserEmailResult)).toBe(false)
 
     const { subject, body } = <EmailResult>newUserEmailResult
@@ -76,14 +70,21 @@ describe("AccountSetup", () => {
   })
 
   it("should be able to setup a password using the details from the email", async () => {
-    const result = await initialiseUserPassword(connection, setupUser.emailAddress, verificationCode, "NewPassword")
+    const user = mapUserWithVerficationCode(users)
+    await insertIntoTable(user)
+    const result = await initialiseUserPassword(connection, "bichard01@example.com", verificationCode, "NewPassword")
     expect(result).toBeUndefined()
   })
 
   it("should not be able to setup a password a second time using the same details", async () => {
+    const user = mapUserWithVerficationCode(users)
+    await insertIntoTable(user)
+
+    const _ = await initialiseUserPassword(connection, "bichard01@exmaple.com", verificationCode, "NewPassword")
+
     const secondResult = await initialiseUserPassword(
       connection,
-      setupUser.emailAddress,
+      "bichard01@exmaple.com",
       verificationCode,
       "NewPassword"
     )

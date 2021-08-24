@@ -1,8 +1,6 @@
-import getTestConnection from "../../testFixtures/getTestConnection"
-import { Tables } from "./types"
-import { getTableName } from "./helpers"
+import getTestConnection from "../getTestConnection"
 
-const insertIntoTable = async (tableName: Tables, data: any[]) => {
+const insertIntoTable = async (data: any[]) => {
   const connection = getTestConnection()
 
   const insertQuery = `
@@ -26,7 +24,9 @@ const insertIntoTable = async (tableName: Tables, data: any[]) => {
          phone_number, 
         old_password, 
         password, 
-        last_login_attempt
+        last_login_attempt,
+        deleted_at,
+        password_reset_code
       ) VALUES (
         $\{username\},
         $\{active\},
@@ -46,16 +46,16 @@ const insertIntoTable = async (tableName: Tables, data: any[]) => {
         $\{phone_number\},
         $\{old_password\},
         $\{password\},
-        $\{last_login_attempt\}
+        $\{last_login_attempt\},
+        $\{deleted_at},
+        $\{password_reset_code\}
   )
   `
-
-  const table = getTableName(tableName)
 
   const dataLen = data.length
 
   for (let i = 0; i < dataLen; i++) {
-    await connection.none(insertQuery, { table, ...data[i] })
+    await connection.none(insertQuery, { ...data[i] })
   }
 }
 

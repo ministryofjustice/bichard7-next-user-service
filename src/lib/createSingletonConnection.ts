@@ -1,17 +1,10 @@
 import pgPromise, { IDatabase } from "pg-promise"
 import DatabaseConfig from "./DatabaseConfig"
 
-const createSingletonConnection = (
-  name: string,
-  config: DatabaseConfig,
-  attachEvents: boolean
-): IDatabase<any> => {
-  const connectionName = Symbol.for(name) as Symbol
+const createSingletonConnection = (name: string, config: DatabaseConfig, attachEvents: boolean): IDatabase<any> => {
+  const connectionName = Symbol.for(name) as symbol
   let scope = (global as any)[connectionName as any]
   if (!scope) {
-
-    console.log('creates', scope)
-
     scope = pgPromise(
       attachEvents
         ? {
@@ -49,4 +42,4 @@ const createSingletonConnection = (
   return scope
 }
 
-export default createSingletonConnection 
+export default createSingletonConnection

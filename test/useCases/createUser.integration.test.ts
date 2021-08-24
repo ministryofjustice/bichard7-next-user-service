@@ -1,44 +1,23 @@
-import getConnection from "lib/getConnection"
 import UserCreateDetails from "types/UserDetails"
 import createUser from "useCases/createUser"
 import User from "types/User"
 import getUserByUsername from "useCases/getUserByUsername"
 import { isError } from "types/Result"
-import deleteDatabaseUser from "./deleteDatabaseUser"
-import insertDatabaseUser from "./insertDatabaseUser"
-
-const connection = getConnection()
-
-const previousUser = {
-  username: "CreateUsername",
-  emailAddress: "CreateEmailAddress",
-  exclusionList: "CreateExclusionList",
-  inclusionList: "CreateInclusionList",
-  endorsedBy: "CreateEndorsedBy",
-  orgServes: "CreateOrgServes",
-  forenames: "CreateForenames",
-  postalAddress: "CreatePostalAddress",
-  postCode: "AC1 1CA",
-  phoneNumber: "CreatePhoneNumber"
-} as unknown as User
-
-const newUser = {
-  username: "CreateUsername2",
-  emailAddress: "CreateEmailAddress2",
-  exclusionList: "CreateExclusionList2",
-  inclusionList: "CreateInclusionList2",
-  endorsedBy: "CreateEndorsedBy2",
-  orgServes: "CreateOrgServes2",
-  forenames: "CreateForenames2",
-  postalAddress: "CreatePostalAddress2",
-  postCode: "AC2 2CA",
-  phoneNumber: "CreatePhoneNumber2"
-} as unknown as User
+import { Tables } from "../../testFixtures/database/types"
+import insertIntoTable from "../../testFixtures/database/insertIntoTable"
+import deleteFromTable from "../../testFixtures/database/deleteFromTable"
+import getTestConnection from "../../testFixtures/getTestConnection"
+import { users } from "../../testFixtures/database/data/users"
 
 describe("DeleteUserUseCase", () => {
+  let connection: any
+
+  beforeAll(() => {
+    connection = getTestConnection()
+  })
+
   beforeEach(async () => {
-    await deleteDatabaseUser(connection, previousUser.username)
-    await await insertDatabaseUser(connection, previousUser, false, "")
+    await deleteFromTable(Tables.Users)
   })
 
   afterAll(() => {
@@ -46,18 +25,23 @@ describe("DeleteUserUseCase", () => {
   })
 
   it("should return error when adding a user with the same username as one from the database", async () => {
-    const expectedError = new Error(`Error: Username ${previousUser.username} already exists`)
+    insertIntoTable(users)
+    const user = users[0]
+
+    const expectedError = new Error(`Error: Username Bichard01 already exists`)
+
     const createUserDetails: UserCreateDetails = {
-      username: previousUser.username,
-      forenames: newUser.forenames,
-      emailAddress: newUser.emailAddress,
-      endorsedBy: newUser.endorsedBy,
-      surname: newUser.surname,
-      organisation: newUser.orgServes,
-      postCode: newUser.postCode,
-      phoneNumber: newUser.phoneNumber,
-      postalAddress: newUser.postalAddress
+      username: user.username,
+      forenames: user.forenames,
+      emailAddress: user.email,
+      endorsedBy: user.endorsed_by,
+      surname: user.surname,
+      organisation: user.org_serves,
+      postCode: user.post_code,
+      phoneNumber: user.phone_number,
+      postalAddress: user.postal_address
     }
+
     const result = await createUser(connection, createUserDetails)
     expect(isError(result)).toBe(true)
     const actualError = <Error>result
@@ -65,18 +49,22 @@ describe("DeleteUserUseCase", () => {
   })
 
   it("should return error when adding a user with the same email as one from the database", async () => {
-    const expectedError = new Error(`Error: Email address ${previousUser.emailAddress} already exists`)
+    insertIntoTable(users)
+    const user = users[0]
+
     const createUserDetails: UserCreateDetails = {
-      username: "NewCreateUsername",
-      forenames: previousUser.forenames,
-      emailAddress: previousUser.emailAddress,
-      endorsedBy: previousUser.endorsedBy,
-      surname: previousUser.surname,
-      organisation: previousUser.orgServes,
-      postCode: previousUser.postCode,
-      phoneNumber: previousUser.phoneNumber,
-      postalAddress: previousUser.postalAddress
+      username: `${user.username}zyx`,
+      forenames: `${user.forenames}xyz`,
+      emailAddress: user.email,
+      endorsedBy: `${user.endorsed_by}xyz`,
+      surname: `${user.surname}xyz`,
+      organisation: `${user.org_serves}xyz`,
+      postCode: `${user.post_code}xyz`,
+      phoneNumber: `${user.phone_number}xyz`,
+      postalAddress: `${user.postal_address}xyz`
     }
+
+    const expectedError = new Error(`Error: Email address bichard01@example.com already exists`)
     const result = await createUser(connection, createUserDetails)
     expect(isError(result)).toBe(true)
     const actualError = <Error>result
@@ -84,32 +72,33 @@ describe("DeleteUserUseCase", () => {
   })
 
   it("should be possible to add a user to my force", async () => {
-    await deleteDatabaseUser(connection, newUser.username)
+    const user = users[0]
+
     const createUserDetails: UserCreateDetails = {
-      username: newUser.username,
-      forenames: newUser.forenames,
-      emailAddress: newUser.emailAddress,
-      endorsedBy: newUser.endorsedBy,
-      surname: newUser.surname,
-      organisation: newUser.orgServes,
-      postCode: newUser.postCode,
-      phoneNumber: newUser.phoneNumber,
-      postalAddress: newUser.postalAddress
+      username: user.username,
+      forenames: user.forenames,
+      emailAddress: user.email,
+      endorsedBy: user.endorsed_by,
+      surname: user.surname,
+      organisation: user.org_serves,
+      postCode: user.post_code,
+      phoneNumber: user.phone_number,
+      postalAddress: user.postal_address
     }
     const createResult = await createUser(connection, createUserDetails)
     expect(isError(createResult)).toBe(false)
 
-    const getResult = await getUserByUsername(connection, newUser.username)
+    const getResult = await getUserByUsername(connection, user.username)
     expect(isError(getResult)).toBe(false)
 
     const actualUser = <User>getResult
-    expect(actualUser.emailAddress).toBe(newUser.emailAddress)
-    expect(actualUser.username).toBe(newUser.username)
-    expect(actualUser.endorsedBy).toBe(newUser.endorsedBy)
-    expect(actualUser.orgServes).toBe(newUser.orgServes)
-    expect(actualUser.forenames).toBe(newUser.forenames)
-    expect(actualUser.postalAddress).toBe(newUser.postalAddress)
-    expect(actualUser.postCode).toBe(newUser.postCode)
-    expect(actualUser.phoneNumber).toBe(newUser.phoneNumber)
+    expect(actualUser.emailAddress).toBe(user.email)
+    expect(actualUser.username).toBe(user.username)
+    expect(actualUser.endorsedBy).toBe(user.endorsed_by)
+    expect(actualUser.orgServes).toBe(user.org_serves)
+    expect(actualUser.forenames).toBe(user.forenames)
+    expect(actualUser.postalAddress).toBe(user.postal_address)
+    expect(actualUser.postCode).toBe(user.post_code)
+    expect(actualUser.phoneNumber).toBe(user.phone_number)
   })
 })
