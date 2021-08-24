@@ -23,6 +23,12 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
+import jwt from "jsonwebtoken"
+
+const tokenSecret = "OliverTwist"
+
+const generateLoginVerificationToken = (emailAddress, verificationCode) =>
+  jwt.sign({ emailAddress, verificationCode }, tokenSecret, { issuer: "Bichard" })
 
 Cypress.Commands.add("checkCsrf", (url, method) => {
   cy.request({
@@ -49,5 +55,27 @@ Cypress.Commands.add("checkCsrf", (url, method) => {
     }).then((withoutTokensResponse) => {
       expect(withoutTokensResponse.status).to.eq(403)
     })
+  })
+})
+
+Cypress.Commands.add("login", (emailAddress, password) => {
+  cy.visit("/login")
+  cy.get("input[type=email]").type(emailAddress)
+  cy.get("button[type=submit]").click()
+  cy.task("getVerificationCode", emailAddress).then((verificationCode) => {
+    const verificationToken = generateLoginVerificationToken(emailAddress, verificationCode)
+    cy.visit(`/login/verify?token=${verificationToken}`)
+    cy.get("input[type=password][name=password]").type(password)
+    cy.get("button[type=submit]").click()
+    cy.url().then((url) => {
+      expect(url).to.match(/^http:\/\/localhost:3000\/bichard-ui\/Authenticate/)
+      expect(url).to.match(/\?token=[A-Za-z0-9_.]+/)
+    })
+  })
+})
+
+Cypress.Commands.add("seedUsersAndLogin", (emailAddress, password) => {
+  cy.task("seedUsers").then(() => {
+    cy.login(emailAddress, password)
   })
 })
