@@ -2,7 +2,6 @@ import config from "lib/config"
 import wordListPath from "word-list"
 import fs from "fs"
 import crypto from "crypto"
-import { stringify } from "qs"
 
 const wordArray = fs
   .readFileSync(wordListPath, "utf8")
