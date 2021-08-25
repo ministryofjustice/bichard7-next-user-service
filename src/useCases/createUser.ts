@@ -10,10 +10,12 @@ export default async (connection: Database, userDetails: UserCreateDetails): Pro
   if (checkData.message !== "") {
     return new Error(checkData.message)
   }
+
   checkData = await isEmailUnique(connection, userDetails.emailAddress)
   if (checkData.message !== "") {
     return new Error(checkData.message)
   }
+
   const {
     username,
     forenames,
