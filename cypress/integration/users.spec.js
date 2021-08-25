@@ -43,6 +43,7 @@ describe("User", () => {
       cy.get("tbody tr:nth-child(1) td:nth-child(4)").should("have.text", "0800 222 333")
       cy.get("tbody tr:nth-child(1) td:nth-child(5)").should("have.text", "bichard02@example.com")
 
+      cy.get('input[id="filter"]').focus().clear()
       cy.get('input[id="filter"]').type("bichard03")
       cy.get('button[id="filter"]').click()
       cy.get("tbody tr:nth-child(1) td:nth-child(1)").should("have.text", "Bichard03")
