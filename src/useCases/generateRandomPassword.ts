@@ -2,6 +2,7 @@ import config from "lib/config"
 import wordListPath from "word-list"
 import fs from "fs"
 import crypto from "crypto"
+import { stringify } from "qs"
 
 const wordArray = fs
   .readFileSync(wordListPath, "utf8")
@@ -18,7 +19,7 @@ export default () => {
     const trueRandomIndex = crypto.randomInt(wordArray.length)
     const randomWord = wordArray[trueRandomIndex]
     i -= 1
-    result += randomWord
+    result += randomWord.charAt(0).toUpperCase() + randomWord.slice(1)
   }
 
   return result
