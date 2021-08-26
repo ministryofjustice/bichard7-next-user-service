@@ -1,7 +1,8 @@
 describe("Forgot password", () => {
   context("720p resolution", () => {
-    before(async () => {
-      await cy.task("seedUsers")
+    beforeEach(() => {
+      cy.task("deleteFromUsersTable")
+      cy.task("insertIntoUsersTable")
     })
 
     beforeEach(() => {
