@@ -5,8 +5,7 @@ import getTestConnection from "../../testFixtures/getTestConnection"
 import deleteFromTable from "../../testFixtures/database/deleteFromTable"
 import insertIntoTable from "../../testFixtures/database/insertIntoTable"
 import selectFromTable from "../../testFixtures/database/selectFromTable"
-import { Tables } from "../../testFixtures/database/types"
-import { users } from "../../testFixtures/database/data/users"
+import users from "../../testFixtures/database/data/users"
 
 describe("getFilteredUsers", () => {
   let connection: any
@@ -16,7 +15,7 @@ describe("getFilteredUsers", () => {
   })
 
   beforeAll(async () => {
-    await deleteFromTable(Tables.Users)
+    await deleteFromTable("users")
   })
 
   afterAll(() => {
@@ -28,7 +27,7 @@ describe("getFilteredUsers", () => {
     const result01 = await getFilteredUsers(connection, "")
     expect(isError(result01)).toBe(false)
 
-    const user01List = await selectFromTable(Tables.Users, "email", "bichard01@example.com")
+    const user01List = await selectFromTable("users", "email", "bichard01@example.com")
     const user01 = user01List[0]
 
     const result02 = await getFilteredUsers(connection, "Bichard01")
@@ -38,7 +37,7 @@ describe("getFilteredUsers", () => {
 
     expect(actualUser01.id).toBe(user01.id)
 
-    const user02List = await selectFromTable(Tables.Users, "email", "bichard02@example.com")
+    const user02List = await selectFromTable("users", "email", "bichard02@example.com")
     const user02 = user02List[0]
 
     const result03 = await getFilteredUsers(connection, "bichard02@example.com")
@@ -47,7 +46,7 @@ describe("getFilteredUsers", () => {
     const actualUser02 = <User>result03[0]
     expect(actualUser02.id).toBe(user02.id)
 
-    const user03List = await selectFromTable(Tables.Users, "email", "bichard03@example.com")
+    const user03List = await selectFromTable("users", "email", "bichard03@example.com")
     const user03 = user03List[0]
 
     const result04 = await getFilteredUsers(connection, "Surname 03")

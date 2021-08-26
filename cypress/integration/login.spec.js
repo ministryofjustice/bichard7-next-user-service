@@ -6,11 +6,12 @@ describe("Logging In", () => {
       cy.viewport(1280, 720)
     })
 
-    describe("Log in flow", () => {
-      before(async () => {
-        await cy.task("seedUsers")
-      })
+    beforeEach(() => {
+      cy.task("deleteFromUsersTable")
+      cy.task("insertIntoUsersTable")
+    })
 
+    describe("Log in flow", () => {
       it("should initially only ask for an email", () => {
         cy.visit("/login")
         cy.get("input[type=email]").should("be.visible")
@@ -59,66 +60,61 @@ describe("Logging In", () => {
         cy.get("input[type=password]").should("be.visible")
       })
 
-      it("should display an error message if an incorrect password is entered on the verification page", (done) => {
-        cy.task("seedUsers").then(() => {
-          const token = validToken("bichard01@example.com", "foobar")
-          cy.visit(`/login/verify?token=${token}`)
-          cy.get("input[type=password]").type("foobar")
-          cy.get("button[type=submit]").click()
-          cy.get(".govuk-error-summary").should("be.visible").contains("h2", "Invalid credentials")
-          done()
-        })
-      })
-
-      it("should display an error if password is correct but token contains wrong verification code", () => {
+      it("should display an error message if an incorrect password is entered on the verification page", () => {
         const token = validToken("bichard01@example.com", "foobar")
         cy.visit(`/login/verify?token=${token}`)
-        cy.get("input[type=password]").type("password")
+        cy.get("input[type=password]").type("foobar")
         cy.get("button[type=submit]").click()
         cy.get(".govuk-error-summary").should("be.visible").contains("h2", "Invalid credentials")
       })
+    })
 
-      it("should redirect to Bichard with a token when password and verification code are correct", (done) => {
-        const emailAddress = "bichard01@example.com"
-        const password = "password"
+    it("should display an error if password is correct but token contains wrong verification code", () => {
+      const token = validToken("bichard01@example.com", "foobar")
+      cy.visit(`/login/verify?token=${token}`)
+      cy.get("input[type=password]").type("password")
+      cy.get("button[type=submit]").click()
+      cy.get(".govuk-error-summary").should("be.visible").contains("h2", "Invalid credentials")
+    })
 
-        cy.task("seedUsers").then(() => {
-          cy.visit("/login")
-          cy.get("input[type=email]").type(emailAddress)
-          cy.get("button[type=submit]").click()
-          cy.get('h1[data-test="check-email"]').should("exist")
-          cy.task("getVerificationCode", emailAddress).then((verificationCode) => {
-            const token = validToken(emailAddress, verificationCode)
+    it("should redirect to Bichard with a token when password and verification code are correct", (done) => {
+      const emailAddress = "bichard01@example.com"
+      const password = "password"
 
-            cy.visit(`/login/verify?token=${token}`)
-            cy.get("input[type=password][name=password]").type(password)
-            cy.get("button[type=submit]").click()
-            cy.url().then((url) => {
-              expect(url).to.match(/^http:\/\/localhost:3000\/bichard-ui\/Authenticate/)
-              expect(url).to.match(/\?token=[A-Za-z0-9_.]+/)
+      cy.visit("/login")
+      cy.get("input[type=email]").type(emailAddress)
+      cy.get("button[type=submit]").click()
+      cy.get('h1[data-test="check-email"]').should("exist")
+      cy.task("getVerificationCode", emailAddress).then((verificationCode) => {
+        const token = validToken(emailAddress, verificationCode)
 
-              cy.visit("/")
-              cy.getCookie(".AUTH").then((cookie) => {
-                expect(cookie).is.not.undefined
-                const { value, httpOnly } = cookie
-                expect(value).is.not.undefined
-                expect(value).is.not.empty
-                expect(value).match(/.+\..+\..+/)
-                expect(httpOnly).to.be.true
-                done()
-              })
-            })
+        cy.visit(`/login/verify?token=${token}`)
+        cy.get("input[type=password][name=password]").type(password)
+        cy.get("button[type=submit]").click()
+        cy.url().then((url) => {
+          expect(url).to.match(/^http:\/\/localhost:3000\/bichard-ui\/Authenticate/)
+          expect(url).to.match(/\?token=[A-Za-z0-9_.]+/)
+
+          cy.visit("/")
+          cy.getCookie(".AUTH").then((cookie) => {
+            expect(cookie).is.not.undefined
+            const { value, httpOnly } = cookie
+            expect(value).is.not.undefined
+            expect(value).is.not.empty
+            expect(value).match(/.+\..+\..+/)
+            expect(httpOnly).to.be.true
+            done()
           })
         })
       })
+    })
 
-      it("should respond with forbidden response code when CSRF tokens are invalid in verify page", (done) => {
-        cy.checkCsrf("/login/verify", "POST").then(() => done())
-      })
+    it("should respond with forbidden response code when CSRF tokens are invalid in verify page", (done) => {
+      cy.checkCsrf("/login/verify", "POST").then(() => done())
+    })
 
-      it("should respond with forbidden response code when CSRF tokens are invalid in login page", (done) => {
-        cy.checkCsrf("/login", "POST").then(() => done())
-      })
+    it("should respond with forbidden response code when CSRF tokens are invalid in login page", (done) => {
+      cy.checkCsrf("/login", "POST").then(() => done())
     })
   })
 })

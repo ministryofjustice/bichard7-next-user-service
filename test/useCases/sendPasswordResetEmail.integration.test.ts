@@ -3,9 +3,8 @@ import getEmailer from "lib/getEmailer"
 import sendPasswordResetEmail from "useCases/sendPasswordResetEmail"
 import getTestConnection from "../../testFixtures/getTestConnection"
 import deleteFromTable from "../../testFixtures/database/deleteFromTable"
-import { Tables } from "../../testFixtures/database/types"
 import insertIntoTable from "../../testFixtures/database/insertIntoTable"
-import { users } from "../../testFixtures/database/data/users"
+import users from "../../testFixtures/database/data/users"
 
 jest.mock("lib/getEmailer")
 
@@ -17,7 +16,7 @@ describe("sendPasswordResetEmail", () => {
   })
 
   beforeEach(async () => {
-    await deleteFromTable(Tables.Users)
+    await deleteFromTable("users")
   })
 
   afterAll(() => {

@@ -1,11 +1,7 @@
 {
   "extends": "../tsconfig",
   "compilerOptions": {
-    "types": ["cypress"],
-    "isolatedModules": false
+    "types": ["cypress"]
   },
-  "include": ["**/*.*"],
-  "rootDir": [
-    "./"
-  ]
+  "include": ["**/*.*"]
 }

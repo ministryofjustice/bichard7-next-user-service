@@ -3,8 +3,7 @@ import getTestConnection from "../../testFixtures/getTestConnection"
 import deleteFromTable from "../../testFixtures/database/deleteFromTable"
 import insertIntoTable from "../../testFixtures/database/insertIntoTable"
 import selectFromTable from "../../testFixtures/database/selectFromTable"
-import { Tables } from "../../testFixtures/database/types"
-import { users } from "../../testFixtures/database/data/users"
+import users from "../../testFixtures/database/data/users"
 
 describe("DeleteUserUseCase", () => {
   let connection: any
@@ -14,7 +13,7 @@ describe("DeleteUserUseCase", () => {
   })
 
   beforeEach(async () => {
-    await deleteFromTable(Tables.Users)
+    await deleteFromTable("users")
   })
 
   afterAll(() => {
@@ -31,7 +30,7 @@ describe("DeleteUserUseCase", () => {
     const { isDeleted } = result
     expect(isDeleted).toBe(true)
 
-    const actualUserList = await selectFromTable(Tables.Users, "email", emailAddress)
+    const actualUserList = await selectFromTable("users", "email", emailAddress)
     const actualUser = actualUserList[0]
 
     expect(actualUser).toBeDefined()
@@ -58,7 +57,7 @@ describe("DeleteUserUseCase", () => {
     const { isDeleted } = result
     expect(isDeleted).toBe(true)
 
-    const actualUserList = await selectFromTable(Tables.Users, "email", emailAddress)
+    const actualUserList = await selectFromTable("users", "email", emailAddress)
     const actualUser = actualUserList[0]
 
     expect(actualUser).toBeDefined()

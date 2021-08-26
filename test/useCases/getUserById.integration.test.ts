@@ -2,10 +2,9 @@ import User from "types/User"
 import { isError } from "types/Result"
 import getUserById from "useCases/getUserById"
 import getTestConnection from "../../testFixtures/getTestConnection"
-import { Tables } from "../../testFixtures/database/types"
 import deleteFromTable from "../../testFixtures/database/deleteFromTable"
 import insertIntoTable from "../../testFixtures/database/insertIntoTable"
-import { users } from "../../testFixtures/database/data/users"
+import users from "../../testFixtures/database/data/users"
 import selectFromTable from "../../testFixtures/database/selectFromTable"
 
 describe("getUserById", () => {
@@ -16,7 +15,7 @@ describe("getUserById", () => {
   })
 
   beforeEach(async () => {
-    await deleteFromTable(Tables.Users)
+    await deleteFromTable("users")
   })
 
   afterAll(() => {
@@ -26,7 +25,7 @@ describe("getUserById", () => {
   it("should return user when user exists in the database", async () => {
     await insertIntoTable(users)
 
-    const selectedUserList = await selectFromTable(Tables.Users, "email", "bichard01@example.com")
+    const selectedUserList = await selectFromTable("users", "email", "bichard01@example.com")
     const selectedUser = selectedUserList[0]
     const user = await getUserById(connection, selectedUser.id)
 

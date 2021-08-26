@@ -7,16 +7,15 @@ import { resetPassword } from "useCases"
 import { ResetPasswordOptions } from "useCases/resetPassword"
 import storePasswordResetCode from "useCases/storePasswordResetCode"
 import getTestConnection from "../../testFixtures/getTestConnection"
-import { Tables } from "../../testFixtures/database/types"
 import deleteFromTable from "../../testFixtures/database/deleteFromTable"
 import insertIntoTable from "../../testFixtures/database/insertIntoTable"
-import { users } from "../../testFixtures/database/data/users"
+import users from "../../testFixtures/database/data/users"
 
 describe("resetPassword", () => {
   let connection: any
 
   beforeEach(async () => {
-    await deleteFromTable(Tables.Users)
+    await deleteFromTable("users")
   })
 
   beforeAll(() => {
@@ -49,6 +48,7 @@ describe("resetPassword", () => {
     expect(result).toBeUndefined()
 
     const actualUser = await connection.oneOrNone(
+      // eslint-disable-next-line no-useless-escape
       `SELECT username, password FROM br7own.users WHERE email = $\{email\}`,
       {
         email: emailAddress

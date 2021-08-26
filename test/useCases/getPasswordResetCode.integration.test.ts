@@ -3,9 +3,8 @@ import getPasswordResetCode from "useCases/getPasswordResetCode"
 import storePasswordResetCode from "useCases/storePasswordResetCode"
 import deleteFromTable from "../../testFixtures/database/deleteFromTable"
 import getTestConnection from "../../testFixtures/getTestConnection"
-import { Tables } from "../../testFixtures/database/types"
 import insertIntoTable from "../../testFixtures/database/insertIntoTable"
-import { users } from "../../testFixtures/database/data/users"
+import users from "../../testFixtures/database/data/users"
 
 describe("getPasswordResetCode", () => {
   let connection: any
@@ -15,7 +14,7 @@ describe("getPasswordResetCode", () => {
   })
 
   beforeEach(async () => {
-    await deleteFromTable(Tables.Users)
+    await deleteFromTable("users")
   })
 
   afterAll(() => {

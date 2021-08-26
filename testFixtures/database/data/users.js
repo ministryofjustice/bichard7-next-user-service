@@ -1,4 +1,4 @@
-export const users = [
+const users = [
   {
     username: "Bichard01",
     active: true,
@@ -69,3 +69,5 @@ export const users = [
     password_reset_code: null
   }
 ]
+
+export default users

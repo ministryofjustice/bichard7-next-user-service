@@ -4,9 +4,8 @@ import getUserByUsername from "useCases/getUserByUsername"
 import getTestConnection from "../../testFixtures/getTestConnection"
 import deleteFromTable from "../../testFixtures/database/deleteFromTable"
 import insertIntoTable from "../../testFixtures/database/insertIntoTable"
-import { users } from "../../testFixtures/database/data/users"
+import users from "../../testFixtures/database/data/users"
 import selectFromTable from "../../testFixtures/database/selectFromTable"
-import { Tables } from "../../testFixtures/database/types"
 
 describe("getUserByUsername", () => {
   let connection: any
@@ -16,7 +15,7 @@ describe("getUserByUsername", () => {
   })
 
   beforeEach(async () => {
-    await deleteFromTable(Tables.Users)
+    await deleteFromTable("users")
   })
 
   afterAll(() => {
@@ -27,7 +26,7 @@ describe("getUserByUsername", () => {
     await insertIntoTable(users)
 
     const user = await getUserByUsername(connection, "Bichard01")
-    const expectedUserList: any = await selectFromTable(Tables.Users, "email", "bichard01@example.com")
+    const expectedUserList: any = await selectFromTable("users", "email", "bichard01@example.com")
     const expectedUser = expectedUserList[0]
 
     expect(isError(user)).toBe(false)

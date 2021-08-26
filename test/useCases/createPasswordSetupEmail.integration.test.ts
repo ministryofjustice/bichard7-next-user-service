@@ -7,17 +7,16 @@ import { isError } from "types/Result"
 import initialiseUserPassword from "useCases/initialiseUserPassword"
 import storePasswordResetCode from "useCases/storePasswordResetCode"
 import { generateEmailVerificationToken } from "lib/token/emailVerificationToken"
+import EmailContent from "types/EmailContent"
 import insertIntoTable from "../../testFixtures/database/insertIntoTable"
 import deleteFromTable from "../../testFixtures/database/deleteFromTable"
 import getTestConnection from "../../testFixtures/getTestConnection"
-import { Tables } from "../../testFixtures/database/types"
-import { users } from "../../testFixtures/database/data/users"
-import EmailContent from "types/EmailContent"
+import users from "../../testFixtures/database/data/users"
 
 const verificationCode = "123456"
 
-const mapUserWithVerficationCode = (users: any) =>
-  [users[0]].map((u) => ({
+const mapUserWithVerficationCode = (usersList: any) =>
+  [usersList[0]].map((u) => ({
     ...u,
     password_reset_code: verificationCode
   }))
@@ -30,7 +29,7 @@ describe("AccountSetup", () => {
   })
 
   beforeEach(async () => {
-    await deleteFromTable(Tables.Users)
+    await deleteFromTable("users")
   })
 
   afterAll(() => {
@@ -72,7 +71,7 @@ describe("AccountSetup", () => {
 
   it("should be able to setup a password using the details from the email", async () => {
     await insertIntoTable(users)
-    const result = await initialiseUserPassword(connection, 'bichard01@example.com', verificationCode, "shorty")
+    const result = await initialiseUserPassword(connection, "bichard01@example.com", verificationCode, "shorty")
     expect(result).toBeDefined()
     const actualError = <Error>result
     expect(actualError.message).toBe("Error: Password is too short")
@@ -89,10 +88,9 @@ describe("AccountSetup", () => {
     const user = mapUserWithVerficationCode(users)
     await insertIntoTable(user)
 
-    const _ = await initialiseUserPassword(connection, "bichard01@exmaple.com", verificationCode, "NewPassword")
+    await initialiseUserPassword(connection, "bichard01@exmaple.com", verificationCode, "NewPassword")
 
     const secondResult = await initialiseUserPassword(
-// import insertDatabaseUser from "./insertDatabaseUser"
       connection,
       "bichard01@exmaple.com",
       verificationCode,

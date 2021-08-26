@@ -8,8 +8,7 @@ import parseFormData from "lib/parseFormData"
 import config from "lib/config"
 import getTestConnection from "../../testFixtures/getTestConnection"
 import deleteFromTable from "../../testFixtures/database/deleteFromTable"
-import { Tables } from "../../testFixtures/database/types"
-import { users } from "../../testFixtures/database/data/users"
+import users from "../../testFixtures/database/data/users"
 import insertIntoTable from "../../testFixtures/database/insertIntoTable"
 
 jest.mock("lib/parseFormData")
@@ -24,7 +23,7 @@ describe("Authenticator", () => {
   })
 
   beforeEach(async () => {
-    await deleteFromTable(Tables.Users)
+    await deleteFromTable("users")
 
     const salt = "aM1B7pQrWYUKFz47XN9Laj=="
     const hashedPassword = await hash(correctPassword, salt, 10)
@@ -85,6 +84,7 @@ describe("Authenticator", () => {
     expect(isError(isAuth)).toBe(false)
 
     // wait until config.incorrectDelay seconds have passed
+    /* eslint-disable no-useless-escape */
     await connection.none(
       `
       UPDATE br7own.users
@@ -92,6 +92,7 @@ describe("Authenticator", () => {
       WHERE email = $\{email\}`,
       { interval: config.incorrectDelay, email: emailAddress }
     )
+    /* eslint-disable no-useless-escape */
 
     // login a second time with same values
     isAuth = await authenticate(connection, emailAddress, correctPassword, verificationCode)

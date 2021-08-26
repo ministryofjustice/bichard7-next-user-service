@@ -11,7 +11,8 @@ const generateLoginVerificationToken = (emailAddress, verificationCode) =>
 describe("Reset password", () => {
   context("720p resolution", () => {
     before(() => {
-      cy.task("seedUsers")
+      cy.task("deleteFromUsersTable")
+      cy.task("insertIntoUsersTable")
     })
 
     beforeEach(() => {

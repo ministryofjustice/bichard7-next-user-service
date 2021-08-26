@@ -27,7 +27,7 @@ const createSingletonConnection = (name: string, config: DatabaseConfig, attachE
               }
             }
           }
-        : void 0
+        : {}
     )({
       host: config.host,
       port: config.port,

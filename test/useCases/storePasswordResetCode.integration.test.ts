@@ -3,9 +3,8 @@ import storePasswordResetCode from "useCases/storePasswordResetCode"
 import getTestConnection from "../../testFixtures/getTestConnection"
 import deleteFromTable from "../../testFixtures/database/deleteFromTable"
 import insertIntoTable from "../../testFixtures/database/insertIntoTable"
-import { users } from "../../testFixtures/database/data/users"
+import users from "../../testFixtures/database/data/users"
 import selectFromTable from "../../testFixtures/database/selectFromTable"
-import { Tables } from "../../testFixtures/database/types"
 
 describe("storePasswordResetCode", () => {
   let connection: any
@@ -15,7 +14,7 @@ describe("storePasswordResetCode", () => {
   })
 
   beforeEach(async () => {
-    await deleteFromTable(Tables.Users)
+    await deleteFromTable("users")
   })
 
   afterAll(() => {
@@ -30,7 +29,7 @@ describe("storePasswordResetCode", () => {
     const result = await storePasswordResetCode(connection, emailAddress, expectedPasswordResetCode)
     expect(isError(result)).toBe(false)
 
-    const actualUserList = await selectFromTable(Tables.Users, "email", emailAddress)
+    const actualUserList = await selectFromTable("users", "email", emailAddress)
     const actualUser = actualUserList[0]
 
     expect(actualUser).toBeDefined()

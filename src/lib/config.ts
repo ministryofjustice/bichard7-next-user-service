@@ -29,6 +29,7 @@ export interface UserServiceConfig {
   tokenQueryParamName: string
   tokenSecret: string
   verificationCodeLength: number
+  debugMode: string
 }
 
 const config: UserServiceConfig = {
@@ -48,6 +49,7 @@ const config: UserServiceConfig = {
   tokenQueryParamName: process.env.TOKEN_QUERY_PARAM_NAME ?? "token",
   tokenSecret: process.env.TOKEN_SECRET ?? "OliverTwist",
   verificationCodeLength: 6,
+  debugMode: "false",
   csrf: {
     tokenName: process.env.CSRF_COOKIE_NAME ?? "XSRF-TOKEN",
     cookieSecret: process.env.CSRF_TOKEN_SECRET ?? "OliverTwist1",

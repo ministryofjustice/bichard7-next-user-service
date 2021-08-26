@@ -2,9 +2,8 @@ import User from "types/User"
 import { isError } from "types/Result"
 import getUserByEmailAddress from "useCases/getUserByEmailAddress"
 import deleteFromTable from "../../testFixtures/database/deleteFromTable"
-import { Tables } from "../../testFixtures/database/types"
 import getTestConnection from "../../testFixtures/getTestConnection"
-import { users } from "../../testFixtures/database/data/users"
+import users from "../../testFixtures/database/data/users"
 import insertIntoTable from "../../testFixtures/database/insertIntoTable"
 
 describe("DeleteUserUseCase", () => {
@@ -15,7 +14,7 @@ describe("DeleteUserUseCase", () => {
   })
 
   beforeEach(async () => {
-    await deleteFromTable(Tables.Users)
+    await deleteFromTable("users")
   })
 
   afterAll(() => {

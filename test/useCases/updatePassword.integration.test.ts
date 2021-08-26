@@ -8,14 +8,13 @@ import getTestConnection from "../../testFixtures/getTestConnection"
 import deleteFromTable from "../../testFixtures/database/deleteFromTable"
 import insertIntoTable from "../../testFixtures/database/insertIntoTable"
 import selectFromTable from "../../testFixtures/database/selectFromTable"
-import { Tables } from "../../testFixtures/database/types"
-import { users } from "../../testFixtures/database/data/users"
+import users from "../../testFixtures/database/data/users"
 
 describe("updatePassword", () => {
   let connection: any
 
   beforeEach(async () => {
-    await deleteFromTable(Tables.Users)
+    await deleteFromTable("users")
   })
 
   beforeAll(() => {
@@ -37,7 +36,7 @@ describe("updatePassword", () => {
     const result = await updatePassword(connection, emailAddress, "CreatePasswordMocked")
     expect(isError(result)).toBe(false)
 
-    const actualUserList = await selectFromTable(Tables.Users, "email", emailAddress)
+    const actualUserList = await selectFromTable("users", "email", emailAddress)
     const actualUser = actualUserList[0]
 
     expect(actualUser).toBeDefined()

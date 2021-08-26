@@ -1,15 +1,12 @@
 import getTestConnection from "../getTestConnection"
-import { Tables } from "./types"
-import { getTableName, getWhereClause } from "./helpers"
+import { getTableName } from "./helpers"
 
-const deleteFromTable = async (tableName: Tables, whereColumn?: string, whereValue?: string) => {
+const deleteFromTable = async (tableName, whereColumn, whereValue) => {
   const connection = getTestConnection()
   const isWhereClause = whereColumn && whereValue
 
-  const deleteQuery = `
-    DELETE FROM $\{table\}
-    ${isWhereClause ? getWhereClause() : ""}
-  `
+  // eslint-disable-next-line no-useless-escape
+  const deleteQuery = `DELETE FROM $\{table\} ${isWhereClause ? `WHERE ${whereColumn} = $\{value\}` : ""}`
 
   const table = getTableName(tableName)
   const whereClause = isWhereClause ? { column: whereColumn, value: whereValue } : {}

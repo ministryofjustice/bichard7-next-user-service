@@ -1,8 +1,9 @@
 import getTestConnection from "../getTestConnection"
 
-const insertIntoTable = async (data: any[]) => {
+const insertIntoTable = async (data) => {
   const connection = getTestConnection()
 
+  /* eslint-disable no-useless-escape */
   const insertQuery = `
     INSERT INTO 
       br7own.users(
@@ -51,12 +52,17 @@ const insertIntoTable = async (data: any[]) => {
         $\{password_reset_code\}
   )
   `
+  /* eslint-disable no-useless-escape */
 
   const dataLen = data.length
 
+  /* eslint-disable */
   for (let i = 0; i < dataLen; i++) {
     await connection.none(insertQuery, { ...data[i] })
   }
+  /* eslint-disable */
+
+  return Promise.resolve()
 }
 
 export default insertIntoTable

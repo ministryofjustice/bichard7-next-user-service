@@ -3,11 +3,10 @@ import createUser from "useCases/createUser"
 import User from "types/User"
 import getUserByUsername from "useCases/getUserByUsername"
 import { isError } from "types/Result"
-import { Tables } from "../../testFixtures/database/types"
 import insertIntoTable from "../../testFixtures/database/insertIntoTable"
 import deleteFromTable from "../../testFixtures/database/deleteFromTable"
 import getTestConnection from "../../testFixtures/getTestConnection"
-import { users } from "../../testFixtures/database/data/users"
+import users from "../../testFixtures/database/data/users"
 
 describe("DeleteUserUseCase", () => {
   let connection: any
@@ -17,7 +16,7 @@ describe("DeleteUserUseCase", () => {
   })
 
   beforeEach(async () => {
-    await deleteFromTable(Tables.Users)
+    await deleteFromTable("users")
   })
 
   afterAll(() => {
