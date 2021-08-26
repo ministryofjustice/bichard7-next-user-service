@@ -1,6 +1,7 @@
 describe("Delete user", () => {
-  beforeEach(async () => {
-    await cy.task("seedUsers")
+  beforeEach(() => {
+    cy.task("deleteFromUsersTable")
+    cy.task("insertIntoUsersTable")
   })
 
   it("should delete the user when confirmation text is valid", () => {

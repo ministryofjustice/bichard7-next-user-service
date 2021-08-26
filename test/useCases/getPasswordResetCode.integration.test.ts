@@ -1,29 +1,20 @@
-import getConnection from "lib/getConnection"
 import { isError } from "types/Result"
-import User from "types/User"
 import getPasswordResetCode from "useCases/getPasswordResetCode"
 import storePasswordResetCode from "useCases/storePasswordResetCode"
-import deleteDatabaseUser from "./deleteDatabaseUser"
-import insertDatabaseUser from "./insertDatabaseUser"
-
-const connection = getConnection()
-
-const user = {
-  username: "gprc_username",
-  emailAddress: "gprc_emailAddress",
-  exclusionList: "gprc_exclusionList",
-  inclusionList: "gprc_inclusionList",
-  endorsedBy: "gprc_endorsedBy",
-  orgServes: "gprc_orgServes",
-  forenames: "gprc_forenames",
-  postalAddress: "gprc_postalAddress",
-  postCode: "QW2 2WQ",
-  phoneNumber: "gprc_phoneNumber"
-} as unknown as User
+import deleteFromTable from "../../testFixtures/database/deleteFromTable"
+import getTestConnection from "../../testFixtures/getTestConnection"
+import insertIntoTable from "../../testFixtures/database/insertIntoTable"
+import users from "../../testFixtures/database/data/users"
 
 describe("getPasswordResetCode", () => {
+  let connection: any
+
+  beforeAll(() => {
+    connection = getTestConnection()
+  })
+
   beforeEach(async () => {
-    await deleteDatabaseUser(connection, user.username)
+    await deleteFromTable("users")
   })
 
   afterAll(() => {
@@ -31,22 +22,24 @@ describe("getPasswordResetCode", () => {
   })
 
   it("should return password reset code when user exists", async () => {
-    await insertDatabaseUser(connection, user, false, "DummyPassword")
+    const emailAddress = "bichard01@example.com"
+    await insertIntoTable(users)
 
     const expectedPasswordResetCode = "664422"
-    await storePasswordResetCode(connection, user.emailAddress, expectedPasswordResetCode)
+    await storePasswordResetCode(connection, emailAddress, expectedPasswordResetCode)
 
-    const result = await getPasswordResetCode(connection, user.emailAddress)
+    const result = await getPasswordResetCode(connection, emailAddress)
 
     expect(isError(result)).toBe(false)
     expect(result).toBe(expectedPasswordResetCode)
   })
 
   it("should return error when user does not exist", async () => {
+    const emailAddress = "bichard01@example.com"
     const expectedPasswordResetCode = "664422"
-    await storePasswordResetCode(connection, user.emailAddress, expectedPasswordResetCode)
+    await storePasswordResetCode(connection, emailAddress, expectedPasswordResetCode)
 
-    const result = await getPasswordResetCode(connection, user.emailAddress)
+    const result = await getPasswordResetCode(connection, emailAddress)
 
     expect(isError(result)).toBe(true)
 
@@ -55,12 +48,18 @@ describe("getPasswordResetCode", () => {
   })
 
   it("should return error when user is deleted", async () => {
-    await insertDatabaseUser(connection, user, true, "DummyPassword")
+    const emailAddress = "bichard01@example.com"
+    const mappedUsers = users.map((u) => ({
+      ...u,
+      deleted_at: new Date()
+    }))
+
+    await insertIntoTable(mappedUsers)
 
     const expectedPasswordResetCode = "664422"
-    await storePasswordResetCode(connection, user.emailAddress, expectedPasswordResetCode)
+    await storePasswordResetCode(connection, emailAddress, expectedPasswordResetCode)
 
-    const result = await getPasswordResetCode(connection, user.emailAddress)
+    const result = await getPasswordResetCode(connection, emailAddress)
 
     expect(isError(result)).toBe(true)
 
