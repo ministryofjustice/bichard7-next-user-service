@@ -73,9 +73,3 @@ Cypress.Commands.add("login", (emailAddress, password) => {
     })
   })
 })
-
-Cypress.Commands.add("seedUsersAndLogin", (emailAddress, password) => {
-  cy.task("seedUsers").then(() => {
-    cy.login(emailAddress, password)
-  })
-})
