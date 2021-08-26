@@ -1,34 +1,25 @@
 /* eslint-disable import/first */
 jest.mock("lib/shiro")
 
-import getConnection from "lib/getConnection"
 import { createPassword } from "lib/shiro"
 import { isError } from "types/Result"
-import User from "types/User"
 import { resetPassword } from "useCases"
 import { ResetPasswordOptions } from "useCases/resetPassword"
 import storePasswordResetCode from "useCases/storePasswordResetCode"
-import deleteDatabaseUser from "./deleteDatabaseUser"
-import insertDatabaseUser from "./insertDatabaseUser"
-
-const connection = getConnection()
-
-const user = {
-  username: "rp_username",
-  emailAddress: "rp_emailAddress",
-  exclusionList: "rp_exclusionList",
-  inclusionList: "rp_inclusionList",
-  endorsedBy: "rp_endorsedBy",
-  orgServes: "rp_orgServes",
-  forenames: "rp_forenames",
-  postalAddress: "rp_postalAddress",
-  postCode: "QW2 2WQ",
-  phoneNumber: "rp_phoneNumber"
-} as unknown as User
+import getTestConnection from "../../testFixtures/getTestConnection"
+import deleteFromTable from "../../testFixtures/database/deleteFromTable"
+import insertIntoTable from "../../testFixtures/database/insertIntoTable"
+import users from "../../testFixtures/database/data/users"
 
 describe("resetPassword", () => {
+  let connection: any
+
   beforeEach(async () => {
-    await deleteDatabaseUser(connection, user.username)
+    await deleteFromTable("users")
+  })
+
+  beforeAll(() => {
+    connection = getTestConnection()
   })
 
   afterAll(() => {
@@ -36,17 +27,18 @@ describe("resetPassword", () => {
   })
 
   it("should reset password when password reset code is valid", async () => {
-    await insertDatabaseUser(connection, user, false, "DummyPassword")
+    await insertIntoTable(users)
+    const emailAddress = "bichard01@example.com"
 
     const passwordResetCode = "664422"
-    await storePasswordResetCode(connection, user.emailAddress, passwordResetCode)
+    await storePasswordResetCode(connection, emailAddress, passwordResetCode)
 
     const expectedPassword = "ExpectedPassword"
     const mockedCreatePassword = createPassword as jest.MockedFunction<typeof createPassword>
     mockedCreatePassword.mockResolvedValue(expectedPassword)
 
     const resetPasswordOptions: ResetPasswordOptions = {
-      emailAddress: user.emailAddress,
+      emailAddress,
       newPassword: "CreatePasswordMocked",
       passwordResetCode
     }
@@ -55,22 +47,27 @@ describe("resetPassword", () => {
     expect(isError(result)).toBe(false)
     expect(result).toBeUndefined()
 
-    const actualUser = await connection.oneOrNone(`SELECT username, password FROM br7own.users WHERE email = $1`, [
-      user.emailAddress
-    ])
+    const actualUser = await connection.oneOrNone(
+      // eslint-disable-next-line no-useless-escape
+      `SELECT username, password FROM br7own.users WHERE email = $\{email\}`,
+      {
+        email: emailAddress
+      }
+    )
 
     expect(actualUser).toBeDefined()
-    expect(actualUser.username).toBe(user.username)
+    expect(actualUser.username).toBe("Bichard01")
     expect(actualUser.password).toBe(expectedPassword)
   })
 
   it("should return error when password reset code is not valid", async () => {
-    await insertDatabaseUser(connection, user, false, "DummyPassword")
+    const emailAddress = "bichard01@example.com"
+    await insertIntoTable(users)
 
-    await storePasswordResetCode(connection, user.emailAddress, "664422")
+    await storePasswordResetCode(connection, emailAddress, "664422")
 
     const resetPasswordOptions: ResetPasswordOptions = {
-      emailAddress: user.emailAddress,
+      emailAddress,
       newPassword: "DummyPassword",
       passwordResetCode: "112233"
     }
@@ -97,10 +94,15 @@ describe("resetPassword", () => {
   })
 
   it("should return error when user is deleted", async () => {
-    await insertDatabaseUser(connection, user, true, "DummyPassword")
+    const deletedUsers = users.map((user) => ({
+      ...user,
+      deleted_at: new Date()
+    }))
+
+    await insertIntoTable(deletedUsers)
 
     const resetPasswordOptions: ResetPasswordOptions = {
-      emailAddress: user.emailAddress,
+      emailAddress: "@example.com",
       newPassword: "DummyPassword",
       passwordResetCode: "DummyCode"
     }
