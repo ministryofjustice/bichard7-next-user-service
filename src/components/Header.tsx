@@ -25,6 +25,7 @@ const HeaderLogo = () => {
       width="36"
       height="32" /><![endif]-->`
 
+  /* eslint-disable react/no-danger */
   return (
     <div className="govuk-header__logo">
       <a href="/" className="govuk-header__link govuk-header__link--homepage">
@@ -33,6 +34,7 @@ const HeaderLogo = () => {
       </a>
     </div>
   )
+  /* eslint-enable react/no-danger */
 }
 
 const Header = ({ serviceName, user }: HeaderProps) => (
