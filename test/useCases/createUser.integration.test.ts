@@ -24,7 +24,7 @@ describe("DeleteUserUseCase", () => {
   })
 
   it("should return error when adding a user with the same username as one from the database", async () => {
-    insertIntoTable(users)
+    await insertIntoTable(users)
     const user = users[0]
 
     const expectedError = new Error(`Error: Username Bichard01 already exists`)
@@ -48,7 +48,7 @@ describe("DeleteUserUseCase", () => {
   })
 
   it("should return error when adding a user with the same email as one from the database", async () => {
-    insertIntoTable(users)
+    await insertIntoTable(users)
     const user = users[0]
 
     const createUserDetails: UserCreateDetails = {
