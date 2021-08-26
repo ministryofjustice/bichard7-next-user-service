@@ -3,29 +3,23 @@ import { isError } from "types/Result"
 import User from "types/User"
 import getEmailer from "lib/getEmailer"
 import sendPasswordChangedEmail from "useCases/sendPasswordChangedEmail"
-import deleteDatabaseUser from "./deleteDatabaseUser"
-import insertDatabaseUser from "./insertDatabaseUser"
+import Database from "types/Database"
+import getTestConnection from "../../testFixtures/getTestConnection"
+import deleteFromTable from "../../testFixtures/database/deleteFromTable"
+import insertIntoTable from "../../testFixtures/database/insertIntoTable"
+import users from "../../testFixtures/database/data/users"
 
 jest.mock("lib/getEmailer")
 
-const connection = getConnection()
-
-const user = {
-  username: "spce_username",
-  emailAddress: "spce_emailAddress",
-  exclusionList: "spce_exclusionList",
-  inclusionList: "spce_inclusionList",
-  endorsedBy: "spce_endorsedBy",
-  orgServes: "spce_orgServes",
-  forenames: "spce_forenames",
-  postalAddress: "spce_postalAddress",
-  postCode: "ER3 3RE",
-  phoneNumber: "spce_phoneNumber"
-} as unknown as User
-
 describe("sendPasswordChangedEmail", () => {
+  let connection: Database
+
+  beforeAll(() => {
+    connection = getTestConnection()
+  })
+
   beforeEach(async () => {
-    await deleteDatabaseUser(connection, user.username)
+    await deleteFromTable("users")
   })
 
   afterAll(() => {
@@ -33,13 +27,13 @@ describe("sendPasswordChangedEmail", () => {
   })
 
   it("should send the email when user exists", async () => {
-    await insertDatabaseUser(connection, user, false, "DummyPassword")
+    await insertIntoTable(users)
 
     const mockedGetEmailer = getEmailer as jest.MockedFunction<typeof getEmailer>
     const mockedSendMail = jest.fn().mockResolvedValue(null)
     mockedGetEmailer.mockReturnValue({ sendMail: mockedSendMail })
 
-    const result = await sendPasswordChangedEmail(connection, user.emailAddress)
+    const result = await sendPasswordChangedEmail(connection, "bichard01@example.com")
 
     expect(isError(result)).toBe(false)
     expect(mockedSendMail).toHaveBeenCalledTimes(1)
@@ -50,27 +44,33 @@ describe("sendPasswordChangedEmail", () => {
     const mockedSendMail = jest.fn().mockResolvedValue(null)
     mockedGetEmailer.mockReturnValue({ sendMail: mockedSendMail })
 
-    const result = await sendPasswordChangedEmail(connection, user.emailAddress)
+    const result = await sendPasswordChangedEmail(connection, "bichard01@example.com")
 
     expect(isError(result)).toBe(false)
     expect(mockedSendMail).not.toHaveBeenCalled()
   })
 
   it("should not send email and not return error when user is deleted", async () => {
-    await insertDatabaseUser(connection, user, true, "DummyPassword")
+    const user = [users[0]].map((u) => ({
+      ...u,
+      deleted_at: new Date(),
+      password: "somepassword"
+    }))
+
+    await insertIntoTable(user)
 
     const mockedGetEmailer = getEmailer as jest.MockedFunction<typeof getEmailer>
     const mockedSendMail = jest.fn().mockResolvedValue(null)
     mockedGetEmailer.mockReturnValue({ sendMail: mockedSendMail })
 
-    const result = await sendPasswordChangedEmail(connection, user.emailAddress)
+    const result = await sendPasswordChangedEmail(connection, "bichard01@example.com")
 
     expect(isError(result)).toBe(false)
     expect(mockedSendMail).not.toHaveBeenCalled()
   })
 
   it("should return error when it fails to send the email", async () => {
-    await insertDatabaseUser(connection, user, false, "DummyPassword")
+    await insertIntoTable(users)
 
     const expectedError = Error("Expected error message")
     const mockedGetEmailer = getEmailer as jest.MockedFunction<typeof getEmailer>
@@ -80,7 +80,7 @@ describe("sendPasswordChangedEmail", () => {
     })
     mockedGetEmailer.mockReturnValue({ sendMail: mockedSendMail })
 
-    const result = await sendPasswordChangedEmail(connection, user.emailAddress)
+    const result = await sendPasswordChangedEmail(connection, "bichard01@example.com")
 
     expect(isError(result)).toBe(true)
 
