@@ -25,7 +25,7 @@ const getFilteredUsers = async (connection: Database, filter: string): Promise<P
     return error
   }
 
-  return users.map((r: any) => ({
+  return users.map((r: { [key: string]: string }) => ({
     id: r.id,
     username: r.username,
     forenames: r.forenames,

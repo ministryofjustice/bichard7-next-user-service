@@ -21,7 +21,7 @@ const getAllUsers = async (connection: Database): Promise<Partial<UserDetails>[]
     return error
   }
 
-  return users.map((r: any) => ({
+  return users.map((r: { [key: string]: string }) => ({
     username: r.username,
     forenames: r.forenames,
     surname: r.surname,
