@@ -42,6 +42,7 @@
       "rules": {
         "prettier/prettier": ["error"],
         "@typescript-eslint/ban-ts-comment": "off",
+        "no-console": "off",
         "no-plusplus": "off",
         "react/react-in-jsx-scope": "off",
         "react/jsx-curly-brace-presence": ["error", { "props": "ignore", "children": "always"}],
@@ -71,6 +72,7 @@
     {
       "files": ["cypress/**/*.js"],
       "rules": {
+        "no-console": "off",
         "no-unused-expressions": "off"
       }
     }
