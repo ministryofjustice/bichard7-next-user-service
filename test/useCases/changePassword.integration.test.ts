@@ -1,7 +1,5 @@
-import getConnection from "lib/getConnection"
-import { compare, createPassword } from "lib/shiro"
+import { compare } from "lib/shiro"
 import { isError } from "types/Result"
-import User from "types/User"
 import { changePassword } from "useCases"
 import Database from "types/Database"
 import insertIntoTable from "../../testFixtures/database/insertIntoTable"

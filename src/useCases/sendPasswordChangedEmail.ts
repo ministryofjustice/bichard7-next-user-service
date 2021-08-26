@@ -16,14 +16,14 @@ export default async (connection: Database, emailAddress: string): PromiseResult
     return undefined
   }
 
-  const email = createPasswordChangedEmail(user)
+  const emailContent = createPasswordChangedEmail(user)
 
   const emailer = getEmailer()
   return emailer
     .sendMail({
       from: config.emailFrom,
       to: emailAddress,
-      ...email
+      ...emailContent
     })
     .catch((error: Error) => error)
 }

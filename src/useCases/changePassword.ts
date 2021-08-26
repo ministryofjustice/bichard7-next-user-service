@@ -3,7 +3,7 @@ import { isError, PromiseResult } from "types/Result"
 import checkPassword from "./checkPassword"
 import passwordSecurityCheck from "./passwordSecurityCheck"
 import sendPasswordChangedEmail from "./sendPasswordChangedEmail"
-import updateUserPassword from "./updateUserPassword"
+import updatePassword from "./updatePassword"
 
 export default async (
   connection: Database,
@@ -28,10 +28,10 @@ export default async (
     return Error("Error: Your current password is incorrect.")
   }
 
-  const updateUserPasswordResult = await updateUserPassword(connection, emailAddress, newPassword)
+  const updatePasswordResult = await updatePassword(connection, emailAddress, newPassword)
 
-  if (isError(updateUserPasswordResult)) {
-    console.error(updateUserPasswordResult)
+  if (isError(updatePasswordResult)) {
+    console.error(updatePasswordResult)
     return Error("Error: Could not update password.")
   }
 
