@@ -1,11 +1,13 @@
 import User from "types/User"
 import { isError } from "types/Result"
 import getFilteredUsers from "useCases/getFilteredUsers"
+import config from "lib/config"
 import getTestConnection from "../../testFixtures/getTestConnection"
 import deleteFromTable from "../../testFixtures/database/deleteFromTable"
 import insertIntoTable from "../../testFixtures/database/insertIntoTable"
 import selectFromTable from "../../testFixtures/database/selectFromTable"
 import users from "../../testFixtures/database/data/users"
+import manyUsers from "../../testFixtures/database/data/manyUsers"
 
 describe("getFilteredUsers", () => {
   let connection: any
@@ -60,5 +62,24 @@ describe("getFilteredUsers", () => {
     const filterResult = await getFilteredUsers(connection, "Filter2Surname")
     expect(isError(filterResult)).toBe(false)
     expect(filterResult.result.length).toBe(0)
+  })
+
+  it("should return a paginated style result", async () => {
+    await deleteFromTable("users")
+    await insertIntoTable(manyUsers)
+    const fullListResult = await getFilteredUsers(connection, "")
+    expect(isError(fullListResult)).toBe(false)
+    expect(fullListResult.totalElements).toBe("12") // total number of users that match the filter
+    expect(fullListResult.result.length).toBe(config.maxUsersPerPage) // total number of users returned for paginated view
+
+    const getSecondPageResult = await getFilteredUsers(connection, "", 1)
+    expect(isError(getSecondPageResult)).toBe(false)
+    expect(getSecondPageResult.totalElements).toBe("12") // total number of users that match the filter
+    expect(getSecondPageResult.result.length).toBe(12 - config.maxUsersPerPage) // total number of users returned for paginated view
+
+    const getFilteredResult = await getFilteredUsers(connection, "bichard0")
+    expect(isError(getFilteredResult)).toBe(false)
+    expect(getFilteredResult.totalElements).toBe("9") // total number of users that match the filter
+    expect(getFilteredResult.result.length).toBe(9) // total number of users returned for paginated view
   })
 })

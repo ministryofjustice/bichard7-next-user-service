@@ -144,9 +144,11 @@ const Users = ({ allUsers, csrfToken, currentUser, previousFilter, pageNumber, t
         )}
 
         <div className="govuk-hint">
-          <Link href={prevPage.toString()}>{pageNumber > 0 && "< Prev"}</Link>
+          <Link href={prevPage.toString()} data-test="Prev">
+            {pageNumber > 0 && "< Prev"}
+          </Link>
           {pageString}
-          <Link href={nextPage.toString()}>
+          <Link href={nextPage.toString()} data-test="Next">
             {pageNumber + 1 < (totalUsers - 1) / config.maxUsersPerPage && "Next >"}
           </Link>
         </div>
