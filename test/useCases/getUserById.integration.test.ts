@@ -49,7 +49,15 @@ describe("getUserById", () => {
   })
 
   it("should return error when user is deleted", async () => {
-    const result = await getUserById(connection, 0)
+    const mappedUsers = users.map((u) => ({
+      ...u,
+      deleted_at: new Date()
+    }))
+
+    await insertIntoTable(mappedUsers)
+    const usersList: any = await selectFromTable("users", "email", "bichard01@example.com")
+    const user = usersList[0]
+    const result = await getUserById(connection, user.id)
     expect((result as any).message).toBe("No data returned from the query.")
   })
 })

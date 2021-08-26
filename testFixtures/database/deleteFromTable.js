@@ -5,8 +5,11 @@ const deleteFromTable = async (tableName, whereColumn, whereValue) => {
   const connection = getTestConnection()
   const isWhereClause = whereColumn && whereValue
 
-  // eslint-disable-next-line no-useless-escape
-  const deleteQuery = `DELETE FROM $\{table\} ${isWhereClause ? `WHERE ${whereColumn} = $\{value\}` : ""}`
+  /* eslint-disable no-useless-escape */
+  const deleteQuery = `DELETE FROM br7own.users_groups; DELETE FROM $\{table\} ${
+    isWhereClause ? `WHERE ${whereColumn} = $\{value\}` : ""
+  }`
+  /* eslint-disable no-useless-escape */
 
   const table = getTableName(tableName)
   const whereClause = isWhereClause ? { column: whereColumn, value: whereValue } : {}

@@ -107,7 +107,6 @@ workflows:
       - integration_test:
           requires:
             - build
-      # Disabled until we complete test fixtures work
-      #- ui_test:
-          #requires:
-            #- build
+      - ui_test:
+          requires:
+            - build
