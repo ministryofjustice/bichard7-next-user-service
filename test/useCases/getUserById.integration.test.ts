@@ -1,30 +1,21 @@
-import getConnection from "lib/getConnection"
 import User from "types/User"
 import { isError } from "types/Result"
 import getUserById from "useCases/getUserById"
-import insertDatabaseUser from "./insertDatabaseUser"
-import deleteDatabaseUserById from "./deleteDatabaseUserById"
-
-const connection = getConnection()
-
-const expectedUser = {
-  id: 1234,
-  username: "DummyUsername",
-  emailAddress: "DummyEmailAddress",
-  endorsedBy: "DummyEndorsedBy",
-  orgServes: "DummyOrgServes",
-  forenames: "DummyForenames",
-  postalAddress: "DummyPostalAddress",
-  exclusionList: "exclusionList",
-  inclusionList: "inclusionList",
-  postCode: "AB1 1BA",
-  phoneNumber: "DummyPhoneNumber",
-  surname: "DummuSurname"
-} as unknown as User
+import getTestConnection from "../../testFixtures/getTestConnection"
+import deleteFromTable from "../../testFixtures/database/deleteFromTable"
+import insertIntoTable from "../../testFixtures/database/insertIntoTable"
+import users from "../../testFixtures/database/data/users"
+import selectFromTable from "../../testFixtures/database/selectFromTable"
 
 describe("getUserById", () => {
+  let connection: any
+
+  beforeAll(() => {
+    connection = getTestConnection()
+  })
+
   beforeEach(async () => {
-    await deleteDatabaseUserById(connection, expectedUser.id)
+    await deleteFromTable("users")
   })
 
   afterAll(() => {
@@ -32,35 +23,41 @@ describe("getUserById", () => {
   })
 
   it("should return user when user exists in the database", async () => {
-    await insertDatabaseUser(connection, expectedUser, false, "")
+    await insertIntoTable(users)
 
-    const result = await getUserById(connection, expectedUser.id)
+    const selectedUserList = await selectFromTable("users", "email", "bichard01@example.com")
+    const selectedUser = selectedUserList[0]
+    const user = await getUserById(connection, selectedUser.id)
 
-    expect(isError(result)).toBe(false)
+    expect(isError(user)).toBe(false)
 
-    const actualUser = <User>result
-    expect(actualUser.id).toBe(1234)
-    expect(actualUser.emailAddress).toBe(expectedUser.emailAddress)
-    expect(actualUser.username).toBe(expectedUser.username)
-    expect(actualUser.endorsedBy).toBe(expectedUser.endorsedBy)
-    expect(actualUser.orgServes).toBe(expectedUser.orgServes)
-    expect(actualUser.forenames).toBe(expectedUser.forenames)
-    expect(actualUser.postalAddress).toBe(expectedUser.postalAddress)
-    expect(actualUser.postCode).toBe(expectedUser.postCode)
-    expect(actualUser.phoneNumber).toBe(expectedUser.phoneNumber)
+    const actualUser = <User>user
+    expect(actualUser.id).toBe(selectedUser.id)
+    expect(actualUser.emailAddress).toBe(selectedUser.email)
+    expect(actualUser.username).toBe(selectedUser.username)
+    expect(actualUser.endorsedBy).toBe(selectedUser.endorsed_by)
+    expect(actualUser.orgServes).toBe(selectedUser.org_serves)
+    expect(actualUser.forenames).toBe(selectedUser.forenames)
+    expect(actualUser.postalAddress).toBe(selectedUser.postal_address)
+    expect(actualUser.postCode).toBe(selectedUser.post_code)
+    expect(actualUser.phoneNumber).toBe(selectedUser.phone_number)
   })
 
   it("should return error when user does not exist in the database", async () => {
     const result = await getUserById(connection, 0)
-
     expect((result as any).message).toBe("No data returned from the query.")
   })
 
   it("should return error when user is deleted", async () => {
-    await insertDatabaseUser(connection, expectedUser, true, "")
+    const mappedUsers = users.map((u) => ({
+      ...u,
+      deleted_at: new Date()
+    }))
 
-    const result = await getUserById(connection, expectedUser.id)
-
+    await insertIntoTable(mappedUsers)
+    const usersList: any = await selectFromTable("users", "email", "bichard01@example.com")
+    const user = usersList[0]
+    const result = await getUserById(connection, user.id)
     expect((result as any).message).toBe("No data returned from the query.")
   })
 })

@@ -30,6 +30,7 @@ export interface UserServiceConfig {
   tokenSecret: string
   maxUsersPerPage: number
   verificationCodeLength: number
+  debugMode: string
 }
 
 const config: UserServiceConfig = {
@@ -50,6 +51,7 @@ const config: UserServiceConfig = {
   tokenSecret: process.env.TOKEN_SECRET ?? "OliverTwist",
   maxUsersPerPage: 10,
   verificationCodeLength: 6,
+  debugMode: "false",
   csrf: {
     tokenName: process.env.CSRF_COOKIE_NAME ?? "XSRF-TOKEN",
     cookieSecret: process.env.CSRF_TOKEN_SECRET ?? "OliverTwist1",

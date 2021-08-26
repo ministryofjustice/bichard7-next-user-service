@@ -1,6 +1,7 @@
 describe("Edit user", () => {
-  before(async () => {
-    await cy.task("seedUsers")
+  before(() => {
+    cy.task("deleteFromUsersTable")
+    cy.task("insertIntoUsersTable")
   })
 
   it("should display correct user details when navigating to the edit user page", () => {
