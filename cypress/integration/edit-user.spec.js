@@ -27,8 +27,6 @@ describe("Edit user", () => {
     cy.get('input[id="forenames"]').type("forename change 01")
     cy.get('input[id="phoneNumber"]').clear()
     cy.get('input[id="phoneNumber"]').type("0300 111 222")
-    cy.get('input[id="emailAddress"]').clear()
-    cy.get('input[id="emailAddress"]').type("change-email@example.com")
     cy.get('input[id="postalAddress"]').clear()
     cy.get('input[id="postalAddress"]').type("change postal address")
     cy.get('input[id="postCode"]').clear()
@@ -42,7 +40,7 @@ describe("Edit user", () => {
     cy.get('input[id="username"]').should("have.value", "Bichard 06")
     cy.get('input[id="forenames"]').should("have.value", "forename change 01")
     cy.get('input[id="phoneNumber"]').should("have.value", "0300 111 222")
-    cy.get('input[id="emailAddress"]').should("have.value", "change-email@example.com")
+    cy.get('input[id="emailAddress"]').should("have.value", "bichard01@example.com")
     cy.get('input[id="postalAddress"]').should("have.value", "change postal address")
     cy.get('input[id="postCode"]').should("have.value", "WWW 123")
     cy.get('input[id="endorsedBy"]').should("have.value", "change endorsed_by")
@@ -60,5 +58,10 @@ describe("Edit user", () => {
 
   it("should respond with forbidden response code when CSRF tokens are invalid in edit page", (done) => {
     cy.checkCsrf("/users/Bichard01/edit", "POST").then(() => done())
+  })
+
+  it("should have the email text input field disabled", () => {
+    cy.visit("users/Bichard02/edit")
+    cy.get('input[value="bichard02@example.com"]').invoke("attr", "disabled").should("eq", "disabled")
   })
 })

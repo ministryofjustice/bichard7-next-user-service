@@ -2,34 +2,26 @@ import Database from "types/Database"
 import User from "types/User"
 
 const updateUser = async (connection: Database, userDetails: Partial<User>): Promise<boolean | Error> => {
+  /* eslint-disable no-useless-escape */
   const updateUserQuery = `
     UPDATE br7own.users
 	    SET 
-        username=$2, 
-        forenames=$3, 
-        surname=$4, 
-        phone_number=$5, 
-        post_code=$6, 
-        postal_address=$7, 
-        endorsed_by=$8,
-        org_serves=$9,
-        email=$10
-	    WHERE id = $1
+        username=$\{username\}, 
+        forenames=$\{forenames\}, 
+        surname=$\{surname\}, 
+        phone_number=$\{phoneNumber\}, 
+        post_code=$\{postCode\}, 
+        postal_address=$\{postalAddress\}, 
+        endorsed_by=$\{endorsedBy\},
+        org_serves=$\{orgServes\}
+	    WHERE id = $\{id\}
     `
+  /* eslint-disable no-useless-escape */
 
   try {
-    const rowsUpdated = await connection.result(updateUserQuery, [
-      userDetails.id,
-      userDetails.username,
-      userDetails.forenames,
-      userDetails.surname,
-      userDetails.phoneNumber,
-      userDetails.postCode,
-      userDetails.postalAddress,
-      userDetails.endorsedBy,
-      userDetails.orgServes,
-      userDetails.emailAddress
-    ])
+    const rowsUpdated = await connection.result(updateUserQuery, {
+      ...userDetails
+    })
 
     if (rowsUpdated.rowCount === 0) {
       return Error("Error updating user")

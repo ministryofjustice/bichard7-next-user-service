@@ -15,6 +15,7 @@ interface Props {
   missingSurname?: boolean
   missingPhoneNumber?: boolean
   missingEmail?: boolean
+  disableEmailField?: boolean
 }
 
 const UserForm = ({
@@ -31,7 +32,8 @@ const UserForm = ({
   missingForenames,
   missingSurname,
   missingPhoneNumber,
-  missingEmail
+  missingEmail,
+  disableEmailField
 }: Props) => (
   <>
     <TextInput
@@ -69,10 +71,11 @@ const UserForm = ({
     <TextInput
       id="emailAddress"
       name="emailAddress"
-      label="Email address *"
+      label="Email address"
       type="email"
       defaultValue={emailAddress}
       isError={missingEmail}
+      disabled={disableEmailField}
     />
 
     <TextInput
