@@ -112,6 +112,14 @@ describe("User", () => {
       })
     })
 
+    it("should respond with forbidden response code when CSRF tokens are invalid in new password page", (done) => {
+      const emailAddress = "bemail1@example.com"
+      cy.task("getPasswordResetCode", emailAddress).then((passwordResetCode) => {
+        const newPasswordToken = generateNewPasswordToken(emailAddress, passwordResetCode)
+        cy.checkCsrf(`/login/new-password?token=${newPasswordToken}`, "POST").then(() => done())
+      })
+    })
+
     it("should not possible for the new user to set their password a second time using the same link", () => {
       const emailAddress = "bemail1@example.com"
       const newPassword = "Test@123456"

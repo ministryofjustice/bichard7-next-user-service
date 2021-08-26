@@ -47,7 +47,7 @@ const Header = ({ serviceName, user }: HeaderProps) => (
           <nav>
             <ul id="navigation" className="govuk-header__navigation " aria-label="Navigation menu">
               <li className="govuk-header__navigation-item govuk-header__navigation-item--active">
-                <a className="govuk-header__link" href="/change-password">
+                <a className="govuk-header__link" href="/account/change-password">
                   {"Change Password"}
                 </a>
               </li>
