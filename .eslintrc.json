@@ -22,37 +22,34 @@
     },
     {
       "files": ["**/*.ts", "**/*.tsx"],
-      "parser": "@typescript-eslint/parser",
-      "parserOptions": {
-        "ecmaVersion": 2020,
-        "sourceType": "module",
-        "project": "tsconfig.json"
-      },
-      "plugins": [
-        "@typescript-eslint",
-        "jsx-a11y",
-        "filenames"
-      ],
       "extends": [
         "airbnb-typescript",
+        "next",
         "plugin:@typescript-eslint/recommended",
         "plugin:jsx-a11y/recommended",
         "plugin:prettier/recommended"
       ],
+      "parserOptions": {
+        "ecmaVersion": 2020,
+        "project": "tsconfig.json"
+      },
+      "plugins": [
+        "@typescript-eslint",
+        "filenames"
+      ],
       "rules": {
-        "prettier/prettier": ["error"],
-        "@typescript-eslint/ban-ts-comment": "off",
+        "curly": ["error", "all"],
         "no-console": "off",
         "no-plusplus": "off",
-        "react/react-in-jsx-scope": "off",
-        "react/jsx-curly-brace-presence": ["error", { "props": "ignore", "children": "always"}],
-        "react/require-default-props": ["off"],
-        "curly": ["error", "all"],
         "require-await": "error",
         "filenames/match-exported": "error",
-        "import/prefer-default-export": "error",
-        "import/no-cycle": "error",
         "import/first": "error",
+        "import/no-cycle": "error",
+        "import/prefer-default-export": "error",
+        "prettier/prettier": ["error"],
+        "react/jsx-curly-brace-presence": ["error", { "props": "ignore", "children": "always"}],
+        "react/require-default-props": ["off"],
+        "@typescript-eslint/ban-ts-comment": "off",
         "@typescript-eslint/explicit-module-boundary-types": ["off"],
         "@typescript-eslint/naming-convention": [
           "error",
