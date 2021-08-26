@@ -2,7 +2,7 @@ import Database from "types/Database"
 import { isError, PromiseResult } from "types/Result"
 import addPasswordHistory from "./addPasswordHistory"
 import getPasswordResetCode from "./getPasswordResetCode"
-import getUserByEmailAddress from "./getUserByEmailAddress"
+import getUserLoginDetailsByEmailAddress from "./getUserLoginDetailsByEmailAddress"
 import updatePassword from "./updatePassword"
 
 export interface ResetPasswordOptions {
@@ -23,7 +23,7 @@ export default async (connection: Database, options: ResetPasswordOptions): Prom
     return Error("Password reset code does not match")
   }
 
-  const getUserResult = await getUserByEmailAddress(connection, emailAddress)
+  const getUserResult = await getUserLoginDetailsByEmailAddress(connection, emailAddress)
   if (isError(getUserResult)) {
     return getUserResult
   }
@@ -37,7 +37,7 @@ export default async (connection: Database, options: ResetPasswordOptions): Prom
     return updatePasswordResult
   }
 
-  const addHistoricalPassword = await addPasswordHistory(connection, getUserResult.id, "")
+  const addHistoricalPassword = await addPasswordHistory(connection, getUserResult.id, getUserResult.password)
   if (isError(addHistoricalPassword)) {
     return addHistoricalPassword
   }
