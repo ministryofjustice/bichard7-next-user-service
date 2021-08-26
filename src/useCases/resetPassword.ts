@@ -1,6 +1,7 @@
 import Database from "types/Database"
 import { isError, PromiseResult } from "types/Result"
 import addPasswordHistory from "./addPasswordHistory"
+import checkPasswordIsNew from "./checkPasswordIsNew"
 import getPasswordResetCode from "./getPasswordResetCode"
 import getUserByEmailAddress from "./getUserByEmailAddress"
 import updatePassword from "./updatePassword"
@@ -30,6 +31,11 @@ export default async (connection: Database, options: ResetPasswordOptions): Prom
 
   if (getUserResult === null) {
     return Error("Cannot find user")
+  }
+
+  const checkPasswordIsNewResult = await checkPasswordIsNew(connection, getUserResult.id, newPassword)
+  if (isError(checkPasswordIsNewResult)) {
+    return checkPasswordIsNewResult
   }
 
   const updatePasswordResult = await updatePassword(connection, emailAddress, newPassword)
