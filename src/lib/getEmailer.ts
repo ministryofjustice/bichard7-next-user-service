@@ -15,7 +15,6 @@ const getSmtpMailer = (): Emailer =>
   })
 
 const getConsoleMailer = (): Emailer => ({
-  /* eslint-disable no-console */
   // eslint-disable-next-line require-await
   sendMail: async (email: Email) => {
     console.log(`From:    ${email.from}`)

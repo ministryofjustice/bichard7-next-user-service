@@ -1,63 +1,23 @@
-import getConnection from "lib/getConnection"
 import User from "types/User"
 import { isError } from "types/Result"
 import getFilteredUsers from "useCases/getFilteredUsers"
-import { deleteUser } from "useCases"
-import insertDatabaseUser from "./insertDatabaseUser"
-import deleteDatabaseUserById from "./deleteDatabaseUserById"
-
-const connection = getConnection()
-
-const user1 = {
-  id: 12341,
-  username: "Filter1Username",
-  emailAddress: "Filter1EmailAddress",
-  endorsedBy: "Filter1EndorsedBy",
-  orgServes: "Filter1OrgServes",
-  forenames: "Filter1Forenames",
-  postalAddress: "Filter1PostalAddress",
-  exclusionList: "exclusionList",
-  inclusionList: "inclusionList",
-  postCode: "AB1 1BA",
-  phoneNumber: "Filter1PhoneNumber",
-  surname: "Filter1Surname"
-} as unknown as User
-
-const user2 = {
-  id: 12342,
-  username: "Filter2Username",
-  emailAddress: "Filter2EmailAddress",
-  endorsedBy: "Filter2EndorsedBy",
-  orgServes: "Filter2OrgServes",
-  forenames: "Filter2Forenames",
-  postalAddress: "Filter2PostalAddress",
-  exclusionList: "exclusionList",
-  inclusionList: "inclusionList",
-  postCode: "AB1 1BA",
-  phoneNumber: "Filter2PhoneNumber",
-  surname: "Filter2Surname"
-} as unknown as User
-
-const user3 = {
-  id: 12343,
-  username: "Filter3Username",
-  emailAddress: "Filter3EmailAddress",
-  endorsedBy: "Filter3EndorsedBy",
-  orgServes: "Filter3OrgServes",
-  forenames: "Filter3Forenames",
-  postalAddress: "Filter3PostalAddress",
-  exclusionList: "exclusionList",
-  inclusionList: "inclusionList",
-  postCode: "AB1 1BA",
-  phoneNumber: "Filter3PhoneNumber",
-  surname: "Filter3Surname"
-} as unknown as User
+import config from "lib/config"
+import getTestConnection from "../../testFixtures/getTestConnection"
+import deleteFromTable from "../../testFixtures/database/deleteFromTable"
+import insertIntoTable from "../../testFixtures/database/insertIntoTable"
+import selectFromTable from "../../testFixtures/database/selectFromTable"
+import users from "../../testFixtures/database/data/users"
+import manyUsers from "../../testFixtures/database/data/manyUsers"
 
 describe("getFilteredUsers", () => {
+  let connection: any
+
+  beforeAll(() => {
+    connection = getTestConnection()
+  })
+
   beforeAll(async () => {
-    await deleteDatabaseUserById(connection, user1.id)
-    await deleteDatabaseUserById(connection, user2.id)
-    await deleteDatabaseUserById(connection, user3.id)
+    await deleteFromTable("users")
   })
 
   afterAll(() => {
@@ -65,38 +25,61 @@ describe("getFilteredUsers", () => {
   })
 
   it("should return correct users from the database", async () => {
-    await insertDatabaseUser(connection, user1, false, "")
-    await insertDatabaseUser(connection, user2, false, "")
-    await insertDatabaseUser(connection, user3, false, "")
+    await insertIntoTable(users)
+    const result01 = await getFilteredUsers(connection, "")
+    expect(isError(result01)).toBe(false)
 
-    let result = await getFilteredUsers(connection, "")
-    expect(isError(result)).toBe(false)
+    const user01List = await selectFromTable("users", "email", "bichard01@example.com")
+    const user01 = user01List[0]
 
-    result = await getFilteredUsers(connection, "Filter3Username")
-    expect(isError(result)).toBe(false)
-    expect(result.length).toBe(1)
-    let actualUser = <User>result[0]
-    expect(actualUser.id).toBe(12343)
+    const result02 = await getFilteredUsers(connection, "Bichard01")
+    expect(isError(result02)).toBe(false)
+    expect(result02.result.length).toBe(1)
+    const actualUser01 = <User>result02.result[0]
 
-    result = await getFilteredUsers(connection, "Filter1EmailAddress")
-    expect(isError(result)).toBe(false)
-    expect(result.length).toBe(1)
-    actualUser = <User>result[0]
-    expect(actualUser.id).toBe(12341)
+    expect(actualUser01.id).toBe(user01.id)
 
-    result = await getFilteredUsers(connection, "Filter2Surname")
-    expect(isError(result)).toBe(false)
-    expect(result.length).toBe(1)
-    actualUser = <User>result[0]
-    expect(actualUser.id).toBe(12342)
+    const user02List = await selectFromTable("users", "email", "bichard02@example.com")
+    const user02 = user02List[0]
+
+    const result03 = await getFilteredUsers(connection, "bichard02@example.com")
+    expect(isError(result03)).toBe(false)
+    expect(result03.result.length).toBe(1)
+    const actualUser02 = <User>result03.result[0]
+    expect(actualUser02.id).toBe(user02.id)
+
+    const user03List = await selectFromTable("users", "email", "bichard03@example.com")
+    const user03 = user03List[0]
+
+    const result04 = await getFilteredUsers(connection, "Surname 03")
+    expect(isError(result04)).toBe(false)
+    expect(result04.result.length).toBe(1)
+    const actualUser03 = <User>result04.result[0]
+    expect(actualUser03.id).toBe(user03.id)
   })
 
   it("should not return items that were previously deleted", async () => {
-    const deleteResult = await deleteUser(connection, user2)
-    expect(deleteResult).toBeDefined()
-
     const filterResult = await getFilteredUsers(connection, "Filter2Surname")
     expect(isError(filterResult)).toBe(false)
-    expect(filterResult.length).toBe(0)
+    expect(filterResult.result.length).toBe(0)
+  })
+
+  it("should return a paginated style result", async () => {
+    await deleteFromTable("users")
+    await insertIntoTable(manyUsers)
+    const fullListResult = await getFilteredUsers(connection, "")
+    expect(isError(fullListResult)).toBe(false)
+    expect(fullListResult.totalElements).toBe("12") // total number of users that match the filter
+    expect(fullListResult.result.length).toBe(config.maxUsersPerPage) // total number of users returned for paginated view
+
+    const getSecondPageResult = await getFilteredUsers(connection, "", 1)
+    expect(isError(getSecondPageResult)).toBe(false)
+    expect(getSecondPageResult.totalElements).toBe("12") // total number of users that match the filter
+    expect(getSecondPageResult.result.length).toBe(12 - config.maxUsersPerPage) // total number of users returned for paginated view
+
+    const getFilteredResult = await getFilteredUsers(connection, "bichard0")
+    expect(isError(getFilteredResult)).toBe(false)
+    expect(getFilteredResult.totalElements).toBe("9") // total number of users that match the filter
+    expect(getFilteredResult.result.length).toBe(9) // total number of users returned for paginated view
   })
 })

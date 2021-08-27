@@ -53,7 +53,7 @@ export async function compare(password: string, passwordHash: string): Promise<b
 
 export const createPassword = async (password: string): Promise<string> => {
   const salt = randomBytes(16).toString("base64")
-  const iterations = (Math.floor(Math.random() * 6) + 1) * 100000
+  const iterations = 500000
   const passwordHash = await hash(password, salt, iterations)
   const parts = ["shiro1", "SHA-256", iterations, salt, passwordHash]
 

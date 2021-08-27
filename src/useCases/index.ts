@@ -9,5 +9,7 @@ export { default as getUserById } from "./getUserById"
 export { default as sendPasswordResetEmail } from "./sendPasswordResetEmail"
 export { default as resetPassword } from "./resetPassword"
 export { default as signInUser } from "./signInUser"
+export { default as signOutUser } from "./signOutUser"
+export { default as changePassword } from "./changePassword"
 
 export default {}

@@ -2,7 +2,7 @@ import Database from "types/Database"
 import { isError, PromiseResult } from "types/Result"
 import passwordSecurityCheck from "./passwordSecurityCheck"
 import storePasswordResetCode from "./storePasswordResetCode"
-import updateUserPassword from "./updateUserPassword"
+import updatePassword from "./updatePassword"
 import validateUserVerificationCode from "./validateUserVerificationCode"
 
 const initialiseUserPassword = async (
@@ -29,7 +29,7 @@ const initialiseUserPassword = async (
   }
 
   // set the new password
-  const updateResult = await updateUserPassword(connection, emailAddress, password)
+  const updateResult = await updatePassword(connection, emailAddress, password)
   if (isError(updateResult)) {
     return new Error("Error: Failed to update password")
   }

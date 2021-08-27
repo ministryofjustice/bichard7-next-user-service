@@ -1,32 +1,23 @@
-/* eslint-disable import/first */
-jest.mock("lib/shiro")
-
-import getConnection from "lib/getConnection"
 import { createPassword } from "lib/shiro"
 import { isError } from "types/Result"
-import User from "types/User"
 import updatePassword from "useCases/updatePassword"
-import deleteDatabaseUser from "./deleteDatabaseUser"
-import insertDatabaseUser from "./insertDatabaseUser"
+import getTestConnection from "../../testFixtures/getTestConnection"
+import deleteFromTable from "../../testFixtures/database/deleteFromTable"
+import insertIntoTable from "../../testFixtures/database/insertIntoTable"
+import selectFromTable from "../../testFixtures/database/selectFromTable"
+import users from "../../testFixtures/database/data/users"
 
-const connection = getConnection()
-
-const user = {
-  username: "up_username",
-  emailAddress: "up_emailAddress",
-  exclusionList: "up_exclusionList",
-  inclusionList: "up_inclusionList",
-  endorsedBy: "up_endorsedBy",
-  orgServes: "up_orgServes",
-  forenames: "up_forenames",
-  postalAddress: "up_postalAddress",
-  postCode: "QW2 2WQ",
-  phoneNumber: "up_phoneNumber"
-} as unknown as User
+jest.mock("lib/shiro")
 
 describe("updatePassword", () => {
+  let connection: any
+
   beforeEach(async () => {
-    await deleteDatabaseUser(connection, user.username)
+    await deleteFromTable("users")
+  })
+
+  beforeAll(() => {
+    connection = getTestConnection()
   })
 
   afterAll(() => {
@@ -34,29 +25,38 @@ describe("updatePassword", () => {
   })
 
   it("should update password when user exists", async () => {
-    await insertDatabaseUser(connection, user, false, "DummyPassword")
+    const emailAddress = "bichard01@example.com"
+    await insertIntoTable(users)
 
     const expectedPassword = "ExpectedPassword"
+    const expectedPasswordHash = "$shiro1$SHA-256$500000$Foo==$Bar="
     const mockedCreatePassword = createPassword as jest.MockedFunction<typeof createPassword>
-    mockedCreatePassword.mockResolvedValue(expectedPassword)
+    mockedCreatePassword.mockResolvedValue(expectedPasswordHash)
 
-    const result = await updatePassword(connection, user.emailAddress, "CreatePasswordMocked")
+    const result = await updatePassword(connection, emailAddress, expectedPassword)
     expect(isError(result)).toBe(false)
 
-    const actualUser = await connection.oneOrNone(`SELECT username, password FROM br7own.users WHERE email = $1`, [
-      user.emailAddress
-    ])
+    const actualUserList = await selectFromTable("users", "email", emailAddress)
+    const actualUser = actualUserList[0]
 
     expect(actualUser).toBeDefined()
-    expect(actualUser.username).toBe(user.username)
-    expect(actualUser.password).toBe(expectedPassword)
+    expect(actualUser.username).toBe("Bichard01")
+
+    // We should be storing the password hash, not the bare password
+    expect(actualUser.password).toBe(expectedPasswordHash)
+    expect(actualUser.password).not.toBe(expectedPassword)
   })
 
   it("should return error when user is deleted", async () => {
-    await insertDatabaseUser(connection, user, true, "DummyPassword")
+    const mappedUsers = users.map((u) => ({
+      ...u,
+      deleted_at: new Date()
+    }))
+
+    await insertIntoTable(mappedUsers)
 
     const expectedPassword = "ExpectedPassword"
-    const result = await updatePassword(connection, user.emailAddress, expectedPassword)
+    const result = await updatePassword(connection, "bichard01@example.com", expectedPassword)
     expect(isError(result)).toBe(true)
 
     const actualError = <Error>result
@@ -64,8 +64,9 @@ describe("updatePassword", () => {
   })
 
   it("should return error when user does not exist", async () => {
+    await insertIntoTable(users)
     const expectedPassword = "ExpectedPassword"
-    const result = await updatePassword(connection, user.emailAddress, expectedPassword)
+    const result = await updatePassword(connection, "incorrectemail@address.com", expectedPassword)
     expect(isError(result)).toBe(true)
 
     const actualError = <Error>result
