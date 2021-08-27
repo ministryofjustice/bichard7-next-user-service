@@ -1,6 +1,12 @@
+import Database from "types/Database"
 import User from "types/User"
 
-export default async (connection: any, expectedUser: User, isDeleted: boolean, password: string): Promise<void> => {
+export default async (
+  connection: Database,
+  expectedUser: User,
+  isDeleted: boolean,
+  password: string
+): Promise<void> => {
   const deletedAt = isDeleted ? new Date() : null
 
   const insertQuery = `

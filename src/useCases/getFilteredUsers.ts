@@ -1,13 +1,14 @@
 import config from "lib/config"
 import Database from "types/Database"
 import PaginatedResult from "types/PaginatedResult"
+import PromiseResult from "types/PromiseResult"
 import UserDetails from "types/UserDetails"
 
 const getFilteredUsers = async (
   connection: Database,
   filter: string,
   page = 0
-): Promise<PaginatedResult<Partial<UserDetails>[]>> => {
+): PromiseResult<PaginatedResult<Partial<UserDetails>[]>> => {
   let users
   const getFilteredUsersQuery = `
       SELECT
@@ -35,7 +36,7 @@ const getFilteredUsers = async (
   }
 
   return {
-    result: users.map((r: any) => ({
+    result: users.map((r: { [key: string]: string }) => ({
       id: r.id,
       username: r.username,
       forenames: r.forenames,

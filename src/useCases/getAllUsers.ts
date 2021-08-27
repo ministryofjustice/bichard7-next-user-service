@@ -31,7 +31,7 @@ const getAllUsers = async (
   }
 
   return {
-    result: users.map((r: any) => ({
+    result: users.map((r: { [key: string]: string }) => ({
       username: r.username,
       forenames: r.forenames,
       surname: r.surname,
