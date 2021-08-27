@@ -9,6 +9,7 @@ import pgPromise from "pg-promise"
 import deleteFromTable from "../../testFixtures/database/deleteFromTable"
 import insertIntoTable from "../../testFixtures/database/insertIntoTable"
 import users from "../../testFixtures/database/data/users"
+import manyUsers from "../../testFixtures/database/data/manyUsers"
 
 /**
  * @type {Cypress.PluginConfig}
@@ -42,6 +43,11 @@ module.exports = (on, config) => {
 
     async insertIntoUsersTable() {
       await insertIntoTable(users)
+      return null
+    },
+
+    async insertManyIntoUsersTable() {
+      await insertIntoTable(manyUsers)
       return null
     }
   })
