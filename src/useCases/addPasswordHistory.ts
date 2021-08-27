@@ -1,11 +1,8 @@
 import Database from "types/Database"
-import UserDetails from "types/UserDetails"
+import { PromiseResult } from "types/Result"
+import Task from "types/Task"
 
-const addPasswordHistory = async (
-  connection: Database,
-  userId: number,
-  oldPassword: string
-): Promise<Partial<UserDetails>[]> => {
+export default (connection: Database | Task, userId: number, oldPassword: string): PromiseResult<void> => {
   const addPasswordQuery = `
       INSERT INTO br7own.password_history(
         user_id,
@@ -13,19 +10,10 @@ const addPasswordHistory = async (
         last_used
       )
       VALUES (
-        $1,
-        $2,
+        \${userId},
+        \${passwordHash},
         NOW()
       )
     `
-  let result = ""
-  try {
-    result = (await connection.any(addPasswordQuery, [userId, oldPassword])).toString()
-  } catch (error) {
-    return error
-  }
-
-  return { result } as any
+  return connection.result(addPasswordQuery, { userId, passwordHash: oldPassword }).catch((error) => error)
 }
-
-export default addPasswordHistory

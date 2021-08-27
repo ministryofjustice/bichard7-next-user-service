@@ -27,20 +27,21 @@ export default async (connection: Database, options: ResetPasswordOptions): Prom
   if (isError(getUserResult)) {
     return getUserResult
   }
+  connection
+    .tx("update-and-store-old-password", async (taskConnection) => {
+      const updatePasswordResult = await updatePassword(taskConnection, emailAddress, newPassword)
+      if (isError(updatePasswordResult)) {
+        throw updatePasswordResult
+      }
 
-  if (getUserResult === null) {
-    return Error("Cannot find user")
-  }
-
-  const updatePasswordResult = await updatePassword(connection, emailAddress, newPassword)
-  if (isError(updatePasswordResult)) {
-    return updatePasswordResult
-  }
-
-  const addHistoricalPassword = await addPasswordHistory(connection, getUserResult.id, getUserResult.password)
-  if (isError(addHistoricalPassword)) {
-    return addHistoricalPassword
-  }
+      const addHistoricalPassword = addPasswordHistory(taskConnection, getUserResult.id, getUserResult.password)
+      if (isError(addHistoricalPassword)) {
+        throw addHistoricalPassword
+      }
+    })
+    .catch((error) => {
+      return error
+    })
 
   return undefined
 }
