@@ -25,11 +25,13 @@ export const getServerSideProps = withCsrf(async (context): Promise<GetServerSid
   generatePassword.searchParams.append("token", token)
   generatePassword.searchParams.append("suggestPassword", "true")
   const suggestedPasswordUrl = generatePassword.href
+
   if (req.method === "POST") {
     const { newPassword, confirmPassword } = formData as {
       newPassword: string
       confirmPassword: string
     }
+
     if (newPassword === "" || confirmPassword === "") {
       errorMessage = "Error: Passwords cannot be empty"
       return {
@@ -43,6 +45,7 @@ export const getServerSideProps = withCsrf(async (context): Promise<GetServerSid
         props: { errorMessage, csrfToken }
       }
     }
+
     const translatedToken = decodeEmailVerificationToken(token)
     if (isError(translatedToken)) {
       return {
@@ -53,9 +56,11 @@ export const getServerSideProps = withCsrf(async (context): Promise<GetServerSid
 
     const connection = getConnection()
     const result = await initialiseUserPassword(connection, emailAddress, verificationCode, newPassword)
+
     if (!isError(result)) {
       return createRedirectResponse("/login/reset-password/success")
     }
+
     errorMessage = result.message
   } else if (suggestPassword === "true") {
     suggestedPassword = generateRandomPassword()
