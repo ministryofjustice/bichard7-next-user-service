@@ -12,7 +12,7 @@ export interface ResetPasswordOptions {
   newPassword: string
 }
 
-export default async (connection: Database, options: ResetPasswordOptions): PromiseResult<void> => {
+export default async (connection: Database, options: ResetPasswordOptions): PromiseResult<string> => {
   const { emailAddress, passwordResetCode, newPassword } = options
 
   const userPasswordResetCode = await getPasswordResetCode(connection, emailAddress)
@@ -33,7 +33,7 @@ export default async (connection: Database, options: ResetPasswordOptions): Prom
     .task("update-and-store-old-password", async (taskConnection) => {
       const checkPasswordIsNewResult = await checkPasswordIsNew(taskConnection, getUserResult.id, newPassword)
       if (isError(checkPasswordIsNewResult)) {
-        return Error("Error: Cannot use previously used password")
+        return "Error: Cannot use previously used password"
       }
 
       const updatePasswordResult = await updatePassword(taskConnection, emailAddress, newPassword)
