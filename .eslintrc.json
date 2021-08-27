@@ -44,8 +44,8 @@
         "require-await": "error",
         "filenames/match-exported": "error",
         "import/first": "error",
-        "import/no-anonymous-default-export": "off",
         "import/no-cycle": "error",
+        "import/no-anonymous-default-export": "off",
         "import/prefer-default-export": "error",
         "prettier/prettier": ["error"],
         "react/jsx-curly-brace-presence": ["error", { "props": "ignore", "children": "always"}],
@@ -70,6 +70,9 @@
     },
     {
       "files": ["cypress/**/*.js"],
+      "extends": [
+        "plugin:cypress/recommended"
+      ],
       "rules": {
         "no-console": "off",
         "no-unused-expressions": "off"
