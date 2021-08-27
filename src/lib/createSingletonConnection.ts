@@ -1,9 +1,13 @@
-import pgPromise, { IDatabase } from "pg-promise"
+import pgPromise from "pg-promise"
+import Database from "types/Database"
 import DatabaseConfig from "./DatabaseConfig"
 
-const createSingletonConnection = (name: string, config: DatabaseConfig, attachEvents: boolean): IDatabase<any> => {
-  const connectionName = Symbol.for(name) as symbol
-  let scope = (global as any)[connectionName as any]
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
+const createSingletonConnection = (name: string, config: DatabaseConfig, attachEvents: boolean): Database => {
+  const connectionName = Symbol.for(name)
+  let scope = (global as any)[connectionName]
+
   if (!scope) {
     scope = pgPromise(
       attachEvents
