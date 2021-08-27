@@ -90,6 +90,11 @@ describe("User", () => {
   })
 
   describe("Creation of new user", () => {
+    before(() => {
+      cy.task("deleteFromUsersTable")
+      cy.task("insertIntoUsersTable")
+    })
+
     it("should be successful if all of the inputs are populated", () => {
       cy.visit("users/newUser")
 
