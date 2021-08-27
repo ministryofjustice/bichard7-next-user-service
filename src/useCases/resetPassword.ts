@@ -1,6 +1,8 @@
 import Database from "types/Database"
 import { isError, PromiseResult } from "types/Result"
+import addPasswordHistory from "./addPasswordHistory"
 import getPasswordResetCode from "./getPasswordResetCode"
+import getUserLoginDetailsByEmailAddress from "./getUserLoginDetailsByEmailAddress"
 import updatePassword from "./updatePassword"
 
 export interface ResetPasswordOptions {
@@ -21,10 +23,25 @@ export default async (connection: Database, options: ResetPasswordOptions): Prom
     return Error("Password reset code does not match")
   }
 
-  const updatePasswordResult = await updatePassword(connection, emailAddress, newPassword)
-  if (isError(updatePasswordResult)) {
-    return updatePasswordResult
+  const getUserResult = await getUserLoginDetailsByEmailAddress(connection, emailAddress)
+  if (isError(getUserResult)) {
+    return getUserResult
   }
+  connection
+    .tx("update-and-store-old-password", async (taskConnection) => {
+      const updatePasswordResult = await updatePassword(taskConnection, emailAddress, newPassword)
+      if (isError(updatePasswordResult)) {
+        throw updatePasswordResult
+      }
+
+      const addHistoricalPassword = addPasswordHistory(taskConnection, getUserResult.id, getUserResult.password)
+      if (isError(addHistoricalPassword)) {
+        throw addHistoricalPassword
+      }
+    })
+    .catch((error) => {
+      return error
+    })
 
   return undefined
 }
