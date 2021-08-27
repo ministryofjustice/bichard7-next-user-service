@@ -1,6 +1,6 @@
 /* eslint-disable import/first */
-jest.mock("hooks/useCsrfServerSideProps/verifyCsrfToken")
-jest.mock("hooks/useCsrfServerSideProps/generateCsrfToken")
+jest.mock("middleware/withCsrf/verifyCsrfToken")
+jest.mock("middleware/withCsrf/generateCsrfToken")
 
 import { withCsrf } from "middleware"
 import generateCsrfToken from "middleware/withCsrf/generateCsrfToken"
