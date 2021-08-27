@@ -114,7 +114,13 @@ const Users = ({ allUsers, csrfToken, currentUser, previousFilter, pageNumber, t
   prevPage.searchParams.append("filter", previousFilter)
   prevPage.searchParams.append("page", (pageNumber - 1).toString())
 
-  const pageString = `    Page ${pageNumber + 1} of ${Math.ceil(totalUsers / config.maxUsersPerPage)}    `
+  const pageNumberStyle = {
+    style: {
+      padding: "10px"
+    }
+  }
+
+  const pageString = `Page ${pageNumber + 1} of ${Math.ceil(totalUsers / config.maxUsersPerPage)}`
   return (
     <>
       <Head>
@@ -147,7 +153,7 @@ const Users = ({ allUsers, csrfToken, currentUser, previousFilter, pageNumber, t
           <Link href={prevPage.toString()} data-test="Prev">
             {pageNumber > 0 && "< Prev"}
           </Link>
-          {pageString}
+          <span style={pageNumberStyle.style}>{pageString}</span>
           <Link href={nextPage.toString()} data-test="Next">
             {pageNumber + 1 < (totalUsers - 1) / config.maxUsersPerPage && "Next >"}
           </Link>
