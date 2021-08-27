@@ -1,6 +1,3 @@
-/* eslint-disable import/first */
-jest.mock("lib/shiro")
-
 import { createPassword } from "lib/shiro"
 import { isError } from "types/Result"
 import { resetPassword } from "useCases"
@@ -10,6 +7,8 @@ import getTestConnection from "../../testFixtures/getTestConnection"
 import deleteFromTable from "../../testFixtures/database/deleteFromTable"
 import insertIntoTable from "../../testFixtures/database/insertIntoTable"
 import users from "../../testFixtures/database/data/users"
+
+jest.mock("lib/shiro")
 
 describe("resetPassword", () => {
   let connection: any
@@ -27,15 +26,16 @@ describe("resetPassword", () => {
   })
 
   it("should reset password when password reset code is valid", async () => {
-    await insertIntoTable(users)
     const emailAddress = "bichard01@example.com"
+    await insertIntoTable(users)
 
     const passwordResetCode = "664422"
     await storePasswordResetCode(connection, emailAddress, passwordResetCode)
 
     const expectedPassword = "ExpectedPassword"
+    const expectedPasswordHash = "$shiro1$SHA-256$500000$Foo==$Bar="
     const mockedCreatePassword = createPassword as jest.MockedFunction<typeof createPassword>
-    mockedCreatePassword.mockResolvedValue(expectedPassword)
+    mockedCreatePassword.mockResolvedValue(expectedPasswordHash)
 
     const resetPasswordOptions: ResetPasswordOptions = {
       emailAddress,
@@ -57,7 +57,49 @@ describe("resetPassword", () => {
 
     expect(actualUser).toBeDefined()
     expect(actualUser.username).toBe("Bichard01")
-    expect(actualUser.password).toBe(expectedPassword)
+    expect(actualUser.password).toBe(expectedPasswordHash)
+    expect(actualUser.password).not.toBe(expectedPassword)
+  })
+
+  it("should return error when new password was used before", async () => {
+    const emailAddress = "bichard01@example.com"
+    await insertIntoTable(users)
+
+    let passwordResetCode = "664422"
+    await storePasswordResetCode(connection, emailAddress, passwordResetCode)
+
+    let expectedPasswordHash = "$shiro1$SHA-256$500000$Foo==$Bar=$baz"
+    let mockedCreatePassword = createPassword as jest.MockedFunction<typeof createPassword>
+    mockedCreatePassword.mockResolvedValue(expectedPasswordHash)
+
+    let resetPasswordOptions: ResetPasswordOptions = {
+      emailAddress,
+      newPassword: "CreatePasswordMocked",
+      passwordResetCode
+    }
+    const firstResetResult = await resetPassword(connection, resetPasswordOptions)
+    expect(isError(firstResetResult)).toBe(false)
+    expect(firstResetResult).toBeUndefined()
+
+    // reset password again
+    passwordResetCode = "664422"
+    await storePasswordResetCode(connection, emailAddress, passwordResetCode)
+
+    expectedPasswordHash =
+      "$shiro1$SHA-256$500000$sL5A3oRuVXTJCy36WP5Kyg==$ggXBhVWqFN35dRW/TXWO7Dm/zEwWxNu4CuwXNvEJ8Jw="
+    mockedCreatePassword = createPassword as jest.MockedFunction<typeof createPassword>
+    mockedCreatePassword.mockResolvedValue(expectedPasswordHash)
+
+    resetPasswordOptions = {
+      emailAddress,
+      newPassword: "NewPasswordMocked",
+      passwordResetCode
+    }
+
+    const secondResetResult = await resetPassword(connection, resetPasswordOptions)
+    expect(isError(secondResetResult)).toBe(true)
+    const actualError = <Error>secondResetResult
+    expect(actualError.message).toBe("Error: Cannot use previously used password")
   })
 
   it("should return error when password reset code is not valid", async () => {
