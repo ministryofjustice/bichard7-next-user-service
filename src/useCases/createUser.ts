@@ -1,18 +1,21 @@
 import CreateUserResult from "types/CreateUserResult"
 import UserCreateDetails from "types/UserDetails"
 import PromiseResult from "types/PromiseResult"
+import Database from "types/Database"
 import isUsernameUnique from "./isUsernameUnique"
 import isEmailUnique from "./IsEmailUnique"
 
-export default async (connection: any, userDetails: UserCreateDetails): PromiseResult<CreateUserResult> => {
+export default async (connection: Database, userDetails: UserCreateDetails): PromiseResult<CreateUserResult> => {
   let checkData = await isUsernameUnique(connection, userDetails.username)
   if (checkData.message !== "") {
     return new Error(checkData.message)
   }
+
   checkData = await isEmailUnique(connection, userDetails.emailAddress)
   if (checkData.message !== "") {
     return new Error(checkData.message)
   }
+
   const {
     username,
     forenames,
@@ -76,5 +79,5 @@ export default async (connection: any, userDetails: UserCreateDetails): PromiseR
     return new Error("Error: Failed to add user")
   }
 
-  return { result } as any
+  return { result }
 }

@@ -45,7 +45,7 @@ describe("getUserById", () => {
 
   it("should return error when user does not exist in the database", async () => {
     const result = await getUserById(connection, 0)
-    expect((result as any).message).toBe("No data returned from the query.")
+    expect((result as Error).message).toBe("No data returned from the query.")
   })
 
   it("should return error when user is deleted", async () => {
@@ -55,9 +55,9 @@ describe("getUserById", () => {
     }))
 
     await insertIntoTable(mappedUsers)
-    const usersList: any = await selectFromTable("users", "email", "bichard01@example.com")
+    const usersList = await selectFromTable("users", "email", "bichard01@example.com")
     const user = usersList[0]
     const result = await getUserById(connection, user.id)
-    expect((result as any).message).toBe("No data returned from the query.")
+    expect((result as Error).message).toBe("No data returned from the query.")
   })
 })
