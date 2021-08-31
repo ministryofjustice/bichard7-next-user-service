@@ -7,9 +7,10 @@ interface Props {
   value?: string
   defaultValue?: string
   isError?: boolean
+  disabled?: boolean
 }
 
-const TextInput = ({ id, label, name, type, width, value, defaultValue, isError = false }: Props) => {
+const TextInput = ({ id, label, name, type, width, value, defaultValue, isError = false, disabled = false }: Props) => {
   const inputName = name || id
   const errorClassName = isError ? " govuk-input--error" : ""
   const widthClassName = width ? ` govuk-input--width-${width}` : ""
@@ -28,6 +29,7 @@ const TextInput = ({ id, label, name, type, width, value, defaultValue, isError 
         id={id}
         name={inputName}
         type={type}
+        disabled={disabled}
       />
     </div>
   )
