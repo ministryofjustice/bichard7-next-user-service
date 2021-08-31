@@ -7,7 +7,13 @@ import TextInput from "components/TextInput"
 import config from "lib/config"
 import { decodeEmailVerificationToken, EmailVerificationToken } from "lib/token/emailVerificationToken"
 import getConnection from "lib/getConnection"
-import { authenticate, getEmailAddressFromCookie, signInUser, storeEmailAddressInCookie } from "useCases"
+import {
+  authenticate,
+  getEmailAddressFromCookie,
+  removeEmailAddressCookie,
+  signInUser,
+  storeEmailAddressInCookie
+} from "useCases"
 import { isError } from "types/Result"
 import createRedirectResponse from "utils/createRedirectResponse"
 import Form from "components/Form"
@@ -75,6 +81,8 @@ export const getServerSideProps = withCsrf(async (context): Promise<GetServerSid
         if (!emailAddressFromCookie || emailAddressFromCookie !== emailAddress) {
           storeEmailAddressInCookie(res, emailAddress)
         }
+      } else {
+        removeEmailAddressCookie(res)
       }
 
       const url = new URL(bichardUrl as string)
