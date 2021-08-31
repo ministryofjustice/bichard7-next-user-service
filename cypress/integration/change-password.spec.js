@@ -6,7 +6,7 @@ describe("Change password", () => {
       cy.clearCookies()
     })
 
-    it.only("should prompt the user that password change was successful when provided password is valid", () => {
+    it("should prompt the user that password change was successful when provided password is valid", () => {
       const emailAddress = "bichard01@example.com"
       const newPassword = "Test@123456"
       cy.login("bichard01@example.com", "password")

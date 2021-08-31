@@ -1,5 +1,6 @@
 import { isError } from "types/Result"
 import updateUser from "useCases/updateUser"
+import Database from "types/Database"
 import getTestConnection from "../../testFixtures/getTestConnection"
 import deleteFromTable from "../../testFixtures/database/deleteFromTable"
 import insertIntoTable from "../../testFixtures/database/insertIntoTable"
@@ -7,7 +8,7 @@ import selectFromTable from "../../testFixtures/database/selectFromTable"
 import users from "../../testFixtures/database/data/users"
 
 describe("updatePassword", () => {
-  let connection: any
+  let connection: Database
 
   beforeEach(async () => {
     await deleteFromTable("users")
@@ -99,9 +100,8 @@ describe("updatePassword", () => {
       postCode: "YYY 777"
     }
 
-    expect(isError(expectedError))
-
     const result = await updateUser(connection, user)
+    expect(isError(expectedError))
     expect((result as Error).message).toBe(expectedError.message)
   })
 })

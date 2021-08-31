@@ -71,7 +71,7 @@ const UserForm = ({
     <TextInput
       id="emailAddress"
       name="emailAddress"
-      label="Email address"
+      label="Email address *"
       type="email"
       defaultValue={emailAddress}
       isError={missingEmail}
