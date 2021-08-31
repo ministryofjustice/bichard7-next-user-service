@@ -26,11 +26,11 @@ describe("getPasswordResetCode", () => {
   it("generate email verification URL", async () => {
     await insertIntoTable(users)
     const emailAddress = "bichard01@example.com"
-    const result = await generateEmailVerificationUrl(connection, config, emailAddress, "http://dummy.com")
+    const verificationUrl = await generateEmailVerificationUrl(connection, config, emailAddress, "http://dummy.com")
 
-    expect(isError(result)).toBe(false)
+    expect(isError(verificationUrl)).toBe(false)
 
-    const url = <URL>result
+    const url = <URL>verificationUrl
     expect(url.href).toMatch(/http:\/\/localhost:3000\/login\/verify\?token=.+&redirect=http%3A%2F%2Fdummy.com/)
 
     const actualUserList = await selectFromTable("users", "email", emailAddress)
