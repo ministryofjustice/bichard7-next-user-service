@@ -1,5 +1,7 @@
 import { invalidToken, validToken } from "../helpers/tokens"
 
+const emailCookieName = "LOGIN_EMAIL"
+
 describe("Logging In", () => {
   context("720p resolution", () => {
     beforeEach(() => {
@@ -130,7 +132,7 @@ describe("Logging In", () => {
           expect(url).to.match(/\?token=[A-Za-z0-9_.]+/)
 
           cy.visit("/")
-          cy.getCookie("LOGIN_EMAIL").then((cookie) => {
+          cy.getCookie(emailCookieName).then((cookie) => {
             expect(cookie).is.not.undefined
             const { value, httpOnly, expiry } = cookie
             expect(value).is.not.undefined
@@ -172,7 +174,7 @@ describe("Logging In", () => {
           expect(url).to.match(/\?token=[A-Za-z0-9_.]+/)
 
           cy.visit("/")
-          cy.getCookie("LOGIN_EMAIL").then((cookie) => {
+          cy.getCookie(emailCookieName).then((cookie) => {
             expect(cookie).is.null
 
             cy.url().then((loginUrl) => {
@@ -204,7 +206,7 @@ describe("Logging In", () => {
           expect(url).to.match(/\?token=[A-Za-z0-9_.]+/)
 
           cy.visit("/")
-          cy.getCookie("LOGIN_EMAIL").then((cookie) => {
+          cy.getCookie(emailCookieName).then((cookie) => {
             expect(cookie).is.not.undefined
             const { value, httpOnly, expiry } = cookie
             expect(value).is.not.undefined
@@ -222,7 +224,7 @@ describe("Logging In", () => {
               expect(verifyUrl).to.match(/^http:\/\/localhost:3000\/login\/verify\?.+/)
               cy.get("a[data-test=not-you-link]").click()
 
-              cy.getCookie("LOGIN_EMAIL").then((emailAddressCookie) => {
+              cy.getCookie(emailCookieName).then((emailAddressCookie) => {
                 expect(emailAddressCookie).is.null
 
                 cy.url().then((loginUrl) => {
