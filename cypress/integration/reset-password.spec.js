@@ -43,7 +43,7 @@ describe("Reset password", () => {
 
     it("should prompt the user that password reset was successful when provided password is valid", (done) => {
       const emailAddress = "bichard01@example.com"
-      const newPassword = "Test@123456"
+      const newPassword = "Test@1234567"
       cy.task("getPasswordResetCode", emailAddress).then((passwordResetCode) => {
         const passwordResetToken = generatePasswordResetToken(emailAddress, passwordResetCode)
         cy.visit(`/login/reset-password?token=${passwordResetToken}`)
@@ -111,6 +111,42 @@ describe("Reset password", () => {
 
     it("should respond with forbidden response code when CSRF tokens are invalid in reset password page", (done) => {
       cy.checkCsrf("/login/reset-password", "POST").then(() => done())
+    })
+
+    it("should not allow to reset using and old password", () => {
+      const emailAddress = "bichard02@example.com"
+      cy.visit("/login")
+      cy.get("a[href='/login/forgot-password']").click()
+      cy.get("body").contains(/forgot password/i)
+      cy.get("input[type=email]").type(emailAddress)
+      cy.get("button[type=submit]").click()
+      cy.get("body").contains(/check your email/i)
+      const newPassword = "Test@123456"
+      cy.task("getPasswordResetCode", emailAddress).then((passwordResetCode) => {
+        const passwordResetToken = generatePasswordResetToken(emailAddress, passwordResetCode)
+        cy.visit(`/login/reset-password?token=${passwordResetToken}`)
+        cy.get("body").contains(/reset password/i)
+        cy.get("input[type=password][name=newPassword]").type(newPassword)
+        cy.get("input[type=password][name=confirmPassword]").type(newPassword)
+        cy.get("button[type=submit]").click()
+        cy.get("body").contains(/You can now sign in with your new password./i)
+      })
+
+      cy.visit("/login")
+      cy.get("a[href='/login/forgot-password']").click()
+      cy.get("body").contains(/forgot password/i)
+      cy.get("input[type=email]").type(emailAddress)
+      cy.get("button[type=submit]").click()
+      cy.get("body").contains(/check your email/i)
+      cy.task("getPasswordResetCode", emailAddress).then((passwordResetCode) => {
+        const passwordResetToken = generatePasswordResetToken(emailAddress, passwordResetCode)
+        cy.visit(`/login/reset-password?token=${passwordResetToken}`)
+        cy.get("body").contains(/reset password/i)
+        cy.get("input[type=password][name=newPassword]").type(newPassword)
+        cy.get("input[type=password][name=confirmPassword]").type(newPassword)
+        cy.get("button[type=submit]").click()
+        cy.get(".govuk-error-summary").should("be.visible").contains("h2", "Password is old")
+      })
     })
   })
 })

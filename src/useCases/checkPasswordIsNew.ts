@@ -1,4 +1,4 @@
-import { createPassword } from "lib/shiro"
+import { compare } from "lib/shiro"
 import Database from "types/Database"
 import { PromiseResult } from "types/Result"
 import Task from "types/Task"
@@ -8,16 +8,21 @@ const checkPasswordIsNew = async (
   userId: number,
   newPassword: string
 ): PromiseResult<void> => {
-  const newPasswordHash = await createPassword(newPassword)
-
   const getAllMatchingPasswords = `
-      SELECT *
+      SELECT 
+        password_hash
       FROM br7own.password_history
       WHERE user_id = $1
-        AND password_hash = $2
     `
   try {
-    await connection.none(getAllMatchingPasswords, [userId, newPasswordHash])
+    const result = await connection.result(getAllMatchingPasswords, [userId])
+    for (let i = 0; i < result.rows.length; i += 1) {
+      /* eslint-disable no-await-in-loop */
+      const compareResult = await compare(newPassword, result.rows[i].password_hash)
+      if (compareResult) {
+        return Error("Error: Cannot save previously used password")
+      }
+    }
   } catch (error) {
     return error
   }
