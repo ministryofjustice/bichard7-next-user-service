@@ -20,7 +20,7 @@ const checkPasswordIsNew = async (
       /* eslint-disable no-await-in-loop */
       const compareResult = await compare(newPassword, result.rows[i].password_hash)
       if (compareResult) {
-        return Error("Error: Cannot save previously used password")
+        return Error("Cannot save previously used password")
       }
     }
   } catch (error) {

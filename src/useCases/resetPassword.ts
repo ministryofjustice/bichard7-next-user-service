@@ -38,7 +38,7 @@ export default async (connection: Database, options: ResetPasswordOptions): Prom
 
       const checkPasswordIsNewResult = await checkPasswordIsNew(taskConnection, getUserResult.id, newPassword)
       if (isError(checkPasswordIsNewResult)) {
-        return "Error: Cannot use previously used password"
+        return "Cannot use previously used password"
       }
 
       const updatePasswordResult = await updatePassword(taskConnection, emailAddress, newPassword)

@@ -28,7 +28,7 @@ describe("Change password", () => {
       cy.get("input[type=password][name=newPassword]").type("shorty")
       cy.get("input[type=password][name=confirmPassword]").type("shorty")
       cy.get("button[type=submit]").click()
-      cy.get('span[id="event-name-error"]').should("have.text", "Error: Password is too short")
+      cy.get('span[id="event-name-error"]').should("have.text", "Password is too short")
     })
 
     it("should not allow submission when password is empty", () => {
@@ -36,7 +36,7 @@ describe("Change password", () => {
       cy.visit("/account/change-password")
       cy.get("body").contains(/change password/i)
       cy.get("button[type=submit]").click()
-      cy.get('span[id="event-name-error"]').should("have.text", "Error: Passwords cannot be empty")
+      cy.get('span[id="event-name-error"]').should("have.text", "Passwords cannot be empty")
     })
 
     it("should not allow submission when passwords do not match", () => {
@@ -47,7 +47,7 @@ describe("Change password", () => {
       cy.get("input[type=password][name=newPassword]").type("NewPassowrd")
       cy.get("input[type=password][name=confirmPassword]").type("DifferentNewPassword")
       cy.get("button[type=submit]").click()
-      cy.get('span[id="event-name-error"]').should("have.text", "Error: Passwords are mismatching")
+      cy.get('span[id="event-name-error"]').should("have.text", "Passwords are mismatching")
     })
 
     it("should allow user to generate a random password", () => {

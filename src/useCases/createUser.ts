@@ -76,7 +76,7 @@ export default async (connection: Database, userDetails: UserCreateDetails): Pro
       ])
     ).toString()
   } catch (e) {
-    return new Error("Error: Failed to add user")
+    return new Error("Failed to add user")
   }
 
   return { result }

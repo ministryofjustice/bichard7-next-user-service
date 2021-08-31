@@ -86,7 +86,7 @@ describe("resetPassword", () => {
     const secondResetResult = await resetPassword(connection, resetPasswordOptions)
     expect(isError(secondResetResult)).toBe(false)
     expect(secondResetResult).not.toBe(undefined)
-    expect(secondResetResult).toBe("Error: Cannot use previously used password")
+    expect(secondResetResult).toBe("Cannot use previously used password")
   })
 
   it("should return error when password reset code is not valid", async () => {

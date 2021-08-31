@@ -21,18 +21,18 @@ export default async (
 
   if (isError(passwordMatch)) {
     console.error(passwordMatch)
-    return Error("Error: Could not check your current password. Please try again.")
+    return Error("Could not check your current password. Please try again.")
   }
 
   if (!passwordMatch) {
-    return Error("Error: Your current password is incorrect.")
+    return Error("Your current password is incorrect.")
   }
 
   const updatePasswordResult = await updatePassword(connection, emailAddress, newPassword)
 
   if (isError(updatePasswordResult)) {
     console.error(updatePasswordResult)
-    return Error("Error: Could not update password.")
+    return Error("Could not update password.")
   }
 
   const sendPasswordChangedEmailResult = await sendPasswordChangedEmail(connection, emailAddress)

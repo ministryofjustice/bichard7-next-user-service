@@ -147,7 +147,7 @@ describe("User", () => {
         cy.get("input[type=password][name=newPassword]").type(newPassword)
         cy.get("input[type=password][name=confirmPassword]").type(newPassword)
         cy.get("button[type=submit]").click()
-        cy.get('span[id="event-name-error"]').should("have.text", "Error: Password is too short")
+        cy.get('span[id="event-name-error"]').should("have.text", "Password is too short")
       })
     })
 
@@ -168,7 +168,7 @@ describe("User", () => {
         cy.get("input[type=password][name=newPassword]").type(newPassword)
         cy.get("input[type=password][name=confirmPassword]").type(newPassword)
         cy.get("button[type=submit]").click()
-        cy.get('span[id="event-name-error"]').should("have.text", "Error: Invalid or expired verification code")
+        cy.get('span[id="event-name-error"]').should("have.text", "Invalid or expired verification code")
       })
     })
 
@@ -219,7 +219,7 @@ describe("User", () => {
       cy.get('input[id="orgServes"]').type("B organisation")
 
       cy.get("button").click()
-      cy.get('span[id="event-name-error"]').should("have.text", "Error: Username Bichard01 already exists")
+      cy.get('span[id="event-name-error"]').should("have.text", "Username Bichard01 already exists")
     })
 
     it("should respond with forbidden response code when CSRF tokens are invalid in new user page", (done) => {

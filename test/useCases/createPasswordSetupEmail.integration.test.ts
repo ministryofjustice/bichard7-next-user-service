@@ -74,7 +74,7 @@ describe("AccountSetup", () => {
     const result = await initialiseUserPassword(connection, "bichard01@example.com", verificationCode, "shorty")
     expect(result).toBeDefined()
     const actualError = <Error>result
-    expect(actualError.message).toBe("Error: Password is too short")
+    expect(actualError.message).toBe("sPassword is too short")
   })
 
   it("should be able to setup a password using the details from the email", async () => {
@@ -98,6 +98,6 @@ describe("AccountSetup", () => {
     )
     expect(secondResult).toBeDefined()
     const actualError = <Error>secondResult
-    expect(actualError.message).toBe("Error: Invalid or expired verification code")
+    expect(actualError.message).toBe("Invalid or expired verification code")
   })
 })
