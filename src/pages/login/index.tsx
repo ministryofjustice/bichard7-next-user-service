@@ -50,15 +50,16 @@ export const getServerSideProps = withCsrf(async (context): Promise<GetServerSid
   const { notYou } = query as { notYou: string }
 
   if (notYou === "true") {
-    removeEmailAddressCookie(res)
+    removeEmailAddressCookie(res, config)
   } else {
-    const emailAddressFromCookie = getEmailAddressFromCookie(req)
+    const emailAddressFromCookie = getEmailAddressFromCookie(req, config)
 
     if (emailAddressFromCookie) {
       const connection = getConnection()
       const redirectUrl = getRedirectUrl(query, config)
       const verificationUrl = await generateEmailVerificationUrl(
         connection,
+        config,
         emailAddressFromCookie,
         redirectUrl as string
       )

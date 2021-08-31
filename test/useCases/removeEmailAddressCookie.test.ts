@@ -1,9 +1,10 @@
 import { IncomingMessage, ServerResponse } from "http"
+import config from "lib/config"
 import { removeEmailAddressCookie } from "useCases"
 
 it("should expire the email address cookie and empty the value", () => {
   const response = new ServerResponse({} as IncomingMessage)
-  removeEmailAddressCookie(response)
+  removeEmailAddressCookie(response, config)
 
   const cookieValues = response.getHeader("Set-Cookie") as string[]
   expect(cookieValues).toHaveLength(1)

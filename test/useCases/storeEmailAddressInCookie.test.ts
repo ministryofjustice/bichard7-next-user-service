@@ -1,9 +1,10 @@
 import { IncomingMessage, ServerResponse } from "http"
+import config from "lib/config"
 import { storeEmailAddressInCookie } from "useCases"
 
 it("should set the email address cookie", () => {
   const response = new ServerResponse({} as IncomingMessage)
-  storeEmailAddressInCookie(response, "dummy@dummy.com")
+  storeEmailAddressInCookie(response, config, "dummy@dummy.com")
 
   const cookieValues = response.getHeader("Set-Cookie") as string[]
   expect(cookieValues).toHaveLength(1)

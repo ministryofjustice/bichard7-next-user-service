@@ -76,13 +76,13 @@ export const getServerSideProps = withCsrf(async (context): Promise<GetServerSid
       const authToken = signInUser(res, user)
 
       if (rememberEmailAddress === "remember-email") {
-        const emailAddressFromCookie = getEmailAddressFromCookie(req)
+        const emailAddressFromCookie = getEmailAddressFromCookie(req, config)
 
         if (!emailAddressFromCookie || emailAddressFromCookie !== emailAddress) {
-          storeEmailAddressInCookie(res, emailAddress)
+          storeEmailAddressInCookie(res, config, emailAddress)
         }
       } else {
-        removeEmailAddressCookie(res)
+        removeEmailAddressCookie(res, config)
       }
 
       const url = new URL(bichardUrl as string)

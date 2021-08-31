@@ -1,10 +1,10 @@
 import { serialize } from "cookie"
 import { sign } from "cookie-signature"
 import { ServerResponse } from "http"
-import config from "lib/config"
+import { UserServiceConfig } from "lib/config"
 import setCookie from "utils/setCookie"
 
-export default (response: ServerResponse, emailAddress: string): void => {
+export default (response: ServerResponse, config: UserServiceConfig, emailAddress: string): void => {
   const {
     cookieSecret,
     rememberEmailAddressCookieName: cookieName,

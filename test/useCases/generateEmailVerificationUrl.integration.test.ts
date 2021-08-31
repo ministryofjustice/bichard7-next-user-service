@@ -1,6 +1,7 @@
 import { generateEmailVerificationUrl } from "useCases"
 import Database from "types/Database"
 import { isError } from "types/Result"
+import config from "lib/config"
 import deleteFromTable from "../../testFixtures/database/deleteFromTable"
 import getTestConnection from "../../testFixtures/getTestConnection"
 import insertIntoTable from "../../testFixtures/database/insertIntoTable"
@@ -25,7 +26,7 @@ describe("getPasswordResetCode", () => {
   it("generate email verification URL", async () => {
     await insertIntoTable(users)
     const emailAddress = "bichard01@example.com"
-    const result = await generateEmailVerificationUrl(connection, emailAddress, "http://dummy.com")
+    const result = await generateEmailVerificationUrl(connection, config, emailAddress, "http://dummy.com")
 
     expect(isError(result)).toBe(false)
 

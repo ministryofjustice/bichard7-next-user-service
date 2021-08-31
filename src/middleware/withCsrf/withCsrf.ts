@@ -22,7 +22,7 @@ export default <Props>(getServerSidePropsFunction: GetServerSideProps<Props>): G
     }
 
     const { maximumTokenAgeInSeconds } = config.csrf
-    const { formToken, cookieToken, cookieName } = generateCsrfToken(req)
+    const { formToken, cookieToken, cookieName } = generateCsrfToken(req, config)
     setCookie(res, serialize(cookieName, cookieToken, { httpOnly: true, maxAge: maximumTokenAgeInSeconds }))
 
     return getServerSidePropsFunction({ ...context, formData, csrfToken: formToken } as CsrfServerSidePropsContext)

@@ -1,8 +1,8 @@
 import { unsign } from "cookie-signature"
-import config from "lib/config"
+import { UserServiceConfig } from "lib/config"
 import { NextApiRequestCookies } from "next/dist/server/api-utils"
 
-export default ({ cookies }: { cookies: NextApiRequestCookies }): string | null => {
+export default ({ cookies }: { cookies: NextApiRequestCookies }, config: UserServiceConfig): string | null => {
   const { rememberEmailAddressCookieName, cookieSecret } = config
   const cookieValue = cookies[rememberEmailAddressCookieName]
   if (!cookieValue) {

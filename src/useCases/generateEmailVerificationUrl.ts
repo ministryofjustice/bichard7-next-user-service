@@ -1,11 +1,16 @@
 import { randomDigits } from "crypto-secure-random-digit"
-import config from "lib/config"
+import { UserServiceConfig } from "lib/config"
 import { EmailVerificationTokenPayload, generateEmailVerificationToken } from "lib/token/emailVerificationToken"
 import Database from "types/Database"
 import { isError, PromiseResult } from "types/Result"
 import storeVerificationCode from "./storeVerificationCode"
 
-export default async (connection: Database, emailAddress: string, redirectUrl?: string): PromiseResult<URL> => {
+export default async (
+  connection: Database,
+  config: UserServiceConfig,
+  emailAddress: string,
+  redirectUrl?: string
+): PromiseResult<URL> => {
   const verificationCode = randomDigits(config.verificationCodeLength).join("")
   const storeVerificationCodeResult = await storeVerificationCode(connection, emailAddress, verificationCode)
 

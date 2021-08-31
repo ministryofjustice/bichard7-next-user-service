@@ -1,11 +1,12 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import generateCsrfToken from "middleware/withCsrf/generateCsrfToken"
 import { IncomingMessage } from "http"
+import config from "lib/config"
 
 const request = <IncomingMessage>{ url: "/login" }
 
 it("should generate both form and cookie tokens", () => {
-  const { formToken, cookieToken, cookieName } = generateCsrfToken(request)
+  const { formToken, cookieToken, cookieName } = generateCsrfToken(request, config)
 
   const formTokenParts = formToken.split("=")
   expect(formTokenParts).toHaveLength(2)
