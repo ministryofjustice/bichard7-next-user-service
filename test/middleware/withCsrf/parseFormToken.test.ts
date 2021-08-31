@@ -3,11 +3,12 @@ import parseFormToken, { ParseFormTokenResult } from "middleware/withCsrf/parseF
 import { IncomingMessage } from "http"
 import QueryString from "qs"
 import { isError } from "types/Result"
+import config from "lib/config"
 
 const request = <IncomingMessage>{ url: "/login" }
 
 it("should return form token and cookie name when token exists in the form data", () => {
-  const { formToken, cookieName: expectedCookieName } = generateCsrfToken(request)
+  const { formToken, cookieName: expectedCookieName } = generateCsrfToken(request, config)
   const formData = <QueryString.ParsedQs>{
     "XSRF-TOKEN": formToken
   }

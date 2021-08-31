@@ -11,5 +11,9 @@ export { default as resetPassword } from "./resetPassword"
 export { default as signInUser } from "./signInUser"
 export { default as signOutUser } from "./signOutUser"
 export { default as changePassword } from "./changePassword"
+export { default as storeEmailAddressInCookie } from "./storeEmailAddressInCookie"
+export { default as removeEmailAddressCookie } from "./removeEmailAddressCookie"
+export { default as getEmailAddressFromCookie } from "./getEmailAddressFromCookie"
+export { default as generateEmailVerificationUrl } from "./generateEmailVerificationUrl"
 
 export default {}

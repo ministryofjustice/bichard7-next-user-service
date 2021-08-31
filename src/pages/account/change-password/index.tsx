@@ -15,6 +15,7 @@ import User from "types/User"
 import { changePassword, signOutUser } from "useCases"
 import generateRandomPassword from "useCases/generateRandomPassword"
 import createRedirectResponse from "utils/createRedirectResponse"
+import isPost from "utils/isPost"
 
 export const getServerSideProps = withMultipleServerSideProps(
   withAuthentication,
@@ -34,7 +35,7 @@ export const getServerSideProps = withMultipleServerSideProps(
     const { pathname: urlPathname } = new URL(req.url as string, "http://localhost")
     const suggestedPasswordUrl = `${urlPathname}?suggestPassword=true`
 
-    if (req.method === "POST") {
+    if (isPost(req)) {
       const { currentPassword, newPassword, confirmPassword } = formData as {
         currentPassword: string
         newPassword: string

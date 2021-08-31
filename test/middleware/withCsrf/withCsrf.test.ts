@@ -2,6 +2,7 @@
 jest.mock("middleware/withCsrf/verifyCsrfToken")
 jest.mock("middleware/withCsrf/generateCsrfToken")
 
+import { IncomingMessage, ServerResponse } from "http"
 import { withCsrf } from "middleware"
 import generateCsrfToken from "middleware/withCsrf/generateCsrfToken"
 import verifyCsrfToken from "middleware/withCsrf/verifyCsrfToken"
@@ -19,15 +20,9 @@ it("should include form data and CSRF token in the context", async () => {
   const dummyTokens = { formToken: "DummyFormToken", cookieToken: "DummyCookieToken", cookieName: "DummyCookieName" }
   mockedGenerateCsrfToken.mockReturnValue(dummyTokens)
 
-  let cookie: string
-  let cookieAction: string
-  const dummyResponse = {
-    setHeader: (action: string, cookieValue: string) => {
-      cookieAction = action
-      cookie = cookieValue
-    }
-  }
-  const dummyContext = { req: {}, res: dummyResponse } as GetServerSidePropsContext<ParsedUrlQuery>
+  const request = {} as IncomingMessage
+  const response = new ServerResponse(request)
+  const dummyContext = { req: request, res: response } as GetServerSidePropsContext<ParsedUrlQuery>
 
   const handler = withCsrf((context) => {
     const { formData, csrfToken, req } = context as CsrfServerSidePropsContext
@@ -36,8 +31,10 @@ it("should include form data and CSRF token in the context", async () => {
     expect(csrfToken).toBe("DummyFormToken")
     expect(formData).toBeDefined()
     expect(formData["Dummy-Form-Field"]).toBe("DummyValue")
-    expect(cookieAction).toBe("Set-Cookie")
-    expect(cookie).toContain("DummyCookieName=DummyCookieToken")
+
+    const cookieValues = response.getHeader("Set-Cookie") as string[]
+    expect(cookieValues).toBeDefined()
+    expect(cookieValues[0]).toContain("DummyCookieName=DummyCookieToken")
 
     return undefined as never
   })

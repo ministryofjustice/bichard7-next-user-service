@@ -14,6 +14,7 @@ import { GetServerSidePropsContext, GetServerSidePropsResult } from "next"
 import { withAuthentication, withCsrf, withMultipleServerSideProps } from "middleware"
 import { ParsedUrlQuery } from "querystring"
 import AuthenticationServerSidePropsContext from "types/AuthenticationServerSidePropsContext"
+import isPost from "utils/isPost"
 
 const errorMessageMap = {
   unique_users_username_idx: "This user name has been taken please enter another"
@@ -27,7 +28,7 @@ export const getServerSideProps = withMultipleServerSideProps(
       AuthenticationServerSidePropsContext
     const connection = getConnection()
 
-    if (req.method === "POST") {
+    if (isPost(req)) {
       const userDetails: Partial<User> = formData
       const user = await getUserById(connection, userDetails.id as number)
 

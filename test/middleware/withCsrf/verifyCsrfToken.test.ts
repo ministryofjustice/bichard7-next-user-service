@@ -7,6 +7,7 @@ import verifyCsrfToken from "middleware/withCsrf/verifyCsrfToken"
 import { IncomingMessage } from "http"
 import parseFormData from "lib/parseFormData"
 import QueryString from "qs"
+import config from "lib/config"
 
 const createRequest = (cookie: string) => {
   return <IncomingMessage>{
@@ -37,10 +38,10 @@ const {
   formToken: validFormToken,
   cookieToken: validCookieToken,
   cookieName: validCookieName
-} = generateCsrfToken(dummyRequest)
+} = generateCsrfToken(dummyRequest, config)
 const cookie = serialize(validCookieName, validCookieToken)
 
-const { cookieToken: anotherCookieToken, cookieName: anotherCookieName } = generateCsrfToken(dummyRequest)
+const { cookieToken: anotherCookieToken, cookieName: anotherCookieName } = generateCsrfToken(dummyRequest, config)
 const invalidCookieForFormToken = serialize(anotherCookieName, anotherCookieToken)
 
 const expiredCookie = "QO60fsUX-KKkGnqboM90s8VS9C5zSdrysjrg.FuBXqXqFzbs6JWUZIC5jIZztpbZ8gYdD4Q2%2FF569Qr4"

@@ -19,6 +19,7 @@ import { ParsedUrlQuery } from "querystring"
 import KeyValuePair from "types/KeyValuePair"
 import Link from "components/Link"
 import config from "lib/config"
+import isPost from "utils/isPost"
 
 export const getServerSideProps = withMultipleServerSideProps(
   withAuthentication,
@@ -32,7 +33,7 @@ export const getServerSideProps = withMultipleServerSideProps(
     let pageNumber = 0
     let previousFilter = ""
 
-    if (req.method === "POST") {
+    if (isPost(req)) {
       const { filter } = formData as {
         filter: string
       }

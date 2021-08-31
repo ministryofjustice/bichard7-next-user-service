@@ -11,12 +11,12 @@ it("should generate the email subject and body", () => {
   >
   mockedGenerateEmailVerificationToken.mockReturnValue("DUMMY_TOKEN")
 
-  const result = createVerificationEmail("bichard01@example.com", "123456")
+  const verificationEmailContent = createVerificationEmail("http://localhost:3000/login/verify?token=DUMMY_TOKEN")
 
-  expect(isError(result)).toBe(false)
+  expect(isError(verificationEmailContent)).toBe(false)
 
-  const email = result as EmailContent
-  expect(email.subject).toMatchSnapshot()
-  expect(email.text).toMatchSnapshot()
-  expect(email.html).toMatchSnapshot()
+  const emailContent = verificationEmailContent as EmailContent
+  expect(emailContent.subject).toMatchSnapshot()
+  expect(emailContent.text).toMatchSnapshot()
+  expect(emailContent.html).toMatchSnapshot()
 })
