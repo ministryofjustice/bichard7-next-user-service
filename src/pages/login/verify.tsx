@@ -159,7 +159,7 @@ const VerifyEmail = ({
               {"."}
             </p>
             <p>
-              <Link href={notYourEmailAddressUrl}>
+              <Link href={notYourEmailAddressUrl} data-test="not-you-link">
                 {"Not your account? Click here to login with a different email address"}
               </Link>
             </p>

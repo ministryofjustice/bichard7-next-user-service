@@ -110,7 +110,7 @@ describe("Logging In", () => {
       })
     })
 
-    it("should remember email address when remember checkbox is ticked", (done) => {
+    it("should remember email address when remember checkbox is checked", (done) => {
       const emailAddress = "bichard01@example.com"
       const password = "password"
 
@@ -153,7 +153,7 @@ describe("Logging In", () => {
       })
     })
 
-    it("should not remember email address when remember checkbox is not ticked", (done) => {
+    it("should not remember email address when remember checkbox is not checked", (done) => {
       const emailAddress = "bichard01@example.com"
       const password = "password"
 
@@ -178,6 +178,58 @@ describe("Logging In", () => {
             cy.url().then((loginUrl) => {
               expect(loginUrl).to.equals("http://localhost:3000/login")
               done()
+            })
+          })
+        })
+      })
+    })
+
+    it("should not remember email address when email address is already remembered but remember checkbox is not checked", (done) => {
+      const emailAddress = "bichard01@example.com"
+      const password = "password"
+
+      cy.visit("/login")
+      cy.get("input[type=email]").type(emailAddress)
+      cy.get("button[type=submit]").click()
+      cy.get('h1[data-test="check-email"]').should("exist")
+      cy.task("getVerificationCode", emailAddress).then((verificationCode) => {
+        const token = validToken(emailAddress, verificationCode)
+
+        cy.visit(`/login/verify?token=${token}`)
+        cy.get("input[type=password][name=password]").type(password)
+        cy.get("input[id=rememberEmailAddress]").click()
+        cy.get("button[type=submit]").click()
+        cy.url().then((url) => {
+          expect(url).to.match(/^http:\/\/localhost:3000\/bichard-ui\/Authenticate/)
+          expect(url).to.match(/\?token=[A-Za-z0-9_.]+/)
+
+          cy.visit("/")
+          cy.getCookie("LOGIN_EMAIL").then((cookie) => {
+            expect(cookie).is.not.undefined
+            const { value, httpOnly, expiry } = cookie
+            expect(value).is.not.undefined
+            expect(value).is.not.empty
+            expect(httpOnly).to.be.true
+            expect(expiry).is.not.undefined
+
+            const expiryDate = new Date(expiry * 1000)
+            const now = new Date()
+            now.setHours(now.getHours() + 24)
+            expect(expiryDate.toDateString()).equals(now.toDateString())
+            expect(expiryDate.getHours()).equals(now.getHours())
+
+            cy.url().then((verifyUrl) => {
+              expect(verifyUrl).to.match(/^http:\/\/localhost:3000\/login\/verify\?.+/)
+              cy.get("a[data-test=not-you-link]").click()
+
+              cy.getCookie("LOGIN_EMAIL").then((emailAddressCookie) => {
+                expect(emailAddressCookie).is.null
+
+                cy.url().then((loginUrl) => {
+                  expect(loginUrl).to.match(/http:\/\/localhost:3000\/login?.+/)
+                  done()
+                })
+              })
             })
           })
         })
