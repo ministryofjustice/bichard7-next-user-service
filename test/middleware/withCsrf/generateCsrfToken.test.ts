@@ -4,18 +4,6 @@ import { IncomingMessage } from "http"
 
 const request = <IncomingMessage>{ url: "/login" }
 
-// let cookieName: string | undefined
-// let cookieValue: string | undefined
-// const response = <ServerResponse>{
-//   setHeader: (name: string, value: string) => {
-//     if (name === "Set-Cookie") {
-//       const cookieParts = value?.split("=")
-//       cookieName = cookieParts?.[0]
-//       cookieValue = cookieParts?.splice(1).join("=")
-//     }
-//   }
-// }
-
 it("should generate both form and cookie tokens", () => {
   const { formToken, cookieToken, cookieName } = generateCsrfToken(request)
 
