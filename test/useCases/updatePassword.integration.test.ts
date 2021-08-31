@@ -1,6 +1,3 @@
-/* eslint-disable import/first */
-jest.mock("lib/shiro")
-
 import { createPassword } from "lib/shiro"
 import { isError } from "types/Result"
 import updatePassword from "useCases/updatePassword"
@@ -9,6 +6,8 @@ import deleteFromTable from "../../testFixtures/database/deleteFromTable"
 import insertIntoTable from "../../testFixtures/database/insertIntoTable"
 import selectFromTable from "../../testFixtures/database/selectFromTable"
 import users from "../../testFixtures/database/data/users"
+
+jest.mock("lib/shiro")
 
 describe("updatePassword", () => {
   let connection: any
@@ -30,10 +29,11 @@ describe("updatePassword", () => {
     await insertIntoTable(users)
 
     const expectedPassword = "ExpectedPassword"
+    const expectedPasswordHash = "$shiro1$SHA-256$500000$Foo==$Bar="
     const mockedCreatePassword = createPassword as jest.MockedFunction<typeof createPassword>
-    mockedCreatePassword.mockResolvedValue(expectedPassword)
+    mockedCreatePassword.mockResolvedValue(expectedPasswordHash)
 
-    const result = await updatePassword(connection, emailAddress, "CreatePasswordMocked")
+    const result = await updatePassword(connection, emailAddress, expectedPassword)
     expect(isError(result)).toBe(false)
 
     const actualUserList = await selectFromTable("users", "email", emailAddress)
@@ -41,7 +41,10 @@ describe("updatePassword", () => {
 
     expect(actualUser).toBeDefined()
     expect(actualUser.username).toBe("Bichard01")
-    expect(actualUser.password).toBe(expectedPassword)
+
+    // We should be storing the password hash, not the bare password
+    expect(actualUser.password).toBe(expectedPasswordHash)
+    expect(actualUser.password).not.toBe(expectedPassword)
   })
 
   it("should return error when user is deleted", async () => {

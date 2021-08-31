@@ -4,7 +4,7 @@ interface Props {
   name?: string
   type?: string
   width?: string
-  value?: any
+  value?: string
   defaultValue?: string
   isError?: boolean
   disabled?: boolean

@@ -18,7 +18,7 @@ export default () => {
     const trueRandomIndex = crypto.randomInt(wordArray.length)
     const randomWord = wordArray[trueRandomIndex]
     i -= 1
-    result += randomWord
+    result += randomWord.charAt(0).toUpperCase() + randomWord.slice(1)
   }
 
   return result

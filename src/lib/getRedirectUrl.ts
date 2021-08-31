@@ -1,4 +1,5 @@
 import { UserServiceConfig } from "lib/config"
+import { ParsedUrlQuery } from "querystring"
 
 export const getDomainMatch = (url: string): string => new URL(url).hostname
 
@@ -20,12 +21,13 @@ export const isValidRedirectUrl = (redirect: string, redirectAccessList: string)
   return false
 }
 
-const getRedirectUrl = (query: any, config: UserServiceConfig): string | boolean => {
-  const redirectUrl = query && query.redirect
+const getRedirectUrl = (query: ParsedUrlQuery, config: UserServiceConfig): string | boolean => {
+  const redirectParameter = query.redirect as string
 
-  if (!!redirectUrl && isValidRedirectUrl(query.redirect as string, config.redirectAccessList)) {
-    return redirectUrl
+  if (!!redirectParameter && isValidRedirectUrl(redirectParameter, config.redirectAccessList)) {
+    return redirectParameter
   }
+
   return false
 }
 

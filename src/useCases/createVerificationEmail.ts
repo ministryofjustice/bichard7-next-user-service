@@ -9,10 +9,12 @@ export default (emailAddress: string, verificationCode: string, redirectUrl?: st
     emailAddress,
     verificationCode
   }
+
   const token = generateEmailVerificationToken(payload)
   if (isError(token)) {
     return token
   }
+
   const url = new URL("/login/verify", config.baseUrl)
   url.searchParams.append("token", token)
 

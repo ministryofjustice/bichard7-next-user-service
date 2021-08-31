@@ -52,6 +52,7 @@ export const getServerSideProps = withMultipleServerSideProps(
 
           return {
             props: {
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               errorMessage: (errorMessageMap as any)[(userUpdated as any).constraint],
               csrfToken,
               currentUser

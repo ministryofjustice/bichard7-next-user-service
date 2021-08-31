@@ -1,6 +1,4 @@
-import getConnection from "lib/getConnection"
 import { isError } from "types/Result"
-import User from "types/User"
 import getEmailer from "lib/getEmailer"
 import sendPasswordChangedEmail from "useCases/sendPasswordChangedEmail"
 import Database from "types/Database"
