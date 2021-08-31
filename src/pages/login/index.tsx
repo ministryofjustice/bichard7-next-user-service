@@ -5,7 +5,12 @@ import Layout from "components/Layout"
 import Head from "next/head"
 import TextInput from "components/TextInput"
 import { GetServerSidePropsResult } from "next"
-import { sendVerificationEmail } from "useCases"
+import {
+  generateEmailVerificationUrl,
+  getEmailAddressFromCookie,
+  removeEmailAddressCookie,
+  sendVerificationEmail
+} from "useCases"
 import getConnection from "lib/getConnection"
 import { isError } from "types/Result"
 import Link from "components/Link"
@@ -15,12 +20,13 @@ import CsrfServerSidePropsContext from "types/CsrfServerSidePropsContext"
 import getRedirectUrl from "lib/getRedirectUrl"
 import config from "lib/config"
 import { withCsrf } from "middleware"
+import isPost from "utils/isPost"
 
 export const getServerSideProps = withCsrf(async (context): Promise<GetServerSidePropsResult<Props>> => {
-  const { req, formData, csrfToken, query } = context as CsrfServerSidePropsContext
+  const { req, res, formData, csrfToken, query } = context as CsrfServerSidePropsContext
   let invalidEmail = false
 
-  if (req.method === "POST") {
+  if (isPost(req)) {
     const { emailAddress } = formData as { emailAddress: string }
 
     if (emailAddress) {
@@ -40,6 +46,29 @@ export const getServerSideProps = withCsrf(async (context): Promise<GetServerSid
     }
 
     invalidEmail = true
+  }
+
+  const { notYou } = query as { notYou: string }
+
+  if (notYou === "true") {
+    removeEmailAddressCookie(res, config)
+  } else {
+    const emailAddressFromCookie = getEmailAddressFromCookie(req, config)
+
+    if (emailAddressFromCookie) {
+      const connection = getConnection()
+      const redirectUrl = getRedirectUrl(query, config)
+      const verificationUrl = await generateEmailVerificationUrl(
+        connection,
+        config,
+        emailAddressFromCookie,
+        redirectUrl as string
+      )
+
+      if (!isError(verificationUrl)) {
+        return createRedirectResponse(verificationUrl.href)
+      }
+    }
   }
 
   return {

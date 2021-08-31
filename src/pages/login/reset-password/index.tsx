@@ -16,6 +16,7 @@ import { withCsrf } from "middleware"
 import generateRandomPassword from "useCases/generateRandomPassword"
 import SuggestPassword from "components/SuggestPassword"
 import config from "lib/config"
+import isPost from "utils/isPost"
 
 export const getServerSideProps = withCsrf(async (context): Promise<GetServerSidePropsResult<Props>> => {
   const { req, query, formData, csrfToken } = context as CsrfServerSidePropsContext
@@ -43,7 +44,7 @@ export const getServerSideProps = withCsrf(async (context): Promise<GetServerSid
     }
   }
 
-  if (req.method === "POST") {
+  if (isPost(req)) {
     const { newPassword, confirmPassword } = formData as {
       newPassword: string
       confirmPassword: string

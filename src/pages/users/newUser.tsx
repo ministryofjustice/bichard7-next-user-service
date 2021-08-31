@@ -15,6 +15,7 @@ import { withAuthentication, withCsrf, withMultipleServerSideProps } from "middl
 import { ParsedUrlQuery } from "querystring"
 import AuthenticationServerSidePropsContext from "types/AuthenticationServerSidePropsContext"
 import User from "types/User"
+import isPost from "utils/isPost"
 
 export const getServerSideProps = withMultipleServerSideProps(
   withAuthentication,
@@ -26,7 +27,7 @@ export const getServerSideProps = withMultipleServerSideProps(
     let message = ""
     let isSuccess = true
 
-    if (req.method === "POST") {
+    if (isPost(req)) {
       const userCreateDetails: UserCreateDetails = formData as {
         username: string
         forenames: string

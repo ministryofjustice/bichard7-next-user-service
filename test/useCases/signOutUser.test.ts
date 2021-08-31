@@ -1,18 +1,11 @@
-import { ServerResponse } from "http"
+import { IncomingMessage, ServerResponse } from "http"
 import { signOutUser } from "useCases"
 
 it("should expire the authentication cookie", () => {
-  let actualAction: string | undefined
-  let actualCookie: string | undefined
-  const response = {
-    setHeader: (action: string, value: string) => {
-      actualAction = action
-      actualCookie = value
-    }
-  } as ServerResponse
-
+  const response = new ServerResponse({} as IncomingMessage)
   signOutUser(response)
 
-  expect(actualAction).toBe("Set-Cookie")
-  expect(actualCookie).toBe(".AUTH=; Max-Age=0; Path=/; HttpOnly")
+  const cookieValues = response.getHeader("Set-Cookie") as string[]
+  expect(cookieValues).toBeDefined()
+  expect(cookieValues[0]).toBe(".AUTH=; Max-Age=0; Path=/; HttpOnly")
 })

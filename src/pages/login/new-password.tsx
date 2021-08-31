@@ -15,6 +15,7 @@ import { isError } from "types/Result"
 import generateRandomPassword from "useCases/generateRandomPassword"
 import initialiseUserPassword from "useCases/initialiseUserPassword"
 import createRedirectResponse from "utils/createRedirectResponse"
+import isPost from "utils/isPost"
 
 export const getServerSideProps = withCsrf(async (context): Promise<GetServerSidePropsResult<Props>> => {
   const { req, query, formData, csrfToken } = context as CsrfServerSidePropsContext
@@ -26,7 +27,7 @@ export const getServerSideProps = withCsrf(async (context): Promise<GetServerSid
   generatePassword.searchParams.append("suggestPassword", "true")
   const suggestedPasswordUrl = generatePassword.href
 
-  if (req.method === "POST") {
+  if (isPost(req)) {
     const { newPassword, confirmPassword } = formData as {
       newPassword: string
       confirmPassword: string
