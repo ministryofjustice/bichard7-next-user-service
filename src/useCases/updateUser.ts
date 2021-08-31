@@ -1,7 +1,9 @@
 import Database from "types/Database"
+import PromiseResult from "types/PromiseResult"
 import User from "types/User"
 
-const updateUser = async (connection: Database, userDetails: Partial<User>): Promise<boolean | Error> => {
+/* eslint-disable-next-line consistent-return */
+const updateUser = async (connection: Database, userDetails: Partial<User>): PromiseResult<void | Error> => {
   /* eslint-disable no-useless-escape */
   const updateUserQuery = `
     UPDATE br7own.users
@@ -26,8 +28,6 @@ const updateUser = async (connection: Database, userDetails: Partial<User>): Pro
     if (rowsUpdated.rowCount === 0) {
       return Error("Error updating user")
     }
-
-    return true
   } catch (error) {
     return error
   }

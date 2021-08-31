@@ -40,7 +40,7 @@ describe("updatePassword", () => {
     }
 
     const result = await updateUser(connection, user)
-    expect(result).toBe(true)
+    expect(result).toBeUndefined()
 
     const initialUserList02 = await selectFromTable("users", "email", "bichard01@example.com")
     const initialUser02 = initialUserList02[0]
@@ -77,7 +77,7 @@ describe("updatePassword", () => {
     }
 
     const result = await updateUser(connection, user)
-    expect(result).toBe(true)
+    expect(result).toBeUndefined()
     const initialUserList02 = await selectFromTable("users", "email", emailAddress)
     const initialUser02 = initialUserList02[0]
 
