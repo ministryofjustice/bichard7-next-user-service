@@ -37,7 +37,7 @@ export interface UserServiceConfig {
 }
 
 const config: UserServiceConfig = {
-  authenticationCookieName: process.env.AUTH_COOKIE_NAME ?? ".AUTH",
+  authenticationCookieName: ".AUTH",
   baseUrl: process.env.BASE_URL ?? "http://localhost:3000",
   bichardRedirectURL: process.env.BICHARD_REDIRECT_URL ?? "https://localhost:9443/bichard-ui/Authenticate",
   cookieSecret: process.env.COOKIE_SECRET ?? "OliverTwist",
@@ -46,7 +46,7 @@ const config: UserServiceConfig = {
   incorrectDelay: parseInt(process.env.INCORRECT_DELAY ?? "10", 10),
   passwordMinLength: 8,
   redirectAccessList: process.env.REDIRECT_ACCESS_LIST ?? "localhost,",
-  rememberEmailAddressCookieName: process.env.REMEMBER_EMAIL_COOKIE ?? "LOGIN_EMAIL",
+  rememberEmailAddressCookieName: "LOGIN_EMAIL",
   rememberEmailAddressMaxAgeInMinutes: parseInt(process.env.REMEMBER_EMAIL_MAX_AGE ?? "1440", 10),
   suggestedPasswordNumWords: 3,
   suggestedPasswordMinWordLength: 3,
@@ -59,9 +59,9 @@ const config: UserServiceConfig = {
   verificationCodeLength: 6,
   debugMode: "false",
   csrf: {
-    tokenName: process.env.CSRF_COOKIE_NAME ?? "XSRF-TOKEN",
-    cookieSecret: process.env.CSRF_TOKEN_SECRET ?? "OliverTwist1",
-    formSecret: process.env.CSRF_TOKEN_SECRET ?? "OliverTwist2",
+    tokenName: "XSRF-TOKEN",
+    cookieSecret: process.env.CSRF_COOKIE_SECRET ?? "OliverTwist1",
+    formSecret: process.env.CSRF_FORM_SECRET ?? "OliverTwist2",
     maximumTokenAgeInSeconds: parseInt(process.env.CSRF_TOKEN_MAX_AGE ?? "600", 10)
   },
   database: {
