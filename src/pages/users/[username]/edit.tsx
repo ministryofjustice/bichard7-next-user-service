@@ -150,6 +150,7 @@ const editUser = ({ errorMessage, successMessage, missingMandatory, user, csrfTo
             missingSurname={missingMandatory}
             missingPhoneNumber={missingMandatory}
             missingEmail={missingMandatory}
+            disableEmailField
           />
           <input type="hidden" name="id" value={user.id} />
           <Button noDoubleClick>{"Update user"}</Button>
