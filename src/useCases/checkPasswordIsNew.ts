@@ -15,13 +15,13 @@ const checkPasswordIsNew = async (
       WHERE user_id = $1
     `
   try {
-    const result = await connection.result(getAllMatchingPasswords, [userId])
-    for (let i = 0; i < result.rows.length; i += 1) {
-      /* eslint-disable no-await-in-loop */
-      const compareResult = await compare(newPassword, result.rows[i].password_hash)
-      if (compareResult) {
-        return Error("Cannot save previously used password")
-      }
+    const filteredResults = (await connection.result(getAllMatchingPasswords, [userId])).rows.map((row) =>
+      compare(newPassword, row.password_hash)
+    )
+    const comparedResults = await Promise.all(filteredResults)
+
+    if (comparedResults.some((item) => item === true)) {
+      return Error("Cannot save previously used password")
     }
   } catch (error) {
     return error

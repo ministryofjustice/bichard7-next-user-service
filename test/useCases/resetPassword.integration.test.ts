@@ -69,14 +69,18 @@ describe("resetPassword", () => {
 
     const passwordResetCode = "664422"
     await storePasswordResetCode(connection, emailAddress, passwordResetCode)
+
     const expectedResultHash = "SecondTester"
-    const hassPassword = hash as jest.MockedFunction<typeof hash>
-    hassPassword.mockResolvedValue(expectedResultHash)
+    const hashPassword = hash as jest.MockedFunction<typeof hash>
+    hashPassword.mockResolvedValue(expectedResultHash)
+
     const expectedPasswordHash = "$shiro1$SHA-256$500000$Second==$SecondTester"
     const mockedCreatePassword = createPassword as jest.MockedFunction<typeof createPassword>
     mockedCreatePassword.mockResolvedValue(expectedPasswordHash)
+
     const mockedCompare = compare as jest.MockedFunction<typeof compare>
     mockedCompare.mockResolvedValue(true)
+
     const resetPasswordOptions: ResetPasswordOptions = {
       emailAddress,
       newPassword: "CreatePasswordMocked",

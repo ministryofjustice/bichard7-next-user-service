@@ -74,7 +74,7 @@ describe("AccountSetup", () => {
     const result = await initialiseUserPassword(connection, "bichard01@example.com", verificationCode, "shorty")
     expect(result).toBeDefined()
     const actualError = <Error>result
-    expect(actualError.message).toBe("sPassword is too short")
+    expect(actualError.message).toBe("Password is too short")
   })
 
   it("should be able to setup a password using the details from the email", async () => {
