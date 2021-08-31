@@ -29,8 +29,13 @@ export default async (connection: Database, options: ResetPasswordOptions): Prom
     return getUserResult
   }
 
-  return connection
+  const result = await connection
     .task("update-and-store-old-password", async (taskConnection) => {
+      const addHistoricalPassword = await addPasswordHistory(taskConnection, getUserResult.id, getUserResult.password)
+      if (isError(addHistoricalPassword)) {
+        return addHistoricalPassword
+      }
+
       const checkPasswordIsNewResult = await checkPasswordIsNew(taskConnection, getUserResult.id, newPassword)
       if (isError(checkPasswordIsNewResult)) {
         return "Error: Cannot use previously used password"
@@ -41,13 +46,11 @@ export default async (connection: Database, options: ResetPasswordOptions): Prom
         return updatePasswordResult
       }
 
-      const addHistoricalPassword = await addPasswordHistory(taskConnection, getUserResult.id, getUserResult.password)
-      if (isError(addHistoricalPassword)) {
-        return addHistoricalPassword
-      }
       return undefined
     })
     .catch((error) => {
       return error
     })
+
+  return result
 }

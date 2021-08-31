@@ -81,7 +81,26 @@ describe("resetPassword", () => {
     expect(isError(firstResetResult)).toBe(false)
     expect(firstResetResult).toBeUndefined()
 
-    // reset password again
+    // reset with the previously used password
+    passwordResetCode = "664422"
+    await storePasswordResetCode(connection, emailAddress, passwordResetCode)
+
+    expectedPasswordHash = "$shiro1$SHA-256$500000$Foo==$Bar=$baz"
+    mockedCreatePassword = createPassword as jest.MockedFunction<typeof createPassword>
+    mockedCreatePassword.mockResolvedValue(expectedPasswordHash)
+
+    resetPasswordOptions = {
+      emailAddress,
+      newPassword: "CreatePasswordMocked",
+      passwordResetCode
+    }
+
+    const secondResetResult = await resetPassword(connection, resetPasswordOptions)
+    expect(isError(secondResetResult)).toBe(false)
+    expect(secondResetResult).not.toBe(undefined)
+    expect(secondResetResult).toBe("Error: Cannot use previously used password")
+
+    // reset password again with older password
     passwordResetCode = "664422"
     await storePasswordResetCode(connection, emailAddress, passwordResetCode)
 
@@ -96,10 +115,10 @@ describe("resetPassword", () => {
       passwordResetCode
     }
 
-    const secondResetResult = await resetPassword(connection, resetPasswordOptions)
-    expect(isError(secondResetResult)).toBe(true)
-    const actualError = <Error>secondResetResult
-    expect(actualError.message).toBe("Error: Cannot use previously used password")
+    const thirdResetResult = await resetPassword(connection, resetPasswordOptions)
+    expect(isError(thirdResetResult)).toBe(false)
+    expect(thirdResetResult).not.toBe(undefined)
+    expect(thirdResetResult).toBe("Error: Cannot use previously used password")
   })
 
   it("should return error when password reset code is not valid", async () => {
@@ -128,7 +147,6 @@ describe("resetPassword", () => {
       passwordResetCode: "DummyCode"
     }
     const result = await resetPassword(connection, resetPasswordOptions)
-
     expect(isError(result)).toBe(true)
 
     const actualError = <Error>result

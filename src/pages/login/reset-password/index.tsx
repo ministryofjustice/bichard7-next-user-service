@@ -101,7 +101,6 @@ export const getServerSideProps = withCsrf(async (context): Promise<GetServerSid
     const connection = getConnection()
     const resetPasswordOptions: ResetPasswordOptions = { ...payload, newPassword }
     const resetPasswordResult = await resetPassword(connection, resetPasswordOptions)
-
     if (isError(resetPasswordResult)) {
       return createRedirectResponse("/error")
     }
@@ -196,7 +195,7 @@ const ResetPassword = ({
 
           {resetingPasswordError && (
             <ErrorSummary title="Password is old">
-              {"You have already used this password. Please specify a new password."}
+              {"You have already used this password before. Please specify a new password."}
             </ErrorSummary>
           )}
 
