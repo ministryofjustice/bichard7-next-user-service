@@ -46,6 +46,10 @@ The application makes use of the following environment variables to permit confi
 |----------------------------------|----------------------------------------------------|------------------------------------------------------------------------------------------------------|
 | `$BASE_URL`                      | `http://localhost:3000`                            | The URL that the user-service is being served from. Used for generating email links.                 |
 | `$BICHARD_REDIRECT_URL`          | `"https://localhost:9443/bichard-ui/Authenticate"` | The URL to redirect to with a token as a GET parameter when authentication is successful             |
+| `$COOKIE_SECRET`                 | `"OliverTwist"`                                    | The secret to use for signing the cookies
+| `$CSRF_COOKIE_SECRET`            | `"OliverTwist2"`                                   | The secret to use for signing the CSRF cookie token
+| `$CSRF_FORM_SECRET`              | `"OliverTwist1"`                                   | The secret to use for signing the CSRF form token
+| `$CSRF_TOKEN_MAX_AGE`            | `600`                                              | The maximum validity of CSRF tokens in seconds
 | `$DB_HOST`                       | `"localhost"`                                      | The hostname of the database server                                                                  |
 | `$DB_USER`                       | `"bichard"`                                        | The username to use when connecting to the database                                                  |
 | `$DB_PASSWORD`                   | `"password"`                                       | The password to use when connecting to the database                                                  |
@@ -56,6 +60,7 @@ The application makes use of the following environment variables to permit confi
 | `$EMAIL_VERIFICATION_EXPIRES_IN` | `30`                                               | The number of minutes after which the email verification links will expire                           |
 | `$INCORRECT_DELAY`               | `10`                                               | The amount of time (in seconds) to wait between successive login attemps for the same user           |
 | `$REDIRECT_ACCESS_LIST`          | `"localhost,"`                                     | A comma-separated list of domains that we allow redirecting to after successful user login           |
+| `$REMEMBER_EMAIL_MAX_AGE`        | `1440`                                             | The maximum validity of cookie for remembering user's email address in minutes
 | `$SMTP_HOST`                     | `"console"`                                        | The hostname of the SMTP server. If set to `console`, emails will be printed to the console instead. |
 | `$SMTP_USER`                     | `"bichard"`                                        | The username to use when connecting to the SMTP server                                               |
 | `$SMTP_PASSWORD`                 | `"password"`                                       | The password to use when connecting to the SMTP server                                               |
