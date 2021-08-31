@@ -22,6 +22,7 @@ import getValidRedirectUrl from "lib/getRedirectUrl"
 import { withCsrf } from "middleware"
 import Link from "components/Link"
 import { GetServerSidePropsResult } from "next"
+import isPost from "utils/isPost"
 
 export const getServerSideProps = withCsrf(async (context): Promise<GetServerSidePropsResult<Props>> => {
   const { req, res, query, formData, csrfToken } = context as CsrfServerSidePropsContext
@@ -36,7 +37,7 @@ export const getServerSideProps = withCsrf(async (context): Promise<GetServerSid
   const notYourEmailAddressUrl = notYourEmailAddressUrlObject.href
 
   try {
-    if (req.method === "POST") {
+    if (isPost(req)) {
       const { token, password, rememberEmailAddress } = formData as {
         token: EmailVerificationToken
         password: string

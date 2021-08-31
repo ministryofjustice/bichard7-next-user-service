@@ -18,6 +18,7 @@ import { withAuthentication, withCsrf, withMultipleServerSideProps } from "middl
 import CsrfServerSidePropsContext from "types/CsrfServerSidePropsContext"
 import { ParsedUrlQuery } from "querystring"
 import AuthenticationServerSidePropsContext from "types/AuthenticationServerSidePropsContext"
+import isPost from "utils/isPost"
 
 export const getServerSideProps = withMultipleServerSideProps(
   withAuthentication,
@@ -39,7 +40,7 @@ export const getServerSideProps = withMultipleServerSideProps(
       return createRedirectResponse("/error")
     }
 
-    if (req.method === "POST") {
+    if (isPost(req)) {
       const { deleteAccountConfirmation } = formData as { deleteAccountConfirmation: string }
 
       if (user.username !== deleteAccountConfirmation) {

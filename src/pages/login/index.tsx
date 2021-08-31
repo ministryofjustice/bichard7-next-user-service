@@ -20,12 +20,13 @@ import CsrfServerSidePropsContext from "types/CsrfServerSidePropsContext"
 import getRedirectUrl from "lib/getRedirectUrl"
 import config from "lib/config"
 import { withCsrf } from "middleware"
+import isPost from "utils/isPost"
 
 export const getServerSideProps = withCsrf(async (context): Promise<GetServerSidePropsResult<Props>> => {
   const { req, res, formData, csrfToken, query } = context as CsrfServerSidePropsContext
   let invalidEmail = false
 
-  if (req.method === "POST") {
+  if (isPost(req)) {
     const { emailAddress } = formData as { emailAddress: string }
 
     if (emailAddress) {
