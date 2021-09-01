@@ -102,7 +102,7 @@ describe("User", () => {
       cy.get('input[id="forenames"]').type("B forename")
       cy.get('input[id="surname"]').type("B surname")
       cy.get('input[id="phoneNumber"]').type("B phone")
-      cy.get('input[id="emailAddress"]').type("bemail1@example.com")
+      cy.get('input[id="emailAddress"]').type("bichardemail1@example.com")
 
       cy.get('input[id="postalAddress"]').type("B Address")
       cy.get('input[id="postCode"]').type("B Code")
@@ -114,7 +114,7 @@ describe("User", () => {
     })
 
     it("should allow user to generate a random password", () => {
-      const emailAddress = "bemail1@example.com"
+      const emailAddress = "bichardemail1@example.com"
       cy.task("getPasswordResetCode", emailAddress).then((passwordResetCode) => {
         const newPasswordToken = generateNewPasswordToken(emailAddress, passwordResetCode)
         cy.visit(`/login/new-password?token=${newPasswordToken}`)
@@ -125,8 +125,24 @@ describe("User", () => {
       })
     })
 
+    it("should not possible for the new user to set their password if it contains sensitive information", () => {
+      const emailAddress = "bichardemail1@example.com"
+      const newPassword = "bichardemail1"
+      cy.task("getPasswordResetCode", emailAddress).then((passwordResetCode) => {
+        const newPasswordToken = generateNewPasswordToken(emailAddress, passwordResetCode)
+        cy.visit(`/login/new-password?token=${newPasswordToken}`)
+        cy.get("input[type=password][name=newPassword]").type(newPassword)
+        cy.get("input[type=password][name=confirmPassword]").type(newPassword)
+        cy.get("button[type=submit]").click()
+        cy.get('span[id="event-name-error"]').should(
+          "have.text",
+          "Password contains user specific sensitive information. Please choose another one"
+        )
+      })
+    })
+
     it("should allow the new user to set their password via a link", () => {
-      const emailAddress = "bemail1@example.com"
+      const emailAddress = "bichardemail1@example.com"
       const newPassword = "Test@123456"
       cy.task("getPasswordResetCode", emailAddress).then((passwordResetCode) => {
         const newPasswordToken = generateNewPasswordToken(emailAddress, passwordResetCode)
@@ -139,7 +155,7 @@ describe("User", () => {
     })
 
     it("should not possible for the new user to set their password if it is not secure enough", () => {
-      const emailAddress = "bemail1@example.com"
+      const emailAddress = "bichardemail1@example.com"
       const newPassword = "shorty"
       cy.task("getPasswordResetCode", emailAddress).then((passwordResetCode) => {
         const newPasswordToken = generateNewPasswordToken(emailAddress, passwordResetCode)
@@ -152,7 +168,7 @@ describe("User", () => {
     })
 
     it("should respond with forbidden response code when CSRF tokens are invalid in new password page", (done) => {
-      const emailAddress = "bemail1@example.com"
+      const emailAddress = "bichardemail1@example.com"
       cy.task("getPasswordResetCode", emailAddress).then((passwordResetCode) => {
         const newPasswordToken = generateNewPasswordToken(emailAddress, passwordResetCode)
         cy.checkCsrf(`/login/new-password?token=${newPasswordToken}`, "POST").then(() => done())
@@ -160,7 +176,7 @@ describe("User", () => {
     })
 
     it("should not possible for the new user to set their password a second time using the same link", () => {
-      const emailAddress = "bemail1@example.com"
+      const emailAddress = "bichardemail1@example.com"
       const newPassword = "Test@123456"
       cy.task("getPasswordResetCode", emailAddress).then((passwordResetCode) => {
         const newPasswordToken = generateNewPasswordToken(emailAddress, passwordResetCode)
@@ -179,7 +195,7 @@ describe("User", () => {
       cy.get("tbody tr:nth-child(4) td:nth-child(2)").should("have.text", "B forename")
       cy.get("tbody tr:nth-child(4) td:nth-child(3)").should("have.text", "B surname")
       cy.get("tbody tr:nth-child(4) td:nth-child(4)").should("have.text", "B phone")
-      cy.get("tbody tr:nth-child(4) td:nth-child(5)").should("have.text", "bemail1@example.com")
+      cy.get("tbody tr:nth-child(4) td:nth-child(5)").should("have.text", "bichardemail1@example.com")
     })
 
     it("doesn't update other users when a new user is created", () => {

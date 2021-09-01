@@ -16,7 +16,7 @@ export default async (connection: Database, password: string, emailAddress: stri
 
   const allSensitiveWords = [...forenames, ...surnames, firstEmailSection, user.username]
   if (allSensitiveWords.some((word) => password.includes(word))) {
-    return Error("Password contains user specific sensitive information.")
+    return Error("Password contains user specific sensitive information. Please choose another one")
   }
   return undefined
 }

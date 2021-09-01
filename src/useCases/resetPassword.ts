@@ -27,7 +27,7 @@ export default async (connection: Database, options: ResetPasswordOptions): Prom
 
   const validatePasswordSensitveResult = await passwordDoesNotContainSensitive(connection, newPassword, emailAddress)
   if (isError(validatePasswordSensitveResult)) {
-    return validatePasswordSensitveResult
+    return validatePasswordSensitveResult.message
   }
 
   const getUserResult = await getUserLoginDetailsByEmailAddress(connection, emailAddress)
