@@ -26,15 +26,12 @@ describe("passwordDoesNotContainSensitive", () => {
     let result = await passwordDoesNotContainSensitive(connection, "bichard01", "bichard01@example.com")
     expect(isError(result)).toBe(true)
 
-    // username
     result = await passwordDoesNotContainSensitive(connection, "Bichard01", "bichard01@example.com")
     expect(isError(result)).toBe(true)
 
-    // surnamebits
     result = await passwordDoesNotContainSensitive(connection, "Surname", "bichard01@example.com")
     expect(isError(result)).toBe(true)
 
-    // forename bits
     result = await passwordDoesNotContainSensitive(connection, "Bichard", "bichard01@example.com")
     expect(isError(result)).toBe(true)
 

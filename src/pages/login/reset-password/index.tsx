@@ -99,7 +99,6 @@ export const getServerSideProps = withCsrf(async (context): Promise<GetServerSid
     const connection = getConnection()
     const resetPasswordOptions: ResetPasswordOptions = { ...payload, newPassword }
     const resetPasswordResult = await resetPassword(connection, resetPasswordOptions)
-    console.log("---", resetPasswordResult)
     if (isError(resetPasswordResult)) {
       return createRedirectResponse("/error")
     }
