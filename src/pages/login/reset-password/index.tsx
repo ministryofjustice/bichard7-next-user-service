@@ -36,6 +36,7 @@ export const getServerSideProps = withCsrf(async (context): Promise<GetServerSid
         invalidPassword: false,
         passwordMismatch: false,
         passwordInsecure: false,
+        resetingPasswordError: false,
         csrfToken,
         suggestedPassword,
         suggestedPasswordUrl
@@ -57,6 +58,7 @@ export const getServerSideProps = withCsrf(async (context): Promise<GetServerSid
           invalidPassword: true,
           passwordMismatch: false,
           passwordInsecure: false,
+          resetingPasswordError: false,
           csrfToken,
           suggestedPassword,
           suggestedPasswordUrl
@@ -72,6 +74,7 @@ export const getServerSideProps = withCsrf(async (context): Promise<GetServerSid
           invalidPassword: false,
           passwordMismatch: true,
           passwordInsecure: false,
+          resetingPasswordError: false,
           csrfToken,
           suggestedPassword,
           suggestedPasswordUrl
@@ -88,6 +91,7 @@ export const getServerSideProps = withCsrf(async (context): Promise<GetServerSid
           invalidPassword: false,
           passwordMismatch: false,
           passwordInsecure: true,
+          resetingPasswordError: false,
           csrfToken,
           suggestedPassword,
           suggestedPasswordUrl
@@ -98,9 +102,23 @@ export const getServerSideProps = withCsrf(async (context): Promise<GetServerSid
     const connection = getConnection()
     const resetPasswordOptions: ResetPasswordOptions = { ...payload, newPassword }
     const resetPasswordResult = await resetPassword(connection, resetPasswordOptions)
-
     if (isError(resetPasswordResult)) {
       return createRedirectResponse("/error")
+    }
+    if (resetPasswordResult) {
+      return {
+        props: {
+          token,
+          passwordMismatch: false,
+          invalidPassword: false,
+          invalidToken: false,
+          passwordInsecure: false,
+          resetingPasswordError: true,
+          csrfToken,
+          suggestedPassword,
+          suggestedPasswordUrl
+        }
+      }
     }
 
     return createRedirectResponse("/login/reset-password/success")
@@ -116,6 +134,7 @@ export const getServerSideProps = withCsrf(async (context): Promise<GetServerSid
       invalidPassword: false,
       invalidToken: false,
       passwordInsecure: false,
+      resetingPasswordError: false,
       csrfToken,
       suggestedPassword,
       suggestedPasswordUrl
@@ -130,6 +149,7 @@ interface Props {
   invalidPassword: boolean
   invalidToken: boolean
   passwordInsecure: boolean
+  resetingPasswordError: boolean
   suggestedPassword: string
   suggestedPasswordUrl: string
 }
@@ -141,6 +161,7 @@ const ResetPassword = ({
   invalidPassword,
   invalidToken,
   passwordInsecure,
+  resetingPasswordError,
   suggestedPassword,
   suggestedPasswordUrl
 }: Props) => (
@@ -171,6 +192,12 @@ const ResetPassword = ({
 
           {passwordInsecure && (
             <ErrorSummary title="Password is too short">{"Provided a longer password."}</ErrorSummary>
+          )}
+
+          {resetingPasswordError && (
+            <ErrorSummary title="Password is old">
+              {"You have already used this password before. Please specify a new password."}
+            </ErrorSummary>
           )}
 
           {!invalidToken && (

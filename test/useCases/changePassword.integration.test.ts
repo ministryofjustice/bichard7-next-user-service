@@ -46,6 +46,6 @@ describe("changePassword", () => {
     expect(isError(result)).toBe(true)
 
     const actualError = <Error>result
-    expect(actualError.message).toBe("Error: Your current password is incorrect.")
+    expect(actualError.message).toBe("Your current password is incorrect.")
   })
 })

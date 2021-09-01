@@ -8,7 +8,7 @@ const validateUserVerificationCode = async (
   verificationCode: string
 ): PromiseResult<void> => {
   if (!verificationCode || verificationCode.length !== config.verificationCodeLength) {
-    return new Error("Error: Invalid Verification Code ")
+    return new Error("Invalid Verification Code ")
   }
   const query = `
     SELECT *
@@ -24,7 +24,7 @@ const validateUserVerificationCode = async (
   }
 
   if (result.rowCount === 0) {
-    return Error("Error: User not found")
+    return Error("User not found")
   }
 
   return undefined

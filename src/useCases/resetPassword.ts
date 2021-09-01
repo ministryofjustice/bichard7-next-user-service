@@ -1,6 +1,7 @@
 import Database from "types/Database"
 import { isError, PromiseResult } from "types/Result"
 import addPasswordHistory from "./addPasswordHistory"
+import checkPasswordIsNew from "./checkPasswordIsNew"
 import getPasswordResetCode from "./getPasswordResetCode"
 import getUserLoginDetailsByEmailAddress from "./getUserLoginDetailsByEmailAddress"
 import updatePassword from "./updatePassword"
@@ -11,7 +12,7 @@ export interface ResetPasswordOptions {
   newPassword: string
 }
 
-export default async (connection: Database, options: ResetPasswordOptions): PromiseResult<void> => {
+export default async (connection: Database, options: ResetPasswordOptions): PromiseResult<string> => {
   const { emailAddress, passwordResetCode, newPassword } = options
 
   const userPasswordResetCode = await getPasswordResetCode(connection, emailAddress)
@@ -27,21 +28,29 @@ export default async (connection: Database, options: ResetPasswordOptions): Prom
   if (isError(getUserResult)) {
     return getUserResult
   }
-  connection
-    .tx("update-and-store-old-password", async (taskConnection) => {
-      const updatePasswordResult = await updatePassword(taskConnection, emailAddress, newPassword)
-      if (isError(updatePasswordResult)) {
-        throw updatePasswordResult
+
+  const result = await connection
+    .task("update-and-store-old-password", async (taskConnection) => {
+      const addHistoricalPassword = await addPasswordHistory(taskConnection, getUserResult.id, getUserResult.password)
+      if (isError(addHistoricalPassword)) {
+        return addHistoricalPassword
       }
 
-      const addHistoricalPassword = addPasswordHistory(taskConnection, getUserResult.id, getUserResult.password)
-      if (isError(addHistoricalPassword)) {
-        throw addHistoricalPassword
+      const checkPasswordIsNewResult = await checkPasswordIsNew(taskConnection, getUserResult.id, newPassword)
+      if (isError(checkPasswordIsNewResult)) {
+        return "Cannot use previously used password"
       }
+
+      const updatePasswordResult = await updatePassword(taskConnection, emailAddress, newPassword)
+      if (isError(updatePasswordResult)) {
+        return updatePasswordResult
+      }
+
+      return undefined
     })
     .catch((error) => {
       return error
     })
 
-  return undefined
+  return result
 }

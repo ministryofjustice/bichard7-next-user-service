@@ -16,6 +16,7 @@ export interface UserServiceConfig {
   cookieSecret: string
   csrf: CsrfConfig
   database: DatabaseConfig
+  debugMode: string
   emailFrom: string
   emailVerificationExpiresIn: number
   incorrectDelay: number
@@ -33,7 +34,6 @@ export interface UserServiceConfig {
   tokenSecret: string
   maxUsersPerPage: number
   verificationCodeLength: number
-  debugMode: string
 }
 
 const config: UserServiceConfig = {
@@ -41,6 +41,7 @@ const config: UserServiceConfig = {
   baseUrl: process.env.BASE_URL ?? "http://localhost:3000",
   bichardRedirectURL: process.env.BICHARD_REDIRECT_URL ?? "https://localhost:9443/bichard-ui/Authenticate",
   cookieSecret: process.env.COOKIE_SECRET ?? "OliverTwist",
+  debugMode: "false",
   emailFrom: `Bichard <${process.env.EMAIL_FROM ?? "bichard@cjse.org"}>`,
   emailVerificationExpiresIn: parseInt(process.env.EMAIL_VERIFICATION_EXPIRY ?? "30", 10),
   incorrectDelay: parseInt(process.env.INCORRECT_DELAY ?? "10", 10),
@@ -57,7 +58,6 @@ const config: UserServiceConfig = {
   tokenSecret: process.env.TOKEN_SECRET ?? "OliverTwist",
   maxUsersPerPage: 10,
   verificationCodeLength: 6,
-  debugMode: "false",
   csrf: {
     tokenName: "XSRF-TOKEN",
     cookieSecret: process.env.CSRF_COOKIE_SECRET ?? "OliverTwist1",

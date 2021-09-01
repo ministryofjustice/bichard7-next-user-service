@@ -19,19 +19,19 @@ const initialiseUserPassword = async (
   // check if we have the correct user
   const validatedCodeResult = await validateUserVerificationCode(connection, emailAddress, verificationCode)
   if (isError(validatedCodeResult)) {
-    return new Error("Error: Invalid or expired verification code")
+    return new Error("Invalid or expired verification code")
   }
 
   // set verification code to empty string
   const resetResult = await storePasswordResetCode(connection, emailAddress, null)
   if (isError(resetResult)) {
-    return new Error("Error: Failed to update table")
+    return new Error("Failed to update table")
   }
 
   // set the new password
   const updateResult = await updatePassword(connection, emailAddress, password)
   if (isError(updateResult)) {
-    return new Error("Error: Failed to update password")
+    return new Error("Failed to update password")
   }
   return undefined
 }

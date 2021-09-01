@@ -43,14 +43,14 @@ export const getServerSideProps = withMultipleServerSideProps(
       }
 
       if (!currentPassword || !newPassword || !confirmPassword) {
-        errorMessage = "Error: Passwords cannot be empty"
+        errorMessage = "Passwords cannot be empty"
         return {
           props: { errorMessage, csrfToken, currentUser }
         }
       }
 
       if (newPassword !== confirmPassword) {
-        errorMessage = "Error: Passwords are mismatching"
+        errorMessage = "Passwords are mismatching"
         return {
           props: { errorMessage, csrfToken, currentUser }
         }

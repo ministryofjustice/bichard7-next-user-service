@@ -6,7 +6,7 @@ export default (connection: Database | Task, userId: number, oldPassword: string
   const addPasswordQuery = `
       INSERT INTO br7own.password_history(
         user_id,
-        password_Hash,
+        password_hash,
         last_used
       )
       VALUES (
