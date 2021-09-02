@@ -1,6 +1,7 @@
 import Database from "types/Database"
 import { isError, PromiseResult } from "types/Result"
 import addPasswordHistory from "./addPasswordHistory"
+import checkPasswordIsBanned from "./checkPasswordIsBanned"
 import checkPasswordIsNew from "./checkPasswordIsNew"
 import getPasswordResetCode from "./getPasswordResetCode"
 import getUserLoginDetailsByEmailAddress from "./getUserLoginDetailsByEmailAddress"
@@ -14,6 +15,11 @@ export interface ResetPasswordOptions {
 
 export default async (connection: Database, options: ResetPasswordOptions): PromiseResult<string> => {
   const { emailAddress, passwordResetCode, newPassword } = options
+
+  const passwordIsBanned = checkPasswordIsBanned(newPassword)
+  if (isError(passwordIsBanned)) {
+    return passwordIsBanned.message
+  }
 
   const userPasswordResetCode = await getPasswordResetCode(connection, emailAddress)
   if (isError(userPasswordResetCode)) {

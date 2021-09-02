@@ -5,7 +5,7 @@ const bannedPasswordsDictionary = Object.assign({}, ...bannedPasswords.split("\n
 
 const checkPasswordIsBanned = (newPassword: string): Result<void> => {
   if (newPassword in bannedPasswordsDictionary) {
-    return Error("Cannot use this password as it is unsecure")
+    return Error("Cannot use this password as it is unsecure/banned")
   }
 
   return undefined

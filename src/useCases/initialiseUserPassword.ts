@@ -1,5 +1,6 @@
 import Database from "types/Database"
 import { isError, PromiseResult } from "types/Result"
+import checkPasswordIsBanned from "./checkPasswordIsBanned"
 import passwordSecurityCheck from "./passwordSecurityCheck"
 import storePasswordResetCode from "./storePasswordResetCode"
 import updatePassword from "./updatePassword"
@@ -14,6 +15,11 @@ const initialiseUserPassword = async (
   const passwordCheckResult = passwordSecurityCheck(password)
   if (isError(passwordCheckResult)) {
     return passwordCheckResult
+  }
+
+  const passwordIsBanned = checkPasswordIsBanned(password)
+  if (isError(passwordIsBanned)) {
+    return passwordIsBanned
   }
 
   // check if we have the correct user
