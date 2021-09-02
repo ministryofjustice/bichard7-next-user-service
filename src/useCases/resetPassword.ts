@@ -5,6 +5,7 @@ import checkPasswordIsBanned from "./checkPasswordIsBanned"
 import checkPasswordIsNew from "./checkPasswordIsNew"
 import getPasswordResetCode from "./getPasswordResetCode"
 import getUserLoginDetailsByEmailAddress from "./getUserLoginDetailsByEmailAddress"
+import passwordDoesNotContainSensitive from "./passwordDoesNotContainSensitive"
 import updatePassword from "./updatePassword"
 
 export interface ResetPasswordOptions {
@@ -28,6 +29,11 @@ export default async (connection: Database, options: ResetPasswordOptions): Prom
 
   if (passwordResetCode !== userPasswordResetCode) {
     return Error("Password reset code does not match")
+  }
+
+  const validatePasswordSensitveResult = await passwordDoesNotContainSensitive(connection, newPassword, emailAddress)
+  if (isError(validatePasswordSensitveResult)) {
+    return validatePasswordSensitveResult.message
   }
 
   const getUserResult = await getUserLoginDetailsByEmailAddress(connection, emailAddress)
