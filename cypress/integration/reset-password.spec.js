@@ -67,7 +67,7 @@ describe("Reset password", () => {
       cy.get(".govuk-error-summary").should("be.visible").contains("h2", "Password is insecure")
       cy.get(".govuk-error-summary__body")
         .should("be.visible")
-        .contains("div", "Cannot use this password as it is unsecure/banned")
+        .contains("div", "Cannot use this password as it is insecure/banned")
     })
 
     it("should prompt the user that password reset was successful when provided password is valid", (done) => {

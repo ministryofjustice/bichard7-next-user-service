@@ -82,7 +82,7 @@ describe("AccountSetup", () => {
     const result = await initialiseUserPassword(connection, "bichard01@example.com", verificationCode, "password")
     expect(result).toBeDefined()
     const actualError = <Error>result
-    expect(actualError.message).toBe("Cannot use this password as it is unsecure/banned")
+    expect(actualError.message).toBe("Cannot use this password as it is insecure/banned")
   })
 
   it("should be able to setup a password using the details from the email", async () => {
