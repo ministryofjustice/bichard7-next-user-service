@@ -154,7 +154,7 @@ describe("User", () => {
       })
     })
 
-    it("should not possible for the new user to set their password if it is not secure enough", () => {
+    it("should not possible for the new user to set their password if it is too short", () => {
       const emailAddress = "bichardemail1@example.com"
       const newPassword = "shorty"
       cy.task("getPasswordResetCode", emailAddress).then((passwordResetCode) => {
@@ -164,6 +164,19 @@ describe("User", () => {
         cy.get("input[type=password][name=confirmPassword]").type(newPassword)
         cy.get("button[type=submit]").click()
         cy.get('span[id="event-name-error"]').should("have.text", "Password is too short")
+      })
+    })
+
+    it("should not possible for the new user to set their password if it is banned", () => {
+      const emailAddress = "bichardemail1@example.com"
+      const newPassword = "password"
+      cy.task("getPasswordResetCode", emailAddress).then((passwordResetCode) => {
+        const newPasswordToken = generateNewPasswordToken(emailAddress, passwordResetCode)
+        cy.visit(`/login/new-password?token=${newPasswordToken}`)
+        cy.get("input[type=password][name=newPassword]").type(newPassword)
+        cy.get("input[type=password][name=confirmPassword]").type(newPassword)
+        cy.get("button[type=submit]").click()
+        cy.get('span[id="event-name-error"]').should("have.text", "Cannot use this password as it is insecure/banned")
       })
     })
 

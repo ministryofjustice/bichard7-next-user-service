@@ -87,10 +87,32 @@ describe("resetPassword", () => {
       passwordResetCode
     }
 
-    const secondResetResult = await resetPassword(connection, resetPasswordOptions)
-    expect(isError(secondResetResult)).toBe(false)
-    expect(secondResetResult).not.toBe(undefined)
-    expect(secondResetResult).toBe("Cannot use previously used password")
+    const resetResult = await resetPassword(connection, resetPasswordOptions)
+    expect(isError(resetResult)).toBe(false)
+    expect(resetResult).not.toBe(undefined)
+    expect(resetResult).toBe("Cannot use previously used password")
+  })
+
+  it("should return error when new password is not allowed", async () => {
+    const emailAddress = "bichard01@example.com"
+    await insertIntoTable(users)
+
+    const passwordResetCode = "664422"
+    await storePasswordResetCode(connection, emailAddress, passwordResetCode)
+
+    const mockedCompare = compare as jest.MockedFunction<typeof compare>
+    mockedCompare.mockResolvedValue(true)
+
+    const resetPasswordOptions: ResetPasswordOptions = {
+      emailAddress,
+      newPassword: "password",
+      passwordResetCode
+    }
+
+    const resetResult = await resetPassword(connection, resetPasswordOptions)
+    expect(isError(resetResult)).toBe(false)
+    expect(resetResult).not.toBe(undefined)
+    expect(resetResult).toBe("Cannot use this password as it is insecure/banned")
   })
 
   it("should return error when password reset code is not valid", async () => {

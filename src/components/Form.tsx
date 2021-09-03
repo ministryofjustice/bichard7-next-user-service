@@ -12,8 +12,8 @@ const Form = ({ children, csrfToken, method }: Props) => {
 
   return (
     <form method={method}>
-      {children}
       <input type="hidden" name={tokenName} value={csrfToken} />
+      {children}
     </form>
   )
 }

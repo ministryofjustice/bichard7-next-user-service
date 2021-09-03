@@ -69,12 +69,20 @@ describe("AccountSetup", () => {
     expect(email.html).toMatchSnapshot()
   })
 
-  it("should be able to setup a password using the details from the email", async () => {
+  it("should not be able to setup a password if it is too short", async () => {
     await insertIntoTable(users)
     const result = await initialiseUserPassword(connection, "bichard01@example.com", verificationCode, "shorty")
     expect(result).toBeDefined()
     const actualError = <Error>result
     expect(actualError.message).toBe("Password is too short")
+  })
+
+  it("should not be able to setup a password if it is banned", async () => {
+    await insertIntoTable(users)
+    const result = await initialiseUserPassword(connection, "bichard01@example.com", verificationCode, "password")
+    expect(result).toBeDefined()
+    const actualError = <Error>result
+    expect(actualError.message).toBe("Cannot use this password as it is insecure/banned")
   })
 
   it("should be able to setup a password using the details from the email", async () => {
