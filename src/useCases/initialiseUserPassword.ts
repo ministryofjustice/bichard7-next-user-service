@@ -1,5 +1,6 @@
 import Database from "types/Database"
 import { isError, PromiseResult } from "types/Result"
+import checkPasswordIsBanned from "./checkPasswordIsBanned"
 import passwordDoesNotContainSensitive from "./passwordDoesNotContainSensitive"
 import passwordSecurityCheck from "./passwordSecurityCheck"
 import storePasswordResetCode from "./storePasswordResetCode"
@@ -17,6 +18,12 @@ const initialiseUserPassword = async (
     return passwordCheckResult
   }
 
+  const passwordIsBanned = checkPasswordIsBanned(password)
+  if (isError(passwordIsBanned)) {
+    return passwordIsBanned
+  }
+
+  // check if we have the correct user
   const validatedCodeResult = await validateUserVerificationCode(connection, emailAddress, verificationCode)
   if (isError(validatedCodeResult)) {
     return new Error("Invalid or expired verification code")
