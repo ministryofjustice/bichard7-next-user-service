@@ -9,12 +9,11 @@ export default (
   attributes?: KeyValuePair<string, unknown>
 ): AuditLog => {
   const {
-    req: {
-      socket: { remoteAddress },
-      url
-    },
+    req: { socket, url },
     currentUser
   } = context as AuthenticationServerSidePropsContext
+
+  const remoteAddress = socket?.remoteAddress
 
   return new AuditLog(action, currentUser?.username ?? "Anonymous", String(remoteAddress), String(url), attributes)
 }
