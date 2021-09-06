@@ -10,6 +10,7 @@ interface SmtpConfig {
 }
 
 export interface UserServiceConfig {
+  auditLoggerType: string
   authenticationCookieName: string
   baseUrl: string
   bichardRedirectURL: string
@@ -37,6 +38,7 @@ export interface UserServiceConfig {
 }
 
 const config: UserServiceConfig = {
+  auditLoggerType: "console",
   authenticationCookieName: ".AUTH",
   baseUrl: process.env.BASE_URL ?? "http://localhost:3000",
   bichardRedirectURL: process.env.BICHARD_REDIRECT_URL ?? "https://localhost:9443/bichard-ui/Authenticate",
@@ -52,7 +54,7 @@ const config: UserServiceConfig = {
   suggestedPasswordNumWords: 3,
   suggestedPasswordMinWordLength: 3,
   suggestedPasswordMaxWordLength: 8,
-  tokenExpiresIn: process.env.TOKEN_EXPIRES_IN ?? "15 seconds",
+  tokenExpiresIn: process.env.TOKEN_EXPIRES_IN ?? "3600 seconds",
   tokenIssuer: process.env.TOKEN_ISSUER ?? "Bichard",
   tokenQueryParamName: process.env.TOKEN_QUERY_PARAM_NAME ?? "token",
   tokenSecret: process.env.TOKEN_SECRET ?? "OliverTwist",
