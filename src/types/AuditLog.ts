@@ -1,4 +1,4 @@
-import { randomUUID } from "crypto"
+import { v4 as uuid } from "uuid"
 import KeyValuePair from "./KeyValuePair"
 
 export default class AuditLog {
@@ -13,7 +13,7 @@ export default class AuditLog {
     public readonly requestUri: string,
     public readonly attributes?: KeyValuePair<string, unknown>
   ) {
-    this.auditLogId = randomUUID()
+    this.auditLogId = uuid()
     this.timestamp = new Date()
   }
 }
