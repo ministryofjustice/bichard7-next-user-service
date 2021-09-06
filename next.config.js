@@ -23,6 +23,14 @@ module.exports = {
             value: "nosniff"
           },
           {
+            key: "Content-Security-Policy",
+            value: "default-src 'self'; frame-src 'self'; frame-ancestors 'self'; form-action 'self'"
+          },
+          {
+            key: "X-Content-Security-Policy",
+            value: "default-src 'self'; frame-src 'self'; frame-ancestors 'self'; form-action 'self'"
+          },
+          {
             key: "Strict-Transport-Security",
             value: "max-age=31536000"
           },
