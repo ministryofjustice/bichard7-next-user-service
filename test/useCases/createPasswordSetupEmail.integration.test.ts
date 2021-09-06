@@ -12,6 +12,7 @@ import insertIntoTable from "../../testFixtures/database/insertIntoTable"
 import deleteFromTable from "../../testFixtures/database/deleteFromTable"
 import getTestConnection from "../../testFixtures/getTestConnection"
 import users from "../../testFixtures/database/data/users"
+import fakeAuditLogger from "../fakeAuditLogger"
 
 const verificationCode = "123456"
 
@@ -71,7 +72,13 @@ describe("AccountSetup", () => {
 
   it("should not be able to setup a password if it is too short", async () => {
     await insertIntoTable(users)
-    const result = await initialiseUserPassword(connection, "bichard01@example.com", verificationCode, "shorty")
+    const result = await initialiseUserPassword(
+      connection,
+      fakeAuditLogger,
+      "bichard01@example.com",
+      verificationCode,
+      "shorty"
+    )
     expect(result).toBeDefined()
     const actualError = <Error>result
     expect(actualError.message).toBe("Password is too short")
@@ -79,7 +86,13 @@ describe("AccountSetup", () => {
 
   it("should not be able to setup a password if it is banned", async () => {
     await insertIntoTable(users)
-    const result = await initialiseUserPassword(connection, "bichard01@example.com", verificationCode, "password")
+    const result = await initialiseUserPassword(
+      connection,
+      fakeAuditLogger,
+      "bichard01@example.com",
+      verificationCode,
+      "password"
+    )
     expect(result).toBeDefined()
     const actualError = <Error>result
     expect(actualError.message).toBe("Cannot use this password as it is insecure/banned")
@@ -88,7 +101,13 @@ describe("AccountSetup", () => {
   it("should be able to setup a password using the details from the email", async () => {
     const user = mapUserWithVerficationCode(users)
     await insertIntoTable(user)
-    const result = await initialiseUserPassword(connection, "bichard01@example.com", verificationCode, "NewPassword")
+    const result = await initialiseUserPassword(
+      connection,
+      fakeAuditLogger,
+      "bichard01@example.com",
+      verificationCode,
+      "NewPassword"
+    )
     expect(result).toBeUndefined()
   })
 
@@ -96,10 +115,11 @@ describe("AccountSetup", () => {
     const user = mapUserWithVerficationCode(users)
     await insertIntoTable(user)
 
-    await initialiseUserPassword(connection, "bichard01@exmaple.com", verificationCode, "NewPassword")
+    await initialiseUserPassword(connection, fakeAuditLogger, "bichard01@exmaple.com", verificationCode, "NewPassword")
 
     const secondResult = await initialiseUserPassword(
       connection,
+      fakeAuditLogger,
       "bichard01@exmaple.com",
       verificationCode,
       "NewPassword"

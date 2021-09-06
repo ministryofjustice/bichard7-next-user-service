@@ -16,6 +16,8 @@ import { ParsedUrlQuery } from "querystring"
 import AuthenticationServerSidePropsContext from "types/AuthenticationServerSidePropsContext"
 import User from "types/User"
 import isPost from "utils/isPost"
+import getAuditLogger from "lib/getAuditLogger"
+import config from "lib/config"
 
 export const getServerSideProps = withMultipleServerSideProps(
   withAuthentication,
@@ -44,7 +46,8 @@ export const getServerSideProps = withMultipleServerSideProps(
 
       if (formIsValid) {
         const connection = getConnection()
-        const result = await setupNewUser(connection, userCreateDetails)
+        const auditLogger = getAuditLogger(context, config)
+        const result = await setupNewUser(connection, auditLogger, userCreateDetails)
 
         if (isError(result)) {
           return {
