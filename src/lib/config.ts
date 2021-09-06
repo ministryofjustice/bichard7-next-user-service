@@ -59,7 +59,7 @@ const config: UserServiceConfig = {
   maxUsersPerPage: 10,
   verificationCodeLength: 6,
   csrf: {
-    tokenName: "XSRF-TOKEN",
+    tokenName: "CSRFToken",
     cookieSecret: process.env.CSRF_COOKIE_SECRET ?? "OliverTwist1",
     formSecret: process.env.CSRF_FORM_SECRET ?? "OliverTwist2",
     maximumTokenAgeInSeconds: parseInt(process.env.CSRF_TOKEN_MAX_AGE ?? "600", 10)

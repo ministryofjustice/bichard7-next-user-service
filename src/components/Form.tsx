@@ -1,3 +1,4 @@
+import config from "lib/config"
 import { ReactNode } from "react"
 
 interface Props {
@@ -7,9 +8,11 @@ interface Props {
 }
 
 const Form = ({ children, csrfToken, method }: Props) => {
+  const { tokenName } = config.csrf
+
   return (
     <form method={method}>
-      <input type="hidden" name="token" value={csrfToken} />
+      <input type="hidden" name={tokenName} value={csrfToken} />
       {children}
     </form>
   )
