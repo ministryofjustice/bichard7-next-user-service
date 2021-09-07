@@ -3,7 +3,7 @@ import { IncomingMessage } from "http"
 import { isError } from "types/Result"
 
 it("should return cookie token when valid CSRF cookie exists", () => {
-  const cookieName = "XSRF-TOKEN%2Flogin"
+  const cookieName = "CSRFToken%2Flogin"
   const request = <IncomingMessage>{
     headers: {
       cookie: `${cookieName}=VfyI1c88-__KLP0wgpxue6xFzVozwuKsLxAA.M8YyQuvpv66ecZXEQUrL%2BLF%2BsR3g%2Fw0ysplz47bdeVE`
@@ -21,7 +21,7 @@ it("should return error when CSRF cookie does not exist", () => {
     headers: {}
   }
 
-  const result = parseCookieToken(request, "XSRF-TOKEN%2Flogin")
+  const result = parseCookieToken(request, "CSRFToken%2Flogin")
 
   expect(isError(result)).toBe(true)
 
@@ -36,7 +36,7 @@ it("should return error when CSRF cookie is invalid", () => {
     }
   }
 
-  const result = parseCookieToken(request, "XSRF-TOKEN%2Flogin")
+  const result = parseCookieToken(request, "CSRFToken%2Flogin")
 
   expect(isError(result)).toBe(true)
 
@@ -45,7 +45,7 @@ it("should return error when CSRF cookie is invalid", () => {
 })
 
 it("should return error when CSRF cookie has invalid signature", () => {
-  const cookieName = "XSRF-TOKEN%2Flogin"
+  const cookieName = "CSRFToken%2Flogin"
   const request = <IncomingMessage>{
     headers: {
       cookie: `${cookieName}=VfyI1c88-__KLP0wgpxue6xFzVozwuKsLxAA.INVALID_SIGNATURE`

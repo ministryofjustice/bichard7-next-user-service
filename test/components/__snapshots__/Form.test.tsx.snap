@@ -6,7 +6,7 @@ exports[`should render form component and its children 1`] = `
     method="POST"
   >
     <input
-      name="XSRF-TOKEN"
+      name="CSRFToken"
       type="hidden"
       value="Dummy-CSRF-Token"
     />
