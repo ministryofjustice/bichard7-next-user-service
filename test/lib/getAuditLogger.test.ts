@@ -2,6 +2,7 @@ import config, { UserServiceConfig } from "lib/config"
 import getAuditLogger from "lib/getAuditLogger"
 import { GetServerSidePropsContext } from "next"
 import AuditLogger from "types/AuditLogger"
+import { isError } from "types/Result"
 
 it("should throw error when unknown logger type is set in config", () => {
   const testConfig = { auditLoggerType: "dummy_type" } as unknown as UserServiceConfig
@@ -14,7 +15,7 @@ it("should throw error when unknown logger type is set in config", () => {
     actualError = error
   }
 
-  expect(actualError).toBeDefined()
+  expect(isError(actualError)).toBe(true)
   expect(actualError?.message).toBe("Unknown audit logger type.")
 })
 
