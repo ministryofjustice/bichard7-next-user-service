@@ -21,14 +21,14 @@ const createRequest = (cookie: string) => {
 const mockParseFormData = (formToken: string) => {
   const mockedParseFormData = parseFormData as jest.MockedFunction<typeof parseFormData>
   mockedParseFormData.mockResolvedValue({
-    "XSRF-TOKEN": formToken,
+    CSRFToken: formToken,
     "Dummy-Form-Field": "DummyValue"
   })
 }
 
 const expectFormDataToBeValid = (formData: QueryString.ParsedQs, formToken: string) => {
-  expect(formData).toHaveProperty("XSRF-TOKEN")
-  expect(formData["XSRF-TOKEN"]).toBe(formToken)
+  expect(formData).toHaveProperty("CSRFToken")
+  expect(formData.CSRFToken).toBe(formToken)
   expect(formData).toHaveProperty("Dummy-Form-Field")
   expect(formData["Dummy-Form-Field"]).toBe("DummyValue")
 }
@@ -46,7 +46,7 @@ const invalidCookieForFormToken = serialize(anotherCookieName, anotherCookieToke
 
 const expiredCookie = "QO60fsUX-KKkGnqboM90s8VS9C5zSdrysjrg.FuBXqXqFzbs6JWUZIC5jIZztpbZ8gYdD4Q2%2FF569Qr4"
 const expiredFormToken =
-  "XSRF-TOKEN%2Flogin=1629370536933.QO60fsUX-KKkGnqboM90s8VS9C5zSdrysjrg.31NFF0UFt3Pa7IAeRDiagzG8BPM45cIH8EMynKUlpzY"
+  "CSRFToken%2Flogin=1629370536933.QO60fsUX-KKkGnqboM90s8VS9C5zSdrysjrg.31NFF0UFt3Pa7IAeRDiagzG8BPM45cIH8EMynKUlpzY"
 
 it("should be valid when request method is GET", async () => {
   mockParseFormData(validFormToken)
