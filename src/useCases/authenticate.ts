@@ -3,6 +3,7 @@ import UserGroup from "types/UserGroup"
 import { compare } from "lib/shiro"
 import config from "lib/config"
 import Database from "types/Database"
+import AuditLogger from "types/AuditLogger"
 import resetUserVerificationCode from "./resetUserVerificationCode"
 
 const fetchGroups = async (task: ITask<unknown>, emailAddress: string): Promise<UserGroup[]> => {
@@ -71,7 +72,13 @@ const updateUserLoginTimestamp = async (task: ITask<unknown>, emailAddress: stri
   await task.none(updateUserQuery, [emailAddress])
 }
 
-const authenticate = async (connection: Database, emailAddress: string, password: string, verificationCode: string) => {
+const authenticate = async (
+  connection: Database,
+  auditLogger: AuditLogger,
+  emailAddress: string,
+  password: string,
+  verificationCode: string
+) => {
   const invalidCredentialsError = new Error("Invalid credentials or invalid verification")
 
   if (!emailAddress || !password || !verificationCode || verificationCode.length !== config.verificationCodeLength) {
@@ -87,10 +94,13 @@ const authenticate = async (connection: Database, emailAddress: string, password
 
     const isAuthenticated = await compare(password, user.password)
     const isVerified = verificationCode === user.emailVerificationCode
+
     if (isAuthenticated && isVerified) {
       await resetUserVerificationCode(connection, emailAddress)
+      await auditLogger("User logged in", { user: { ...user, password: undefined } })
       return user
     }
+
     return invalidCredentialsError
   } catch (error) {
     return error

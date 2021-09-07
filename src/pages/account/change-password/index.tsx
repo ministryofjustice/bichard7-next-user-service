@@ -3,6 +3,8 @@ import Form from "components/Form"
 import Layout from "components/Layout"
 import SuggestPassword from "components/SuggestPassword"
 import TextInput from "components/TextInput"
+import config from "lib/config"
+import getAuditLogger from "lib/getAuditLogger"
 import getConnection from "lib/getConnection"
 import { withAuthentication, withCsrf, withMultipleServerSideProps } from "middleware"
 import { GetServerSidePropsContext, GetServerSidePropsResult } from "next"
@@ -57,8 +59,10 @@ export const getServerSideProps = withMultipleServerSideProps(
       }
 
       const connection = getConnection()
+      const auditLogger = getAuditLogger(context, config)
       const changePasswordResult = await changePassword(
         connection,
+        auditLogger,
         currentUser.emailAddress,
         currentPassword,
         newPassword

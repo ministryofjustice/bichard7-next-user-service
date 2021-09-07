@@ -1,3 +1,4 @@
+import AuditLogger from "types/AuditLogger"
 import Database from "types/Database"
 import { isError, PromiseResult } from "types/Result"
 import addPasswordHistory from "./addPasswordHistory"
@@ -14,7 +15,11 @@ export interface ResetPasswordOptions {
   newPassword: string
 }
 
-export default async (connection: Database, options: ResetPasswordOptions): PromiseResult<string> => {
+export default async (
+  connection: Database,
+  auditLogger: AuditLogger,
+  options: ResetPasswordOptions
+): PromiseResult<string> => {
   const { emailAddress, passwordResetCode, newPassword } = options
 
   const passwordIsBanned = checkPasswordIsBanned(newPassword)
@@ -57,6 +62,8 @@ export default async (connection: Database, options: ResetPasswordOptions): Prom
       if (isError(updatePasswordResult)) {
         return updatePasswordResult
       }
+
+      await auditLogger("Reset password", { user: { emailAddress } })
 
       return undefined
     })

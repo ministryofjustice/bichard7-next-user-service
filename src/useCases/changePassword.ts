@@ -1,3 +1,4 @@
+import AuditLogger from "types/AuditLogger"
 import Database from "types/Database"
 import { isError, PromiseResult } from "types/Result"
 import checkPassword from "./checkPassword"
@@ -7,6 +8,7 @@ import updatePassword from "./updatePassword"
 
 export default async (
   connection: Database,
+  auditLogger: AuditLogger,
   emailAddress: string,
   currentPassword: string,
   newPassword: string
@@ -34,6 +36,8 @@ export default async (
     console.error(updatePasswordResult)
     return Error("Could not update password.")
   }
+
+  await auditLogger("Change password")
 
   const sendPasswordChangedEmailResult = await sendPasswordChangedEmail(connection, emailAddress)
 

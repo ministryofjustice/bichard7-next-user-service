@@ -1,8 +1,13 @@
+import AuditLogger from "types/AuditLogger"
 import Database from "types/Database"
 import PromiseResult from "types/PromiseResult"
 import User from "types/User"
 
-const updateUser = async (connection: Database, userDetails: Partial<User>): PromiseResult<void | Error> => {
+const updateUser = async (
+  connection: Database,
+  auditLogger: AuditLogger,
+  userDetails: Partial<User>
+): PromiseResult<void | Error> => {
   /* eslint-disable no-useless-escape */
   const updateUserQuery = `
     UPDATE br7own.users
@@ -27,6 +32,8 @@ const updateUser = async (connection: Database, userDetails: Partial<User>): Pro
     if (rowsUpdated.rowCount === 0) {
       return Error("Error updating user")
     }
+
+    await auditLogger("Edit user", { user: userDetails })
 
     return undefined
   } catch (error) {

@@ -4,6 +4,7 @@ import Layout from "components/Layout"
 import SuggestPassword from "components/SuggestPassword"
 import TextInput from "components/TextInput"
 import config from "lib/config"
+import getAuditLogger from "lib/getAuditLogger"
 import getConnection from "lib/getConnection"
 import { decodeEmailVerificationToken, EmailVerificationToken } from "lib/token/emailVerificationToken"
 import { withCsrf } from "middleware"
@@ -56,7 +57,8 @@ export const getServerSideProps = withCsrf(async (context): Promise<GetServerSid
     const { emailAddress, verificationCode } = translatedToken
 
     const connection = getConnection()
-    const result = await initialiseUserPassword(connection, emailAddress, verificationCode, newPassword)
+    const auditLogger = getAuditLogger(context, config)
+    const result = await initialiseUserPassword(connection, auditLogger, emailAddress, verificationCode, newPassword)
 
     if (!isError(result)) {
       return createRedirectResponse("/login/reset-password/success")

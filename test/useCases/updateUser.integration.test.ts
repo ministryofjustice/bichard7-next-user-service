@@ -6,6 +6,7 @@ import deleteFromTable from "../../testFixtures/database/deleteFromTable"
 import insertIntoTable from "../../testFixtures/database/insertIntoTable"
 import selectFromTable from "../../testFixtures/database/selectFromTable"
 import users from "../../testFixtures/database/data/users"
+import fakeAuditLogger from "../fakeAuditLogger"
 
 describe("updatePassword", () => {
   let connection: Database
@@ -39,7 +40,7 @@ describe("updatePassword", () => {
       postalAddress: "postal address 04"
     }
 
-    const result = await updateUser(connection, user)
+    const result = await updateUser(connection, fakeAuditLogger, user)
     expect(result).toBeUndefined()
 
     const initialUserList02 = await selectFromTable("users", "email", "bichard01@example.com")
@@ -76,7 +77,7 @@ describe("updatePassword", () => {
       postCode: "YYY 777"
     }
 
-    const result = await updateUser(connection, user)
+    const result = await updateUser(connection, fakeAuditLogger, user)
     expect(result).toBeUndefined()
     const initialUserList02 = await selectFromTable("users", "email", emailAddress)
     const initialUser02 = initialUserList02[0]
@@ -100,7 +101,7 @@ describe("updatePassword", () => {
       postCode: "YYY 777"
     }
 
-    const result = await updateUser(connection, user)
+    const result = await updateUser(connection, fakeAuditLogger, user)
     expect(isError(expectedError))
     expect((result as Error).message).toBe(expectedError.message)
   })

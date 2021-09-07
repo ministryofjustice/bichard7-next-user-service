@@ -1,6 +1,7 @@
 import { randomDigits } from "crypto-secure-random-digit"
 import config from "lib/config"
 import getEmailer from "lib/getEmailer"
+import AuditLogger from "types/AuditLogger"
 import Database from "types/Database"
 import { isError, PromiseResult } from "types/Result"
 import UserCreateDetails from "types/UserDetails"
@@ -14,12 +15,16 @@ export interface newUserSetupResult {
 
 export default async (
   connection: Database,
+  auditLogger: AuditLogger,
   userCreateDetails: UserCreateDetails
 ): PromiseResult<newUserSetupResult> => {
   const result = await createUser(connection, userCreateDetails)
+
   if (isError(result)) {
     return result
   }
+
+  await auditLogger("Create user", { user: userCreateDetails })
 
   const passwordSetCode = randomDigits(config.verificationCodeLength).join("")
   const passwordSetCodeResult = await storePasswordResetCode(

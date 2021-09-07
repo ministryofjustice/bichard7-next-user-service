@@ -15,6 +15,8 @@ import { withAuthentication, withCsrf, withMultipleServerSideProps } from "middl
 import { ParsedUrlQuery } from "querystring"
 import AuthenticationServerSidePropsContext from "types/AuthenticationServerSidePropsContext"
 import isPost from "utils/isPost"
+import getAuditLogger from "lib/getAuditLogger"
+import config from "lib/config"
 
 const errorMessageMap = {
   unique_users_username_idx: "This user name has been taken please enter another"
@@ -46,7 +48,8 @@ export const getServerSideProps = withMultipleServerSideProps(
       const formIsValid = userFormIsValid(userDetails)
 
       if (formIsValid) {
-        const userUpdated = await updateUser(connection, userDetails)
+        const auditLogger = getAuditLogger(context, config)
+        const userUpdated = await updateUser(connection, auditLogger, userDetails)
 
         if (isError(userUpdated)) {
           console.error(userUpdated)

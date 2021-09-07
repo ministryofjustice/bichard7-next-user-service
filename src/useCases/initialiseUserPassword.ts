@@ -1,3 +1,4 @@
+import AuditLogger from "types/AuditLogger"
 import Database from "types/Database"
 import { isError, PromiseResult } from "types/Result"
 import checkPasswordIsBanned from "./checkPasswordIsBanned"
@@ -9,6 +10,7 @@ import validateUserVerificationCode from "./validateUserVerificationCode"
 
 const initialiseUserPassword = async (
   connection: Database,
+  auditLogger: AuditLogger,
   emailAddress: string,
   verificationCode: string,
   password: string
@@ -43,6 +45,9 @@ const initialiseUserPassword = async (
   if (isError(updateResult)) {
     return new Error("Failed to update password")
   }
+
+  await auditLogger("New password", { user: { emailAddress } })
+
   return undefined
 }
 

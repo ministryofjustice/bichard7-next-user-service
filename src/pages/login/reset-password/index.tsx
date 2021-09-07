@@ -17,6 +17,7 @@ import generateRandomPassword from "useCases/generateRandomPassword"
 import SuggestPassword from "components/SuggestPassword"
 import config from "lib/config"
 import isPost from "utils/isPost"
+import getAuditLogger from "lib/getAuditLogger"
 
 export const getServerSideProps = withCsrf(async (context): Promise<GetServerSidePropsResult<Props>> => {
   const { req, query, formData, csrfToken } = context as CsrfServerSidePropsContext
@@ -97,11 +98,14 @@ export const getServerSideProps = withCsrf(async (context): Promise<GetServerSid
     }
 
     const connection = getConnection()
+    const auditLogger = getAuditLogger(context, config)
     const resetPasswordOptions: ResetPasswordOptions = { ...payload, newPassword }
-    const resetPasswordResult = await resetPassword(connection, resetPasswordOptions)
+    const resetPasswordResult = await resetPassword(connection, auditLogger, resetPasswordOptions)
+
     if (isError(resetPasswordResult)) {
       return createRedirectResponse("/error")
     }
+
     if (resetPasswordResult) {
       return {
         props: {
