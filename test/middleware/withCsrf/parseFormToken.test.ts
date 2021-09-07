@@ -12,7 +12,6 @@ it("should return form token and cookie name when token exists in the form data"
   const formData = <QueryString.ParsedQs>{
     CSRFToken: formToken
   }
-  console.log(formToken)
   const expectedFormToken = formToken.split("=")[1].split(".")[1]
 
   const result = parseFormToken(formData)
