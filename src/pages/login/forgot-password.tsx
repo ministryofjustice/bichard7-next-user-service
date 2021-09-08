@@ -3,7 +3,7 @@ import GridRow from "components/GridRow"
 import Layout from "components/Layout"
 import Head from "next/head"
 import TextInput from "components/TextInput"
-import { GetServerSidePropsResult } from "next"
+import { GetServerSidePropsContext, GetServerSidePropsResult } from "next"
 import BackLink from "components/BackLink"
 import ErrorSummary from "components/ErrorSummary"
 import getConnection from "lib/getConnection"
@@ -14,39 +14,42 @@ import Form from "components/Form"
 import CsrfServerSidePropsContext from "types/CsrfServerSidePropsContext"
 import { withCsrf } from "middleware"
 import isPost from "utils/isPost"
+import { ParsedUrlQuery } from "querystring"
 
-export const getServerSideProps = withCsrf(async (context): Promise<GetServerSidePropsResult<Props>> => {
-  const { req, formData, csrfToken } = context as CsrfServerSidePropsContext
+export const getServerSideProps = withCsrf(
+  async (context: GetServerSidePropsContext<ParsedUrlQuery>): Promise<GetServerSidePropsResult<Props>> => {
+    const { req, formData, csrfToken } = context as CsrfServerSidePropsContext
 
-  if (isPost(req)) {
-    const { emailAddress } = formData as { emailAddress: string }
+    if (isPost(req)) {
+      const { emailAddress } = formData as { emailAddress: string }
 
-    if (!emailAddress) {
-      return {
-        props: {
-          invalidEmail: true,
-          csrfToken
+      if (!emailAddress) {
+        return {
+          props: {
+            invalidEmail: true,
+            csrfToken
+          }
         }
       }
+
+      const connection = getConnection()
+      const result = await sendPasswordResetEmail(connection, emailAddress)
+
+      if (isError(result)) {
+        return createRedirectResponse("/error")
+      }
+
+      return createRedirectResponse("/login/reset-password/check-email")
     }
 
-    const connection = getConnection()
-    const result = await sendPasswordResetEmail(connection, emailAddress)
-
-    if (isError(result)) {
-      return createRedirectResponse("/error")
+    return {
+      props: {
+        invalidEmail: false,
+        csrfToken
+      }
     }
-
-    return createRedirectResponse("/login/reset-password/check-email")
   }
-
-  return {
-    props: {
-      invalidEmail: false,
-      csrfToken
-    }
-  }
-})
+)
 
 interface Props {
   invalidEmail: boolean

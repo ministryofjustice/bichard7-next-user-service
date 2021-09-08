@@ -4,6 +4,7 @@ import deleteFromTable from "../../testFixtures/database/deleteFromTable"
 import insertIntoTable from "../../testFixtures/database/insertIntoUsersTable"
 import selectFromTable from "../../testFixtures/database/selectFromTable"
 import users from "../../testFixtures/database/data/users"
+import fakeAuditLogger from "../fakeAuditLogger"
 
 describe("DeleteUserUseCase", () => {
   let connection: any
@@ -23,7 +24,7 @@ describe("DeleteUserUseCase", () => {
   it("should return deleted response when successfully deletes the user", async () => {
     const emailAddress = "bichard01@example.com"
     await insertIntoTable(users)
-    const result = await deleteUser(connection, { emailAddress } as any)
+    const result = await deleteUser(connection, fakeAuditLogger, { emailAddress } as any)
 
     expect(result).toBeDefined()
 
@@ -50,7 +51,7 @@ describe("DeleteUserUseCase", () => {
     }))
 
     await insertIntoTable(mappedUsers)
-    const result = await deleteUser(connection, { emailAddress } as any)
+    const result = await deleteUser(connection, fakeAuditLogger, { emailAddress } as any)
 
     expect(result).toBeDefined()
 

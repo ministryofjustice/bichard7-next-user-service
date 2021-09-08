@@ -15,6 +15,7 @@ import deleteFromTable from "../../testFixtures/database/deleteFromTable"
 import getTestConnection from "../../testFixtures/getTestConnection"
 import users from "../../testFixtures/database/data/users"
 import groups from "../../testFixtures/database/data/groups"
+import fakeAuditLogger from "../fakeAuditLogger"
 
 const verificationCode = "123456"
 
@@ -79,28 +80,55 @@ describe("AccountSetup", () => {
     expect(email.html).toMatchSnapshot()
   })
 
-  it("should be able to setup a password using the details from the email", async () => {
+  it("should not be able to setup a password if it is too short", async () => {
     await insertIntoUsersTable(users)
-    const result = await initialiseUserPassword(connection, "bichard01@example.com", verificationCode, "shorty")
+    const result = await initialiseUserPassword(
+      connection,
+      fakeAuditLogger,
+      "bichard01@example.com",
+      verificationCode,
+      "shorty"
+    )
     expect(result).toBeDefined()
     const actualError = <Error>result
     expect(actualError.message).toBe("Password is too short")
   })
 
+  it("should not be able to setup a password if it is banned", async () => {
+    await insertIntoUsersTable(users)
+    const result = await initialiseUserPassword(
+      connection,
+      fakeAuditLogger,
+      "bichard01@example.com",
+      verificationCode,
+      "password"
+    )
+    expect(result).toBeDefined()
+    const actualError = <Error>result
+    expect(actualError.message).toBe("Cannot use this password as it is insecure/banned")
+  })
+
   it("should be able to setup a password using the details from the email", async () => {
     const user = mapUserWithVerficationCode(users)
     await insertIntoUsersTable(user)
-    const result = await initialiseUserPassword(connection, "bichard01@example.com", verificationCode, "NewPassword")
+    const result = await initialiseUserPassword(
+      connection,
+      fakeAuditLogger,
+      "bichard01@example.com",
+      verificationCode,
+      "NewPassword"
+    )
     expect(result).toBeUndefined()
   })
 
   it("should not be able to setup a password a second time using the same details", async () => {
     const user = mapUserWithVerficationCode(users)
     await insertIntoUsersTable(user)
-    await initialiseUserPassword(connection, "bichard01@exmaple.com", verificationCode, "NewPassword")
+    await initialiseUserPassword(connection, fakeAuditLogger, "bichard01@exmaple.com", verificationCode, "NewPassword")
 
     const secondResult = await initialiseUserPassword(
       connection,
+      fakeAuditLogger,
       "bichard01@exmaple.com",
       verificationCode,
       "NewPassword"

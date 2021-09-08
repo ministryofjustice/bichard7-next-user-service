@@ -10,6 +10,7 @@ interface SmtpConfig {
 }
 
 export interface UserServiceConfig {
+  auditLoggerType: string
   authenticationCookieName: string
   baseUrl: string
   bichardRedirectURL: string
@@ -37,6 +38,7 @@ export interface UserServiceConfig {
 }
 
 const config: UserServiceConfig = {
+  auditLoggerType: "console",
   authenticationCookieName: ".AUTH",
   baseUrl: process.env.BASE_URL ?? "http://localhost:3000",
   bichardRedirectURL: process.env.BICHARD_REDIRECT_URL ?? "https://localhost:9443/bichard-ui/Authenticate",
@@ -59,7 +61,7 @@ const config: UserServiceConfig = {
   maxUsersPerPage: 10,
   verificationCodeLength: 6,
   csrf: {
-    tokenName: "XSRF-TOKEN",
+    tokenName: "CSRFToken",
     cookieSecret: process.env.CSRF_COOKIE_SECRET ?? "OliverTwist1",
     formSecret: process.env.CSRF_FORM_SECRET ?? "OliverTwist2",
     maximumTokenAgeInSeconds: parseInt(process.env.CSRF_TOKEN_MAX_AGE ?? "600", 10)

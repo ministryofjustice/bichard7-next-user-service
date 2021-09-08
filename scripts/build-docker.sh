@@ -37,6 +37,34 @@ DOCKER_IMAGE_HASH="${AWS_ACCOUNT_ID}.dkr.ecr.eu-west-2.amazonaws.com/nginx-nodej
 docker build --build-arg "BUILD_IMAGE=${DOCKER_IMAGE_HASH}" -t user-service .
 
 if [[ -n "${CODEBUILD_RESOLVED_SOURCE_VERSION}" && -n "${CODEBUILD_START_TIME}" ]]; then
+
+    ## Install goss/trivy
+    curl -L https://github.com/aelsabbahy/goss/releases/latest/download/goss-linux-amd64 -o /usr/local/bin/goss
+    chmod +rx /usr/local/bin/goss
+    curl -L https://github.com/aelsabbahy/goss/releases/latest/download/dgoss -o /usr/local/bin/dgoss
+    chmod +rx /usr/local/bin/dgoss
+
+    export GOSS_PATH="/usr/local/bin/goss"
+
+    get_latest_release() {
+      curl --silent "https://api.github.com/repos/$1/releases/latest" | # Get latest release from GitHub api
+        grep '"tag_name":' |                                            # Get tag line
+        sed -E 's/.*"([^"]+)".*/\1/'                                    # Pluck JSON value
+    }
+
+    install_trivy() {
+      echo "Installing trivy binary"
+      TRIVY_VERSION=$(get_latest_release "aquasecurity/trivy" | sed 's/v//')
+      yum install -y https://github.com/aquasecurity/trivy/releases/download/v${TRIVY_VERSION}/trivy_${TRIVY_VERSION}_Linux-64bit.rpm
+    }
+
+    install_trivy
+
+    ## Run goss tests
+    GOSS_SLEEP=15 dgoss run -e DB_HOST=172.17.0.1 "user-service:latest"
+    ## Run Trivy scan
+    trivy image "user-service:latest"
+
     docker tag \
         user-service:latest \
         ${AWS_ACCOUNT_ID}.dkr.ecr.eu-west-2.amazonaws.com/user-service:${CODEBUILD_RESOLVED_SOURCE_VERSION}-${CODEBUILD_START_TIME}

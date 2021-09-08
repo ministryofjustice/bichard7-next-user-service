@@ -6,12 +6,12 @@ exports[`should render form component and its children 1`] = `
     method="POST"
   >
     <input
-      type="text"
-    />
-    <input
-      name="XSRF-TOKEN"
+      name="CSRFToken"
       type="hidden"
       value="Dummy-CSRF-Token"
+    />
+    <input
+      type="text"
     />
   </form>
 </div>

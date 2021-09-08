@@ -1,6 +1,7 @@
 import User from "types/User"
 import Database from "types/Database"
 import { isError } from "types/Result"
+import AuditLogger from "types/AuditLogger"
 import markUserAsDeleted from "./markUserAsDeleted"
 
 interface DeleteUserResult {
@@ -8,12 +9,14 @@ interface DeleteUserResult {
   isDeleted?: boolean
 }
 
-export default async (db: Database, user: Partial<User>): Promise<DeleteUserResult> => {
+export default async (db: Database, auditLogger: AuditLogger, user: Partial<User>): Promise<DeleteUserResult> => {
   const markUserAsDeletedResult = await markUserAsDeleted(db, user.emailAddress as string)
 
   if (isError(markUserAsDeletedResult)) {
     return { serverSideError: markUserAsDeletedResult }
   }
+
+  await auditLogger("Delete user", { user })
 
   return { isDeleted: true }
 }

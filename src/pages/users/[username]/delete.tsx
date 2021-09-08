@@ -19,6 +19,8 @@ import CsrfServerSidePropsContext from "types/CsrfServerSidePropsContext"
 import { ParsedUrlQuery } from "querystring"
 import AuthenticationServerSidePropsContext from "types/AuthenticationServerSidePropsContext"
 import isPost from "utils/isPost"
+import getAuditLogger from "lib/getAuditLogger"
+import config from "lib/config"
 
 export const getServerSideProps = withMultipleServerSideProps(
   withAuthentication,
@@ -54,7 +56,8 @@ export const getServerSideProps = withMultipleServerSideProps(
         }
       }
 
-      const deleteUserResult = await deleteUser(connection, user)
+      const auditLogger = getAuditLogger(context, config)
+      const deleteUserResult = await deleteUser(connection, auditLogger, user)
 
       if (deleteUserResult.isDeleted) {
         const userFullName = encodeURIComponent(`${user.forenames} ${user.surname}`)

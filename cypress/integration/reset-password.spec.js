@@ -23,15 +23,44 @@ describe("Reset password", () => {
     })
 
     it("should not allow submission when passwords are too short", () => {
-      cy.task("getPasswordResetCode", ["bichard01@example.com", "foobar"]).then(() => {
-        const token = generatePasswordResetToken("bichard01@example.com", "foobar")
+      cy.task("getPasswordResetCode", ["bichard01@example.com", "foobar"])
+      const token = generatePasswordResetToken("bichard01@example.com", "foobar")
+      cy.visit(`/login/reset-password?token=${token}`)
+      cy.get("body").contains(/reset password/i)
+      cy.get("input[type=password][name=newPassword]").type("shorty")
+      cy.get("input[type=password][name=confirmPassword]").type("shorty")
+      cy.get("button[type=submit]").click()
+      cy.get(".govuk-error-summary").should("be.visible").contains("h2", "Password is insecure")
+      cy.get(".govuk-error-summary__body").should("be.visible").contains("div", "Password is too short")
+    })
+
+    it("should not allow submission when passwords contain sensitive information", () => {
+      cy.task("getPasswordResetCode", ["bichard01@example.com", "foobar"]).then((passwordResetCode) => {
+        const token = generatePasswordResetToken("bichard01@example.com", passwordResetCode)
         cy.visit(`/login/reset-password?token=${token}`)
         cy.get("body").contains(/reset password/i)
-        cy.get("input[type=password][name=newPassword]").type("shorty")
-        cy.get("input[type=password][name=confirmPassword]").type("shorty")
+        cy.get("input[type=password][name=newPassword]").type("bichard01")
+        cy.get("input[type=password][name=confirmPassword]").type("bichard01")
         cy.get("button[type=submit]").click()
-        cy.get(".govuk-error-summary").should("be.visible").contains("h2", "Password is too short")
+        cy.get(".govuk-error-summary").should("be.visible").contains("h2", "Password is insecure")
+        cy.get(".govuk-error-summary__body")
+          .should("be.visible")
+          .contains("div", "Password contains user specific sensitive information. Please choose another one")
       })
+    })
+
+    it("should not allow submission when password is banned", () => {
+      cy.task("getPasswordResetCode", ["bichard01@example.com", "foobar"])
+      const token = generatePasswordResetToken("bichard01@example.com", "foobar")
+      cy.visit(`/login/reset-password?token=${token}`)
+      cy.get("body").contains(/reset password/i)
+      cy.get("input[type=password][name=newPassword]").type("123456789")
+      cy.get("input[type=password][name=confirmPassword]").type("123456789")
+      cy.get("button[type=submit]").click()
+      cy.get(".govuk-error-summary").should("be.visible").contains("h2", "Password is insecure")
+      cy.get(".govuk-error-summary__body")
+        .should("be.visible")
+        .contains("div", "Cannot use this password as it is insecure/banned")
     })
 
     it("should prompt the user that password reset was successful when provided password is valid", (done) => {
@@ -138,7 +167,8 @@ describe("Reset password", () => {
         cy.get("input[type=password][name=newPassword]").type(newPassword)
         cy.get("input[type=password][name=confirmPassword]").type(newPassword)
         cy.get("button[type=submit]").click()
-        cy.get(".govuk-error-summary").should("be.visible").contains("h2", "Password is old")
+        cy.get(".govuk-error-summary").should("be.visible").contains("h2", "Password is insecure")
+        cy.get(".govuk-error-summary__body").should("be.visible").contains("div", "Cannot use previously used password")
       })
     })
   })

@@ -13,7 +13,7 @@ it("should generate both form and cookie tokens", () => {
 
   const formTokenCookieName = formTokenParts[0]
   const actualFormToken = formTokenParts[1]
-  expect(cookieName).toBe("XSRF-TOKEN%2Flogin")
+  expect(cookieName).toBe("CSRFToken%2Flogin")
   expect(cookieName).toBe(formTokenCookieName)
   expect(cookieToken).toBeDefined()
 

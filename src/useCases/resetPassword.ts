@@ -1,9 +1,12 @@
+import AuditLogger from "types/AuditLogger"
 import Database from "types/Database"
 import { isError, PromiseResult } from "types/Result"
 import addPasswordHistory from "./addPasswordHistory"
+import checkPasswordIsBanned from "./checkPasswordIsBanned"
 import checkPasswordIsNew from "./checkPasswordIsNew"
 import getPasswordResetCode from "./getPasswordResetCode"
 import getUserLoginDetailsByEmailAddress from "./getUserLoginDetailsByEmailAddress"
+import passwordDoesNotContainSensitive from "./passwordDoesNotContainSensitive"
 import updatePassword from "./updatePassword"
 
 export interface ResetPasswordOptions {
@@ -12,8 +15,17 @@ export interface ResetPasswordOptions {
   newPassword: string
 }
 
-export default async (connection: Database, options: ResetPasswordOptions): PromiseResult<string> => {
+export default async (
+  connection: Database,
+  auditLogger: AuditLogger,
+  options: ResetPasswordOptions
+): PromiseResult<string> => {
   const { emailAddress, passwordResetCode, newPassword } = options
+
+  const passwordIsBanned = checkPasswordIsBanned(newPassword)
+  if (isError(passwordIsBanned)) {
+    return passwordIsBanned.message
+  }
 
   const userPasswordResetCode = await getPasswordResetCode(connection, emailAddress)
   if (isError(userPasswordResetCode)) {
@@ -22,6 +34,11 @@ export default async (connection: Database, options: ResetPasswordOptions): Prom
 
   if (passwordResetCode !== userPasswordResetCode) {
     return Error("Password reset code does not match")
+  }
+
+  const validatePasswordSensitveResult = await passwordDoesNotContainSensitive(connection, newPassword, emailAddress)
+  if (isError(validatePasswordSensitveResult)) {
+    return validatePasswordSensitveResult.message
   }
 
   const getUserResult = await getUserLoginDetailsByEmailAddress(connection, emailAddress)
@@ -45,6 +62,8 @@ export default async (connection: Database, options: ResetPasswordOptions): Prom
       if (isError(updatePasswordResult)) {
         return updatePasswordResult
       }
+
+      await auditLogger("Reset password", { user: { emailAddress } })
 
       return undefined
     })

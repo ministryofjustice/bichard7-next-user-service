@@ -1,3 +1,4 @@
+import AuditLogger from "types/AuditLogger"
 import Database from "types/Database"
 import PromiseResult from "types/PromiseResult"
 import User from "types/User"
@@ -53,7 +54,11 @@ const updateUserTable = async (task: ITask<unknown>, userDetails: Partial<User>)
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 const notUpdated = (row: any) => row && row.rowCount === 0
 
-const updateUser = async (connection: Database, userDetails: Partial<User>): PromiseResult<void | Error> => {
+const updateUser = async (
+  connection: Database,
+  auditLogger: AuditLogger,
+  userDetails: Partial<User>
+): PromiseResult<void | Error> => {
   const groupDoesNotExistsError = new Error("This group does not exist")
   try {
     const result = await connection.tx(async (task: ITask<unknown>) => {
@@ -70,6 +75,8 @@ const updateUser = async (connection: Database, userDetails: Partial<User>): Pro
     if (notUpdated(result)) {
       return new Error("Error updating user")
     }
+
+    await auditLogger("Edit user", { user: userDetails })
 
     return undefined
   } catch (error) {

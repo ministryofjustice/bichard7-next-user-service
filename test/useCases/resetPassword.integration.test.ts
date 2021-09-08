@@ -7,6 +7,7 @@ import getTestConnection from "../../testFixtures/getTestConnection"
 import deleteFromTable from "../../testFixtures/database/deleteFromTable"
 import insertIntoTable from "../../testFixtures/database/insertIntoUsersTable"
 import users from "../../testFixtures/database/data/users"
+import fakeAuditLogger from "../fakeAuditLogger"
 
 jest.mock("lib/shiro")
 
@@ -44,7 +45,7 @@ describe("resetPassword", () => {
       newPassword: "CreateNewPasswordMocked",
       passwordResetCode
     }
-    const result = await resetPassword(connection, resetPasswordOptions)
+    const result = await resetPassword(connection, fakeAuditLogger, resetPasswordOptions)
 
     expect(isError(result)).toBe(false)
     expect(result).toBeUndefined()
@@ -87,10 +88,32 @@ describe("resetPassword", () => {
       passwordResetCode
     }
 
-    const secondResetResult = await resetPassword(connection, resetPasswordOptions)
-    expect(isError(secondResetResult)).toBe(false)
-    expect(secondResetResult).not.toBe(undefined)
-    expect(secondResetResult).toBe("Cannot use previously used password")
+    const resetResult = await resetPassword(connection, fakeAuditLogger, resetPasswordOptions)
+    expect(isError(resetResult)).toBe(false)
+    expect(resetResult).not.toBe(undefined)
+    expect(resetResult).toBe("Cannot use previously used password")
+  })
+
+  it("should return error when new password is not allowed", async () => {
+    const emailAddress = "bichard01@example.com"
+    await insertIntoTable(users)
+
+    const passwordResetCode = "664422"
+    await storePasswordResetCode(connection, emailAddress, passwordResetCode)
+
+    const mockedCompare = compare as jest.MockedFunction<typeof compare>
+    mockedCompare.mockResolvedValue(true)
+
+    const resetPasswordOptions: ResetPasswordOptions = {
+      emailAddress,
+      newPassword: "password",
+      passwordResetCode
+    }
+
+    const resetResult = await resetPassword(connection, fakeAuditLogger, resetPasswordOptions)
+    expect(isError(resetResult)).toBe(false)
+    expect(resetResult).not.toBe(undefined)
+    expect(resetResult).toBe("Cannot use this password as it is insecure/banned")
   })
 
   it("should return error when password reset code is not valid", async () => {
@@ -104,7 +127,7 @@ describe("resetPassword", () => {
       newPassword: "DummyPassword",
       passwordResetCode: "112233"
     }
-    const result = await resetPassword(connection, resetPasswordOptions)
+    const result = await resetPassword(connection, fakeAuditLogger, resetPasswordOptions)
 
     expect(isError(result)).toBe(true)
 
@@ -118,7 +141,7 @@ describe("resetPassword", () => {
       newPassword: "DummyPassword",
       passwordResetCode: "DummyCode"
     }
-    const result = await resetPassword(connection, resetPasswordOptions)
+    const result = await resetPassword(connection, fakeAuditLogger, resetPasswordOptions)
     expect(isError(result)).toBe(true)
 
     const actualError = <Error>result
@@ -138,7 +161,7 @@ describe("resetPassword", () => {
       newPassword: "DummyPassword",
       passwordResetCode: "DummyCode"
     }
-    const result = await resetPassword(connection, resetPasswordOptions)
+    const result = await resetPassword(connection, fakeAuditLogger, resetPasswordOptions)
 
     expect(isError(result)).toBe(true)
 

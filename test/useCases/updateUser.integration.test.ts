@@ -8,6 +8,7 @@ import insertIntoGroupsTable from "../../testFixtures/database/insertIntoGroupsT
 import selectFromTable from "../../testFixtures/database/selectFromTable"
 import users from "../../testFixtures/database/data/users"
 import groups from "../../testFixtures/database/data/groups"
+import fakeAuditLogger from "../fakeAuditLogger"
 
 describe("updatePassword", () => {
   let connection: Database
@@ -69,7 +70,7 @@ describe("updatePassword", () => {
       groupId: initialGroupId
     }
 
-    const result = await updateUser(connection, user)
+    const result = await updateUser(connection, fakeAuditLogger, user)
     expect(result).toBeUndefined()
 
     const initialUserList02 = await selectFromTable("users", "email", "bichard01@example.com")
@@ -109,7 +110,7 @@ describe("updatePassword", () => {
       groupId: initialGroupId
     }
 
-    const result = await updateUser(connection, user)
+    const result = await updateUser(connection, fakeAuditLogger, user)
     expect(result).toBeUndefined()
     const initialUserList02 = await selectFromTable("users", "email", emailAddress)
     const initialUser02 = initialUserList02[0]
@@ -136,7 +137,7 @@ describe("updatePassword", () => {
       groupId: initialGroupId
     }
 
-    const result = await updateUser(connection, user)
+    const result = await updateUser(connection, fakeAuditLogger, user)
     expect(isError(expectedError))
     expect((result as Error).message).toBe(expectedError.message)
   })
@@ -181,7 +182,7 @@ describe("updatePassword", () => {
       groupId: updatedGroupId
     }
 
-    const updateResult = await updateUser(connection, updateUserDetails)
+    const updateResult = await updateUser(connection, fakeAuditLogger, updateUserDetails)
     expect(isError(updateResult)).toBe(false)
 
     const expectedUsers = await selectFromTable("users", "email", user.email)
@@ -237,7 +238,7 @@ describe("updatePassword", () => {
       groupId: greatestPossibleGroupIdPlusOne
     }
 
-    const updateResult = await updateUser(connection, updateUserDetails)
+    const updateResult = await updateUser(connection, fakeAuditLogger, updateUserDetails)
     console.log(updateResult)
     expect(isError(updateResult)).toBe(true)
     expect((updateResult as Error).message).toBe("This group does not exist")
@@ -283,7 +284,7 @@ describe("updatePassword", () => {
       groupId: updatedGroupId
     }
 
-    const updateResult = await updateUser(connection, updateUserDetails)
+    const updateResult = await updateUser(connection, fakeAuditLogger, updateUserDetails)
     expect(isError(updateResult)).toBe(false)
 
     const expectedUsers = await selectFromTable("users", "email", user.email)

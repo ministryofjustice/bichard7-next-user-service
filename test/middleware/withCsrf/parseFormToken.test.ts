@@ -10,7 +10,7 @@ const request = <IncomingMessage>{ url: "/login" }
 it("should return form token and cookie name when token exists in the form data", () => {
   const { formToken, cookieName: expectedCookieName } = generateCsrfToken(request, config)
   const formData = <QueryString.ParsedQs>{
-    "XSRF-TOKEN": formToken
+    CSRFToken: formToken
   }
   const expectedFormToken = formToken.split("=")[1].split(".")[1]
 
@@ -35,7 +35,7 @@ it("should return error when token does not exist in form data", () => {
 })
 
 it("should return error when token is empty in form data", () => {
-  const formData = <QueryString.ParsedQs>{ "XSRF-TOKEN": "" }
+  const formData = <QueryString.ParsedQs>{ CSRFToken: "" }
 
   const result = parseFormToken(formData)
 
@@ -47,7 +47,7 @@ it("should return error when token is empty in form data", () => {
 
 it("should return error when token format is invalid", () => {
   const formData = <QueryString.ParsedQs>{
-    "XSRF-TOKEN": "Invalid format"
+    CSRFToken: "Invalid format"
   }
 
   const result = parseFormToken(formData)
@@ -60,7 +60,7 @@ it("should return error when token format is invalid", () => {
 
 it("should return error when token signature is invalid", () => {
   const formData = <QueryString.ParsedQs>{
-    "XSRF-TOKEN": "XSRF-TOKEN%2Flogin=1629370536933.QO60fsUX-KKkGnqboM90s8VS9C5zSdrysjrg.INVALID_SIGNATURE"
+    CSRFToken: "CSRFToken%2Flogin=1629370536933.QO60fsUX-KKkGnqboM90s8VS9C5zSdrysjrg.INVALID_SIGNATURE"
   }
 
   const result = parseFormToken(formData)
@@ -73,8 +73,8 @@ it("should return error when token signature is invalid", () => {
 
 it("should return error when token is expired", () => {
   const formData = <QueryString.ParsedQs>{
-    "XSRF-TOKEN":
-      "XSRF-TOKEN%2Flogin=1629370536933.QO60fsUX-KKkGnqboM90s8VS9C5zSdrysjrg.31NFF0UFt3Pa7IAeRDiagzG8BPM45cIH8EMynKUlpzY"
+    CSRFToken:
+      "CSRFToken%2Flogin=1631008561433.hsW1jiiB-zRY6RuLsB-xCMSKDsRPHiYD-fbI.Yg1mgLhFO//A+bmuCs1wSbbKhO+sqJ0HzD2e/MCou00"
   }
 
   const result = parseFormToken(formData)

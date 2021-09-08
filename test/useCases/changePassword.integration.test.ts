@@ -6,6 +6,7 @@ import insertIntoTable from "../../testFixtures/database/insertIntoUsersTable"
 import deleteFromTable from "../../testFixtures/database/deleteFromTable"
 import getTestConnection from "../../testFixtures/getTestConnection"
 import users from "../../testFixtures/database/data/users"
+import fakeAuditLogger from "../fakeAuditLogger"
 
 describe("changePassword", () => {
   let connection: Database
@@ -25,7 +26,7 @@ describe("changePassword", () => {
   it("should change password when current password is correct", async () => {
     await insertIntoTable(users)
     const newPassword = "NewPassword"
-    const result = await changePassword(connection, "bichard01@example.com", "password", newPassword)
+    const result = await changePassword(connection, fakeAuditLogger, "bichard01@example.com", "password", newPassword)
 
     expect(isError(result)).toBe(false)
 
@@ -41,7 +42,13 @@ describe("changePassword", () => {
 
   it("should return error when current password is incorrect", async () => {
     await insertIntoTable(users)
-    const result = await changePassword(connection, "bichard01@example.com", "IncorrectPassword", "NewPassword")
+    const result = await changePassword(
+      connection,
+      fakeAuditLogger,
+      "bichard01@example.com",
+      "IncorrectPassword",
+      "NewPassword"
+    )
 
     expect(isError(result)).toBe(true)
 

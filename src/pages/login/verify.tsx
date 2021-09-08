@@ -23,6 +23,7 @@ import { withCsrf } from "middleware"
 import Link from "components/Link"
 import { GetServerSidePropsResult } from "next"
 import isPost from "utils/isPost"
+import getAuditLogger from "lib/getAuditLogger"
 
 export const getServerSideProps = withCsrf(async (context): Promise<GetServerSidePropsResult<Props>> => {
   const { req, res, query, formData, csrfToken } = context as CsrfServerSidePropsContext
@@ -59,7 +60,8 @@ export const getServerSideProps = withCsrf(async (context): Promise<GetServerSid
       const { emailAddress, verificationCode } = translatedToken
 
       const connection = getConnection()
-      const user = await authenticate(connection, emailAddress, password, verificationCode)
+      const auditLogger = getAuditLogger(context, config)
+      const user = await authenticate(connection, auditLogger, emailAddress, password, verificationCode)
 
       if (isError(user)) {
         console.error(user)

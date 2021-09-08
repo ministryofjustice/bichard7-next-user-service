@@ -21,7 +21,6 @@ export default (formData: QueryString.ParsedQs): Result<ParseFormTokenResult> =>
   if (!formToken) {
     return Error("Token is empty in the form data.")
   }
-
   const unsignedFormToken = unsign(formToken, formSecret)
 
   if (!unsignedFormToken) {
