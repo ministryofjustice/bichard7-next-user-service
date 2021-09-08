@@ -64,8 +64,6 @@ describe("AccountSetup", () => {
 
     const result = await createUser(connection, user)
 
-    console.log("result", result)
-
     expect(isError(result)).toBe(false)
 
     const passwordSetCodeResult = await storePasswordResetCode(connection, "bichard01@example.com", verificationCode)

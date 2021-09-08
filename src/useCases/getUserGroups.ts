@@ -2,9 +2,7 @@ import Database from "types/Database"
 import { UserGroupResult } from "types/UserGroup"
 import PromiseResult from "types/PromiseResult"
 
-const getUserGroups = async (connection: Database): PromiseResult<UserGroupResult[] | Error> => {
-  let groups
-
+const getUserGroups = async (connection: Database): PromiseResult<UserGroupResult[]> => {
   const getUserGroupsQuery = `
       SELECT
         id,
@@ -14,12 +12,10 @@ const getUserGroups = async (connection: Database): PromiseResult<UserGroupResul
     `
 
   try {
-    groups = await connection.any(getUserGroupsQuery)
+    return await connection.any(getUserGroupsQuery)
   } catch (error) {
     return error
   }
-
-  return groups
 }
 
 export default getUserGroups
