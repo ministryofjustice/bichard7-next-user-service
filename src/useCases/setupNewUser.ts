@@ -3,7 +3,7 @@ import config from "lib/config"
 import getEmailer from "lib/getEmailer"
 import Database from "types/Database"
 import { isError, PromiseResult } from "types/Result"
-import UserCreateDetails from "types/UserDetails"
+import User from "types/User"
 import createNewUserEmail from "./createNewUserEmail"
 import createUser from "./createUser"
 import storePasswordResetCode from "./storePasswordResetCode"
@@ -12,10 +12,7 @@ export interface newUserSetupResult {
   successMessage: string
 }
 
-export default async (
-  connection: Database,
-  userCreateDetails: UserCreateDetails
-): PromiseResult<newUserSetupResult> => {
+export default async (connection: Database, userCreateDetails: Partial<User>): PromiseResult<newUserSetupResult> => {
   const result = await createUser(connection, userCreateDetails)
   if (isError(result)) {
     return result
@@ -24,7 +21,7 @@ export default async (
   const passwordSetCode = randomDigits(config.verificationCodeLength).join("")
   const passwordSetCodeResult = await storePasswordResetCode(
     connection,
-    userCreateDetails.emailAddress,
+    userCreateDetails.emailAddress as string,
     passwordSetCode
   )
 
@@ -32,7 +29,8 @@ export default async (
     return passwordSetCodeResult
   }
 
-  const createNewUserEmailResult = createNewUserEmail(userCreateDetails, passwordSetCode)
+  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+  const createNewUserEmailResult = createNewUserEmail(userCreateDetails as any, passwordSetCode)
   if (isError(createNewUserEmailResult)) {
     return createNewUserEmailResult
   }
@@ -43,7 +41,7 @@ export default async (
   return emailer
     .sendMail({
       from: config.emailFrom,
-      to: userCreateDetails.emailAddress,
+      to: userCreateDetails.emailAddress as string,
       ...email
     })
     .catch((error: Error) => error)

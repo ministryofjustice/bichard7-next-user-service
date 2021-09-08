@@ -7,8 +7,12 @@
 // You can change the location of this file or turn off loading
 import pgPromise from "pg-promise"
 import deleteFromTable from "../../testFixtures/database/deleteFromTable"
-import insertIntoTable from "../../testFixtures/database/insertIntoTable"
+import insertIntoUsersTable from "../../testFixtures/database/insertIntoUsersTable"
+import insertIntoGroupsTable from "../../testFixtures/database/insertIntoGroupsTable"
+import insertIntoUsersAndGroupsTable from "../../testFixtures/database/insertIntoUsersAndGroupsTable"
+import selectFromTable from "../../testFixtures/database/selectFromTable"
 import users from "../../testFixtures/database/data/users"
+import groups from "../../testFixtures/database/data/groups"
 import manyUsers from "../../testFixtures/database/data/manyUsers"
 
 /**
@@ -41,13 +45,48 @@ module.exports = (on, config) => {
       return null
     },
 
+    async deleteFromGroupsTable() {
+      await deleteFromTable("groups")
+      return null
+    },
+
+    async deleteFromUsersGroupsTable() {
+      await deleteFromTable("users_groups")
+      return null
+    },
+
     async insertIntoUsersTable() {
-      await insertIntoTable(users)
+      await insertIntoUsersTable(users)
+      return null
+    },
+
+    async insertIntoGroupsTable() {
+      await insertIntoGroupsTable(groups)
       return null
     },
 
     async insertManyIntoUsersTable() {
-      await insertIntoTable(manyUsers)
+      await insertIntoUsersTable(manyUsers)
+      return null
+    },
+
+    async selectFromGroupsTable(whereColumn, whereValue) {
+      const selectedGroups = await selectFromTable("groups", whereColumn, whereValue, "name")
+      return selectedGroups
+    },
+
+    async selectFromUsersTable(emailAddress) {
+      const selectedUsers = await selectFromTable("users", "email", emailAddress)
+      return selectedUsers[0]
+    },
+
+    async selectFromUsersGroupsTable(userId) {
+      const groupsUsers = await selectFromTable("users_groups", "user_id", userId)
+      return groupsUsers
+    },
+
+    async insertIntoUsersAndGroupsTable() {
+      await insertIntoUsersAndGroupsTable(users, groups)
       return null
     }
   })

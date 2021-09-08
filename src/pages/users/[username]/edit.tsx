@@ -5,7 +5,7 @@ import SuccessBanner from "components/SuccessBanner"
 import getConnection from "lib/getConnection"
 import userFormIsValid from "lib/userFormIsValid"
 import UserForm from "components/users/UserForm"
-import { updateUser, getUserById, getUserByUsername } from "useCases"
+import { updateUser, getUserById, getUserByUsername, getUserGroups } from "useCases"
 import { isError } from "types/Result"
 import User from "types/User"
 import CsrfServerSidePropsContext from "types/CsrfServerSidePropsContext"
@@ -15,6 +15,8 @@ import { withAuthentication, withCsrf, withMultipleServerSideProps } from "middl
 import { ParsedUrlQuery } from "querystring"
 import AuthenticationServerSidePropsContext from "types/AuthenticationServerSidePropsContext"
 import isPost from "utils/isPost"
+import { UserGroupResult } from "types/UserGroup"
+import { Option as UserGroupOption } from "components/Select"
 
 const errorMessageMap = {
   unique_users_username_idx: "This user name has been taken please enter another"
@@ -28,6 +30,15 @@ export const getServerSideProps = withMultipleServerSideProps(
       AuthenticationServerSidePropsContext
     const connection = getConnection()
 
+    let groups = await getUserGroups(connection)
+
+    if (isError(groups)) {
+      console.error(groups)
+
+      // Temp fix here until we can throw a 500 error page
+      groups = []
+    }
+
     if (isPost(req)) {
       const userDetails: Partial<User> = formData
       const user = await getUserById(connection, userDetails.id as number)
@@ -38,7 +49,8 @@ export const getServerSideProps = withMultipleServerSideProps(
           props: {
             errorMessage: "Error getting user details please try again",
             csrfToken,
-            currentUser
+            currentUser,
+            groups
           }
         }
       }
@@ -54,9 +66,10 @@ export const getServerSideProps = withMultipleServerSideProps(
           return {
             props: {
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              errorMessage: (errorMessageMap as any)[(userUpdated as any).constraint],
+              errorMessage: (errorMessageMap as any)[(userUpdated as any).constraint] || (userUpdated as any).message,
               csrfToken,
-              currentUser
+              currentUser,
+              groups
             }
           }
         }
@@ -70,7 +83,8 @@ export const getServerSideProps = withMultipleServerSideProps(
             props: {
               errorMessage: "There was an error retrieving the user details",
               csrfToken,
-              currentUser
+              currentUser,
+              groups
             }
           }
         }
@@ -80,7 +94,8 @@ export const getServerSideProps = withMultipleServerSideProps(
             successMessage: "The user was updated successfully",
             user: updatedUser,
             csrfToken,
-            currentUser
+            currentUser,
+            groups
           }
         }
       }
@@ -90,7 +105,8 @@ export const getServerSideProps = withMultipleServerSideProps(
           missingMandatory: true,
           user: { ...user, ...userDetails },
           csrfToken,
-          currentUser
+          currentUser,
+          groups
         }
       }
     }
@@ -106,7 +122,8 @@ export const getServerSideProps = withMultipleServerSideProps(
           errorMessage: "Error retrieving user please go back and make sure you have the correct details",
           missingMandatory: false,
           csrfToken,
-          currentUser
+          currentUser,
+          groups
         }
       }
     }
@@ -116,7 +133,8 @@ export const getServerSideProps = withMultipleServerSideProps(
         missingMandatory: false,
         user,
         csrfToken,
-        currentUser
+        currentUser,
+        groups
       }
     }
   }
@@ -126,12 +144,14 @@ interface Props {
   errorMessage?: string
   successMessage?: string
   missingMandatory?: boolean
-  user?: Partial<User> | null
+  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+  user?: any | null
   csrfToken: string
   currentUser?: Partial<User>
+  groups: UserGroupResult[]
 }
 
-const editUser = ({ errorMessage, successMessage, missingMandatory, user, csrfToken, currentUser }: Props) => (
+const editUser = ({ errorMessage, successMessage, missingMandatory, user, csrfToken, currentUser, groups }: Props) => (
   <>
     <Head>
       <title>{"Edit User"}</title>
@@ -152,6 +172,7 @@ const editUser = ({ errorMessage, successMessage, missingMandatory, user, csrfTo
             missingPhoneNumber={missingMandatory}
             missingEmail={missingMandatory}
             disableEmailField
+            userGroups={groups as unknown as UserGroupOption[]}
           />
           <input type="hidden" name="id" value={user.id} />
           <Button noDoubleClick>{"Update user"}</Button>

@@ -8,10 +8,13 @@ import initialiseUserPassword from "useCases/initialiseUserPassword"
 import storePasswordResetCode from "useCases/storePasswordResetCode"
 import { generateEmailVerificationToken } from "lib/token/emailVerificationToken"
 import EmailContent from "types/EmailContent"
-import insertIntoTable from "../../testFixtures/database/insertIntoTable"
+import insertIntoUsersTable from "../../testFixtures/database/insertIntoUsersTable"
+import insertIntoGroupsTable from "../../testFixtures/database/insertIntoGroupsTable"
+import selectFromTable from "../../testFixtures/database/selectFromTable"
 import deleteFromTable from "../../testFixtures/database/deleteFromTable"
 import getTestConnection from "../../testFixtures/getTestConnection"
 import users from "../../testFixtures/database/data/users"
+import groups from "../../testFixtures/database/data/groups"
 
 const verificationCode = "123456"
 
@@ -37,6 +40,9 @@ describe("AccountSetup", () => {
   })
 
   it("should generate the email subject and body to request user to setup password", async () => {
+    await insertIntoGroupsTable(groups)
+    const selectedGroups = await selectFromTable("groups", undefined, undefined, "name")
+    const selectedGroup = selectedGroups[0]
     const mockedGeneratePasswordResetToken = generateEmailVerificationToken as jest.MockedFunction<
       typeof generateEmailVerificationToken
     >
@@ -48,13 +54,17 @@ describe("AccountSetup", () => {
       emailAddress: u.email,
       endorsedBy: u.endorsed_by,
       surname: u.surname,
-      organisation: u.org_serves,
+      orgServes: u.org_serves,
       postCode: u.post_code,
       phoneNumber: u.phone_number,
-      postalAddress: u.postal_address
+      postalAddress: u.postal_address,
+      groupId: selectedGroup.id
     }))[0]
 
     const result = await createUser(connection, user)
+
+    console.log("result", result)
+
     expect(isError(result)).toBe(false)
 
     const passwordSetCodeResult = await storePasswordResetCode(connection, "bichard01@example.com", verificationCode)
@@ -70,7 +80,7 @@ describe("AccountSetup", () => {
   })
 
   it("should be able to setup a password using the details from the email", async () => {
-    await insertIntoTable(users)
+    await insertIntoUsersTable(users)
     const result = await initialiseUserPassword(connection, "bichard01@example.com", verificationCode, "shorty")
     expect(result).toBeDefined()
     const actualError = <Error>result
@@ -79,15 +89,14 @@ describe("AccountSetup", () => {
 
   it("should be able to setup a password using the details from the email", async () => {
     const user = mapUserWithVerficationCode(users)
-    await insertIntoTable(user)
+    await insertIntoUsersTable(user)
     const result = await initialiseUserPassword(connection, "bichard01@example.com", verificationCode, "NewPassword")
     expect(result).toBeUndefined()
   })
 
   it("should not be able to setup a password a second time using the same details", async () => {
     const user = mapUserWithVerficationCode(users)
-    await insertIntoTable(user)
-
+    await insertIntoUsersTable(user)
     await initialiseUserPassword(connection, "bichard01@exmaple.com", verificationCode, "NewPassword")
 
     const secondResult = await initialiseUserPassword(

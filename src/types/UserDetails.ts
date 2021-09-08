@@ -7,7 +7,8 @@ interface UserDetails {
   postCode: string
   postalAddress: string
   endorsedBy: string
-  organisation: string
+  orgServes: string
+  groupId: string
 }
 
 export default UserDetails

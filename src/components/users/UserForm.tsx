@@ -1,21 +1,25 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import TextInput from "components/TextInput"
+import Select from "components/Select"
 
 interface Props {
-  username?: string
-  forenames?: string
-  surname?: string
-  phoneNumber?: string
-  postalAddress?: string
-  emailAddress?: string
-  postCode?: string
-  endorsedBy?: string
-  orgServes?: string
+  username?: any
+  forenames?: any
+  surname?: any
+  phoneNumber?: any
+  postalAddress?: any
+  emailAddress?: any
+  postCode?: any
+  endorsedBy?: any
+  orgServes?: any
+  groupId?: any
   missingUsername?: boolean
   missingForenames?: boolean
   missingSurname?: boolean
   missingPhoneNumber?: boolean
   missingEmail?: boolean
   disableEmailField?: boolean
+  userGroups?: any
 }
 
 const UserForm = ({
@@ -33,7 +37,9 @@ const UserForm = ({
   missingSurname,
   missingPhoneNumber,
   missingEmail,
-  disableEmailField
+  disableEmailField,
+  groupId,
+  userGroups
 }: Props) => (
   <>
     <TextInput
@@ -85,6 +91,7 @@ const UserForm = ({
       label="Postal address"
       type="text"
     />
+    <Select options={userGroups} label={"User role *"} id="groupId" defaultValue={groupId} />
     <TextInput defaultValue={postCode} id="postCode" name="postCode" label="Postcode" type="text" />
     <TextInput defaultValue={endorsedBy} id="endorsedBy" name="endorsedBy" label="Endorsed by" type="text" />
     <TextInput defaultValue={orgServes} id="orgServes" name="orgServes" label="Organisation" type="text" />
@@ -92,3 +99,4 @@ const UserForm = ({
 )
 
 export default UserForm
+/* eslint-disable @typescript-eslint/no-explicit-any */

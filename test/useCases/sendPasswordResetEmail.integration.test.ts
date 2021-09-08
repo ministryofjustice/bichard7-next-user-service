@@ -3,7 +3,7 @@ import getEmailer from "lib/getEmailer"
 import sendPasswordResetEmail from "useCases/sendPasswordResetEmail"
 import getTestConnection from "../../testFixtures/getTestConnection"
 import deleteFromTable from "../../testFixtures/database/deleteFromTable"
-import insertIntoTable from "../../testFixtures/database/insertIntoTable"
+import insertIntoTable from "../../testFixtures/database/insertIntoUsersTable"
 import users from "../../testFixtures/database/data/users"
 
 jest.mock("lib/getEmailer")

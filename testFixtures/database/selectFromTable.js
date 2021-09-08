@@ -1,12 +1,14 @@
 import getTestConnection from "../getTestConnection"
 import { getTableName } from "./helpers"
 
-const selectFromTable = async (tableName, whereColumn, whereValue) => {
+const selectFromTable = async (tableName, whereColumn, whereValue, orderByColumn) => {
   const connection = getTestConnection()
   const isWhereClause = whereColumn && whereValue
 
   // eslint-disable-next-line no-useless-escape
-  const selectQuery = `SELECT * FROM $\{table\} ${isWhereClause ? `WHERE ${whereColumn} = $\{value\}` : ""}`
+  const selectQuery = `SELECT * FROM $\{table\} ${isWhereClause ? `WHERE ${whereColumn} = $\{value\}` : ""} ${
+    orderByColumn ? `ORDER BY ${orderByColumn}` : ""
+  }`
 
   const table = getTableName(tableName)
   const whereClause = isWhereClause ? { value: whereValue } : {}

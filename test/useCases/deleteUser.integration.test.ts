@@ -1,7 +1,7 @@
 import deleteUser from "useCases/deleteUser"
 import getTestConnection from "../../testFixtures/getTestConnection"
 import deleteFromTable from "../../testFixtures/database/deleteFromTable"
-import insertIntoTable from "../../testFixtures/database/insertIntoTable"
+import insertIntoTable from "../../testFixtures/database/insertIntoUsersTable"
 import selectFromTable from "../../testFixtures/database/selectFromTable"
 import users from "../../testFixtures/database/data/users"
 

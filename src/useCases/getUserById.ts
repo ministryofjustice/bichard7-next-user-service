@@ -5,6 +5,7 @@ import PromiseResult from "types/PromiseResult"
 const getUserById = async (connection: Database, id: number): PromiseResult<Partial<User>> => {
   let user
 
+  /* eslint-disable no-useless-escape */
   const getUserByIdQuery = `
       SELECT
         id,
@@ -16,13 +17,16 @@ const getUserById = async (connection: Database, id: number): PromiseResult<Part
         post_code,
         endorsed_by,
         org_serves,
-        email
-      FROM br7own.users
-      WHERE id = $1 AND deleted_at IS NULL
+        email,
+        ug.group_id
+      FROM br7own.users AS u
+	    INNER JOIN br7own.users_groups AS ug ON u.id = ug.user_id
+      WHERE id = $\{id\} AND deleted_at IS NULL
     `
+  /* eslint-disable no-useless-escape */
 
   try {
-    user = await connection.one(getUserByIdQuery, [id])
+    user = await connection.one(getUserByIdQuery, { id })
   } catch (error) {
     return error
   }
@@ -37,7 +41,8 @@ const getUserById = async (connection: Database, id: number): PromiseResult<Part
     postalAddress: user.postal_address,
     endorsedBy: user.endorsed_by,
     orgServes: user.org_serves,
-    emailAddress: user.email
+    emailAddress: user.email,
+    groupId: user.group_id
   }
 }
 

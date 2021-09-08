@@ -47,6 +47,7 @@ export const getServerSideProps = withCsrf(async (context): Promise<GetServerSid
       const translatedToken = decodeEmailVerificationToken(token)
 
       if (isError(translatedToken)) {
+        console.error(translatedToken)
         return {
           props: {
             invalidCredentials: true,

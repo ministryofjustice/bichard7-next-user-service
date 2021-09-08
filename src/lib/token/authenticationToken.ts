@@ -18,18 +18,19 @@ export interface AuthenticationTokenPayload {
   groups: UserGroup[]
 }
 
-export function generateAuthenticationToken(user: User): AuthenticationToken {
+export function generateAuthenticationToken(user: Partial<User>): AuthenticationToken {
   const options: jwt.SignOptions = {
     expiresIn: config.tokenExpiresIn,
     ...signOptions
   }
 
   const payload: AuthenticationTokenPayload = {
-    username: user.username,
-    exclusionList: user.exclusionList,
-    inclusionList: user.inclusionList,
-    emailAddress: user.emailAddress,
-    groups: user.groups
+    username: user.username as string,
+    exclusionList: user.exclusionList as string[],
+    inclusionList: user.inclusionList as string[],
+    emailAddress: user.emailAddress as string,
+    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+    groups: (user as any).groups as UserGroup[]
   }
 
   return jwt.sign(payload, config.tokenSecret, options)

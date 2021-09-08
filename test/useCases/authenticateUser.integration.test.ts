@@ -9,7 +9,7 @@ import config from "lib/config"
 import getTestConnection from "../../testFixtures/getTestConnection"
 import deleteFromTable from "../../testFixtures/database/deleteFromTable"
 import users from "../../testFixtures/database/data/users"
-import insertIntoTable from "../../testFixtures/database/insertIntoTable"
+import insertIntoTable from "../../testFixtures/database/insertIntoUsersTable"
 
 jest.mock("lib/parseFormData")
 

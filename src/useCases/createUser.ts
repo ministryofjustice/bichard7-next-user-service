@@ -1,34 +1,18 @@
-import CreateUserResult from "types/CreateUserResult"
-import UserCreateDetails from "types/UserDetails"
+import User from "types/User"
 import PromiseResult from "types/PromiseResult"
 import Database from "types/Database"
+import { ITask } from "pg-promise"
 import isUsernameUnique from "./isUsernameUnique"
 import isEmailUnique from "./IsEmailUnique"
 
-export default async (connection: Database, userDetails: UserCreateDetails): PromiseResult<CreateUserResult> => {
-  let checkData = await isUsernameUnique(connection, userDetails.username)
-  if (checkData.message !== "") {
-    return new Error(checkData.message)
-  }
+type UserId = {
+  id: string
+}
 
-  checkData = await isEmailUnique(connection, userDetails.emailAddress)
-  if (checkData.message !== "") {
-    return new Error(checkData.message)
-  }
-
-  const {
-    username,
-    forenames,
-    surname,
-    phoneNumber,
-    emailAddress,
-    postCode,
-    postalAddress,
-    endorsedBy,
-    organisation
-  }: UserCreateDetails = userDetails
-
-  const query = `
+/* eslint-disable require-await */
+const insertUser = async (task: ITask<unknown>, userDetails: Partial<User>): Promise<UserId> => {
+  /* eslint-disable no-useless-escape */
+  const insertUserQuery = `
       INSERT INTO br7own.users(
         username,
         forenames,
@@ -45,39 +29,69 @@ export default async (connection: Database, userDetails: UserCreateDetails): Pro
         org_serves
       )
       VALUES (
-        $1,
-        $2,
-        $3,
-        $4,
-        $5,
+        $\{username\},
+        $\{forenames\},
+        $\{surname\},
+        $\{phoneNumber\},
+        $\{emailAddress\},
         true,
         '',
         '',
         '',
-        $6,
-        $7,
-        $8,
-        $9
-      )
+        $\{postCode\},
+        $\{postalAddress\},
+        $\{endorsedBy\},
+        $\{orgServes\}
+      ) RETURNING id;
     `
-  let result = ""
-  try {
-    result = (
-      await connection.any(query, [
-        username,
-        forenames,
-        surname,
-        phoneNumber,
-        emailAddress,
-        postCode,
-        postalAddress,
-        endorsedBy,
-        organisation
-      ])
-    ).toString()
-  } catch (e) {
-    return new Error("Failed to add user")
+  /* eslint-disable no-useless-escape */
+
+  return task.one(insertUserQuery, { ...userDetails })
+}
+/* eslint-disable require-await */
+
+const insertUserIntoGroup = async (task: ITask<unknown>, userId: number, groupId: number) => {
+  /* eslint-disable no-useless-escape */
+  const insertGroupQuery = `
+    INSERT INTO br7own.users_groups(
+      user_id, 
+      group_id
+    ) VALUES (
+      $\{userId\}, 
+      $\{groupId\}
+    );
+  `
+  /* eslint-disable no-useless-escape */
+
+  await task.none(insertGroupQuery, { userId, groupId })
+}
+
+export default async (connection: Database, userDetails: Partial<User>): PromiseResult<void> => {
+  const groupDoesNotExistsError = new Error("This group does not exist")
+  let checkData = await isUsernameUnique(connection, userDetails.username as string)
+  if (checkData.message !== "") {
+    return new Error(checkData.message)
   }
 
-  return { result }
+  checkData = await isEmailUnique(connection, userDetails.emailAddress as string)
+  if (checkData.message !== "") {
+    return new Error(checkData.message)
+  }
+
+  try {
+    await connection.tx(async (task: ITask<unknown>) => {
+      const { id } = await insertUser(task, userDetails)
+      await insertUserIntoGroup(task, id as unknown as number, userDetails.groupId as number)
+    })
+
+    return undefined
+  } catch (e) {
+    if (
+      e.message ===
+      'insert or update on table "users_groups" violates foreign key constraint "users_groups_group_id_fkey"'
+    ) {
+      return groupDoesNotExistsError
+    }
+    return e
+  }
 }

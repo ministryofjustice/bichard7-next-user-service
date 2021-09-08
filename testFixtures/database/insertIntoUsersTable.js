@@ -1,6 +1,6 @@
 import getTestConnection from "../getTestConnection"
 
-const insertIntoTable = async (data) => {
+const insertIntoUsersTable = async (data) => {
   const connection = getTestConnection()
 
   /* eslint-disable no-useless-escape */
@@ -22,7 +22,7 @@ const insertIntoTable = async (data) => {
         email, 
         postal_address, 
         post_code, 
-         phone_number, 
+        phone_number, 
         old_password, 
         password, 
         last_login_attempt,
@@ -65,4 +65,4 @@ const insertIntoTable = async (data) => {
   return Promise.resolve()
 }
 
-export default insertIntoTable
+export default insertIntoUsersTable

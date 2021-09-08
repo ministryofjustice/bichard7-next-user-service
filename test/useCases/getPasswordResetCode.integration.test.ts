@@ -3,7 +3,7 @@ import getPasswordResetCode from "useCases/getPasswordResetCode"
 import storePasswordResetCode from "useCases/storePasswordResetCode"
 import deleteFromTable from "../../testFixtures/database/deleteFromTable"
 import getTestConnection from "../../testFixtures/getTestConnection"
-import insertIntoTable from "../../testFixtures/database/insertIntoTable"
+import insertIntoTable from "../../testFixtures/database/insertIntoUsersTable"
 import users from "../../testFixtures/database/data/users"
 
 describe("getPasswordResetCode", () => {
