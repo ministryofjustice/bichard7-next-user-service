@@ -51,7 +51,7 @@ export const getServerSideProps = withCsrf(async (context): Promise<GetServerSid
     const translatedToken = decodeEmailVerificationToken(token)
     if (isError(translatedToken)) {
       return {
-        props: { errorMessage: "Invalid token link", csrfToken }
+        props: { errorMessage: "This link is either incorrect or may have expired. Please try again.", csrfToken }
       }
     }
     const { emailAddress, verificationCode } = translatedToken
