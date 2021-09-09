@@ -90,7 +90,7 @@ describe("Creation of new user", () => {
       cy.get("input[type=password][name=newPassword]").type(newPassword)
       cy.get("input[type=password][name=confirmPassword]").type(newPassword)
       cy.get("button[type=submit]").click()
-      cy.get('span[id="event-name-error"]').should("have.text", "Cannot use this password as it is insecure/banned")
+      cy.get('span[id="event-name-error"]').should("have.text", "Password is too easy to guess.")
     })
   })
 

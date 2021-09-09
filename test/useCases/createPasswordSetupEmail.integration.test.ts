@@ -103,7 +103,7 @@ describe("AccountSetup", () => {
     )
     expect(result).toBeDefined()
     const actualError = <Error>result
-    expect(actualError.message).toBe("Cannot use this password as it is insecure/banned")
+    expect(actualError.message).toBe("Password is too easy to guess.")
   })
 
   it("should be able to setup a password using the details from the email", async () => {

@@ -58,9 +58,7 @@ describe("Reset password", () => {
       cy.get("input[type=password][name=confirmPassword]").type("123456789")
       cy.get("button[type=submit]").click()
       cy.get(".govuk-error-summary").should("be.visible").contains("h2", "Password is insecure")
-      cy.get(".govuk-error-summary__body")
-        .should("be.visible")
-        .contains("div", "Cannot use this password as it is insecure/banned")
+      cy.get(".govuk-error-summary__body").should("be.visible").contains("div", "Password is too easy to guess.")
     })
 
     it("should prompt the user that password reset was successful when provided password is valid", (done) => {

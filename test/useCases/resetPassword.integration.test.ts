@@ -113,7 +113,7 @@ describe("resetPassword", () => {
     const resetResult = await resetPassword(connection, fakeAuditLogger, resetPasswordOptions)
     expect(isError(resetResult)).toBe(false)
     expect(resetResult).not.toBe(undefined)
-    expect(resetResult).toBe("Cannot use this password as it is insecure/banned")
+    expect(resetResult).toBe("Password is too easy to guess.")
   })
 
   it("should return error when password reset code is not valid", async () => {
