@@ -73,7 +73,7 @@ export const getServerSideProps = withMultipleServerSideProps(
         }
       }
 
-      message = "Please make sure that all mandatory fields are non empty"
+      message = "Please fill in all mandatory fields."
       isSuccess = false
     }
 

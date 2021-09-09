@@ -22,7 +22,7 @@ describe("Delete user", () => {
     cy.get("input[id=delete-account-confirmation]").type("Invalid input")
     cy.get("button[type=submit]").click()
     cy.get(".govuk-error-summary").contains("Username mismatch")
-    cy.get(".govuk-error-summary").contains("The provided username in the confirmation box does not match.")
+    cy.get(".govuk-error-summary").contains("Provided username in the confirmation box is incorrect.")
     cy.url().should("contains", "/users/Bichard02/delete")
   })
 
@@ -32,7 +32,7 @@ describe("Delete user", () => {
     cy.get("h1").contains("Are you sure you want to delete Bichard User 02 Surname 02?")
     cy.get("button[type=submit]").click()
     cy.get(".govuk-error-summary").contains("Username mismatch")
-    cy.get(".govuk-error-summary").contains("The provided username in the confirmation box does not match.")
+    cy.get(".govuk-error-summary").contains("Provided username in the confirmation box is incorrect.")
     cy.url().should("contains", "/users/Bichard02/delete")
   })
 
