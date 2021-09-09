@@ -14,6 +14,7 @@ export interface UserServiceConfig {
   authenticationCookieName: string
   baseUrl: string
   bichardRedirectURL: string
+  contactUrl: string
   cookieSecret: string
   csrf: CsrfConfig
   database: DatabaseConfig
@@ -42,6 +43,7 @@ const config: UserServiceConfig = {
   authenticationCookieName: ".AUTH",
   baseUrl: process.env.BASE_URL ?? "http://localhost:3000",
   bichardRedirectURL: process.env.BICHARD_REDIRECT_URL ?? "https://localhost:9443/bichard-ui/Authenticate",
+  contactUrl: process.env.CONTACT_URL ?? "http://localhost:3000/contact-us",
   cookieSecret: process.env.COOKIE_SECRET ?? "OliverTwist",
   debugMode: "false",
   emailFrom: `Bichard <${process.env.EMAIL_FROM ?? "bichard@cjse.org"}>`,
