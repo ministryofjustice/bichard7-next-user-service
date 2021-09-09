@@ -51,7 +51,7 @@ describe("Change password", () => {
       cy.get("input[type=password][name=newPassword]").type("NewPassowrd")
       cy.get("input[type=password][name=confirmPassword]").type("DifferentNewPassword")
       cy.get("button[type=submit]").click()
-      cy.get('span[id="event-name-error"]').should("have.text", "Passwords are mismatching")
+      cy.get('span[id="event-name-error"]').should("have.text", "Passwords do not match")
     })
 
     it("should allow user to generate a random password", () => {

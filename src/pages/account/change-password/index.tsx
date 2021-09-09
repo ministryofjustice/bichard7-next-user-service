@@ -52,7 +52,7 @@ export const getServerSideProps = withMultipleServerSideProps(
       }
 
       if (newPassword !== confirmPassword) {
-        errorMessage = "Passwords are mismatching"
+        errorMessage = "Passwords do not match"
         return {
           props: { errorMessage, csrfToken, currentUser }
         }
