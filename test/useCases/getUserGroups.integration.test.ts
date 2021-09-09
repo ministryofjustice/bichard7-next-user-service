@@ -29,6 +29,7 @@ describe("getUserGroups", () => {
     const selectedGroups = await selectFromTable("groups", undefined, undefined, "name")
 
     expect(isError(groupsResult)).toBe(false)
+    expect(groupsResult.length).toBe(selectedGroups.length)
 
     for (let i = 0; i < groupsResult.length; i++) {
       expect(groupsResult[i].id).toBe(selectedGroups[i].id)

@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken"
-import tokenSecret from "./tokenSecrete"
+import tokenSecret from "./tokenSecret"
 
 export const invalidToken = () => jwt.sign({ foo: "bar" }, tokenSecret, { issuer: "Bichard" })
 
