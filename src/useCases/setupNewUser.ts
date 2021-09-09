@@ -38,18 +38,27 @@ export default async (
   }
 
   const createNewUserEmailResult = createNewUserEmail(userCreateDetails, passwordSetCode)
+
   if (isError(createNewUserEmailResult)) {
-    return createNewUserEmailResult
+    console.error(createNewUserEmailResult)
+    return Error("Server error. Please try again later.")
   }
 
   const email = createNewUserEmailResult
   const emailer = getEmailer()
 
-  return emailer
+  const emailerResult = await emailer
     .sendMail({
       from: config.emailFrom,
       to: userCreateDetails.emailAddress,
       ...email
     })
     .catch((error: Error) => error)
+
+  if (isError(emailerResult)) {
+    console.error(emailerResult)
+    return Error("Server error. Please try again later.")
+  }
+
+  return emailerResult
 }
