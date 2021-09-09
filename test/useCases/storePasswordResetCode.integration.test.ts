@@ -2,7 +2,7 @@ import { isError } from "types/Result"
 import storePasswordResetCode from "useCases/storePasswordResetCode"
 import getTestConnection from "../../testFixtures/getTestConnection"
 import deleteFromTable from "../../testFixtures/database/deleteFromTable"
-import insertIntoTable from "../../testFixtures/database/insertIntoTable"
+import insertIntoTable from "../../testFixtures/database/insertIntoUsersTable"
 import users from "../../testFixtures/database/data/users"
 import selectFromTable from "../../testFixtures/database/selectFromTable"
 

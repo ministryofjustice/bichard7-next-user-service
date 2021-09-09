@@ -4,7 +4,7 @@ import getUserByEmailAddress from "useCases/getUserByEmailAddress"
 import deleteFromTable from "../../testFixtures/database/deleteFromTable"
 import getTestConnection from "../../testFixtures/getTestConnection"
 import users from "../../testFixtures/database/data/users"
-import insertIntoTable from "../../testFixtures/database/insertIntoTable"
+import insertIntoTable from "../../testFixtures/database/insertIntoUsersTable"
 
 describe("DeleteUserUseCase", () => {
   let connection: any

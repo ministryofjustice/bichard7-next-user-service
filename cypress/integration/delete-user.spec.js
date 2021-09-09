@@ -1,7 +1,7 @@
 describe("Delete user", () => {
   beforeEach(() => {
     cy.task("deleteFromUsersTable")
-    cy.task("insertIntoUsersTable")
+    cy.task("insertIntoUsersAndGroupsTable")
   })
 
   it("should delete the user when confirmation text is valid", () => {

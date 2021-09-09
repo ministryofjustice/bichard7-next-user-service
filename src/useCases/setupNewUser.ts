@@ -4,7 +4,6 @@ import getEmailer from "lib/getEmailer"
 import AuditLogger from "types/AuditLogger"
 import Database from "types/Database"
 import { isError, PromiseResult } from "types/Result"
-import UserCreateDetails from "types/UserDetails"
 import createNewUserEmail from "./createNewUserEmail"
 import createUser from "./createUser"
 import storePasswordResetCode from "./storePasswordResetCode"
@@ -13,10 +12,11 @@ export interface newUserSetupResult {
   successMessage: string
 }
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export default async (
   connection: Database,
   auditLogger: AuditLogger,
-  userCreateDetails: UserCreateDetails
+  userCreateDetails: any
 ): PromiseResult<newUserSetupResult> => {
   const result = await createUser(connection, userCreateDetails)
 
@@ -29,7 +29,7 @@ export default async (
   const passwordSetCode = randomDigits(config.verificationCodeLength).join("")
   const passwordSetCodeResult = await storePasswordResetCode(
     connection,
-    userCreateDetails.emailAddress,
+    userCreateDetails.emailAddress as string,
     passwordSetCode
   )
 
@@ -50,7 +50,7 @@ export default async (
   const emailerResult = await emailer
     .sendMail({
       from: config.emailFrom,
-      to: userCreateDetails.emailAddress,
+      to: userCreateDetails.emailAddress as string,
       ...email
     })
     .catch((error: Error) => error)
@@ -62,3 +62,4 @@ export default async (
 
   return emailerResult
 }
+/* eslint-disable @typescript-eslint/no-explicit-any */

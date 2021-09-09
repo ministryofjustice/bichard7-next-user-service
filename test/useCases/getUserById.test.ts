@@ -4,7 +4,7 @@ import getUserById from "useCases/getUserById"
 
 const database = <Database>(<unknown>{ one: () => {} })
 
-it.only("should return error when database returns error", async () => {
+it("should return error when database returns error", async () => {
   const expectedError = new Error("Error message")
 
   jest.spyOn(database, "one").mockImplementation(() => {

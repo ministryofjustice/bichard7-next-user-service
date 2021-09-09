@@ -2,7 +2,6 @@ import Button from "components/Button"
 import Layout from "components/Layout"
 import Head from "next/head"
 import SuccessBanner from "components/SuccessBanner"
-import UserCreateDetails from "types/UserDetails"
 import getConnection from "lib/getConnection"
 import setupNewUser from "useCases/setupNewUser"
 import { isError } from "types/Result"
@@ -16,6 +15,8 @@ import { ParsedUrlQuery } from "querystring"
 import AuthenticationServerSidePropsContext from "types/AuthenticationServerSidePropsContext"
 import User from "types/User"
 import isPost from "utils/isPost"
+import { getUserGroups } from "useCases"
+import { UserGroupResult } from "types/UserGroup"
 import getAuditLogger from "lib/getAuditLogger"
 import config from "lib/config"
 
@@ -30,7 +31,8 @@ export const getServerSideProps = withMultipleServerSideProps(
     let isSuccess = true
 
     if (isPost(req)) {
-      const userCreateDetails: UserCreateDetails = formData as {
+      /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+      const userCreateDetails: any = formData as {
         username: string
         forenames: string
         surname: string
@@ -39,7 +41,8 @@ export const getServerSideProps = withMultipleServerSideProps(
         postCode: string
         postalAddress: string
         endorsedBy: string
-        organisation: string
+        orgServes: string
+        groupId: string
       }
 
       const formIsValid = userFormIsValid(userCreateDetails)
@@ -49,15 +52,24 @@ export const getServerSideProps = withMultipleServerSideProps(
         const auditLogger = getAuditLogger(context, config)
         const result = await setupNewUser(connection, auditLogger, userCreateDetails)
 
+        let userGroups = await getUserGroups(connection)
+
+        if (isError(userGroups)) {
+          console.error(userGroups)
+
+          // Temp fix here until we can throw a 500 error page
+          userGroups = []
+        }
+
         if (isError(result)) {
           return {
-            props: { message: result.message, isSuccess: false, missingMandatory, csrfToken, currentUser }
+            props: { message: result.message, isSuccess: false, missingMandatory, csrfToken, currentUser, userGroups }
           }
         }
 
         message = `User ${userCreateDetails.username} has been successfully created`
         return {
-          props: { message, isSuccess: true, missingMandatory, csrfToken, currentUser }
+          props: { message, isSuccess: true, missingMandatory, csrfToken, currentUser, userGroups }
         }
       }
 
@@ -65,8 +77,19 @@ export const getServerSideProps = withMultipleServerSideProps(
       isSuccess = false
     }
 
+    const connection = getConnection()
+
+    let userGroups = await getUserGroups(connection)
+
+    if (isError(userGroups)) {
+      console.error(userGroups)
+
+      // Temp fix here until we can throw a 500 error page
+      userGroups = []
+    }
+
     return {
-      props: { message, isSuccess, missingMandatory, csrfToken, currentUser }
+      props: { message, isSuccess, missingMandatory, csrfToken, currentUser, userGroups }
     }
   }
 )
@@ -77,9 +100,10 @@ interface Props {
   missingMandatory: boolean
   csrfToken: string
   currentUser?: Partial<User>
+  userGroups?: UserGroupResult[]
 }
 
-const newUser = ({ message, isSuccess, missingMandatory, csrfToken, currentUser }: Props) => (
+const newUser = ({ message, isSuccess, missingMandatory, csrfToken, currentUser, userGroups }: Props) => (
   <>
     <Head>
       <title>{"New User"}</title>
@@ -98,6 +122,7 @@ const newUser = ({ message, isSuccess, missingMandatory, csrfToken, currentUser 
           missingForenames={missingMandatory}
           missingPhoneNumber={missingMandatory}
           missingEmail={missingMandatory}
+          userGroups={userGroups}
         />
 
         <Button noDoubleClick>{"Add user"}</Button>

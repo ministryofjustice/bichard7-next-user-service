@@ -76,7 +76,7 @@ export const getServerSideProps = withMultipleServerSideProps(
 )
 
 interface Props {
-  user: User
+  user: Partial<User>
   showInputNotMatchingError?: boolean
   csrfToken: string
   currentUser?: Partial<User>

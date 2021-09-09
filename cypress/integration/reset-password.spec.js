@@ -1,18 +1,11 @@
-import jwt from "jsonwebtoken"
-
-const tokenSecret = "OliverTwist"
-
-const generatePasswordResetToken = (emailAddress, passwordResetCode) =>
-  jwt.sign({ emailAddress, passwordResetCode }, tokenSecret, { issuer: "Bichard" })
-
-const generateLoginVerificationToken = (emailAddress, verificationCode) =>
-  jwt.sign({ emailAddress, verificationCode }, tokenSecret, { issuer: "Bichard" })
+import { generatePasswordResetToken, generateLoginVerificationToken } from "../helpers/tokens"
 
 describe("Reset password", () => {
   context("720p resolution", () => {
     before(() => {
       cy.task("deleteFromUsersTable")
-      cy.task("insertIntoUsersTable")
+      cy.task("deleteFromGroupsTable")
+      cy.task("insertIntoUsersAndGroupsTable")
     })
 
     beforeEach(() => {

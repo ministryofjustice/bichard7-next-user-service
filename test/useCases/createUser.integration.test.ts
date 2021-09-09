@@ -3,10 +3,13 @@ import createUser from "useCases/createUser"
 import User from "types/User"
 import getUserByUsername from "useCases/getUserByUsername"
 import { isError } from "types/Result"
-import insertIntoTable from "../../testFixtures/database/insertIntoTable"
+import insertIntoUserTable from "../../testFixtures/database/insertIntoUsersTable"
+import insertIntoGroupTable from "../../testFixtures/database/insertIntoGroupsTable"
+import selectFromTable from "../../testFixtures/database/selectFromTable"
 import deleteFromTable from "../../testFixtures/database/deleteFromTable"
 import getTestConnection from "../../testFixtures/getTestConnection"
 import users from "../../testFixtures/database/data/users"
+import groups from "../../testFixtures/database/data/groups"
 
 describe("DeleteUserUseCase", () => {
   let connection: any
@@ -17,6 +20,7 @@ describe("DeleteUserUseCase", () => {
 
   beforeEach(async () => {
     await deleteFromTable("users")
+    await deleteFromTable("groups")
   })
 
   afterAll(() => {
@@ -24,7 +28,10 @@ describe("DeleteUserUseCase", () => {
   })
 
   it("should return error when adding a user with the same username as one from the database", async () => {
-    await insertIntoTable(users)
+    await insertIntoUserTable(users)
+    await insertIntoGroupTable(groups)
+    const selectedGroups = await selectFromTable("groups", undefined, undefined, "name")
+    const selectedGroup = selectedGroups[0]
     const user = users[0]
 
     const expectedError = new Error(`Username Bichard01 already exists`)
@@ -35,10 +42,11 @@ describe("DeleteUserUseCase", () => {
       emailAddress: user.email,
       endorsedBy: user.endorsed_by,
       surname: user.surname,
-      organisation: user.org_serves,
+      orgServes: user.org_serves,
       postCode: user.post_code,
       phoneNumber: user.phone_number,
-      postalAddress: user.postal_address
+      postalAddress: user.postal_address,
+      groupId: selectedGroup.group_id
     }
 
     const result = await createUser(connection, createUserDetails)
@@ -48,7 +56,10 @@ describe("DeleteUserUseCase", () => {
   })
 
   it("should return error when adding a user with the same email as one from the database", async () => {
-    await insertIntoTable(users)
+    await insertIntoUserTable(users)
+    await insertIntoGroupTable(groups)
+    const selectedGroups = await selectFromTable("groups", undefined, undefined, "name")
+    const selectedGroup = selectedGroups[0]
     const user = users[0]
 
     const createUserDetails: UserCreateDetails = {
@@ -57,10 +68,11 @@ describe("DeleteUserUseCase", () => {
       emailAddress: user.email,
       endorsedBy: `${user.endorsed_by}xyz`,
       surname: `${user.surname}xyz`,
-      organisation: `${user.org_serves}xyz`,
+      orgServes: `${user.org_serves}xyz`,
       postCode: `${user.post_code}xyz`,
       phoneNumber: `${user.phone_number}xyz`,
-      postalAddress: `${user.postal_address}xyz`
+      postalAddress: `${user.postal_address}xyz`,
+      groupId: selectedGroup.group_id
     }
 
     const expectedError = new Error(`Email address bichard01@example.com already exists`)
@@ -71,7 +83,10 @@ describe("DeleteUserUseCase", () => {
   })
 
   it("should be possible to add a user to my force", async () => {
+    await insertIntoGroupTable(groups)
     const user = users[0]
+    const selectedGroups = await selectFromTable("groups", undefined, undefined, "name")
+    const selectedGroup = selectedGroups[0]
 
     const createUserDetails: UserCreateDetails = {
       username: user.username,
@@ -79,11 +94,13 @@ describe("DeleteUserUseCase", () => {
       emailAddress: user.email,
       endorsedBy: user.endorsed_by,
       surname: user.surname,
-      organisation: user.org_serves,
+      orgServes: user.org_serves,
       postCode: user.post_code,
       phoneNumber: user.phone_number,
-      postalAddress: user.postal_address
+      postalAddress: user.postal_address,
+      groupId: selectedGroup.id
     }
+
     const createResult = await createUser(connection, createUserDetails)
     expect(isError(createResult)).toBe(false)
 
@@ -99,5 +116,65 @@ describe("DeleteUserUseCase", () => {
     expect(actualUser.postalAddress).toBe(user.postal_address)
     expect(actualUser.postCode).toBe(user.post_code)
     expect(actualUser.phoneNumber).toBe(user.phone_number)
+  })
+
+  it("should add the user to the correct group that exists in the user table", async () => {
+    await insertIntoGroupTable(groups)
+    const user = users[0]
+
+    const selectedGroups = await selectFromTable("groups", "name", "B7Supervisor_grp")
+    const group = selectedGroups[0]
+
+    const createUserDetails: UserCreateDetails = {
+      username: user.username,
+      forenames: user.forenames,
+      emailAddress: user.email,
+      endorsedBy: user.endorsed_by,
+      surname: user.surname,
+      orgServes: user.org_serves,
+      postCode: user.post_code,
+      phoneNumber: user.phone_number,
+      postalAddress: user.postal_address,
+      groupId: group.id
+    }
+
+    const createResult = await createUser(connection, createUserDetails)
+    expect(isError(createResult)).toBe(false)
+
+    const expectedUsers = await selectFromTable("users", "email", user.email)
+    const expectedUser = expectedUsers[0]
+    const expectedUsersGroups = await selectFromTable("users_groups", "user_id", expectedUser.id)
+    const expectedUserGroup = expectedUsersGroups[0]
+
+    expect(expectedUser.id).toBe(expectedUserGroup.user_id)
+    expect(group.id).toBe(expectedUserGroup.group_id)
+  })
+
+  it("should throw foreign key constraint error when group does not exist in groups table", async () => {
+    await insertIntoGroupTable(groups)
+    const user = users[0]
+    const selectedGroups = await selectFromTable("groups")
+
+    const greatestPossibleIdPlusOne =
+      selectedGroups.reduce((a: any, c: any) => {
+        return a + c.id
+      }, 0) + 1
+
+    const createUserDetails: UserCreateDetails = {
+      username: user.username,
+      forenames: user.forenames,
+      emailAddress: user.email,
+      endorsedBy: user.endorsed_by,
+      surname: user.surname,
+      orgServes: user.org_serves,
+      postCode: user.post_code,
+      phoneNumber: user.phone_number,
+      postalAddress: user.postal_address,
+      groupId: greatestPossibleIdPlusOne
+    }
+
+    const createResult = await createUser(connection, createUserDetails)
+    expect(isError(createResult)).toBe(true)
+    expect((createResult as Error).message).toBe("This group does not exist")
   })
 })

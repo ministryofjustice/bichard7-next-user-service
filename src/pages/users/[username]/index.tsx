@@ -39,7 +39,8 @@ export const getServerSideProps = withMultipleServerSideProps(
 )
 
 interface Props {
-  user: User
+  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+  user: any
   currentUser?: Partial<User>
 }
 

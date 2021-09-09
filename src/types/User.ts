@@ -1,5 +1,3 @@
-import UserGroup from "./UserGroup"
-
 interface User {
   id: number
   username: string
@@ -13,7 +11,7 @@ interface User {
   postalAddress: string
   postCode: string
   phoneNumber: string
-  groups: UserGroup[]
+  groupId: number
 }
 
 export default User

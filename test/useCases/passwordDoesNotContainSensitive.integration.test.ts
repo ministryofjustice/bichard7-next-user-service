@@ -1,7 +1,7 @@
 import Database from "types/Database"
 import passwordDoesNotContainSensitive from "useCases/passwordDoesNotContainSensitive"
 import { isError } from "types/Result"
-import insertIntoTable from "../../testFixtures/database/insertIntoTable"
+import insertIntoUsersTable from "../../testFixtures/database/insertIntoUsersTable"
 import deleteFromTable from "../../testFixtures/database/deleteFromTable"
 import getTestConnection from "../../testFixtures/getTestConnection"
 import users from "../../testFixtures/database/data/users"
@@ -22,7 +22,7 @@ describe("passwordDoesNotContainSensitive", () => {
   })
 
   it("should return error if contains user details", async () => {
-    await insertIntoTable(users)
+    await insertIntoUsersTable(users)
     let result = await passwordDoesNotContainSensitive(connection, "bichard01", "bichard01@example.com")
     expect(isError(result)).toBe(true)
 
@@ -40,7 +40,7 @@ describe("passwordDoesNotContainSensitive", () => {
   })
 
   it("should return undefined if it is fine", async () => {
-    await insertIntoTable(users)
+    await insertIntoUsersTable(users)
     const result = await passwordDoesNotContainSensitive(connection, "ValidPassword", "bichard01@example.com")
     expect(result).toBe(undefined)
   })

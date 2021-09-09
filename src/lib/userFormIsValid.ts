@@ -1,6 +1,6 @@
-import UserCreateDetails from "types/UserDetails"
+import User from "types/User"
 
-const userFormIsValid = (userCreateDetails: Partial<UserCreateDetails>) =>
+const userFormIsValid = (userCreateDetails: Partial<User>) =>
   userCreateDetails.username !== "" &&
   userCreateDetails.forenames !== "" &&
   userCreateDetails.surname !== "" &&
