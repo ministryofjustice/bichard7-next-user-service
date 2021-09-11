@@ -9,7 +9,7 @@ export type TableHeaders = Array<TableHeader>
 
 export type Props = {
   tableHeaders: TableHeaders
-  tableTitle: string
+  tableTitle?: string
   tableData: KeyValuePair<string, string>[]
   children?: ReactNode
 }
@@ -19,7 +19,7 @@ const Table = ({ tableTitle, tableHeaders, tableData, children }: Props) => {
 
   return (
     <table className="govuk-table">
-      <caption className="govuk-table__caption govuk-table__caption--m">{tableTitle}</caption>
+      {tableTitle && <caption className="govuk-table__caption govuk-table__caption--m">{tableTitle}</caption>}
       <thead className="govuk-table__head">
         <tr className="govuk-table__row">
           {tableHeaders.map((header: TableHeader) => (

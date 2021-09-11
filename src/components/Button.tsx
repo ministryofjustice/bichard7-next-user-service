@@ -7,6 +7,7 @@ interface Props {
   variant?: ButtonVariant
   noDoubleClick?: boolean
   id?: string
+  className?: string
 }
 
 const getButtonClass = (variant?: ButtonVariant): string => {
@@ -14,10 +15,10 @@ const getButtonClass = (variant?: ButtonVariant): string => {
   return `govuk-button${variantClass}`
 }
 
-const Button = ({ children, variant, noDoubleClick, id }: Props) => (
+const Button = ({ children, variant, noDoubleClick, id, className }: Props) => (
   <button
     type="submit"
-    className={getButtonClass(variant)}
+    className={`${getButtonClass(variant)}${className ? ` ${className}` : ""}`}
     data-module="govuk-button"
     data-prevent-double-click={noDoubleClick}
     id={id}
