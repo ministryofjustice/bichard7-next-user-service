@@ -1,12 +1,13 @@
 import { ReactNode } from "react"
+import classnames from "classnames"
 
 type ButtonVariant = "default" | "warning"
-
 interface Props {
   children: ReactNode
   variant?: ButtonVariant
   noDoubleClick?: boolean
   id?: string
+  className?: string
 }
 
 const getButtonClass = (variant?: ButtonVariant): string => {
@@ -14,16 +15,22 @@ const getButtonClass = (variant?: ButtonVariant): string => {
   return `govuk-button${variantClass}`
 }
 
-const Button = ({ children, variant, noDoubleClick, id }: Props) => (
-  <button
-    type="submit"
-    className={getButtonClass(variant)}
-    data-module="govuk-button"
-    data-prevent-double-click={noDoubleClick}
-    id={id}
-  >
-    {children}
-  </button>
-)
+const Button = ({ children, variant, noDoubleClick, id, className }: Props) => {
+  const classes = classnames(getButtonClass(variant), {
+    [className as string]: !!className
+  })
+
+  return (
+    <button
+      type="submit"
+      className={classes}
+      data-module="govuk-button"
+      data-prevent-double-click={noDoubleClick}
+      id={id}
+    >
+      {children}
+    </button>
+  )
+}
 
 export default Button

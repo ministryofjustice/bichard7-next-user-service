@@ -1,3 +1,5 @@
+import classnames from "classnames"
+
 interface Props {
   id: string
   label?: string
@@ -8,15 +10,31 @@ interface Props {
   defaultValue?: string
   isError?: boolean
   disabled?: boolean
+  className?: string
 }
 
-const TextInput = ({ id, label, name, type, width, value, defaultValue, isError = false, disabled = false }: Props) => {
+const TextInput = ({
+  id,
+  label,
+  name,
+  type,
+  width,
+  value,
+  defaultValue,
+  className,
+  isError = false,
+  disabled = false
+}: Props) => {
   const inputName = name || id
   const errorClassName = isError ? " govuk-input--error" : ""
   const widthClassName = width ? ` govuk-input--width-${width}` : ""
 
+  const classes = classnames("govuk-form-group", {
+    [className as string]: !!className
+  })
+
   return (
-    <div className="govuk-form-group">
+    <div className={classes}>
       {!!label && (
         <label className="govuk-label" htmlFor={inputName}>
           {label}

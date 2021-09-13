@@ -50,8 +50,7 @@ const Users = ({ user, currentUser }: Props) => (
       <title>{"User details"}</title>
     </Head>
     <Layout user={currentUser}>
-      <BackLink href="/users" />
-      <h2 className="govuk-heading-m">{"User details"}</h2>
+      <h2 className="govuk-heading-l">{"User details"}</h2>
       <Summary>
         <SummaryItem label="Username" value={user.username} />
         <SummaryItem label="Forename(s)" value={user.forenames} />
@@ -71,6 +70,7 @@ const Users = ({ user, currentUser }: Props) => (
           {"Delete account"}
         </Link>
       </ButtonGroup>
+      <BackLink href="/users" />
     </Layout>
   </>
 )

@@ -160,6 +160,11 @@ const editUser = ({ errorMessage, successMessage, missingMandatory, user, csrfTo
       <title>{"Edit User"}</title>
     </Head>
     <Layout user={currentUser}>
+      <h1 className="govuk-heading-l">
+        {"Edit "}
+        {(user && user.username) || "user"}
+        {"'s details"}
+      </h1>
       <span id="event-name-error" className="govuk-error-message">
         {errorMessage}
       </span>

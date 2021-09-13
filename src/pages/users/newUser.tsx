@@ -19,6 +19,7 @@ import { getUserGroups } from "useCases"
 import { UserGroupResult } from "types/UserGroup"
 import getAuditLogger from "lib/getAuditLogger"
 import config from "lib/config"
+import ButtonGroup from "components/ButtonGroup"
 
 export const getServerSideProps = withMultipleServerSideProps(
   withAuthentication,
@@ -109,6 +110,7 @@ const newUser = ({ message, isSuccess, missingMandatory, csrfToken, currentUser,
       <title>{"New User"}</title>
     </Head>
     <Layout user={currentUser}>
+      <h1 className="govuk-heading-l">{"Add a new user"}</h1>
       {!isSuccess && (
         <span id="event-name-error" className="govuk-error-message">
           {message}
@@ -124,8 +126,9 @@ const newUser = ({ message, isSuccess, missingMandatory, csrfToken, currentUser,
           missingEmail={missingMandatory}
           userGroups={userGroups}
         />
-
-        <Button noDoubleClick>{"Add user"}</Button>
+        <ButtonGroup>
+          <Button noDoubleClick>{"Add user"}</Button>
+        </ButtonGroup>
       </Form>
 
       <a href="/users" className="govuk-back-link">

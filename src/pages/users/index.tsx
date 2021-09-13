@@ -118,7 +118,16 @@ const Users = ({ allUsers, csrfToken, currentUser, previousFilter, pageNumber, t
   const pageNumberStyle = {
     style: {
       padding: "10px"
+    },
+    spacing: {
+      paddingLeft: "0px"
     }
+  }
+
+  let styles = { ...pageNumberStyle.style }
+
+  if (pageNumber === 0) {
+    styles = { ...styles, ...pageNumberStyle.spacing }
   }
 
   const pageString = `Page ${pageNumber + 1} of ${Math.ceil(totalUsers / config.maxUsersPerPage)}`
@@ -128,20 +137,21 @@ const Users = ({ allUsers, csrfToken, currentUser, previousFilter, pageNumber, t
         <title>{"Users"}</title>
       </Head>
       <Layout user={currentUser}>
+        <h1 className="govuk-heading-l">{"Users"}</h1>
         <Form method="post" csrfToken={csrfToken}>
           <ButtonGroup>
-            <TextInput id="filter" name="filter" type="text" defaultValue={previousFilter} />
-            <Button noDoubleClick id="filter">
+            <a id="add" className="govuk-button govuk-!-margin-right-8" href="/users/newUser">
+              {"Add user"}
+            </a>
+            <TextInput className="align-right" id="filter" name="filter" type="text" defaultValue={previousFilter} />
+            <Button className="govuk-!-margin-left-4" noDoubleClick id="filter">
               {"Filter"}
             </Button>
           </ButtonGroup>
         </Form>
 
-        <a href="/users/newUser">
-          <Button id="add">{"Add user"}</Button>
-        </a>
         {allUsers && (
-          <Table tableHeaders={tableHeaders} tableTitle="Users" tableData={allUsers}>
+          <Table tableHeaders={tableHeaders} tableData={allUsers}>
             <LinkColumn
               data-test="link-to-user-view"
               field="username"
@@ -154,7 +164,7 @@ const Users = ({ allUsers, csrfToken, currentUser, previousFilter, pageNumber, t
           <Link href={prevPage.toString()} data-test="Prev">
             {pageNumber > 0 && "< Prev"}
           </Link>
-          <span style={pageNumberStyle.style}>{pageString}</span>
+          <span style={styles}>{pageString}</span>
           <Link href={nextPage.toString()} data-test="Next">
             {pageNumber + 1 < (totalUsers - 1) / config.maxUsersPerPage && "Next >"}
           </Link>
