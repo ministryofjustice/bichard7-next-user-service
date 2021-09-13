@@ -144,7 +144,7 @@ const Users = ({ allUsers, csrfToken, currentUser, previousFilter, pageNumber, t
               {"Add user"}
             </a>
             <TextInput className="align-right" id="filter" name="filter" type="text" defaultValue={previousFilter} />
-            <Button className="govuk-!-margin-left-2" noDoubleClick id="filter">
+            <Button className="govuk-!-margin-left-4" noDoubleClick id="filter">
               {"Filter"}
             </Button>
           </ButtonGroup>
