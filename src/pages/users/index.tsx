@@ -120,7 +120,7 @@ const Users = ({ allUsers, csrfToken, currentUser, previousFilter, pageNumber, t
       padding: "10px"
     },
     spacing: {
-      "padding-left": "0px"
+      paddingLeft: "0px"
     }
   }
 
