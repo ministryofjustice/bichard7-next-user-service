@@ -16,5 +16,6 @@ export { default as removeEmailAddressCookie } from "./removeEmailAddressCookie"
 export { default as getEmailAddressFromCookie } from "./getEmailAddressFromCookie"
 export { default as generateEmailVerificationUrl } from "./generateEmailVerificationUrl"
 export { default as getUserGroups } from "./getUserGroups"
+export { default as logJwt } from "./logJwt"
 
 export default {}

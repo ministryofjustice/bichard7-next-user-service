@@ -55,6 +55,11 @@ module.exports = (on, config) => {
       return null
     },
 
+    async deleteFromJwtIds() {
+      await deleteFromTable("jwt_ids")
+      return null
+    },
+
     async insertIntoUsersTable() {
       await insertIntoUsersTable(users)
       return null
@@ -78,6 +83,11 @@ module.exports = (on, config) => {
     async selectFromUsersTable(emailAddress) {
       const selectedUsers = await selectFromTable("users", "email", emailAddress)
       return selectedUsers[0]
+    },
+
+    async selectFromJwtIdTable() {
+      const jwtRecords = await selectFromTable("jwt_ids")
+      return jwtRecords[0]
     },
 
     async selectFromUsersGroupsTable(userId) {

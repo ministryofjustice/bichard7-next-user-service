@@ -24,6 +24,7 @@ const fetchGroups = async (task: ITask<unknown>, emailAddress: string): Promise<
 const getUserWithInterval = async (task: ITask<unknown>, params: unknown[]) => {
   const getUserQuery = `
   SELECT
+    id,
     username,
     exclusion_list,
     inclusion_list,
@@ -44,7 +45,10 @@ const getUserWithInterval = async (task: ITask<unknown>, params: unknown[]) => {
 
   const user = await task.one(getUserQuery, params)
 
+  console.log("query", user)
+
   return {
+    id: user.id,
     username: user.username,
     exclusionList: user.exclusion_list.split(/[, ]/),
     inclusionList: user.inclusion_list.split(/[, ]/),

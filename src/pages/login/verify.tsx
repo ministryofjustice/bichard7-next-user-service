@@ -12,7 +12,8 @@ import {
   getEmailAddressFromCookie,
   removeEmailAddressCookie,
   signInUser,
-  storeEmailAddressInCookie
+  storeEmailAddressInCookie,
+  logJwt
 } from "useCases"
 import { isError } from "types/Result"
 import createRedirectResponse from "utils/createRedirectResponse"
@@ -24,11 +25,14 @@ import Link from "components/Link"
 import { GetServerSidePropsResult } from "next"
 import isPost from "utils/isPost"
 import getAuditLogger from "lib/getAuditLogger"
+import { v4 as uuidv4 } from "uuid"
+import User from "types/User"
 
 export const getServerSideProps = withCsrf(async (context): Promise<GetServerSidePropsResult<Props>> => {
   const { req, res, query, formData, csrfToken } = context as CsrfServerSidePropsContext
   const redirectUrl = getValidRedirectUrl(query, config)
   const notYourEmailAddressUrlObject = new URL(`/login`, config.baseUrl)
+  const authenticationErrorMessage = "Error authenticating the reqest"
 
   if (redirectUrl) {
     notYourEmailAddressUrlObject.searchParams.append("redirectUrl", redirectUrl as string)
@@ -77,7 +81,15 @@ export const getServerSideProps = withCsrf(async (context): Promise<GetServerSid
       }
 
       const bichardUrl = redirectUrl || config.bichardRedirectURL
-      const authToken = signInUser(res, user)
+      const uniqueId = uuidv4()
+      const authToken = signInUser(res, user as unknown as User, uniqueId)
+
+      const logJwtResult = await logJwt(connection, (user as User).id, uniqueId)
+
+      if (isError(logJwtResult)) {
+        console.error(logJwtResult)
+        throw new Error(authenticationErrorMessage)
+      }
 
       if (rememberEmailAddress === "remember-email") {
         const emailAddressFromCookie = getEmailAddressFromCookie(req, config)
@@ -113,7 +125,10 @@ export const getServerSideProps = withCsrf(async (context): Promise<GetServerSid
     }
 
     return { props: { emailAddress, token, csrfToken, notYourEmailAddressUrl } }
-  } catch {
+  } catch (error) {
+    if ((error as Error).message === authenticationErrorMessage) {
+      throw error
+    }
     return { props: { invalidVerification: true, csrfToken, notYourEmailAddressUrl } }
   }
 })

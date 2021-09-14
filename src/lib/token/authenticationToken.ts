@@ -16,9 +16,10 @@ export interface AuthenticationTokenPayload {
   inclusionList: string[]
   emailAddress: string
   groups: UserGroup[]
+  id: string
 }
 
-export function generateAuthenticationToken(user: Partial<User>): AuthenticationToken {
+export function generateAuthenticationToken(user: Partial<User>, uniqueId: string): AuthenticationToken {
   const options: jwt.SignOptions = {
     expiresIn: config.tokenExpiresIn,
     ...signOptions
@@ -30,7 +31,8 @@ export function generateAuthenticationToken(user: Partial<User>): Authentication
     inclusionList: user.inclusionList as string[],
     emailAddress: user.emailAddress as string,
     /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-    groups: (user as any).groups as UserGroup[]
+    groups: (user as any).groups as UserGroup[],
+    id: uniqueId
   }
 
   return jwt.sign(payload, config.tokenSecret, options)
@@ -40,6 +42,6 @@ export function decodeAuthenticationToken(token: string): Result<AuthenticationT
   try {
     return jwt.verify(token, config.tokenSecret, signOptions) as AuthenticationTokenPayload
   } catch (error) {
-    return error
+    return error as Error
   }
 }
