@@ -94,7 +94,9 @@ const Index = ({ invalidEmail, csrfToken }: Props) => (
         <h1 className="govuk-heading-xl">{"Sign in to Bichard 7"}</h1>
 
         {invalidEmail && (
-          <ErrorSummary title="Invalid email">{"The supplied email address is not valid."}</ErrorSummary>
+          <ErrorSummary title="Invalid email">
+            {"Please check you have entered your email address correctly."}
+          </ErrorSummary>
         )}
 
         <Form method="post" csrfToken={csrfToken}>
@@ -102,7 +104,7 @@ const Index = ({ invalidEmail, csrfToken }: Props) => (
           <Button>{"Sign in"}</Button>
         </Form>
         <p>
-          <Link href="/login/forgot-password">{"Forgot your password?"}</Link>
+          <Link href="/login/forgot-password">{"I forgot my password"}</Link>
         </p>
       </GridRow>
     </Layout>

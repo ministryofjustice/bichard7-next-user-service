@@ -7,5 +7,5 @@ export default async (connection: Database, email: string): Promise<Error> => {
   const result = await connection.any(query, [email])
   return !(result.length === 1 && result[0].count === "1")
     ? { name: CheckName, message: "" }
-    : { name: CheckName, message: `Email address ${email} already exists` }
+    : { name: CheckName, message: `Email address ${email} already exists.` }
 }

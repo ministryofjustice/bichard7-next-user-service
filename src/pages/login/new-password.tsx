@@ -35,14 +35,14 @@ export const getServerSideProps = withCsrf(async (context): Promise<GetServerSid
     }
 
     if (newPassword === "" || confirmPassword === "") {
-      errorMessage = "Passwords cannot be empty"
+      errorMessage = "Passwords cannot be empty."
       return {
         props: { errorMessage, csrfToken }
       }
     }
 
     if (newPassword !== confirmPassword) {
-      errorMessage = "Passwords are mismatching"
+      errorMessage = "Passwords do not match."
       return {
         props: { errorMessage, csrfToken }
       }
@@ -51,7 +51,7 @@ export const getServerSideProps = withCsrf(async (context): Promise<GetServerSid
     const translatedToken = decodeEmailVerificationToken(token)
     if (isError(translatedToken)) {
       return {
-        props: { errorMessage: "Invalid token link", csrfToken }
+        props: { errorMessage: "This link is either incorrect or may have expired. Please try again.", csrfToken }
       }
     }
     const { emailAddress, verificationCode } = translatedToken

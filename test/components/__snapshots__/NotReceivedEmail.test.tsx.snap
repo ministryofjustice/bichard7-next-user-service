@@ -1,0 +1,51 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`should render the component and match the snapshot 1`] = `
+<div>
+  <details
+    class="govuk-details"
+    data-module="govuk-details"
+  >
+     
+    <summary
+      class="govuk-details__summary"
+      id="check-email"
+    >
+       
+      <span
+        class="govuk-details__summary-text"
+      >
+         I have not received the email 
+      </span>
+       
+    </summary>
+    <div
+      class="govuk-details__text"
+    >
+      <p>
+        The email may take a few minutes to arrive.
+      </p>
+      <p>
+        Check your spam or junk folder – if it still has not arrived, you can 
+        <a
+          class="govuk-link"
+          href="http://localhost/send-again-url"
+        >
+          ask for it to be sent again
+        </a>
+        . Make sure you have entered your email address correctly.
+      </p>
+      <p>
+        If you no longer have access to your email address you will need to 
+        <a
+          class="govuk-link"
+          href="http://localhost:3000/contact-us"
+        >
+          contact us
+        </a>
+        .
+      </p>
+    </div>
+  </details>
+</div>
+`;
