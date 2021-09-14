@@ -68,13 +68,13 @@ export const getServerSideProps = withMultipleServerSideProps(
           }
         }
 
-        message = `User ${userCreateDetails.username} has been successfully created`
+        message = `User ${userCreateDetails.username} has been successfully created.`
         return {
           props: { message, isSuccess: true, missingMandatory, csrfToken, currentUser, userGroups }
         }
       }
 
-      message = "Please make sure that all mandatory fields are non empty"
+      message = "Please fill in all mandatory fields."
       isSuccess = false
     }
 

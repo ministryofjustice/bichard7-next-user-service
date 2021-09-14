@@ -24,7 +24,7 @@ const validateUserVerificationCode = async (
   }
 
   if (result.rowCount === 0) {
-    return Error("User not found")
+    return Error("User not found.")
   }
 
   return undefined

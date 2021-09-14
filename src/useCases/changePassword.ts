@@ -23,7 +23,7 @@ export default async (
 
   if (isError(passwordMatch)) {
     console.error(passwordMatch)
-    return Error("Could not check your current password. Please try again.")
+    return Error("Server error. Please try again later.")
   }
 
   if (!passwordMatch) {
@@ -34,7 +34,7 @@ export default async (
 
   if (isError(updatePasswordResult)) {
     console.error(updatePasswordResult)
-    return Error("Could not update password.")
+    return Error("Server error. Please try again later.")
   }
 
   await auditLogger("Change password")

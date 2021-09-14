@@ -38,12 +38,12 @@ describe("Logging In", () => {
 
       it("should show an error message if visiting verification page with no token", () => {
         cy.visit("/login/verify")
-        cy.get(".govuk-error-summary").should("be.visible").contains("h2", "Invalid credentials")
+        cy.get(".govuk-error-summary").should("be.visible").contains("h2", "Unable to verify email address")
       })
 
       it("should show an error message if visiting verification page with an invalid token", () => {
         cy.visit("/login/verify?token=foobar")
-        cy.get(".govuk-error-summary").should("be.visible").contains("h2", "Invalid credentials")
+        cy.get(".govuk-error-summary").should("be.visible").contains("h2", "Unable to verify email address")
 
         cy.visit(`/login/verify?token=${invalidToken()}`)
         cy.get(".govuk-error-summary").should("be.visible").contains("h2", "Unable to verify email address")
@@ -125,7 +125,7 @@ describe("Logging In", () => {
 
         cy.visit(`/login/verify?token=${token}`)
         cy.get("input[type=password][name=password]").type(password)
-        cy.get("input[id=rememberEmailAddress]").click()
+        cy.get("input[id=rememberEmailYes]").click()
         cy.get("button[type=submit]").click()
         cy.url().then((url) => {
           expect(url).to.match(/^http:\/\/localhost:3000\/bichard-ui\/Authenticate/)
@@ -199,7 +199,7 @@ describe("Logging In", () => {
 
         cy.visit(`/login/verify?token=${token}`)
         cy.get("input[type=password][name=password]").type(password)
-        cy.get("input[id=rememberEmailAddress]").click()
+        cy.get("input[id=rememberEmailYes]").click()
         cy.get("button[type=submit]").click()
         cy.url().then((url) => {
           expect(url).to.match(/^http:\/\/localhost:3000\/bichard-ui\/Authenticate/)

@@ -31,7 +31,7 @@ describe("Reset password", () => {
       cy.get("input[type=password][name=confirmPassword]").type("shorty")
       cy.get("button[type=submit]").click()
       cy.get(".govuk-error-summary").should("be.visible").contains("h2", "Password is insecure")
-      cy.get(".govuk-error-summary__body").should("be.visible").contains("div", "Password is too short")
+      cy.get(".govuk-error-summary__body").should("be.visible").contains("div", "Password is too short.")
     })
 
     it("should not allow submission when passwords contain sensitive information", () => {
@@ -45,7 +45,7 @@ describe("Reset password", () => {
         cy.get(".govuk-error-summary").should("be.visible").contains("h2", "Password is insecure")
         cy.get(".govuk-error-summary__body")
           .should("be.visible")
-          .contains("div", "Password contains user specific sensitive information. Please choose another one")
+          .contains("div", "Password contains user specific sensitive information. Please choose another one.")
       })
     })
 
@@ -58,9 +58,7 @@ describe("Reset password", () => {
       cy.get("input[type=password][name=confirmPassword]").type("123456789")
       cy.get("button[type=submit]").click()
       cy.get(".govuk-error-summary").should("be.visible").contains("h2", "Password is insecure")
-      cy.get(".govuk-error-summary__body")
-        .should("be.visible")
-        .contains("div", "Cannot use this password as it is insecure/banned")
+      cy.get(".govuk-error-summary__body").should("be.visible").contains("div", "Password is too easy to guess.")
     })
 
     it("should prompt the user that password reset was successful when provided password is valid", (done) => {
@@ -168,7 +166,9 @@ describe("Reset password", () => {
         cy.get("input[type=password][name=confirmPassword]").type(newPassword)
         cy.get("button[type=submit]").click()
         cy.get(".govuk-error-summary").should("be.visible").contains("h2", "Password is insecure")
-        cy.get(".govuk-error-summary__body").should("be.visible").contains("div", "Cannot use previously used password")
+        cy.get(".govuk-error-summary__body")
+          .should("be.visible")
+          .contains("div", "Cannot use previously used password.")
       })
     })
   })

@@ -60,7 +60,7 @@ describe("updatePassword", () => {
     expect(isError(result)).toBe(true)
 
     const actualError = <Error>result
-    expect(actualError.message).toBe("User not found")
+    expect(actualError.message).toBe("User not found.")
   })
 
   it("should return error when user does not exist", async () => {
@@ -70,6 +70,6 @@ describe("updatePassword", () => {
     expect(isError(result)).toBe(true)
 
     const actualError = <Error>result
-    expect(actualError.message).toBe("User not found")
+    expect(actualError.message).toBe("User not found.")
   })
 })

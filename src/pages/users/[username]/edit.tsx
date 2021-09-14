@@ -21,7 +21,7 @@ import getAuditLogger from "lib/getAuditLogger"
 import config from "lib/config"
 
 const errorMessageMap = {
-  unique_users_username_idx: "This user name has been taken please enter another"
+  unique_users_username_idx: "This username already exists. Please try a different one."
 }
 
 export const getServerSideProps = withMultipleServerSideProps(
@@ -49,7 +49,7 @@ export const getServerSideProps = withMultipleServerSideProps(
         console.error(user)
         return {
           props: {
-            errorMessage: "Error getting user details please try again",
+            errorMessage: "There was an error retrieving the user details.",
             csrfToken,
             currentUser,
             groups
@@ -84,7 +84,7 @@ export const getServerSideProps = withMultipleServerSideProps(
 
           return {
             props: {
-              errorMessage: "There was an error retrieving the user details",
+              errorMessage: "There was an error retrieving the user details.",
               csrfToken,
               currentUser,
               groups
@@ -94,7 +94,7 @@ export const getServerSideProps = withMultipleServerSideProps(
 
         return {
           props: {
-            successMessage: "The user was updated successfully",
+            successMessage: "User details updated successfully.",
             user: updatedUser,
             csrfToken,
             currentUser,
@@ -104,7 +104,7 @@ export const getServerSideProps = withMultipleServerSideProps(
       }
       return {
         props: {
-          errorMessage: "Please fill in all mandatory fields",
+          errorMessage: "Please fill in all mandatory fields.",
           missingMandatory: true,
           user: { ...user, ...userDetails },
           csrfToken,
@@ -122,7 +122,7 @@ export const getServerSideProps = withMultipleServerSideProps(
 
       return {
         props: {
-          errorMessage: "Error retrieving user please go back and make sure you have the correct details",
+          errorMessage: "User not found.",
           missingMandatory: false,
           csrfToken,
           currentUser,
@@ -188,8 +188,7 @@ const editUser = ({ errorMessage, successMessage, missingMandatory, user, csrfTo
       )}
 
       <a href="/users" className="govuk-back-link">
-        {" "}
-        {"Back"}{" "}
+        {"Back"}
       </a>
     </Layout>
   </>

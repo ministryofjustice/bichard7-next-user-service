@@ -46,6 +46,7 @@ The application makes use of the following environment variables to permit confi
 |----------------------------------|----------------------------------------------------|------------------------------------------------------------------------------------------------------|
 | `$BASE_URL`                      | `http://localhost:3000`                            | The URL that the user-service is being served from. Used for generating email links.                 |
 | `$BICHARD_REDIRECT_URL`          | `"https://localhost:9443/bichard-ui/Authenticate"` | The URL to redirect to with a token as a GET parameter when authentication is successful             |
+| `$CONTACT_URL`                   | `"http://localhost:3000/contact-us"`               | The URL to contact the support team                                                                  |
 | `$COOKIE_SECRET`                 | `"OliverTwist"`                                    | The secret to use for signing the cookies                                                            |
 | `$CSRF_COOKIE_SECRET`            | `"OliverTwist2"`                                   | The secret to use for signing the CSRF cookie token                                                  |
 | `$CSRF_FORM_SECRET`              | `"OliverTwist1"`                                   | The secret to use for signing the CSRF form token                                                    |
