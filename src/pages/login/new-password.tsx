@@ -35,14 +35,14 @@ export const getServerSideProps = withCsrf(async (context): Promise<GetServerSid
     }
 
     if (newPassword === "" || confirmPassword === "") {
-      errorMessage = "Passwords cannot be empty"
+      errorMessage = "Passwords cannot be empty."
       return {
         props: { errorMessage, csrfToken }
       }
     }
 
     if (newPassword !== confirmPassword) {
-      errorMessage = "Passwords do not match"
+      errorMessage = "Passwords do not match."
       return {
         props: { errorMessage, csrfToken }
       }

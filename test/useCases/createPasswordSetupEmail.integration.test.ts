@@ -89,7 +89,7 @@ describe("AccountSetup", () => {
     )
     expect(result).toBeDefined()
     const actualError = <Error>result
-    expect(actualError.message).toBe("Password is too short")
+    expect(actualError.message).toBe("Password is too short.")
   })
 
   it("should not be able to setup a password if it is banned", async () => {
@@ -133,6 +133,6 @@ describe("AccountSetup", () => {
     )
     expect(secondResult).toBeDefined()
     const actualError = <Error>secondResult
-    expect(actualError.message).toBe("Invalid or expired verification code")
+    expect(actualError.message).toBe("Invalid or expired verification code.")
   })
 })

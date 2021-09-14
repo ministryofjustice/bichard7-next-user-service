@@ -34,7 +34,7 @@ describe("DeleteUserUseCase", () => {
     const selectedGroup = selectedGroups[0]
     const user = users[0]
 
-    const expectedError = new Error(`Username Bichard01 already exists`)
+    const expectedError = new Error(`Username Bichard01 already exists.`)
 
     const createUserDetails: UserCreateDetails = {
       username: user.username,
@@ -75,7 +75,7 @@ describe("DeleteUserUseCase", () => {
       groupId: selectedGroup.group_id
     }
 
-    const expectedError = new Error(`Email address bichard01@example.com already exists`)
+    const expectedError = new Error(`Email address bichard01@example.com already exists.`)
     const result = await createUser(connection, createUserDetails)
     expect(isError(result)).toBe(true)
     const actualError = <Error>result

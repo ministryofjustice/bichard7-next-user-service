@@ -67,7 +67,7 @@ export const getServerSideProps = withMultipleServerSideProps(
           }
         }
 
-        message = `User ${userCreateDetails.username} has been successfully created`
+        message = `User ${userCreateDetails.username} has been successfully created.`
         return {
           props: { message, isSuccess: true, missingMandatory, csrfToken, currentUser, userGroups }
         }

@@ -28,7 +28,7 @@ const initialiseUserPassword = async (
   // check if we have the correct user
   const validatedCodeResult = await validateUserVerificationCode(connection, emailAddress, verificationCode)
   if (isError(validatedCodeResult)) {
-    return new Error("Invalid or expired verification code")
+    return new Error("Invalid or expired verification code.")
   }
 
   const validatePasswordSensitveResult = await passwordDoesNotContainSensitive(connection, password, emailAddress)

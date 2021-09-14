@@ -84,7 +84,7 @@ export const getServerSideProps = withMultipleServerSideProps(
 
           return {
             props: {
-              errorMessage: "There was an error retrieving the user details",
+              errorMessage: "There was an error retrieving the user details.",
               csrfToken,
               currentUser,
               groups
@@ -104,7 +104,7 @@ export const getServerSideProps = withMultipleServerSideProps(
       }
       return {
         props: {
-          errorMessage: "Please fill in all mandatory fields",
+          errorMessage: "Please fill in all mandatory fields.",
           missingMandatory: true,
           user: { ...user, ...userDetails },
           csrfToken,
@@ -183,8 +183,7 @@ const editUser = ({ errorMessage, successMessage, missingMandatory, user, csrfTo
       )}
 
       <a href="/users" className="govuk-back-link">
-        {" "}
-        {"Back"}{" "}
+        {"Back"}
       </a>
     </Layout>
   </>

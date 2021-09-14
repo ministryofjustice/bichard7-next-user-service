@@ -91,7 +91,7 @@ describe("resetPassword", () => {
     const resetResult = await resetPassword(connection, fakeAuditLogger, resetPasswordOptions)
     expect(isError(resetResult)).toBe(false)
     expect(resetResult).not.toBe(undefined)
-    expect(resetResult).toBe("Cannot use previously used password")
+    expect(resetResult).toBe("Cannot use previously used password.")
   })
 
   it("should return error when new password is not allowed", async () => {

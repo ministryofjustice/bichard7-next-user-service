@@ -21,7 +21,7 @@ const checkPasswordIsNew = async (
     const comparedResults = await Promise.all(filteredResults)
 
     if (comparedResults.some((item) => item === true)) {
-      return Error("Cannot save previously used password")
+      return Error("Cannot save previously used password.")
     }
   } catch (error) {
     return error
