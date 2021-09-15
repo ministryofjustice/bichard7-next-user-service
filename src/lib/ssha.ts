@@ -40,7 +40,7 @@ const createSsha = (secret: string, salt?: Buffer | string): string => {
 }
 
 const verifySsha = (secret: string, sshaHash: string): boolean => {
-  if (sshaHash.substr(0, 6).toUpperCase() !== "{SSHA}") {
+  if (!sshaHash.match(/^\{SSHA\}/i)) {
     console.error("Hash scheme not supported. Only {SSHA} is supported.")
     return false
   }
