@@ -20,7 +20,8 @@ const manyUsers = [
     password: "$shiro1$SHA-256$500000$sL5A3oRuVXTJCy36WP5Kyg==$ggXBhVWqFN35dRW/TXWO7Dm/zEwWxNu4CuwXNvEJ8Jw=",
     last_login_attempt: "2021-08-01 00:00:00-00",
     deleted_at: null,
-    password_reset_code: null
+    password_reset_code: null,
+    migrated_password: null
   },
   {
     username: "Bichard02",
@@ -43,7 +44,8 @@ const manyUsers = [
     password: "$shiro1$SHA-256$500000$sL5A3oRuVXTJCy36WP5Kyg==$ggXBhVWqFN35dRW/TXWO7Dm/zEwWxNu4CuwXNvEJ8Jw=",
     last_login_attempt: "2021-08-01 00:00:00-00",
     deleted_at: null,
-    password_reset_code: null
+    password_reset_code: null,
+    migrated_password: null
   },
   {
     username: "Bichard03",
@@ -66,7 +68,8 @@ const manyUsers = [
     password: "$shiro1$SHA-256$500000$sL5A3oRuVXTJCy36WP5Kyg==$ggXBhVWqFN35dRW/TXWO7Dm/zEwWxNu4CuwXNvEJ8Jw=",
     last_login_attempt: "2021-08-01 00:00:00-00",
     deleted_at: null,
-    password_reset_code: null
+    password_reset_code: null,
+    migrated_password: null
   },
   {
     username: "Bichard04",
@@ -89,7 +92,8 @@ const manyUsers = [
     password: "$shiro1$SHA-256$500000$sL5A3oRuVXTJCy36WP5Kyg==$ggXBhVWqFN35dRW/TXWO7Dm/zEwWxNu4CuwXNvEJ8Jw=",
     last_login_attempt: "2021-08-01 00:00:00-00",
     deleted_at: null,
-    password_reset_code: null
+    password_reset_code: null,
+    migrated_password: null
   },
   {
     username: "Bichard05",
@@ -112,7 +116,8 @@ const manyUsers = [
     password: "$shiro1$SHA-256$500000$sL5A3oRuVXTJCy36WP5Kyg==$ggXBhVWqFN35dRW/TXWO7Dm/zEwWxNu4CuwXNvEJ8Jw=",
     last_login_attempt: "2021-08-01 00:00:00-00",
     deleted_at: null,
-    password_reset_code: null
+    password_reset_code: null,
+    migrated_password: null
   },
   {
     username: "Bichard06",
@@ -135,7 +140,8 @@ const manyUsers = [
     password: "$shiro1$SHA-256$500000$sL5A3oRuVXTJCy36WP5Kyg==$ggXBhVWqFN35dRW/TXWO7Dm/zEwWxNu4CuwXNvEJ8Jw=",
     last_login_attempt: "2021-08-01 00:00:00-00",
     deleted_at: null,
-    password_reset_code: null
+    password_reset_code: null,
+    migrated_password: null
   },
   {
     username: "Bichard07",
@@ -158,7 +164,8 @@ const manyUsers = [
     password: "$shiro1$SHA-256$500000$sL5A3oRuVXTJCy36WP5Kyg==$ggXBhVWqFN35dRW/TXWO7Dm/zEwWxNu4CuwXNvEJ8Jw=",
     last_login_attempt: "2021-08-01 00:00:00-00",
     deleted_at: null,
-    password_reset_code: null
+    password_reset_code: null,
+    migrated_password: null
   },
   {
     username: "Bichard08",
@@ -181,7 +188,8 @@ const manyUsers = [
     password: "$shiro1$SHA-256$500000$sL5A3oRuVXTJCy36WP5Kyg==$ggXBhVWqFN35dRW/TXWO7Dm/zEwWxNu4CuwXNvEJ8Jw=",
     last_login_attempt: "2021-08-01 00:00:00-00",
     deleted_at: null,
-    password_reset_code: null
+    password_reset_code: null,
+    migrated_password: null
   },
   {
     username: "Bichard09",
@@ -204,7 +212,8 @@ const manyUsers = [
     password: "$shiro1$SHA-256$500000$sL5A3oRuVXTJCy36WP5Kyg==$ggXBhVWqFN35dRW/TXWO7Dm/zEwWxNu4CuwXNvEJ8Jw=",
     last_login_attempt: "2021-08-01 00:00:00-00",
     deleted_at: null,
-    password_reset_code: null
+    password_reset_code: null,
+    migrated_password: null
   },
   {
     username: "Bichard10",
@@ -227,7 +236,8 @@ const manyUsers = [
     password: "$shiro1$SHA-256$500000$sL5A3oRuVXTJCy36WP5Kyg==$ggXBhVWqFN35dRW/TXWO7Dm/zEwWxNu4CuwXNvEJ8Jw=",
     last_login_attempt: "2021-08-01 00:00:00-00",
     deleted_at: null,
-    password_reset_code: null
+    password_reset_code: null,
+    migrated_password: null
   },
   {
     username: "Bichard11",
@@ -250,7 +260,8 @@ const manyUsers = [
     password: "$shiro1$SHA-256$500000$sL5A3oRuVXTJCy36WP5Kyg==$ggXBhVWqFN35dRW/TXWO7Dm/zEwWxNu4CuwXNvEJ8Jw=",
     last_login_attempt: "2021-08-01 00:00:00-00",
     deleted_at: null,
-    password_reset_code: null
+    password_reset_code: null,
+    migrated_password: null
   },
   {
     username: "Bichard12",
@@ -273,7 +284,8 @@ const manyUsers = [
     password: "$shiro1$SHA-256$500000$sL5A3oRuVXTJCy36WP5Kyg==$ggXBhVWqFN35dRW/TXWO7Dm/zEwWxNu4CuwXNvEJ8Jw=",
     last_login_attempt: "2021-08-01 00:00:00-00",
     deleted_at: null,
-    password_reset_code: null
+    password_reset_code: null,
+    migrated_password: null
   }
 ]
 

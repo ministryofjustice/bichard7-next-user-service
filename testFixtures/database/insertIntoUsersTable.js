@@ -27,7 +27,8 @@ const insertIntoUsersTable = async (data) => {
         password, 
         last_login_attempt,
         deleted_at,
-        password_reset_code
+        password_reset_code,
+        migrated_password
       ) VALUES (
         $\{username\},
         $\{active\},
@@ -49,7 +50,8 @@ const insertIntoUsersTable = async (data) => {
         $\{password\},
         $\{last_login_attempt\},
         $\{deleted_at},
-        $\{password_reset_code\}
+        $\{password_reset_code\},
+        $\{migrated_password\}
   )
   `
   /* eslint-disable no-useless-escape */
