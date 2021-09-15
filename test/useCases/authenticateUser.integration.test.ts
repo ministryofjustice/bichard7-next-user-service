@@ -97,7 +97,22 @@ describe("Authenticator", () => {
     const actualError = <Error>result
     expect(actualError.message).toBe(expectedError.message)
 
-    const isAuth = await authenticate(connection, fakeAuditLogger, emailAddress, correctPassword, verificationCode)
+    // 2 second wait between checks
+    let isAuth = await authenticate(connection, fakeAuditLogger, emailAddress, correctPassword, verificationCode)
+    expect(isError(isAuth)).toBe(true)
+
+    // wait until config.incorrectDelay seconds have passed
+    /* eslint-disable no-useless-escape */
+    await connection.none(
+      `
+      UPDATE br7own.users
+      SET last_login_attempt = NOW() - INTERVAL '$\{interval\} seconds'
+      WHERE email = $\{email\}`,
+      { interval: config.incorrectDelay, email: emailAddress }
+    )
+    /* eslint-disable no-useless-escape */
+
+    isAuth = await authenticate(connection, fakeAuditLogger, emailAddress, correctPassword, verificationCode)
     expect(isError(isAuth)).toBe(false)
   })
 
