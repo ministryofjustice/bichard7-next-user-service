@@ -40,6 +40,11 @@ const createSsha = (secret: string, salt?: Buffer | string): string => {
 }
 
 const verifySsha = (secret: string, sshaHash: string): boolean => {
+  if (sshaHash.substr(0, 6).toUpperCase() !== "{SSHA}") {
+    console.error("Hash scheme not supported. Only {SSHA} is supported.")
+    return false
+  }
+
   const trimmedSecret = sshaHash.slice(6)
   const secretBuffer = Buffer.from(trimmedSecret, "base64")
   const saltBuffer = secretBuffer.slice(20)
