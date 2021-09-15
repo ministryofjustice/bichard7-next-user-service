@@ -72,4 +72,9 @@ if [[ -n "${CODEBUILD_RESOLVED_SOURCE_VERSION}" && -n "${CODEBUILD_START_TIME}" 
     echo "Push docker image on `date`"
     docker push \
         ${AWS_ACCOUNT_ID}.dkr.ecr.eu-west-2.amazonaws.com/user-service:${CODEBUILD_RESOLVED_SOURCE_VERSION}-${CODEBUILD_START_TIME}
+
+    if [ "${IS_CD}" = "true" ]; then
+      echo "Starting build ${DEPLOY_JOB_NAME}"
+      aws codebuild start-build --project-name "${DEPLOY_JOB_NAME}"
+    fi
 fi
