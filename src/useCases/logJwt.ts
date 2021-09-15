@@ -7,7 +7,7 @@ const logJwt = async (connection: Database, userId: number, uniqueId: string): P
     INSERT INTO br7own.jwt_ids
     (
       id,
-      generate_at, 
+      generated_at, 
       user_id
     )
     VALUES 

@@ -45,8 +45,6 @@ const getUserWithInterval = async (task: ITask<unknown>, params: unknown[]) => {
 
   const user = await task.one(getUserQuery, params)
 
-  console.log("query", user)
-
   return {
     id: user.id,
     username: user.username,
