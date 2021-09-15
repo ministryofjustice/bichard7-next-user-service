@@ -84,6 +84,23 @@ describe("Authenticator", () => {
     expect(actualError.message).toBe(expectedError.message)
   })
 
+  it("should allow the user to authenticate with correct code and correct password after inserting incorrect password", async () => {
+    await insertUsers()
+    const emailAddress = "bichard02@example.com"
+    const verificationCode = "CoDeRs"
+    const expectedError = new Error("Invalid credentials or invalid verification")
+    await storeVerificationCode(connection, emailAddress, verificationCode)
+
+    const result = await authenticate(connection, fakeAuditLogger, emailAddress, invalidPassword, verificationCode)
+    expect(isError(result)).toBe(true)
+
+    const actualError = <Error>result
+    expect(actualError.message).toBe(expectedError.message)
+
+    const isAuth = await authenticate(connection, fakeAuditLogger, emailAddress, correctPassword, verificationCode)
+    expect(isError(isAuth)).toBe(false)
+  })
+
   it("should not allow the user to authenticate with incorrect code and correct password", async () => {
     await insertUsers()
     const emailAddress = "bichard03@example.com"
