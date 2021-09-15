@@ -20,7 +20,8 @@ const users = [
     password: "$shiro1$SHA-256$500000$sL5A3oRuVXTJCy36WP5Kyg==$ggXBhVWqFN35dRW/TXWO7Dm/zEwWxNu4CuwXNvEJ8Jw=",
     last_login_attempt: "2021-08-01 00:00:00-00",
     deleted_at: null,
-    password_reset_code: null
+    password_reset_code: null,
+    migrated_password: null
   },
   {
     username: "Bichard02",
@@ -43,7 +44,8 @@ const users = [
     password: "$shiro1$SHA-256$500000$sL5A3oRuVXTJCy36WP5Kyg==$ggXBhVWqFN35dRW/TXWO7Dm/zEwWxNu4CuwXNvEJ8Jw=",
     last_login_attempt: "2021-08-01 00:00:00-00",
     deleted_at: null,
-    password_reset_code: null
+    password_reset_code: null,
+    migrated_password: null
   },
   {
     username: "Bichard03",
@@ -66,7 +68,8 @@ const users = [
     password: "$shiro1$SHA-256$500000$sL5A3oRuVXTJCy36WP5Kyg==$ggXBhVWqFN35dRW/TXWO7Dm/zEwWxNu4CuwXNvEJ8Jw=",
     last_login_attempt: "2021-08-01 00:00:00-00",
     deleted_at: null,
-    password_reset_code: null
+    password_reset_code: null,
+    migrated_password: null
   }
 ]
 

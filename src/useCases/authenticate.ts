@@ -4,7 +4,9 @@ import { compare } from "lib/shiro"
 import config from "lib/config"
 import Database from "types/Database"
 import AuditLogger from "types/AuditLogger"
+import { verifySsha } from "lib/ssha"
 import resetUserVerificationCode from "./resetUserVerificationCode"
+import updatePassword from "./updatePassword"
 
 const fetchGroups = async (task: ITask<unknown>, emailAddress: string): Promise<UserGroup[]> => {
   const fetchGroupsQuery = `
@@ -36,7 +38,8 @@ const getUserWithInterval = async (task: ITask<unknown>, params: unknown[]) => {
     email,
     phone_number,
     password,
-    email_verification_code
+    email_verification_code,
+    migrated_password
   FROM br7own.users
   WHERE email = $1
     AND last_login_attempt < NOW() - INTERVAL '$2 seconds'
@@ -58,6 +61,7 @@ const getUserWithInterval = async (task: ITask<unknown>, params: unknown[]) => {
     phoneNumber: user.phone_number,
     password: user.password,
     emailVerificationCode: user.email_verification_code,
+    migratedPassword: user.migrated_password,
     groups: await fetchGroups(task, user.email)
   }
 }
@@ -92,7 +96,18 @@ const authenticate = async (
       return u
     })
 
-    const isAuthenticated = await compare(password, user.password)
+    let isAuthenticated = false
+
+    if (!user.password && user.migratedPassword) {
+      isAuthenticated = verifySsha(password, user.migratedPassword)
+
+      if (isAuthenticated) {
+        await updatePassword(connection, user.emailAddress, password)
+      }
+    } else {
+      isAuthenticated = await compare(password, user.password)
+    }
+
     const isVerified = verificationCode === user.emailVerificationCode
 
     if (isAuthenticated && isVerified) {
