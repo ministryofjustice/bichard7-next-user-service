@@ -17,7 +17,8 @@ const manyUsers = [
     post_code: "SE1 0EF",
     phone_number: "0800 111 222",
     old_password: "password",
-    password: "$shiro1$SHA-256$500000$sL5A3oRuVXTJCy36WP5Kyg==$ggXBhVWqFN35dRW/TXWO7Dm/zEwWxNu4CuwXNvEJ8Jw=",
+    password:
+      "$argon2id$v=19$m=256,t=20,p=2$TTFCN3BRcldZVUtGejQ3WE45TGFqPT0$WOE+jDILDnVIAt1dytb+h65uegrMomp2xb0Q6TxbkLA",
     last_login_attempt: "2021-08-01 00:00:00-00",
     deleted_at: null,
     password_reset_code: null,
@@ -41,7 +42,8 @@ const manyUsers = [
     post_code: "SE1 0EF",
     phone_number: "0800 111 222",
     old_password: "password",
-    password: "$shiro1$SHA-256$500000$sL5A3oRuVXTJCy36WP5Kyg==$ggXBhVWqFN35dRW/TXWO7Dm/zEwWxNu4CuwXNvEJ8Jw=",
+    password:
+      "$argon2id$v=19$m=256,t=20,p=2$TTFCN3BRcldZVUtGejQ3WE45TGFqPT0$WOE+jDILDnVIAt1dytb+h65uegrMomp2xb0Q6TxbkLA",
     last_login_attempt: "2021-08-01 00:00:00-00",
     deleted_at: null,
     password_reset_code: null,
@@ -65,7 +67,8 @@ const manyUsers = [
     post_code: "SE1 0EF",
     phone_number: "0800 111 222",
     old_password: "password",
-    password: "$shiro1$SHA-256$500000$sL5A3oRuVXTJCy36WP5Kyg==$ggXBhVWqFN35dRW/TXWO7Dm/zEwWxNu4CuwXNvEJ8Jw=",
+    password:
+      "$argon2id$v=19$m=256,t=20,p=2$TTFCN3BRcldZVUtGejQ3WE45TGFqPT0$WOE+jDILDnVIAt1dytb+h65uegrMomp2xb0Q6TxbkLA",
     last_login_attempt: "2021-08-01 00:00:00-00",
     deleted_at: null,
     password_reset_code: null,
@@ -89,7 +92,8 @@ const manyUsers = [
     post_code: "SE1 0EF",
     phone_number: "0800 111 222",
     old_password: "password",
-    password: "$shiro1$SHA-256$500000$sL5A3oRuVXTJCy36WP5Kyg==$ggXBhVWqFN35dRW/TXWO7Dm/zEwWxNu4CuwXNvEJ8Jw=",
+    password:
+      "$argon2id$v=19$m=256,t=20,p=2$TTFCN3BRcldZVUtGejQ3WE45TGFqPT0$WOE+jDILDnVIAt1dytb+h65uegrMomp2xb0Q6TxbkLA",
     last_login_attempt: "2021-08-01 00:00:00-00",
     deleted_at: null,
     password_reset_code: null,
@@ -113,7 +117,8 @@ const manyUsers = [
     post_code: "SE5 0EF",
     phone_number: "0800 111 222",
     old_password: "password",
-    password: "$shiro1$SHA-256$500000$sL5A3oRuVXTJCy36WP5Kyg==$ggXBhVWqFN35dRW/TXWO7Dm/zEwWxNu4CuwXNvEJ8Jw=",
+    password:
+      "$argon2id$v=19$m=256,t=20,p=2$TTFCN3BRcldZVUtGejQ3WE45TGFqPT0$WOE+jDILDnVIAt1dytb+h65uegrMomp2xb0Q6TxbkLA",
     last_login_attempt: "2021-08-01 00:00:00-00",
     deleted_at: null,
     password_reset_code: null,
@@ -137,7 +142,8 @@ const manyUsers = [
     post_code: "SE1 0EF",
     phone_number: "0800 111 222",
     old_password: "password",
-    password: "$shiro1$SHA-256$500000$sL5A3oRuVXTJCy36WP5Kyg==$ggXBhVWqFN35dRW/TXWO7Dm/zEwWxNu4CuwXNvEJ8Jw=",
+    password:
+      "$argon2id$v=19$m=256,t=20,p=2$TTFCN3BRcldZVUtGejQ3WE45TGFqPT0$WOE+jDILDnVIAt1dytb+h65uegrMomp2xb0Q6TxbkLA",
     last_login_attempt: "2021-08-01 00:00:00-00",
     deleted_at: null,
     password_reset_code: null,
@@ -161,7 +167,8 @@ const manyUsers = [
     post_code: "SE1 0EF",
     phone_number: "0800 111 222",
     old_password: "password",
-    password: "$shiro1$SHA-256$500000$sL5A3oRuVXTJCy36WP5Kyg==$ggXBhVWqFN35dRW/TXWO7Dm/zEwWxNu4CuwXNvEJ8Jw=",
+    password:
+      "$argon2id$v=19$m=256,t=20,p=2$TTFCN3BRcldZVUtGejQ3WE45TGFqPT0$WOE+jDILDnVIAt1dytb+h65uegrMomp2xb0Q6TxbkLA",
     last_login_attempt: "2021-08-01 00:00:00-00",
     deleted_at: null,
     password_reset_code: null,
@@ -185,7 +192,8 @@ const manyUsers = [
     post_code: "SE1 0EF",
     phone_number: "0800 111 222",
     old_password: "password",
-    password: "$shiro1$SHA-256$500000$sL5A3oRuVXTJCy36WP5Kyg==$ggXBhVWqFN35dRW/TXWO7Dm/zEwWxNu4CuwXNvEJ8Jw=",
+    password:
+      "$argon2id$v=19$m=256,t=20,p=2$TTFCN3BRcldZVUtGejQ3WE45TGFqPT0$WOE+jDILDnVIAt1dytb+h65uegrMomp2xb0Q6TxbkLA",
     last_login_attempt: "2021-08-01 00:00:00-00",
     deleted_at: null,
     password_reset_code: null,
@@ -209,7 +217,8 @@ const manyUsers = [
     post_code: "SE1 0EF",
     phone_number: "0800 111 222",
     old_password: "password",
-    password: "$shiro1$SHA-256$500000$sL5A3oRuVXTJCy36WP5Kyg==$ggXBhVWqFN35dRW/TXWO7Dm/zEwWxNu4CuwXNvEJ8Jw=",
+    password:
+      "$argon2id$v=19$m=256,t=20,p=2$TTFCN3BRcldZVUtGejQ3WE45TGFqPT0$WOE+jDILDnVIAt1dytb+h65uegrMomp2xb0Q6TxbkLA",
     last_login_attempt: "2021-08-01 00:00:00-00",
     deleted_at: null,
     password_reset_code: null,
@@ -233,7 +242,8 @@ const manyUsers = [
     post_code: "SE1 0EF",
     phone_number: "0800 111 222",
     old_password: "password",
-    password: "$shiro1$SHA-256$500000$sL5A3oRuVXTJCy36WP5Kyg==$ggXBhVWqFN35dRW/TXWO7Dm/zEwWxNu4CuwXNvEJ8Jw=",
+    password:
+      "$argon2id$v=19$m=256,t=20,p=2$TTFCN3BRcldZVUtGejQ3WE45TGFqPT0$WOE+jDILDnVIAt1dytb+h65uegrMomp2xb0Q6TxbkLA",
     last_login_attempt: "2021-08-01 00:00:00-00",
     deleted_at: null,
     password_reset_code: null,
@@ -257,7 +267,8 @@ const manyUsers = [
     post_code: "SE1 0EF",
     phone_number: "0800 111 222",
     old_password: "password",
-    password: "$shiro1$SHA-256$500000$sL5A3oRuVXTJCy36WP5Kyg==$ggXBhVWqFN35dRW/TXWO7Dm/zEwWxNu4CuwXNvEJ8Jw=",
+    password:
+      "$argon2id$v=19$m=256,t=20,p=2$TTFCN3BRcldZVUtGejQ3WE45TGFqPT0$WOE+jDILDnVIAt1dytb+h65uegrMomp2xb0Q6TxbkLA",
     last_login_attempt: "2021-08-01 00:00:00-00",
     deleted_at: null,
     password_reset_code: null,
@@ -281,7 +292,8 @@ const manyUsers = [
     post_code: "SE1 0EF",
     phone_number: "0800 111 222",
     old_password: "password",
-    password: "$shiro1$SHA-256$500000$sL5A3oRuVXTJCy36WP5Kyg==$ggXBhVWqFN35dRW/TXWO7Dm/zEwWxNu4CuwXNvEJ8Jw=",
+    password:
+      "$argon2id$v=19$m=256,t=20,p=2$TTFCN3BRcldZVUtGejQ3WE45TGFqPT0$WOE+jDILDnVIAt1dytb+h65uegrMomp2xb0Q6TxbkLA",
     last_login_attempt: "2021-08-01 00:00:00-00",
     deleted_at: null,
     password_reset_code: null,
