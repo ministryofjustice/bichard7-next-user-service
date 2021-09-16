@@ -42,11 +42,11 @@ export interface UserServiceConfig {
 
 const config: UserServiceConfig = {
   argon2: {
-    hashLength: parseInt(process.env.ARGON2_HASH_LENGTH ?? "32", 10),
-    memoryCost: parseInt(process.env.ARGON2_MEMORY_COST ?? "16384", 10),
-    parallelism: parseInt(process.env.ARGON2_PARALLELISM ?? "2", 10),
+    hashLength: 32,
+    memoryCost: 15360,
+    parallelism: 1,
     saltLength: 16,
-    timeCost: parseInt(process.env.ARGON2ID_TIME_COST ?? "10", 10)
+    timeCost: 2
   },
   auditLoggerType: "console",
   authenticationCookieName: ".AUTH",
