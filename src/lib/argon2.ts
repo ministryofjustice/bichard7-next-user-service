@@ -3,7 +3,7 @@ import config from "./config"
 
 const hashPassword = (plainPassword: string): Promise<string | null> => {
   const {
-    argon2id: { parallelism, timeCost, memoryCost, hashLength, saltLength }
+    argon2: { parallelism, timeCost, memoryCost, hashLength, saltLength }
   } = config
 
   const defaultOptions: Options & { raw?: false } = {

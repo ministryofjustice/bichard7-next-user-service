@@ -11,7 +11,7 @@ interface SmtpConfig {
 }
 
 export interface UserServiceConfig {
-  argon2id: Argon2Config
+  argon2: Argon2Config
   auditLoggerType: string
   authenticationCookieName: string
   baseUrl: string
@@ -41,7 +41,7 @@ export interface UserServiceConfig {
 }
 
 const config: UserServiceConfig = {
-  argon2id: {
+  argon2: {
     hashLength: parseInt(process.env.ARGON2_HASH_LENGTH ?? "32", 10),
     memoryCost: parseInt(process.env.ARGON2_MEMORY_COST ?? "16384", 10),
     parallelism: parseInt(process.env.ARGON2_PARALLELISM ?? "2", 10),
