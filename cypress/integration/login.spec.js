@@ -113,6 +113,50 @@ describe("Logging In", () => {
       })
     })
 
+    it("should redirect to Bichard with a token when password and verification code are correct even after inputing an incorrect password on a first attempt", (done) => {
+      const emailAddress = "bichard01@example.com"
+      const password = "password"
+
+      cy.visit("/login")
+      cy.get("input[type=email]").type(emailAddress)
+      cy.get("button[type=submit]").click()
+      cy.get('h1[data-test="check-email"]').should("exist")
+      cy.task("getVerificationCode", emailAddress).then((verificationCode) => {
+        const token = validToken(emailAddress, verificationCode)
+
+        cy.visit(`/login/verify?token=${token}`)
+        cy.get("input[type=password]").type("foobar")
+        cy.get("button[type=submit]").click()
+        cy.get(".govuk-error-summary").should("be.visible").contains("h2", "Invalid credentials")
+
+        cy.get("input[type=password][name=password]").type(password)
+        cy.get("button[type=submit]").click()
+        cy.get(".govuk-error-summary").should("be.visible").contains("h2", "Invalid credentials")
+        // Note: Although we avoid waits in cypress test as the logic implemented is temporal in nature we can consider this OK
+        // Need to wait 10 seconds after inputing an incorrect password
+        /* eslint-disable-next-line cypress/no-unnecessary-waiting */
+        cy.wait(10000)
+
+        cy.get("input[type=password][name=password]").type(password)
+        cy.get("button[type=submit]").click()
+        cy.url().then((url) => {
+          expect(url).to.match(/^http:\/\/localhost:3000\/bichard-ui\/Authenticate/)
+          expect(url).to.match(/\?token=[A-Za-z0-9_.]+/)
+
+          cy.visit("/")
+          cy.getCookie(".AUTH").then((cookie) => {
+            expect(cookie).is.not.undefined
+            const { value, httpOnly } = cookie
+            expect(value).is.not.undefined
+            expect(value).is.not.empty
+            expect(value).match(/.+\..+\..+/)
+            expect(httpOnly).to.be.true
+            done()
+          })
+        })
+      })
+    })
+
     it("should remember email address when remember checkbox is checked", (done) => {
       const emailAddress = "bichard01@example.com"
       const password = "password"
