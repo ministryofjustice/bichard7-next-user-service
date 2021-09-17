@@ -1,3 +1,4 @@
+import Argon2Config from "types/Argon2Config"
 import CsrfConfig from "types/CsrfConfig"
 import DatabaseConfig from "./DatabaseConfig"
 
@@ -10,6 +11,7 @@ interface SmtpConfig {
 }
 
 export interface UserServiceConfig {
+  argon2: Argon2Config
   auditLoggerType: string
   authenticationCookieName: string
   baseUrl: string
@@ -39,6 +41,13 @@ export interface UserServiceConfig {
 }
 
 const config: UserServiceConfig = {
+  argon2: {
+    hashLength: 32,
+    memoryCost: 15360,
+    parallelism: 1,
+    saltLength: 16,
+    timeCost: 2
+  },
   auditLoggerType: "console",
   authenticationCookieName: ".AUTH",
   baseUrl: process.env.BASE_URL ?? "http://localhost:3000",

@@ -1,10 +1,10 @@
 import { ITask } from "pg-promise"
 import UserGroup from "types/UserGroup"
-import { compare } from "lib/shiro"
 import config from "lib/config"
 import Database from "types/Database"
 import AuditLogger from "types/AuditLogger"
 import { verifySsha } from "lib/ssha"
+import { verifyPassword } from "lib/argon2"
 import resetUserVerificationCode from "./resetUserVerificationCode"
 import updatePassword from "./updatePassword"
 
@@ -107,7 +107,7 @@ const authenticate = async (
         await updatePassword(connection, user.emailAddress, password)
       }
     } else {
-      isAuthenticated = await compare(password, user.password)
+      isAuthenticated = await verifyPassword(password, user.password)
     }
 
     const isVerified = verificationCode === user.emailVerificationCode

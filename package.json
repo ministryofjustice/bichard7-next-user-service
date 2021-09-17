@@ -19,6 +19,7 @@
   "dependencies": {
     "@trust/webcrypto": "^0.9.2",
     "@types/qs": "^6.9.6",
+    "argon2": "^0.28.2",
     "badwords-list": "^1.0.0",
     "classnames": "^2.3.1",
     "cookie": "^0.4.1",

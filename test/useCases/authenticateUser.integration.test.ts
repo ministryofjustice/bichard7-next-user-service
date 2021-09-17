@@ -1,12 +1,12 @@
 import authenticate from "useCases/authenticate"
 import User from "types/User"
 import storeVerificationCode from "useCases/storeVerificationCode"
-import { hash } from "lib/shiro"
 import { isError } from "types/Result"
 import { deleteUser } from "useCases"
 import parseFormData from "lib/parseFormData"
 import config from "lib/config"
 import { createSsha } from "lib/ssha"
+import { hashPassword } from "lib/argon2"
 import getTestConnection from "../../testFixtures/getTestConnection"
 import deleteFromTable from "../../testFixtures/database/deleteFromTable"
 import users from "../../testFixtures/database/data/users"
@@ -24,9 +24,7 @@ const insertUsers = async (useMigratedPassword = false) => {
   let migratedPassword: string | null = null
 
   if (useMigratedPassword) {
-    const salt = "aM1B7pQrWYUKFz47XN9Laj=="
-    const hashedPassword = await hash(correctPassword, salt, 10)
-    password = `$shiro1$SHA-256$10$${salt}$${hashedPassword}`
+    password = await hashPassword(correctPassword)
   } else {
     migratedPassword = createSsha(correctPassword)
   }

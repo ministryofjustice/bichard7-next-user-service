@@ -1,13 +1,13 @@
-import { createPassword } from "lib/shiro"
 import { isError } from "types/Result"
 import updatePassword from "useCases/updatePassword"
+import { hashPassword } from "lib/argon2"
 import getTestConnection from "../../testFixtures/getTestConnection"
 import deleteFromTable from "../../testFixtures/database/deleteFromTable"
 import insertIntoTable from "../../testFixtures/database/insertIntoUsersTable"
 import selectFromTable from "../../testFixtures/database/selectFromTable"
 import users from "../../testFixtures/database/data/users"
 
-jest.mock("lib/shiro")
+jest.mock("lib/argon2")
 
 describe("updatePassword", () => {
   let connection: any
@@ -30,7 +30,7 @@ describe("updatePassword", () => {
 
     const expectedPassword = "ExpectedPassword"
     const expectedPasswordHash = "$shiro1$SHA-256$500000$Foo==$Bar="
-    const mockedCreatePassword = createPassword as jest.MockedFunction<typeof createPassword>
+    const mockedCreatePassword = hashPassword as jest.MockedFunction<typeof hashPassword>
     mockedCreatePassword.mockResolvedValue(expectedPasswordHash)
 
     const result = await updatePassword(connection, emailAddress, expectedPassword)

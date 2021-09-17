@@ -1,10 +1,10 @@
-import { createPassword } from "lib/shiro"
 import Database from "types/Database"
 import Task from "types/Task"
 import { isError, PromiseResult } from "types/Result"
+import { hashPassword } from "lib/argon2"
 
 export default async (connection: Database | Task, emailAddress: string, newPassword: string): PromiseResult<void> => {
-  const password = await createPassword(newPassword)
+  const password = await hashPassword(newPassword)
 
   const updateUserQuery = `
     UPDATE br7own.users
