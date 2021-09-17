@@ -11,7 +11,7 @@ describe("404 - Page not found", () => {
     )
     cy.get("p.govuk-body:nth-child(4)").should(
       "have.text",
-      "If the web address is correct or you selected a link or button contact support if you need to speak to someone about your tax credits."
+      "If the web address is correct or you selected a link or button, contact support."
     )
   })
 

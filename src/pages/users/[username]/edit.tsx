@@ -168,7 +168,7 @@ const editUser = ({ errorMessage, successMessage, missingMandatory, user, csrfTo
       <span id="event-name-error" className="govuk-error-message">
         {errorMessage}
       </span>
-      {successMessage && <SuccessBanner message={successMessage} />}
+      {successMessage && <SuccessBanner>{successMessage}</SuccessBanner>}
       {user && (
         <Form method="post" csrfToken={csrfToken}>
           <UserForm

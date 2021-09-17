@@ -117,7 +117,7 @@ const newUser = ({ message, isSuccess, missingMandatory, csrfToken, currentUser,
         </span>
       )}
 
-      {isSuccess && message && <SuccessBanner message={message} />}
+      {isSuccess && message && <SuccessBanner>{message}</SuccessBanner>}
       <Form method="post" csrfToken={csrfToken}>
         <UserForm
           missingUsername={missingMandatory}

@@ -1,8 +1,10 @@
+import { ReactNode } from "react"
+
 interface Props {
-  message: string
+  children: ReactNode
 }
 
-const SuccessBanner = ({ message }: Props) => {
+const SuccessBanner = ({ children }: Props) => {
   return (
     <div
       className="govuk-notification-banner govuk-notification-banner--success"
@@ -16,7 +18,7 @@ const SuccessBanner = ({ message }: Props) => {
         </h2>
       </div>
       <div className="govuk-notification-banner__content">
-        <h3 className="govuk-notification-banner__heading">{message}</h3>
+        <h3 className="govuk-notification-banner__heading">{children}</h3>
       </div>
     </div>
   )
