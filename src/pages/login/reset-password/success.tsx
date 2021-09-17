@@ -2,6 +2,7 @@ import Layout from "components/Layout"
 import Head from "next/head"
 import BackLink from "components/BackLink"
 import SuccessBanner from "components/SuccessBanner"
+import Link from "components/Link"
 
 const Success = () => (
   <>
@@ -13,7 +14,11 @@ const Success = () => (
         <div className="govuk-grid-column-two-thirds">
           <BackLink href="/" />
 
-          <SuccessBanner>{`You can now sign in with your new password.`}</SuccessBanner>
+          <SuccessBanner>
+            {`You can now `}
+            <Link href="/">{`sign in with your new password`}</Link>
+            {`.`}
+          </SuccessBanner>
         </div>
       </div>
     </Layout>
