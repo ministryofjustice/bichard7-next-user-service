@@ -36,7 +36,7 @@ export const getServerSideProps = withCsrf(
       const result = await sendPasswordResetEmail(connection, emailAddress)
 
       if (isError(result)) {
-        return createRedirectResponse("/error")
+        return createRedirectResponse("/500")
       }
 
       return createRedirectResponse("/login/reset-password/check-email")

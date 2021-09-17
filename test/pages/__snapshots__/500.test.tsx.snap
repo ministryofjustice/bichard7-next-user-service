@@ -90,7 +90,13 @@ exports[`should render the component and match the snapshot 1`] = `
           <p
             class="govuk-body"
           >
-            Contact support if you need you are experiencing problems with the service.
+            <a
+              class="govuk-link"
+              href="http://localhost:3000/contact-us"
+            >
+              Contact support
+            </a>
+             if you think you are experiencing problems with the service.
           </p>
         </div>
       </div>

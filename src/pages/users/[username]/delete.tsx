@@ -39,7 +39,7 @@ export const getServerSideProps = withMultipleServerSideProps(
     }
 
     if (isError(user)) {
-      return createRedirectResponse("/error")
+      return createRedirectResponse("/500")
     }
 
     if (isPost(req)) {
@@ -65,7 +65,7 @@ export const getServerSideProps = withMultipleServerSideProps(
       }
 
       if (deleteUserResult.serverSideError) {
-        return createRedirectResponse("/error")
+        return createRedirectResponse("/500")
       }
     }
 

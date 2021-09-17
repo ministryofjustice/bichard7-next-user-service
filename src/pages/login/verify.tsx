@@ -162,7 +162,7 @@ const VerifyEmail = ({
               {" with your email address to receive another link."}
             </p>
             <p>
-              {"If you still have issue with signing in to your account you will need to "}
+              {"If you still have an issue with signing in to your account you will need to "}
               <Link href={config.contactUrl}>{"contact us"}</Link>
               {"."}
             </p>
@@ -190,38 +190,26 @@ const VerifyEmail = ({
               </p>
               <TextInput id="password" name="password" label="Password" type="password" />
               <div className="govuk-form-group">
-                <fieldset className="govuk-fieldset">
+                <fieldset className="govuk-fieldset" aria-describedby="waste-hint">
                   <legend className="govuk-fieldset__legend">
                     {"Do you want your email address to be remembered?"}
                   </legend>
-                  <div className="govuk-radios">
-                    <div className="govuk-radios__item">
+                  <div className="govuk-hint">
+                    {
+                      "You will not be asked to verify your email address for 24 hours on this browser. Do not choose 'Yes' if you do not trust this device."
+                    }
+                  </div>
+                  <div className="govuk-checkboxes" data-module="govuk-checkboxes">
+                    <div className="govuk-checkboxes__item">
                       <input
-                        className="govuk-radios__input"
+                        className="govuk-checkboxes__input"
                         id="rememberEmailYes"
                         name="rememberEmailAddress"
-                        type="radio"
+                        type="checkbox"
                         value="yes"
                       />
-                      <label className="govuk-label govuk-radios__label" htmlFor="rememberEmailYes">
-                        {"Yes"}
-                      </label>
-                      <div id="sign-in-item-hint" className="govuk-hint govuk-radios__hint">
-                        {
-                          "You will not be asked to verify your email address for 24 hours on this browser. Do not choose 'Yes' if you do not trust this device."
-                        }
-                      </div>
-                    </div>
-                    <div className="govuk-radios__item">
-                      <input
-                        className="govuk-radios__input"
-                        id="rememberEmailNo"
-                        name="rememberEmailAddress"
-                        type="radio"
-                        value="no"
-                      />
-                      <label className="govuk-label govuk-radios__label" htmlFor="rememberEmailNo">
-                        {"No"}
+                      <label className="govuk-label govuk-checkboxes__label" htmlFor="rememberEmailYes">
+                        {"Yes, remember my email address."}
                       </label>
                     </div>
                   </div>
