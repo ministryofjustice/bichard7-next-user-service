@@ -13,7 +13,7 @@ const Success = () => (
         <div className="govuk-grid-column-two-thirds">
           <BackLink href="/" />
 
-          <SuccessBanner message={`You can now sign in with your new password.`} />
+          <SuccessBanner>{`You can now sign in with your new password.`}</SuccessBanner>
         </div>
       </div>
     </Layout>
