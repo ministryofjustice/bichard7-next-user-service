@@ -151,7 +151,7 @@ const VerifyEmail = ({
               {" with your email address to receive another link."}
             </p>
             <p>
-              {"If you still have issue with signing in to your account you will need to "}
+              {"If you still have an issue with signing in to your account you will need to "}
               <Link href={config.contactUrl}>{"contact us"}</Link>
               {"."}
             </p>
