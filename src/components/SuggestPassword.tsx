@@ -13,7 +13,7 @@ const SuggestPassword = ({ suggestedPassword, suggestedPasswordUrl }: Props) => 
       <p className="govuk-body">{"Your password must meet the following requirements:"}</p>
       <ul className="govuk-list govuk-list--bullet">
         <li>{`It has at least ${config.passwordMinLength} characters`}</li>
-        <li>{"It does not contain your details such as first name, last name, and username"}</li>
+        <li>{"It does not contain your details such as first name, last name, username, and email address"}</li>
         <li>{"It is not easy to guess"}</li>
       </ul>
       <h3 className="govuk-heading-m govuk-!-margin-top-6">{"Not sure what password to choose?"}</h3>
