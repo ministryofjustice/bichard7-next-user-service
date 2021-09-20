@@ -16,7 +16,7 @@ const Custom500 = () => (
         <p className="govuk-body">{"Try again later."}</p>
         <p className="govuk-body">
           <Link href={config.contactUrl}>{"Contact support"}</Link>
-          {" if you think you are experiencing problems with the service."}
+          {" if you have repeated problems with the service."}
         </p>
       </GridRow>
     </Layout>

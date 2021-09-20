@@ -29,9 +29,9 @@ describe("Creation of new user", () => {
       const newPasswordToken = generateNewPasswordToken(emailAddress, passwordResetCode)
       cy.visit(`/login/new-password?token=${newPasswordToken}`)
       cy.get("body").contains(/first time password setup/i)
-      cy.get(".govuk-hint").should("be.empty")
+      cy.get(".govuk-inset-text").should("not.exist")
       cy.get("a[class=govuk-link]").click()
-      cy.get(".govuk-hint").should("not.be.empty")
+      cy.get(".govuk-inset-text").should("not.be.empty")
     })
   })
 

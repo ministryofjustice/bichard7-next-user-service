@@ -58,9 +58,9 @@ describe("Change password", () => {
       cy.login("bichard01@example.com", "password")
       cy.visit("/account/change-password")
       cy.get("body").contains(/change password/i)
-      cy.get(".govuk-hint").should("be.empty")
+      cy.get(".govuk-inset-text").should("not.exist")
       cy.get("a[class=govuk-link]").click()
-      cy.get(".govuk-hint").should("not.be.empty")
+      cy.get(".govuk-inset-text").should("not.be.empty")
     })
 
     it("should redirect to login page if user is not logged in", () => {
