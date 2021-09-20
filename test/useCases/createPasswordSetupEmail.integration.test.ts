@@ -56,9 +56,6 @@ describe("AccountSetup", () => {
       endorsedBy: u.endorsed_by,
       surname: u.surname,
       orgServes: u.org_serves,
-      postCode: u.post_code,
-      phoneNumber: u.phone_number,
-      postalAddress: u.postal_address,
       groupId: selectedGroup.id
     }))[0]
 

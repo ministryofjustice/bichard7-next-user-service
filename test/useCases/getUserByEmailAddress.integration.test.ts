@@ -35,9 +35,6 @@ describe("DeleteUserUseCase", () => {
     expect(user.endorsedBy).toBe("endorsed_by 01")
     expect(user.orgServes).toBe("org_severs 01")
     expect(user.forenames).toBe("Bichard User 01")
-    expect(user.postalAddress).toBe("address 01")
-    expect(user.postCode).toBe("SE1 0EF")
-    expect(user.phoneNumber).toBe("0800 111 222")
   })
 
   it("should return null when user does not exist in the database", async () => {

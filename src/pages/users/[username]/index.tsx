@@ -55,10 +55,7 @@ const Users = ({ user, currentUser }: Props) => (
         <SummaryItem label="Username" value={user.username} />
         <SummaryItem label="Forename(s)" value={user.forenames} />
         <SummaryItem label="Surname" value={user.surname} />
-        <SummaryItem label="Phone number" value={user.phoneNumber} />
         <SummaryItem label="Email address" value={user.emailAddress} />
-        <SummaryItem label="Postal address" value={user.postalAddress} />
-        <SummaryItem label="Postcode" value={user.postCode} />
         <SummaryItem label="Endorsed by" value={user.endorsedBy} />
         <SummaryItem label="Organisation" value={user.orgServes} />
       </Summary>
