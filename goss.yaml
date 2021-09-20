@@ -111,3 +111,7 @@ process:
     running: true
   supervisord:
     running: true
+http:
+  https://localhost/login:
+    status: 200
+    allow-insecure: true
