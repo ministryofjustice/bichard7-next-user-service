@@ -12,8 +12,7 @@ import {
   getEmailAddressFromCookie,
   removeEmailAddressCookie,
   signInUser,
-  storeEmailAddressInCookie,
-  logJwt
+  storeEmailAddressInCookie
 } from "useCases"
 import { isError } from "types/Result"
 import createRedirectResponse from "utils/createRedirectResponse"
@@ -25,7 +24,6 @@ import Link from "components/Link"
 import { GetServerSidePropsResult } from "next"
 import isPost from "utils/isPost"
 import getAuditLogger from "lib/getAuditLogger"
-import { v4 as uuidv4 } from "uuid"
 import User from "types/User"
 
 export const getServerSideProps = withCsrf(async (context): Promise<GetServerSidePropsResult<Props>> => {
@@ -81,13 +79,10 @@ export const getServerSideProps = withCsrf(async (context): Promise<GetServerSid
       }
 
       const bichardUrl = redirectUrl || config.bichardRedirectURL
-      const uniqueId = uuidv4()
-      const authToken = signInUser(res, user as unknown as User, uniqueId)
+      const authToken = await signInUser(connection, res, user as unknown as User)
 
-      const logJwtResult = await logJwt(connection, (user as User).id, uniqueId)
-
-      if (isError(logJwtResult)) {
-        console.error(logJwtResult)
+      if (isError(authToken)) {
+        console.error(authToken)
         throw new Error(authenticationErrorMessage)
       }
 
@@ -118,6 +113,7 @@ export const getServerSideProps = withCsrf(async (context): Promise<GetServerSid
         }
       }
     }
+
     const { emailAddress } = translatedToken
 
     if (!token || !emailAddress) {

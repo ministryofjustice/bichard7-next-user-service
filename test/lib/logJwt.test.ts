@@ -1,6 +1,7 @@
 import Database from "types/Database"
 import { isError } from "types/Result"
-import logJwt from "useCases/logJwt"
+import logJwt from "lib/logJwt"
+import { v4 as uuidv4 } from "uuid"
 
 const database = <Database>(<unknown>{ none: () => {} })
 
@@ -11,7 +12,9 @@ it("should return error when database returns error", async () => {
     throw expectedError
   })
 
-  const result = await logJwt(database, "test-value-01", "test-value-02")
+  const uniqueId = uuidv4()
+
+  const result = await logJwt(database, 3, uniqueId)
 
   expect(isError(result)).toBe(true)
 

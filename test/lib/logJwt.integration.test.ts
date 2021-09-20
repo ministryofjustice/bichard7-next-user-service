@@ -1,4 +1,5 @@
-import { logJwt, getUserByUsername } from "useCases"
+import { getUserByUsername } from "useCases"
+import logJwt from "lib/logJwt"
 import getTestConnection from "../../testFixtures/getTestConnection"
 import deleteFromTable from "../../testFixtures/database/deleteFromTable"
 import selectFromTable from "../../testFixtures/database/selectFromTable"
