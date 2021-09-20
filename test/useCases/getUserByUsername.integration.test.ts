@@ -29,9 +29,6 @@ describe("getUserByUsername", () => {
       endorsedBy: user.endorsed_by,
       surname: user.surname,
       orgServes: user.org_serves,
-      postCode: user.post_code,
-      phoneNumber: user.phone_number,
-      postalAddress: user.postal_address,
       groupId: selectedGroupId
     }
 
@@ -69,9 +66,6 @@ describe("getUserByUsername", () => {
     expect(actualUser.endorsedBy).toBe(expectedUser.endorsed_by)
     expect(actualUser.orgServes).toBe(expectedUser.org_serves)
     expect(actualUser.forenames).toBe(expectedUser.forenames)
-    expect(actualUser.postalAddress).toBe(expectedUser.postal_address)
-    expect(actualUser.postCode).toBe(expectedUser.post_code)
-    expect(actualUser.phoneNumber).toBe(expectedUser.phone_number)
   })
 
   it("should return null when user does not exist in the database", async () => {

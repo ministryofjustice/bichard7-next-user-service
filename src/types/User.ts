@@ -8,9 +8,6 @@ interface User {
   forenames: string
   surname: string
   emailAddress: string
-  postalAddress: string
-  postCode: string
-  phoneNumber: string
   groupId: number
 }
 

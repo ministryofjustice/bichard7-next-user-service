@@ -7,7 +7,6 @@ describe("userFormIsValid", () => {
       username: "",
       forenames: "test-value-01",
       surname: "test-value-02",
-      phoneNumber: "test-value-03",
       emailAddress: "test-value-04"
     }
 
@@ -21,7 +20,6 @@ describe("userFormIsValid", () => {
       username: "test-value-01",
       forenames: "",
       surname: "test-value-02",
-      phoneNumber: "test-value-03",
       emailAddress: "test-value-04"
     }
 
@@ -35,21 +33,6 @@ describe("userFormIsValid", () => {
       username: "test-value-01",
       forenames: "test-value-02",
       surname: "",
-      phoneNumber: "test-value-03",
-      emailAddress: "test-value-04"
-    }
-
-    const isValid = userFormIsValid(userDetails)
-
-    expect(isValid).toBe(false)
-  })
-
-  it("should return false when phoneNumber", () => {
-    const userDetails: Partial<UserCreateDetails> = {
-      username: "test-value-01",
-      forenames: "test-value-02",
-      surname: "test-value-03",
-      phoneNumber: "",
       emailAddress: "test-value-04"
     }
 
@@ -63,7 +46,6 @@ describe("userFormIsValid", () => {
       username: "test-value-01",
       forenames: "test-value-02",
       surname: "test-value-03",
-      phoneNumber: "test-value-04",
       emailAddress: ""
     }
 
@@ -77,7 +59,6 @@ describe("userFormIsValid", () => {
       username: "test-value-01",
       forenames: "test-value-02",
       surname: "test-value-03",
-      phoneNumber: "test-value-04",
       emailAddress: "test-value-05"
     }
 

@@ -37,9 +37,6 @@ describe("updatePassword", () => {
       username: user.username,
       forenames: user.forenames,
       surname: user.surname,
-      phoneNumber: user.phone_number,
-      postCode: user.post_code,
-      postalAddress: user.postal_address,
       endorsedBy: user.endorsed_by,
       orgServes: user.org_serves,
       emailAddress: user.email,
@@ -62,11 +59,8 @@ describe("updatePassword", () => {
       username: "Bichard04",
       forenames: "forename04",
       surname: "surname04",
-      phoneNumber: "07777 000 777",
       endorsedBy: "endorsed by 04",
       orgServes: "orgServes 04",
-      postCode: "XXX 333",
-      postalAddress: "postal address 04",
       groupId: initialGroupId
     }
 
@@ -80,11 +74,8 @@ describe("updatePassword", () => {
     expect(initialUser02.username).toBe("Bichard04")
     expect(initialUser02.forenames).toBe("forename04")
     expect(initialUser02.surname).toBe("surname04")
-    expect(initialUser02.phone_number).toBe("07777 000 777")
     expect(initialUser02.endorsed_by).toBe("endorsed by 04")
     expect(initialUser02.org_serves).toBe("orgServes 04")
-    expect(initialUser02.post_code).toBe("XXX 333")
-    expect(initialUser02.postal_address).toBe("postal address 04")
   })
 
   it("should not update emailAddress if provided in user object", async () => {
@@ -101,12 +92,9 @@ describe("updatePassword", () => {
       username: "Bichard04",
       forenames: "forename04",
       surname: "surname04A",
-      phoneNumber: "07777 000 777",
       endorsedBy: "endorsed by 04",
       orgServes: "orgAServes 04",
       emailAddress: "bichard04@example.com",
-      postalAddress: "postal address 04",
-      postCode: "YYY 777",
       groupId: initialGroupId
     }
 
@@ -129,11 +117,8 @@ describe("updatePassword", () => {
       username: "Bichard04",
       forenames: "forename04",
       surname: "surname04A",
-      phoneNumber: "07777 000 777",
       endorsedBy: "endorsed by 04",
       orgServes: "orgAServes 04",
-      postalAddress: "postal address 04",
-      postCode: "YYY 777",
       groupId: initialGroupId
     }
 
@@ -155,9 +140,6 @@ describe("updatePassword", () => {
       username: user.username,
       forenames: user.forenames,
       surname: user.surname,
-      phoneNumber: user.phone_number,
-      postCode: user.post_code,
-      postalAddress: user.postal_address,
       endorsedBy: user.endorsed_by,
       orgServes: user.org_serves,
       emailAddress: user.email,
@@ -174,9 +156,6 @@ describe("updatePassword", () => {
       username: "new-username-01",
       forenames: "new-forenames-01",
       surname: "new-surname-01",
-      phoneNumber: "0888 888 888",
-      postCode: "NEWPOST1",
-      postalAddress: "new postal address 01",
       endorsedBy: "new endoresed by 01",
       orgServes: "new org serves",
       groupId: updatedGroupId
@@ -211,9 +190,6 @@ describe("updatePassword", () => {
       username: user.username,
       forenames: user.forenames,
       surname: user.surname,
-      phoneNumber: user.phone_number,
-      postCode: user.post_code,
-      postalAddress: user.postal_address,
       endorsedBy: user.endorsed_by,
       orgServes: user.org_serves,
       emailAddress: user.email,
@@ -230,9 +206,6 @@ describe("updatePassword", () => {
       username: "new-username-01",
       forenames: "new-forenames-01",
       surname: "new-surname-01",
-      phoneNumber: "0888 888 888",
-      postCode: "NEWPOST1",
-      postalAddress: "new postal address 01",
       endorsedBy: "new endorsed by 01",
       orgServes: "new org serves",
       groupId: greatestPossibleGroupIdPlusOne
@@ -257,9 +230,6 @@ describe("updatePassword", () => {
       username: user.username,
       forenames: user.forenames,
       surname: user.surname,
-      phoneNumber: user.phone_number,
-      postCode: user.post_code,
-      postalAddress: user.postal_address,
       endorsedBy: user.endorsed_by,
       orgServes: user.org_serves,
       emailAddress: user.email,
@@ -276,9 +246,6 @@ describe("updatePassword", () => {
       username: "new-username-01",
       forenames: "new-forenames-01",
       surname: "new-surname-01",
-      phoneNumber: "0888 888 888",
-      postCode: "NEWPOST1",
-      postalAddress: "new postal address 01",
       endorsedBy: "new endoresed by 01",
       orgServes: "new org serves",
       groupId: updatedGroupId

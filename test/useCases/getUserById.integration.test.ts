@@ -39,9 +39,6 @@ describe("getUserById", () => {
       endorsedBy: user.endorsed_by,
       surname: user.surname,
       orgServes: user.org_serves,
-      postCode: user.post_code,
-      phoneNumber: user.phone_number,
-      postalAddress: user.postal_address,
       groupId: selectedGroupId
     }
 
@@ -60,9 +57,6 @@ describe("getUserById", () => {
     expect(actualUser.endorsedBy).toBe(selectedUser.endorsed_by)
     expect(actualUser.orgServes).toBe(selectedUser.org_serves)
     expect(actualUser.forenames).toBe(selectedUser.forenames)
-    expect(actualUser.postalAddress).toBe(selectedUser.postal_address)
-    expect(actualUser.postCode).toBe(selectedUser.post_code)
-    expect(actualUser.phoneNumber).toBe(selectedUser.phone_number)
   })
 
   it("should return error when user does not exist in the database", async () => {
@@ -97,9 +91,6 @@ describe("getUserById", () => {
       endorsedBy: user.endorsed_by,
       surname: user.surname,
       orgServes: user.org_serves,
-      postCode: user.post_code,
-      phoneNumber: user.phone_number,
-      postalAddress: user.postal_address,
       groupId: selectedGroupId
     }
 

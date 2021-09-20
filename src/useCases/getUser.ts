@@ -10,9 +10,6 @@ const getUser = async (connection: Database, username: string): Promise<Partial<
         username,
         forenames,
         surname,
-        phone_number,
-        postal_address,
-        post_code,
         endorsed_by,
         org_serves,
         email
@@ -30,9 +27,6 @@ const getUser = async (connection: Database, username: string): Promise<Partial<
     username: user.username,
     forenames: user.forenames,
     surname: user.surname,
-    phoneNumber: user.phone_number,
-    postCode: user.post_code,
-    postalAddress: user.postal_address,
     endorsedBy: user.endorsed_by,
     orgServes: user.org_serves,
     emailAddress: user.email

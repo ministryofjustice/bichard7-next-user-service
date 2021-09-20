@@ -17,11 +17,8 @@ export default async (db: Database, username: string): PromiseResult<Partial<Use
         org_serves,
         forenames,
         surname,
-        postal_address,
-        post_code,
-        phone_number,
         ug.group_id
-        FROM br7own.users AS u
+      FROM br7own.users AS u
         INNER JOIN br7own.users_groups AS ug ON u.id = ug.user_id
       WHERE username = $\{username\} AND deleted_at IS NULL
     `
@@ -44,9 +41,6 @@ export default async (db: Database, username: string): PromiseResult<Partial<Use
       orgServes: user.org_serves,
       forenames: user.forenames,
       surname: user.surname,
-      postalAddress: user.postal_address,
-      postCode: user.post_code,
-      phoneNumber: user.phone_number,
       groupId: user.group_id
     }
   } catch (error) {
