@@ -37,10 +37,7 @@ export const getServerSideProps = withMultipleServerSideProps(
         username: string
         forenames: string
         surname: string
-        phoneNumber: string
         emailAddress: string
-        postCode: string
-        postalAddress: string
         endorsedBy: string
         orgServes: string
         groupId: string
@@ -68,13 +65,13 @@ export const getServerSideProps = withMultipleServerSideProps(
           }
         }
 
-        message = `User ${userCreateDetails.username} has been successfully created`
+        message = `User ${userCreateDetails.username} has been successfully created.`
         return {
           props: { message, isSuccess: true, missingMandatory, csrfToken, currentUser, userGroups }
         }
       }
 
-      message = "Please make sure that all mandatory fields are non empty"
+      message = "Please fill in all mandatory fields."
       isSuccess = false
     }
 
@@ -117,12 +114,11 @@ const newUser = ({ message, isSuccess, missingMandatory, csrfToken, currentUser,
         </span>
       )}
 
-      {isSuccess && message && <SuccessBanner message={message} />}
+      {isSuccess && message && <SuccessBanner>{message}</SuccessBanner>}
       <Form method="post" csrfToken={csrfToken}>
         <UserForm
           missingUsername={missingMandatory}
           missingForenames={missingMandatory}
-          missingPhoneNumber={missingMandatory}
           missingEmail={missingMandatory}
           userGroups={userGroups}
         />

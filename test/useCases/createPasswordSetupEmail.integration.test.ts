@@ -56,9 +56,6 @@ describe("AccountSetup", () => {
       endorsedBy: u.endorsed_by,
       surname: u.surname,
       orgServes: u.org_serves,
-      postCode: u.post_code,
-      phoneNumber: u.phone_number,
-      postalAddress: u.postal_address,
       groupId: selectedGroup.id
     }))[0]
 
@@ -89,7 +86,7 @@ describe("AccountSetup", () => {
     )
     expect(result).toBeDefined()
     const actualError = <Error>result
-    expect(actualError.message).toBe("Password is too short")
+    expect(actualError.message).toBe("Password is too short.")
   })
 
   it("should not be able to setup a password if it is banned", async () => {
@@ -103,7 +100,7 @@ describe("AccountSetup", () => {
     )
     expect(result).toBeDefined()
     const actualError = <Error>result
-    expect(actualError.message).toBe("Cannot use this password as it is insecure/banned")
+    expect(actualError.message).toBe("Password is too easy to guess.")
   })
 
   it("should be able to setup a password using the details from the email", async () => {
@@ -133,6 +130,6 @@ describe("AccountSetup", () => {
     )
     expect(secondResult).toBeDefined()
     const actualError = <Error>secondResult
-    expect(actualError.message).toBe("Invalid or expired verification code")
+    expect(actualError.message).toBe("Invalid or expired verification code.")
   })
 })

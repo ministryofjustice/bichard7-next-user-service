@@ -36,7 +36,7 @@ const Deleted = ({ name, currentUser }: Props) => (
       <title>{"Users"}</title>
     </Head>
     <Layout user={currentUser}>
-      <SuccessBanner message={`User '${name}' has been deleted successfully.`} />
+      <SuccessBanner>{`User '${name}' has been deleted successfully.`}</SuccessBanner>
       <BackLink href="/users" />
     </Layout>
   </>

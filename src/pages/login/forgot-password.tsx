@@ -36,7 +36,7 @@ export const getServerSideProps = withCsrf(
       const result = await sendPasswordResetEmail(connection, emailAddress)
 
       if (isError(result)) {
-        return createRedirectResponse("/error")
+        return createRedirectResponse("/500")
       }
 
       return createRedirectResponse("/login/reset-password/check-email")
@@ -71,10 +71,14 @@ const ForgotPassword = ({ invalidEmail, csrfToken }: Props) => (
           <ErrorSummary title="Invalid email">{"The supplied email address is not valid."}</ErrorSummary>
         )}
 
-        <Form method="post" csrfToken={csrfToken}>
-          <TextInput id="email" name="emailAddress" label="Email address" type="email" isError={invalidEmail} />
-          <Button noDoubleClick>{"Continue"}</Button>
-        </Form>
+        <p className="govuk-body">
+          <p>{"We will email you a link to reset your password."}</p>
+
+          <Form method="post" csrfToken={csrfToken}>
+            <TextInput id="email" name="emailAddress" label="Email address" type="email" isError={invalidEmail} />
+            <Button noDoubleClick>{"Send the link"}</Button>
+          </Form>
+        </p>
       </GridRow>
     </Layout>
   </>

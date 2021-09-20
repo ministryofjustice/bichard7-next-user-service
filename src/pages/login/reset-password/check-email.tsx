@@ -1,6 +1,7 @@
 import Layout from "components/Layout"
 import Head from "next/head"
 import BackLink from "components/BackLink"
+import NotReceivedEmail from "components/NotReceivedEmail"
 
 const CheckEmail = () => (
   <>
@@ -16,7 +17,11 @@ const CheckEmail = () => (
             {"Check your email"}
           </h1>
 
-          <p className="govuk-body">{"Please follow the instructions in the email in order to reset your password."}</p>
+          <p className="govuk-body">
+            <p>{"If an account was found we will have sent you an email."}</p>
+            <p>{"Instructions on how to reset your password is sent to your email address."}</p>
+            <NotReceivedEmail sendAgainUrl="/login/forgot-password" />
+          </p>
         </div>
       </div>
     </Layout>

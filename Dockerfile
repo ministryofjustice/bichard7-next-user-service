@@ -10,7 +10,9 @@ WORKDIR /src/user-service
 
 COPY ./package*.json ./
 COPY ./scripts/ ./scripts/
+
 RUN npm install
+RUN npm run install:assets
 
 COPY . ./
 
@@ -30,7 +32,8 @@ ENV NODE_ENV=production
 
 WORKDIR /app
 COPY ./package*.json ./
-RUN npm install --production --ignore-scripts
+
+RUN npm install --production
 
 COPY --from=app_builder /src/user-service/next.config.js ./
 COPY --from=app_builder /src/user-service/public ./public

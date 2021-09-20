@@ -71,5 +71,21 @@ if [[ -n "${CODEBUILD_RESOLVED_SOURCE_VERSION}" && -n "${CODEBUILD_START_TIME}" 
 
     echo "Push docker image on `date`"
     docker push \
-        ${AWS_ACCOUNT_ID}.dkr.ecr.eu-west-2.amazonaws.com/user-service:${CODEBUILD_RESOLVED_SOURCE_VERSION}-${CODEBUILD_START_TIME}
+        ${AWS_ACCOUNT_ID}.dkr.ecr.eu-west-2.amazonaws.com/user-service:${CODEBUILD_RESOLVED_SOURCE_VERSION}-${CODEBUILD_START_TIME} | tee /tmp/docker.out
+    export IMAGE_SHA_HASH=$(cat /tmp/docker.out | grep digest | cut -d':' -f3-4 | cut -d' ' -f2)
+
+    if [ "${IS_CD}" = "true" ]; then
+
+      (
+        echo "Updating User Service Deploy tag  for ${DEPLOY_NAME}"
+        temp_role=$(aws sts assume-role --role-arn "${ASSUME_ROLE_ARN}" --role-session-name "${AWS_ACCOUNT_ID}")
+        export AWS_ACCESS_KEY_ID=$(echo $temp_role | jq -r .Credentials.AccessKeyId)
+        export AWS_SECRET_ACCESS_KEY=$(echo $temp_role | jq -r .Credentials.SecretAccessKey)
+        export AWS_SESSION_TOKEN=$(echo $temp_role | jq -r .Credentials.SessionToken)
+
+        aws ssm put-parameter --name "/cjse-${DEPLOY_NAME}-bichard-7/user_service/image_hash" --value "${IMAGE_SHA_HASH}" --type "SecureString" --overwrite
+      )
+      echo "Starting build ${DEPLOY_JOB_NAME}"
+      aws codebuild start-build --project-name "${DEPLOY_JOB_NAME}"
+    fi
 fi

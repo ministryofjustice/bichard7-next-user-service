@@ -5,8 +5,9 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "install:assets": "./scripts/copy-govuk-frontend-assets.sh",
+    "install:hooks": "./scripts/install-git-hooks.sh",
     "start": "next start",
-    "prepare": "./scripts/copy-govuk-frontend-assets.sh && ./scripts/install-git-hooks.sh",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "cypress:open": "cypress open",
@@ -19,6 +20,7 @@
   "dependencies": {
     "@trust/webcrypto": "^0.9.2",
     "@types/qs": "^6.9.6",
+    "argon2": "^0.28.2",
     "badwords-list": "^1.0.0",
     "classnames": "^2.3.1",
     "cookie": "^0.4.1",

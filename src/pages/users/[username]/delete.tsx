@@ -39,7 +39,7 @@ export const getServerSideProps = withMultipleServerSideProps(
     }
 
     if (isError(user)) {
-      return createRedirectResponse("/error")
+      return createRedirectResponse("/500")
     }
 
     if (isPost(req)) {
@@ -65,7 +65,7 @@ export const getServerSideProps = withMultipleServerSideProps(
       }
 
       if (deleteUserResult.serverSideError) {
-        return createRedirectResponse("/error")
+        return createRedirectResponse("/500")
       }
     }
 
@@ -93,7 +93,7 @@ const Delete = ({ user, showInputNotMatchingError, csrfToken, currentUser }: Pro
       <Layout user={currentUser}>
         {showInputNotMatchingError && (
           <ErrorSummary title="Username mismatch">
-            {"The provided username in the confirmation box does not match."}
+            {"Provided username in the confirmation box is incorrect."}
           </ErrorSummary>
         )}
 
@@ -101,7 +101,7 @@ const Delete = ({ user, showInputNotMatchingError, csrfToken, currentUser }: Pro
           <Fieldset>
             <FieldsetLegend>{`Are you sure you want to delete ${fullName}?`}</FieldsetLegend>
             <FieldsetHint>
-              <Warning>{"This action is irreversible and will permanently delete the user."}</Warning>
+              <Warning>{"This action is irreversible."}</Warning>
             </FieldsetHint>
             <TextInput
               id="delete-account-confirmation"

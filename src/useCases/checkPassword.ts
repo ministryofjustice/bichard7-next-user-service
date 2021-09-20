@@ -1,4 +1,4 @@
-import { compare } from "lib/shiro"
+import { verifyPassword } from "lib/argon2"
 import Database from "types/Database"
 import { isError, PromiseResult } from "types/Result"
 
@@ -16,7 +16,7 @@ export default async (db: Database, emailAddress: string, password: string): Pro
   }
 
   const { password: passwordHash } = queryResult as { password: string }
-  const result = await compare(password, passwordHash)
+  const result = await verifyPassword(password, passwordHash)
 
   return result
 }

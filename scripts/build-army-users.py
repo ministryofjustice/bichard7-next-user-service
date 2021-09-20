@@ -18,8 +18,8 @@ def generateUsers(numberOfUsers):
         for i in range(numberOfUsers):
             cur.execute("""
                 INSERT INTO br7own.users(
-                    id, username, email, active, exclusion_list, inclusion_list, challenge_response, created_at)
-                VALUES (%s, %s, %s, true, '[]', '[]', '-', NOW())""", (psycopg2.extensions.AsIs(i), nameGroup+str(i), emailGroup+str(i)))
+                    id, username, email, exclusion_list, inclusion_list, challenge_response, created_at)
+                VALUES (%s, %s, %s, '[]', '[]', '-', NOW())""", (psycopg2.extensions.AsIs(i), nameGroup+str(i), emailGroup+str(i)))
 
         conn.commit()
        

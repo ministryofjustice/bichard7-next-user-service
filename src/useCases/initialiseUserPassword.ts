@@ -28,7 +28,7 @@ const initialiseUserPassword = async (
   // check if we have the correct user
   const validatedCodeResult = await validateUserVerificationCode(connection, emailAddress, verificationCode)
   if (isError(validatedCodeResult)) {
-    return new Error("Invalid or expired verification code")
+    return new Error("Invalid or expired verification code.")
   }
 
   const validatePasswordSensitveResult = await passwordDoesNotContainSensitive(connection, password, emailAddress)
@@ -38,12 +38,12 @@ const initialiseUserPassword = async (
 
   const resetResult = await storePasswordResetCode(connection, emailAddress, null)
   if (isError(resetResult)) {
-    return new Error("Failed to update table")
+    return new Error("Server error. Please try again later.")
   }
 
   const updateResult = await updatePassword(connection, emailAddress, password)
   if (isError(updateResult)) {
-    return new Error("Failed to update password")
+    return new Error("Server error. Please try again later.")
   }
 
   await auditLogger("New password", { user: { emailAddress } })

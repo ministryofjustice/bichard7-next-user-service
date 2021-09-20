@@ -1,15 +1,15 @@
-import { compare, createPassword, hash } from "lib/shiro"
 import { isError } from "types/Result"
 import { resetPassword } from "useCases"
 import { ResetPasswordOptions } from "useCases/resetPassword"
 import storePasswordResetCode from "useCases/storePasswordResetCode"
+import { hashPassword, verifyPassword } from "lib/argon2"
 import getTestConnection from "../../testFixtures/getTestConnection"
 import deleteFromTable from "../../testFixtures/database/deleteFromTable"
 import insertIntoTable from "../../testFixtures/database/insertIntoUsersTable"
 import users from "../../testFixtures/database/data/users"
 import fakeAuditLogger from "../fakeAuditLogger"
 
-jest.mock("lib/shiro")
+jest.mock("lib/argon2")
 
 describe("resetPassword", () => {
   let connection: any
@@ -34,11 +34,12 @@ describe("resetPassword", () => {
     await storePasswordResetCode(connection, emailAddress, passwordResetCode)
 
     const expectedPassword = "ExpectedPassword"
-    const expectedPasswordHash = "$shiro1$SHA-256$500000$Foo==$Bar="
-    const mockedCreatePassword = createPassword as jest.MockedFunction<typeof createPassword>
-    mockedCreatePassword.mockResolvedValue(expectedPasswordHash)
-    const mockedCompare = compare as jest.MockedFunction<typeof compare>
-    mockedCompare.mockResolvedValue(false)
+    const expectedPasswordHash = "Dummy password hash"
+    const mockedHashPassword = hashPassword as jest.MockedFunction<typeof hashPassword>
+    mockedHashPassword.mockResolvedValue(expectedPasswordHash)
+
+    const mockedVerifyPassword = verifyPassword as jest.MockedFunction<typeof verifyPassword>
+    mockedVerifyPassword.mockResolvedValue(false)
 
     const resetPasswordOptions: ResetPasswordOptions = {
       emailAddress,
@@ -71,16 +72,12 @@ describe("resetPassword", () => {
     const passwordResetCode = "664422"
     await storePasswordResetCode(connection, emailAddress, passwordResetCode)
 
-    const expectedResultHash = "SecondTester"
-    const hashPassword = hash as jest.MockedFunction<typeof hash>
-    hashPassword.mockResolvedValue(expectedResultHash)
+    const expectedPasswordHash = "SecondTester"
+    const mockedHashPassword = hashPassword as jest.MockedFunction<typeof hashPassword>
+    mockedHashPassword.mockResolvedValue(expectedPasswordHash)
 
-    const expectedPasswordHash = "$shiro1$SHA-256$500000$Second==$SecondTester"
-    const mockedCreatePassword = createPassword as jest.MockedFunction<typeof createPassword>
-    mockedCreatePassword.mockResolvedValue(expectedPasswordHash)
-
-    const mockedCompare = compare as jest.MockedFunction<typeof compare>
-    mockedCompare.mockResolvedValue(true)
+    const mockedVerifyPassword = verifyPassword as jest.MockedFunction<typeof verifyPassword>
+    mockedVerifyPassword.mockResolvedValue(true)
 
     const resetPasswordOptions: ResetPasswordOptions = {
       emailAddress,
@@ -91,7 +88,7 @@ describe("resetPassword", () => {
     const resetResult = await resetPassword(connection, fakeAuditLogger, resetPasswordOptions)
     expect(isError(resetResult)).toBe(false)
     expect(resetResult).not.toBe(undefined)
-    expect(resetResult).toBe("Cannot use previously used password")
+    expect(resetResult).toBe("Cannot use previously used password.")
   })
 
   it("should return error when new password is not allowed", async () => {
@@ -101,8 +98,8 @@ describe("resetPassword", () => {
     const passwordResetCode = "664422"
     await storePasswordResetCode(connection, emailAddress, passwordResetCode)
 
-    const mockedCompare = compare as jest.MockedFunction<typeof compare>
-    mockedCompare.mockResolvedValue(true)
+    const mockedVerifyPassword = verifyPassword as jest.MockedFunction<typeof verifyPassword>
+    mockedVerifyPassword.mockResolvedValue(true)
 
     const resetPasswordOptions: ResetPasswordOptions = {
       emailAddress,
@@ -113,7 +110,7 @@ describe("resetPassword", () => {
     const resetResult = await resetPassword(connection, fakeAuditLogger, resetPasswordOptions)
     expect(isError(resetResult)).toBe(false)
     expect(resetResult).not.toBe(undefined)
-    expect(resetResult).toBe("Cannot use this password as it is insecure/banned")
+    expect(resetResult).toBe("Password is too easy to guess.")
   })
 
   it("should return error when password reset code is not valid", async () => {

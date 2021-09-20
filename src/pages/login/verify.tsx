@@ -53,7 +53,7 @@ export const getServerSideProps = withCsrf(async (context): Promise<GetServerSid
         console.error(translatedToken)
         return {
           props: {
-            invalidCredentials: true,
+            invalidVerification: true,
             csrfToken,
             notYourEmailAddressUrl
           }
@@ -86,7 +86,7 @@ export const getServerSideProps = withCsrf(async (context): Promise<GetServerSid
         throw new Error(authenticationErrorMessage)
       }
 
-      if (rememberEmailAddress === "remember-email") {
+      if (rememberEmailAddress === "yes") {
         const emailAddressFromCookie = getEmailAddressFromCookie(req, config)
 
         if (!emailAddressFromCookie || emailAddressFromCookie !== emailAddress) {
@@ -107,7 +107,7 @@ export const getServerSideProps = withCsrf(async (context): Promise<GetServerSid
     if (isError(translatedToken)) {
       return {
         props: {
-          invalidCredentials: true,
+          invalidVerification: true,
           csrfToken,
           notYourEmailAddressUrl
         }
@@ -156,7 +156,16 @@ const VerifyEmail = ({
 
         {invalidVerification && (
           <ErrorSummary title="Unable to verify email address">
-            {"This link is either incorrect or may have expired. Please try again."}
+            <p>
+              {"This link is either incorrect or may have expired. Please "}
+              <Link href="/login">{"try signing in again"}</Link>
+              {" with your email address to receive another link."}
+            </p>
+            <p>
+              {"If you still have an issue with signing in to your account you will need to "}
+              <Link href={config.contactUrl}>{"contact us"}</Link>
+              {"."}
+            </p>
           </ErrorSummary>
         )}
 
@@ -167,37 +176,50 @@ const VerifyEmail = ({
         )}
 
         {!invalidVerification && (
-          <Form method="post" csrfToken={csrfToken}>
-            <p className="govuk-body">
+          <p className="govuk-body">
+            <Form method="post" csrfToken={csrfToken}>
               {"You are signing in as "}
               <b>{emailAddress}</b>
               {"."}
-            </p>
-            <p>
-              <Link href={notYourEmailAddressUrl} data-test="not-you-link">
-                {"Not your account? Click here to login with a different email address"}
-              </Link>
-            </p>
-            <TextInput id="password" name="password" label="Password" type="password" />
-            <p>
-              <div className="govuk-checkboxes" data-module="govuk-checkboxes">
-                <div className="govuk-checkboxes__item">
-                  <input
-                    className="govuk-checkboxes__input"
-                    id="rememberEmailAddress"
-                    name="rememberEmailAddress"
-                    type="checkbox"
-                    value="remember-email"
-                  />
-                  <label className="govuk-label govuk-checkboxes__label" htmlFor="rememberEmailAddress">
-                    {"Remember my email address"}
-                  </label>
-                </div>
+              <p>
+                {"If this is not your account, you can "}
+                <Link href={notYourEmailAddressUrl} data-test="not-you-link">
+                  {"sign in with your email address"}
+                </Link>
+                {"."}
+              </p>
+              <TextInput id="password" name="password" label="Password" type="password" />
+              <div className="govuk-form-group">
+                <fieldset className="govuk-fieldset" aria-describedby="waste-hint">
+                  <legend className="govuk-fieldset__legend">
+                    {"Do you want your email address to be remembered?"}
+                  </legend>
+                  <div className="govuk-hint">
+                    {
+                      "You will not be asked to verify your email address for 24 hours on this browser. Do not choose 'Yes' if you do not trust this device."
+                    }
+                  </div>
+                  <div className="govuk-checkboxes" data-module="govuk-checkboxes">
+                    <div className="govuk-checkboxes__item">
+                      <input
+                        className="govuk-checkboxes__input"
+                        id="rememberEmailYes"
+                        name="rememberEmailAddress"
+                        type="checkbox"
+                        value="yes"
+                      />
+                      <label className="govuk-label govuk-checkboxes__label" htmlFor="rememberEmailYes">
+                        {"Yes, remember my email address."}
+                      </label>
+                    </div>
+                  </div>
+                </fieldset>
               </div>
-            </p>
-            <input type="hidden" id="token" name="token" value={token} />
-            <Button>{"Sign in"}</Button>
-          </Form>
+
+              <input type="hidden" id="token" name="token" value={token} />
+              <Button>{"Sign in"}</Button>
+            </Form>
+          </p>
         )}
       </GridRow>
     </Layout>

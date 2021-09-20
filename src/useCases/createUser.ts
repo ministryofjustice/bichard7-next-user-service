@@ -17,14 +17,9 @@ const insertUser = async (task: ITask<unknown>, userDetails: Partial<User>): Pro
         username,
         forenames,
         surname,
-        phone_number,
         email,
-        active,
         exclusion_list,
         inclusion_list,
-        challenge_response,
-        post_code,
-        postal_address,
         endorsed_by,
         org_serves
       )
@@ -32,14 +27,9 @@ const insertUser = async (task: ITask<unknown>, userDetails: Partial<User>): Pro
         $\{username\},
         $\{forenames\},
         $\{surname\},
-        $\{phoneNumber\},
         $\{emailAddress\},
-        true,
         '',
         '',
-        '',
-        $\{postCode\},
-        $\{postalAddress\},
         $\{endorsedBy\},
         $\{orgServes\}
       ) RETURNING id;

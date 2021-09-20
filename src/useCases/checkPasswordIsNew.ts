@@ -1,4 +1,4 @@
-import { compare } from "lib/shiro"
+import { verifyPassword } from "lib/argon2"
 import Database from "types/Database"
 import { PromiseResult } from "types/Result"
 import Task from "types/Task"
@@ -16,12 +16,12 @@ const checkPasswordIsNew = async (
     `
   try {
     const filteredResults = (await connection.result(getAllMatchingPasswords, [userId])).rows.map((row) =>
-      compare(newPassword, row.password_hash)
+      verifyPassword(newPassword, row.password_hash)
     )
     const comparedResults = await Promise.all(filteredResults)
 
     if (comparedResults.some((item) => item === true)) {
-      return Error("Cannot save previously used password")
+      return Error("Cannot save previously used password.")
     }
   } catch (error) {
     return error

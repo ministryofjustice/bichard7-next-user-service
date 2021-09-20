@@ -1,7 +1,7 @@
-import { compare } from "lib/shiro"
 import { isError } from "types/Result"
 import { changePassword } from "useCases"
 import Database from "types/Database"
+import { verifyPassword } from "lib/argon2"
 import insertIntoTable from "../../testFixtures/database/insertIntoUsersTable"
 import deleteFromTable from "../../testFixtures/database/deleteFromTable"
 import getTestConnection from "../../testFixtures/getTestConnection"
@@ -35,7 +35,7 @@ describe("changePassword", () => {
       "bichard01@example.com"
     )) as { password: string }
 
-    const passwordMatchResult = await compare(newPassword, actualPasswordHash)
+    const passwordMatchResult = await verifyPassword(newPassword, actualPasswordHash)
 
     expect(passwordMatchResult).toBe(true)
   })

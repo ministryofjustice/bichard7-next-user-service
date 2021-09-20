@@ -34,7 +34,7 @@ describe("DeleteUserUseCase", () => {
     const selectedGroup = selectedGroups[0]
     const user = users[0]
 
-    const expectedError = new Error(`Username Bichard01 already exists`)
+    const expectedError = new Error(`Username Bichard01 already exists.`)
 
     const createUserDetails: UserCreateDetails = {
       username: user.username,
@@ -43,9 +43,6 @@ describe("DeleteUserUseCase", () => {
       endorsedBy: user.endorsed_by,
       surname: user.surname,
       orgServes: user.org_serves,
-      postCode: user.post_code,
-      phoneNumber: user.phone_number,
-      postalAddress: user.postal_address,
       groupId: selectedGroup.group_id
     }
 
@@ -69,13 +66,10 @@ describe("DeleteUserUseCase", () => {
       endorsedBy: `${user.endorsed_by}xyz`,
       surname: `${user.surname}xyz`,
       orgServes: `${user.org_serves}xyz`,
-      postCode: `${user.post_code}xyz`,
-      phoneNumber: `${user.phone_number}xyz`,
-      postalAddress: `${user.postal_address}xyz`,
       groupId: selectedGroup.group_id
     }
 
-    const expectedError = new Error(`Email address bichard01@example.com already exists`)
+    const expectedError = new Error(`Email address bichard01@example.com already exists.`)
     const result = await createUser(connection, createUserDetails)
     expect(isError(result)).toBe(true)
     const actualError = <Error>result
@@ -95,9 +89,6 @@ describe("DeleteUserUseCase", () => {
       endorsedBy: user.endorsed_by,
       surname: user.surname,
       orgServes: user.org_serves,
-      postCode: user.post_code,
-      phoneNumber: user.phone_number,
-      postalAddress: user.postal_address,
       groupId: selectedGroup.id
     }
 
@@ -113,9 +104,6 @@ describe("DeleteUserUseCase", () => {
     expect(actualUser.endorsedBy).toBe(user.endorsed_by)
     expect(actualUser.orgServes).toBe(user.org_serves)
     expect(actualUser.forenames).toBe(user.forenames)
-    expect(actualUser.postalAddress).toBe(user.postal_address)
-    expect(actualUser.postCode).toBe(user.post_code)
-    expect(actualUser.phoneNumber).toBe(user.phone_number)
   })
 
   it("should add the user to the correct group that exists in the user table", async () => {
@@ -132,9 +120,6 @@ describe("DeleteUserUseCase", () => {
       endorsedBy: user.endorsed_by,
       surname: user.surname,
       orgServes: user.org_serves,
-      postCode: user.post_code,
-      phoneNumber: user.phone_number,
-      postalAddress: user.postal_address,
       groupId: group.id
     }
 
@@ -167,9 +152,6 @@ describe("DeleteUserUseCase", () => {
       endorsedBy: user.endorsed_by,
       surname: user.surname,
       orgServes: user.org_serves,
-      postCode: user.post_code,
-      phoneNumber: user.phone_number,
-      postalAddress: user.postal_address,
       groupId: greatestPossibleIdPlusOne
     }
 
