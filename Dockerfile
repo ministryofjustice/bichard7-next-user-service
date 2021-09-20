@@ -8,11 +8,11 @@ LABEL maintainer="CJSE"
 
 WORKDIR /src/user-service
 
-RUN yum install -y node-gyp
-
 COPY ./package*.json ./
 COPY ./scripts/ ./scripts/
+
 RUN npm install
+RUN npm run install:assets
 
 COPY . ./
 
@@ -33,10 +33,7 @@ ENV NODE_ENV=production
 WORKDIR /app
 COPY ./package*.json ./
 
-# We built argon2 from source in the builder image, so copy it here
-COPY --from=app_builder /src/user-service/node_modules/argon2 ./node_modules/argon2
-
-RUN npm install --production --ignore-scripts
+RUN npm install --production
 
 COPY --from=app_builder /src/user-service/next.config.js ./
 COPY --from=app_builder /src/user-service/public ./public
