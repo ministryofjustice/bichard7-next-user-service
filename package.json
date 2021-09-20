@@ -5,8 +5,9 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "install:assets": "./scripts/copy-govuk-frontend-assets.sh",
+    "install:hooks": "./scripts/install-git-hooks.sh",
     "start": "next start",
-    "prepare": "./scripts/copy-govuk-frontend-assets.sh && ./scripts/install-git-hooks.sh",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "cypress:open": "cypress open",
