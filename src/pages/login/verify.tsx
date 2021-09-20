@@ -24,11 +24,13 @@ import Link from "components/Link"
 import { GetServerSidePropsResult } from "next"
 import isPost from "utils/isPost"
 import getAuditLogger from "lib/getAuditLogger"
+import User from "types/User"
 
 export const getServerSideProps = withCsrf(async (context): Promise<GetServerSidePropsResult<Props>> => {
   const { req, res, query, formData, csrfToken } = context as CsrfServerSidePropsContext
   const redirectUrl = getValidRedirectUrl(query, config)
   const notYourEmailAddressUrlObject = new URL(`/login`, config.baseUrl)
+  const authenticationErrorMessage = "Error authenticating the reqest"
 
   if (redirectUrl) {
     notYourEmailAddressUrlObject.searchParams.append("redirectUrl", redirectUrl as string)
@@ -77,7 +79,12 @@ export const getServerSideProps = withCsrf(async (context): Promise<GetServerSid
       }
 
       const bichardUrl = redirectUrl || config.bichardRedirectURL
-      const authToken = signInUser(res, user)
+      const authToken = await signInUser(connection, res, user as unknown as User)
+
+      if (isError(authToken)) {
+        console.error(authToken)
+        throw new Error(authenticationErrorMessage)
+      }
 
       if (rememberEmailAddress === "yes") {
         const emailAddressFromCookie = getEmailAddressFromCookie(req, config)
@@ -106,6 +113,7 @@ export const getServerSideProps = withCsrf(async (context): Promise<GetServerSid
         }
       }
     }
+
     const { emailAddress } = translatedToken
 
     if (!token || !emailAddress) {
@@ -113,7 +121,10 @@ export const getServerSideProps = withCsrf(async (context): Promise<GetServerSid
     }
 
     return { props: { emailAddress, token, csrfToken, notYourEmailAddressUrl } }
-  } catch {
+  } catch (error) {
+    if ((error as Error).message === authenticationErrorMessage) {
+      throw error
+    }
     return { props: { invalidVerification: true, csrfToken, notYourEmailAddressUrl } }
   }
 })

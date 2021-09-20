@@ -14,3 +14,5 @@ export const generateLoginVerificationToken = (emailAddress, verificationCode) =
 
 export const generateNewPasswordToken = (emailAddress, verificationCode) =>
   jwt.sign({ emailAddress, verificationCode }, tokenSecret, { issuer: "Bichard" })
+
+export const decodeAuthenticationToken = (token) => jwt.verify(token, tokenSecret, { issuer: "Bichard" })
