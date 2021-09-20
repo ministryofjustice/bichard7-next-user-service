@@ -1,5 +1,4 @@
 import config from "lib/config"
-import ButtonGroup from "./ButtonGroup"
 import Link from "./Link"
 
 interface Props {
@@ -8,16 +7,37 @@ interface Props {
 }
 
 const SuggestPassword = ({ suggestedPassword, suggestedPasswordUrl }: Props) => {
-  const passwordRules = `Please ensure that your password has at least ${config.passwordMinLength} characters`
   return (
     <>
-      <div className="govuk-hint">{passwordRules}</div>
-      <ButtonGroup>
-        <Link href={suggestedPasswordUrl ?? ""}>
-          {suggestedPassword ? "Suggest another password" : "Suggest a password"}
-        </Link>
-      </ButtonGroup>
-      <div className="govuk-hint">{suggestedPassword}</div>
+      <h3 className="govuk-heading-m govuk-!-margin-top-6">{"Password policy requirements"}</h3>
+      <p className="govuk-body">{"Your password must meet the following requirements:"}</p>
+      <ul className="govuk-list govuk-list--bullet">
+        <li>{`It has at least ${config.passwordMinLength} characters`}</li>
+        <li>{"It does not contain your details such as first name, last name, and username"}</li>
+        <li>{"It is not easy to guess"}</li>
+      </ul>
+      <h3 className="govuk-heading-m govuk-!-margin-top-6">{"Not sure what password to choose?"}</h3>
+      {!suggestedPassword && (
+        <p className="govuk-body">
+          {"If you are not sure what password to choose, we can "}
+          <Link href={suggestedPasswordUrl ?? ""}>{"suggest a password"}</Link>
+          {"."}
+        </p>
+      )}
+      {suggestedPassword && (
+        <>
+          <p className="govuk-body">{"We suggest you to choose this password:"}</p>
+          <div className="govuk-inset-text">{suggestedPassword}</div>
+          <p className="govuk-body">
+            {"If you want this password, you can type it in the fields above, or you can copy and paste the password."}
+          </p>
+          <p className="govuk-body">
+            {"If you don't want this password, we can "}
+            <Link href={suggestedPasswordUrl ?? ""}>{"suggest another password"}</Link>
+            {"."}
+          </p>
+        </>
+      )}
     </>
   )
 }

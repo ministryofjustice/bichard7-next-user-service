@@ -123,9 +123,9 @@ describe("Reset password", () => {
         const token = generatePasswordResetToken("bichard01@example.com", "foobar")
         cy.visit(`/login/reset-password?token=${token}`)
         cy.get("body").contains(/reset password/i)
-        cy.get(".govuk-hint").should("be.empty")
+        cy.get(".govuk-inset-text").should("not.exist")
         cy.get("a[class=govuk-link]").click()
-        cy.get(".govuk-hint").should("not.be.empty")
+        cy.get(".govuk-inset-text").should("not.be.empty")
       })
     })
 
