@@ -128,9 +128,18 @@ $ docker run \
 
 1. Install the npm dependencies:
    ```shell
-   $ npm i
+   $ npm install
    ```
-   N.B. This will also configure git hooks with [husky](https://typicode.github.io/husky/) to automatically lint the code, and copy the GOV.UK Frontend assets into the location that Next.js serves static files from.
+
+1. Copy the GOV.UK frontend assets from the installed package into the location that Next.js serves static files from:
+   ```shell
+   $ npm run install:assets
+   ```
+
+1. Install the [husky](https://typicode.github.io/husky/) git hooks to automatically lint the code:
+  ```shell
+  $ npm run install:hooks
+  ```
 
 ### Running the app locally
 

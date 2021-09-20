@@ -12,7 +12,9 @@ RUN yum install -y node-gyp
 
 COPY ./package*.json ./
 COPY ./scripts/ ./scripts/
+
 RUN npm install
+RUN npm run install:assets
 
 COPY . ./
 
