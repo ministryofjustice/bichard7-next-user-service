@@ -177,7 +177,6 @@ const editUser = ({ errorMessage, successMessage, missingMandatory, user, csrfTo
             missingUsername={missingMandatory}
             missingForenames={missingMandatory}
             missingSurname={missingMandatory}
-            missingPhoneNumber={missingMandatory}
             missingEmail={missingMandatory}
             disableEmailField
             userGroups={groups as unknown as UserGroupOption[]}

@@ -102,7 +102,6 @@ const tableHeaders: TableHeaders = [
   ["username", "Username"],
   ["forenames", "Forename(s)"],
   ["surname", "Surname"],
-  ["phoneNumber", "Phone number"],
   ["emailAddress", "Email address"]
 ]
 
