@@ -19,20 +19,20 @@ const SuggestPassword = ({ suggestedPassword, suggestedPasswordUrl }: Props) => 
       <h3 className="govuk-heading-m govuk-!-margin-top-6">{"Not sure what password to choose?"}</h3>
       {!suggestedPassword && (
         <p className="govuk-body">
-          {"If you are not sure what password to choose, we can "}
+          {"If you need help choosing a password, we can "}
           <Link href={suggestedPasswordUrl ?? ""}>{"suggest a password"}</Link>
-          {"."}
+          {" for you."}
         </p>
       )}
       {suggestedPassword && (
         <>
-          <p className="govuk-body">{"We suggest you to choose this password:"}</p>
+          <p className="govuk-body">{"Here is a password suggestion:"}</p>
           <div className="govuk-inset-text">{suggestedPassword}</div>
           <p className="govuk-body">
-            {"If you want this password, you can type it in the fields above, or you can copy and paste the password."}
+            {"If you want to use this password, you can type it or copy and paste it into the fields above."}
           </p>
           <p className="govuk-body">
-            {"If you don't want this password, we can "}
+            {"If you don't want to use this password, we can "}
             <Link href={suggestedPasswordUrl ?? ""}>{"suggest another password"}</Link>
             {"."}
           </p>
