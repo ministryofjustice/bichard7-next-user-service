@@ -96,7 +96,7 @@ exports[`should render the component and match the snapshot 1`] = `
             >
               Contact support
             </a>
-             if you think you are experiencing problems with the service.
+             if you have repeated problems with the service.
           </p>
         </div>
       </div>
