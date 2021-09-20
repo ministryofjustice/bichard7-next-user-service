@@ -38,7 +38,7 @@ COPY ./package*.json ./
 # We built argon2 from source in the builder image, so copy it here
 COPY --from=app_builder /src/user-service/node_modules/argon2 ./node_modules/argon2
 
-RUN npm install --production --ignore-scripts
+RUN npm install --production
 
 COPY --from=app_builder /src/user-service/next.config.js ./
 COPY --from=app_builder /src/user-service/public ./public
