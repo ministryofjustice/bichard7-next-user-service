@@ -35,12 +35,9 @@ const updateUserTable = async (task: ITask<unknown>, userDetails: Partial<User>)
   const updateUserQuery = `
     UPDATE br7own.users
 	    SET 
-        username=$\{username\}, 
-        forenames=$\{forenames\}, 
-        surname=$\{surname\}, 
-        phone_number=$\{phoneNumber\}, 
-        post_code=$\{postCode\}, 
-        postal_address=$\{postalAddress\}, 
+        username=$\{username\},
+        forenames=$\{forenames\},
+        surname=$\{surname\},
         endorsed_by=$\{endorsedBy\},
         org_serves=$\{orgServes\}
 	    WHERE id = $\{id\}

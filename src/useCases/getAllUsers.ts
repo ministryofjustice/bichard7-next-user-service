@@ -15,7 +15,6 @@ const getAllUsers = async (
         username,
         forenames,
         surname,
-        phone_number,
         email,
         COUNT(*) OVER() as all_users
       FROM br7own.users
@@ -35,7 +34,6 @@ const getAllUsers = async (
       username: r.username,
       forenames: r.forenames,
       surname: r.surname,
-      phoneNumber: r.phone_number,
       emailAddress: r.email
     })),
     totalElements: users.length === 0 ? 0 : users[0].all_users

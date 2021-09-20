@@ -19,9 +19,6 @@ const user: User & UserCredentials = {
   forenames: "Bichard User",
   surname: "01",
   emailAddress: "bichard01@example.com",
-  postalAddress: "Addr1$Addr2",
-  postCode: "SW1H",
-  phoneNumber: "1234",
   groups: ["B7Supervisor"],
   password: "$shiro1$SHA-256$500000$foo$bar",
   verificationCode: "123456"
@@ -56,9 +53,6 @@ describe("generateAuthenticationToken()", () => {
     expect(payload).not.toHaveProperty("orgServes")
     expect(payload).not.toHaveProperty("forenames")
     expect(payload).not.toHaveProperty("surname")
-    expect(payload).not.toHaveProperty("postalAddress")
-    expect(payload).not.toHaveProperty("postCode")
-    expect(payload).not.toHaveProperty("phoneNumber")
     expect(payload).not.toHaveProperty("password")
     expect(payload).not.toHaveProperty("verificationCode")
   })

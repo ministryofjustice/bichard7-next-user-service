@@ -37,10 +37,7 @@ export const getServerSideProps = withMultipleServerSideProps(
         username: string
         forenames: string
         surname: string
-        phoneNumber: string
         emailAddress: string
-        postCode: string
-        postalAddress: string
         endorsedBy: string
         orgServes: string
         groupId: string
@@ -122,7 +119,6 @@ const newUser = ({ message, isSuccess, missingMandatory, csrfToken, currentUser,
         <UserForm
           missingUsername={missingMandatory}
           missingForenames={missingMandatory}
-          missingPhoneNumber={missingMandatory}
           missingEmail={missingMandatory}
           userGroups={userGroups}
         />
