@@ -317,5 +317,30 @@ describe("Logging In", () => {
         })
       })
     })
+
+    it("can successfully log out after logging in", (done) => {
+      const emailAddress = "bichard01@example.com"
+      const password = "password"
+
+      cy.visit("/login")
+      cy.get("input[type=email]").type(emailAddress)
+      cy.get("button[type=submit]").click()
+      cy.get('h1[data-test="check-email"]').should("exist")
+      cy.task("getVerificationCode", emailAddress).then((verificationCode) => {
+        const token = validToken(emailAddress, verificationCode)
+
+        cy.visit(`/login/verify?token=${token}`)
+        cy.get("input[type=password][name=password]").type(password)
+        cy.get("button[type=submit]").click()
+        // Note: Although we avoid waits in cypress test as the logic implemented is temporal in nature we can consider this OK
+        /* eslint-disable-next-line cypress/no-unnecessary-waiting */
+
+        cy.visit("/logout")
+        cy.url().then((url) => {
+          expect(url.match(/token=([^..]+\.[^..]+\.[^..]+)/)).to.equal(null)
+          done()
+        })
+      })
+    })
   })
 })

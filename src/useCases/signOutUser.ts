@@ -1,23 +1,23 @@
-import { ServerResponse } from "http"
+import { IncomingMessage, ServerResponse } from "http"
 import config from "lib/config"
 import removeJwt from "lib/removeJwt"
 import Database from "types/Database"
 import { isError } from "types/Result"
 import removeCookie from "utils/removeCookie"
 import getCookieValue from "utils/getCookieValue"
+import { NextApiRequestCookies } from "next/dist/server/api-utils"
 
-export default async (connection: Database, response: ServerResponse) => {
-  const { authenticationCookieName } = config
-  let cookies: string[] = []
-
-  const existingCookies = response.getHeader("Set-Cookie")
-  if (Array.isArray(existingCookies)) {
-    cookies = existingCookies as string[]
-  } else {
-    cookies = [existingCookies as string]
+export default async (
+  connection: Database,
+  response: ServerResponse,
+  request: IncomingMessage & {
+    cookies: NextApiRequestCookies
   }
+) => {
+  const { authenticationCookieName } = config
+  const cookies = Object.keys(request.cookies).map((key) => `${key}=${request.cookies[key]}`)
 
-  const cookieResult = getCookieValue(cookies, authenticationCookieName)
+  const cookieResult = getCookieValue(request.cookies, authenticationCookieName)
   if (cookieResult === undefined) {
     return new Error("")
   }
@@ -29,6 +29,6 @@ export default async (connection: Database, response: ServerResponse) => {
     return removeJwtResult
   }
 
-  removeCookie(response, authenticationCookieName)
+  removeCookie(response, cookies, authenticationCookieName)
   return undefined
 }

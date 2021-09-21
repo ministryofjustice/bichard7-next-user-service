@@ -26,7 +26,6 @@ it("should expire the authentication cookie", async () => {
   expect(isError(signoutUserResult)).toBe(false)
 
   cookieValues = response.getHeader("Set-Cookie") as string[]
-  expect(cookieValues).toHaveLength(1)
-  expect(cookieValues[0]).toBe(undefined)
+  expect(cookieValues).toHaveLength(0)
 })
 /* eslint-disable require-await */
