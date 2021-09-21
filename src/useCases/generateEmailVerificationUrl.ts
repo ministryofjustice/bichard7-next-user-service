@@ -1,6 +1,7 @@
 import { randomDigits } from "crypto-secure-random-digit"
 import { UserServiceConfig } from "lib/config"
 import { EmailVerificationTokenPayload, generateEmailVerificationToken } from "lib/token/emailVerificationToken"
+import { addBasePath } from "next/dist/shared/lib/router/router"
 import Database from "types/Database"
 import { isError, PromiseResult } from "types/Result"
 import storeVerificationCode from "./storeVerificationCode"
@@ -28,7 +29,7 @@ export default async (
     return token
   }
 
-  const url = new URL("/login/verify", config.baseUrl)
+  const url = new URL(addBasePath("/login/verify"), config.baseUrl)
   url.searchParams.append("token", token)
 
   if (redirectUrl) {
