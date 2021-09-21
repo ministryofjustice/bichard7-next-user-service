@@ -50,7 +50,7 @@ const config: UserServiceConfig = {
   },
   auditLoggerType: "console",
   authenticationCookieName: ".AUTH",
-  baseUrl: process.env.BASE_URL ?? "http://localhost:3000",
+  baseUrl: process.env.BASE_URL ?? "http://localhost:3000/users",
   bichardRedirectURL: process.env.BICHARD_REDIRECT_URL ?? "https://localhost:9443/bichard-ui/Authenticate",
   contactUrl: process.env.CONTACT_URL ?? "http://localhost:3000/contact-us",
   cookieSecret: process.env.COOKIE_SECRET ?? "OliverTwist",
