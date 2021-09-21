@@ -19,6 +19,7 @@ import { UserGroupResult } from "types/UserGroup"
 import { Option as UserGroupOption } from "components/Select"
 import getAuditLogger from "lib/getAuditLogger"
 import config from "lib/config"
+import BackLink from "components/BackLink"
 
 const errorMessageMap = {
   unique_users_username_idx: "This username already exists. Please try a different one."
@@ -186,9 +187,7 @@ const editUser = ({ errorMessage, successMessage, missingMandatory, user, csrfTo
         </Form>
       )}
 
-      <a href="/users" className="govuk-back-link">
-        {"Back"}
-      </a>
+      <BackLink href="/users" />
     </Layout>
   </>
 )

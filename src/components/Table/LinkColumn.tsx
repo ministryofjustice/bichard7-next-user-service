@@ -1,4 +1,5 @@
 import KeyValuePair from "types/KeyValuePair"
+import Link from "../Link"
 
 interface Props {
   field: string
@@ -12,9 +13,9 @@ const LinkColumn = ({ field, href, item, "data-test": dataTest }: Props) => {
   }
 
   return (
-    <a data-test={dataTest} className="govuk-link" href={href(item)}>
+    <Link data-test={dataTest} className="govuk-link" href={href(item)}>
       {String(item[field])}
-    </a>
+    </Link>
   )
 }
 
