@@ -106,11 +106,11 @@ const tableHeaders: TableHeaders = [
 ]
 
 const Users = ({ allUsers, csrfToken, currentUser, previousFilter, pageNumber, totalUsers }: Props) => {
-  const nextPage = new URL("/users")
+  const nextPage = new URL("/users", config.baseUrl)
   nextPage.searchParams.append("filter", previousFilter)
   nextPage.searchParams.append("page", (pageNumber + 1).toString())
 
-  const prevPage = new URL("/users")
+  const prevPage = new URL("/users", config.baseUrl)
   prevPage.searchParams.append("filter", previousFilter)
   prevPage.searchParams.append("page", (pageNumber - 1).toString())
 

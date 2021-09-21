@@ -1,3 +1,4 @@
+import { addBasePath } from "next/dist/shared/lib/router/router"
 import { ReactNode } from "react"
 
 interface Props {
@@ -10,7 +11,7 @@ interface Props {
 }
 
 const Link = ({ children, className, "data-test": dataTest, href, id, rel }: Props) => (
-  <a data-test={dataTest} href={href} className={className || "govuk-link"} id={id} rel={rel}>
+  <a data-test={dataTest} href={addBasePath(href)} className={className || "govuk-link"} id={id} rel={rel}>
     {children}
   </a>
 )
