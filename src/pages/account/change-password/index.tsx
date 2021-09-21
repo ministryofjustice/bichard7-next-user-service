@@ -14,7 +14,7 @@ import AuthenticationServerSidePropsContext from "types/AuthenticationServerSide
 import CsrfServerSidePropsContext from "types/CsrfServerSidePropsContext"
 import { isError } from "types/Result"
 import User from "types/User"
-import { changePassword, signOutUser } from "useCases"
+import { changePassword } from "useCases"
 import generateRandomPassword from "useCases/generateRandomPassword"
 import createRedirectResponse from "utils/createRedirectResponse"
 import isPost from "utils/isPost"
@@ -23,7 +23,7 @@ export const getServerSideProps = withMultipleServerSideProps(
   withAuthentication,
   withCsrf,
   async (context: GetServerSidePropsContext<ParsedUrlQuery>): Promise<GetServerSidePropsResult<Props>> => {
-    const { req, res, query, csrfToken, formData, currentUser } = context as CsrfServerSidePropsContext &
+    const { req, query, csrfToken, formData, currentUser } = context as CsrfServerSidePropsContext &
       AuthenticationServerSidePropsContext
 
     if (!currentUser || !currentUser.emailAddress) {
@@ -74,8 +74,6 @@ export const getServerSideProps = withMultipleServerSideProps(
           props: { errorMessage, csrfToken, currentUser }
         }
       }
-
-      signOutUser(res)
 
       return createRedirectResponse("/account/change-password/success")
     }

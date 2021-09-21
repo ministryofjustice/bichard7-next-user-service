@@ -1,9 +1,34 @@
-import { serialize } from "cookie"
 import { ServerResponse } from "http"
 import config from "lib/config"
-import setCookie from "utils/setCookie"
+import removeJwt from "lib/removeJwt"
+import Database from "types/Database"
+import { isError } from "types/Result"
+import removeCookie from "utils/removeCookie"
+import getCookieValue from "utils/getCookieValue"
 
-export default (response: ServerResponse) => {
+export default async (connection: Database, response: ServerResponse) => {
   const { authenticationCookieName } = config
-  setCookie(response, serialize(authenticationCookieName, "", { httpOnly: true, path: "/", maxAge: 0 }))
+  let cookies: string[] = []
+
+  const existingCookies = response.getHeader("Set-Cookie")
+  if (Array.isArray(existingCookies)) {
+    cookies = existingCookies as string[]
+  } else {
+    cookies = [existingCookies as string]
+  }
+
+  const cookieResult = getCookieValue(cookies, authenticationCookieName)
+  if (cookieResult === undefined) {
+    return new Error("")
+  }
+
+  const jwtId = cookieResult.id
+  const removeJwtResult = await removeJwt(connection, jwtId)
+  if (isError(removeJwtResult)) {
+    console.error(removeJwtResult)
+    return removeJwtResult
+  }
+
+  removeCookie(response, authenticationCookieName)
+  return undefined
 }
