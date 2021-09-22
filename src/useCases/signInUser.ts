@@ -12,6 +12,7 @@ import logJwt from "lib/logJwt"
 export default async (connection: Database, response: ServerResponse, user: User): Promise<string | Error> => {
   const { authenticationCookieName } = config
   const uniqueId = uuidv4()
+
   const logJwtResult = await logJwt(connection, (user as User).id, uniqueId)
 
   if (isError(logJwtResult)) {

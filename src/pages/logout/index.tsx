@@ -6,28 +6,17 @@ import { GetServerSidePropsContext, GetServerSidePropsResult } from "next"
 import Head from "next/head"
 import { ParsedUrlQuery } from "querystring"
 import AuthenticationServerSidePropsContext from "types/AuthenticationServerSidePropsContext"
-import User from "types/User"
 import { signOutUser } from "useCases"
 
 export const getServerSideProps = withMultipleServerSideProps(
   withAuthentication,
-  async (context: GetServerSidePropsContext<ParsedUrlQuery>): Promise<GetServerSidePropsResult<Props>> => {
-    const { req, res, currentUser } = context as AuthenticationServerSidePropsContext
-
+  async (context: GetServerSidePropsContext<ParsedUrlQuery>): Promise<GetServerSidePropsResult<unknown>> => {
+    const { req, res } = context as AuthenticationServerSidePropsContext
     const connection = getConnection()
     await signOutUser(connection, res, req)
-
-    return {
-      props: {
-        currentUser
-      }
-    }
+    return { props: null }
   }
 )
-
-interface Props {
-  currentUser?: Partial<User>
-}
 
 const Index = () => (
   <>

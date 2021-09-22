@@ -17,6 +17,9 @@ describe("Change password", () => {
       cy.get("input[type=password][name=confirmPassword]").type(newPassword)
       cy.get("button[type=submit]").click()
       cy.get("body").contains(/You can now sign in with your new password./i)
+      cy.url().then((url) => {
+        expect(url.match(/token=([^..]+\.[^..]+\.[^..]+)/)).to.equal(null)
+      })
 
       // Note: Although we avoid waits in cypress test as the logic implemented is temporal in nature we can consider this OK
       /* eslint-disable-next-line cypress/no-unnecessary-waiting */

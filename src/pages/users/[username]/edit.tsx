@@ -33,7 +33,6 @@ export const getServerSideProps = withMultipleServerSideProps(
     const connection = getConnection()
 
     let groups = await getUserGroups(connection)
-    console.log(context)
 
     if (isError(groups)) {
       console.error(groups)
@@ -117,7 +116,6 @@ export const getServerSideProps = withMultipleServerSideProps(
 
     const { username } = query
     const user = await getUserByUsername(connection, username as string)
-    console.log(user, username)
 
     if (isError(user)) {
       console.error(user)
