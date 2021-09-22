@@ -12,7 +12,7 @@ const logJwt = async (connection: Database, userId: number, uniqueId: string): P
     )
     VALUES 
     (
-      $\{id}, 
+      $\{id\}, 
       NOW(), 
       $\{user_id\}
     );

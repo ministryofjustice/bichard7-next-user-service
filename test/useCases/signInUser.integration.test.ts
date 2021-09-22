@@ -1,16 +1,15 @@
 import { IncomingMessage, ServerResponse } from "http"
-import { NextApiRequestCookies } from "next/dist/server/api-utils"
-import { isError } from "types/Result"
 import User from "types/User"
-import { signInUser, signOutUser } from "useCases"
+import signInUser from "useCases/signInUser"
+import { isError } from "types/Result"
 import createUser from "useCases/createUser"
-import groups from "../../testFixtures/database/data/groups"
+import getTestConnection from "../../testFixtures/getTestConnection"
 import deleteFromTable from "../../testFixtures/database/deleteFromTable"
 import insertIntoGroupsTable from "../../testFixtures/database/insertIntoGroupsTable"
+import groups from "../../testFixtures/database/data/groups"
 import selectFromTable from "../../testFixtures/database/selectFromTable"
-import getTestConnection from "../../testFixtures/getTestConnection"
 
-describe("SignoutUser", () => {
+describe("SignoinUser", () => {
   let connection: any
 
   beforeAll(() => {
@@ -26,7 +25,7 @@ describe("SignoutUser", () => {
   })
 
   /* eslint-disable require-await */
-  it("should expire the authentication cookie", async () => {
+  it("should store authentication token in cookies and DB", async () => {
     await insertIntoGroupsTable(groups)
     const selectedGroups = await selectFromTable("groups", undefined, undefined, "name")
     const user = {
@@ -46,9 +45,8 @@ describe("SignoutUser", () => {
     const response = new ServerResponse({} as IncomingMessage)
     const authenticationToken = await signInUser(connection, response, selectedUsers[0])
     expect(isError(authenticationToken)).toBe(false)
-
     expect(authenticationToken).toMatch(/.+\..+\..+/)
-    let cookieValues = response.getHeader("Set-Cookie") as string[]
+    const cookieValues = response.getHeader("Set-Cookie") as string[]
     expect(cookieValues).toHaveLength(1)
     expect(cookieValues[0]).toMatch(/.AUTH=.+\..+\..+; HttpOnly/)
 
@@ -58,22 +56,8 @@ describe("SignoutUser", () => {
       INNER JOIN br7own.users ON br7own.users.id = br7own.jwt_ids.user_id
       WHERE '${user.username}' = br7own.users.username;
     `
-
-    let queryResult = await connection.one(checkDbQuery)
+    const queryResult = await connection.one(checkDbQuery)
     expect(queryResult).not.toBe(null)
-
-    const cookieResults = { ".AUTH": cookieValues[0].split("=")[1] }
-    const request = <IncomingMessage & { cookies: NextApiRequestCookies }>{ method: "GET" }
-    request.cookies = cookieResults
-
-    const signoutUserResult = await signOutUser(connection, response, request)
-    expect(isError(signoutUserResult)).toBe(false)
-
-    cookieValues = response.getHeader("Set-Cookie") as string[]
-    expect(cookieValues).toHaveLength(0)
-
-    queryResult = await connection.none(checkDbQuery)
-    expect(queryResult).toBe(null)
   })
   /* eslint-disable require-await */
 })

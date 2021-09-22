@@ -5,12 +5,12 @@ const removeJwt = async (connection: Database, uniqueId: string): PromiseResult<
   /* eslint-disable no-useless-escape */
   const removeJwtQuery = `
     DELETE FROM br7own.jwt_ids
-    WHERE id = $\{id\};
+    WHERE id = $\{uniqueId\};
   `
   /* eslint-disable no-useless-escape */
 
   try {
-    await connection.none(removeJwtQuery, { id: uniqueId })
+    await connection.none(removeJwtQuery, { uniqueId })
     return undefined
   } catch (error) {
     return error as Error
