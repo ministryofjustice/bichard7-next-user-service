@@ -289,8 +289,12 @@ describe("Logging In", () => {
         cy.get("input[type=password][name=password]").type(password)
         cy.get("button[type=submit]").click()
 
+        cy.getCookie(".AUTH").should("exist")
+
         cy.visit("/logout")
         cy.url().should("not.match", /token=/)
+
+        cy.getCookie(".AUTH").not.should("exist")
       })
     })
   })
