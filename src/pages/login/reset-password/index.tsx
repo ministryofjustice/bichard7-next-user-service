@@ -2,7 +2,7 @@ import Layout from "components/Layout"
 import Head from "next/head"
 import TextInput from "components/TextInput"
 import Button from "components/Button"
-import ErrorSummary from "components/ErrorSummary"
+import ErrorSummary from "components/ErrorSummary/ErrorSummary"
 import { GetServerSidePropsResult } from "next"
 import { decodePasswordResetToken } from "lib/token/passwordResetToken"
 import getConnection from "lib/getConnection"
@@ -19,6 +19,7 @@ import config from "lib/config"
 import isPost from "utils/isPost"
 import getAuditLogger from "lib/getAuditLogger"
 import addQueryParams from "utils/addQueryParams"
+import { ErrorSummaryList } from "components/ErrorSummary"
 
 export const getServerSideProps = withCsrf(async (context): Promise<GetServerSidePropsResult<Props>> => {
   const { req, query, formData, csrfToken } = context as CsrfServerSidePropsContext
@@ -36,9 +37,6 @@ export const getServerSideProps = withCsrf(async (context): Promise<GetServerSid
       props: {
         token,
         invalidToken: true,
-        invalidPassword: false,
-        passwordMismatch: false,
-        passwordInsecure: false,
         csrfToken,
         suggestedPassword,
         suggestedPasswordUrl
@@ -56,10 +54,7 @@ export const getServerSideProps = withCsrf(async (context): Promise<GetServerSid
       return {
         props: {
           token,
-          invalidToken: false,
           invalidPassword: true,
-          passwordMismatch: false,
-          passwordInsecure: false,
           csrfToken,
           suggestedPassword,
           suggestedPasswordUrl
@@ -71,10 +66,7 @@ export const getServerSideProps = withCsrf(async (context): Promise<GetServerSid
       return {
         props: {
           token,
-          invalidToken: false,
-          invalidPassword: false,
-          passwordMismatch: true,
-          passwordInsecure: false,
+          passwordsMismatch: true,
           csrfToken,
           suggestedPassword,
           suggestedPasswordUrl
@@ -87,9 +79,6 @@ export const getServerSideProps = withCsrf(async (context): Promise<GetServerSid
       return {
         props: {
           token,
-          invalidToken: false,
-          invalidPassword: false,
-          passwordMismatch: false,
           passwordInsecure: true,
           passwordInsecureMessage: passwordCheckResult.message,
           csrfToken,
@@ -112,9 +101,6 @@ export const getServerSideProps = withCsrf(async (context): Promise<GetServerSid
       return {
         props: {
           token,
-          passwordMismatch: false,
-          invalidPassword: false,
-          invalidToken: false,
           passwordInsecure: true,
           passwordInsecureMessage: resetPasswordResult,
           csrfToken,
@@ -133,10 +119,6 @@ export const getServerSideProps = withCsrf(async (context): Promise<GetServerSid
   return {
     props: {
       token,
-      passwordMismatch: false,
-      invalidPassword: false,
-      invalidToken: false,
-      passwordInsecure: false,
       csrfToken,
       suggestedPassword,
       suggestedPasswordUrl
@@ -147,10 +129,10 @@ export const getServerSideProps = withCsrf(async (context): Promise<GetServerSid
 interface Props {
   token: string
   csrfToken: string
-  passwordMismatch: boolean
-  invalidPassword: boolean
-  invalidToken: boolean
-  passwordInsecure: boolean
+  passwordsMismatch?: boolean
+  invalidPassword?: boolean
+  invalidToken?: boolean
+  passwordInsecure?: boolean
   passwordInsecureMessage?: string
   suggestedPassword: string
   suggestedPasswordUrl: string
@@ -159,66 +141,69 @@ interface Props {
 const ResetPassword = ({
   token,
   csrfToken,
-  passwordMismatch,
+  passwordsMismatch,
   invalidPassword,
   invalidToken,
   passwordInsecure,
   passwordInsecureMessage,
   suggestedPassword,
   suggestedPasswordUrl
-}: Props) => (
-  <>
-    <Head>
-      <title>{"Reset Password"}</title>
-    </Head>
-    <Layout>
-      <div className="govuk-grid-row">
-        <div className="govuk-grid-column-two-thirds">
-          <h1 data-test="check-email" className="govuk-heading-xl">
-            {"Reset Password"}
-          </h1>
+}: Props) => {
+  const passwordMismatchError = "Passwords do not match"
+  const newPasswordMissingError = "Enter a new password"
+  const newPasswordError =
+    (invalidPassword && newPasswordMissingError) ||
+    (passwordsMismatch && passwordMismatchError) ||
+    (passwordInsecure && passwordInsecureMessage)
+  const errorSummaryTitle = (passwordsMismatch && "Your passwords do not match") || "There is a problem"
 
-          {invalidToken && (
-            <ErrorSummary title="Unable to verify email address">
-              {"This link is either incorrect or may have expired. Please try again."}
+  return (
+    <>
+      <Head>
+        <title>{"Reset Password"}</title>
+      </Head>
+      <Layout>
+        <div className="govuk-grid-row">
+          <div className="govuk-grid-column-two-thirds">
+            <h1 data-test="check-email" className="govuk-heading-xl">
+              {"Reset Password"}
+            </h1>
+
+            <ErrorSummary title={errorSummaryTitle} show={invalidPassword || passwordsMismatch || !!passwordInsecure}>
+              <ErrorSummaryList
+                items={[
+                  { id: "newPassword", error: invalidPassword && newPasswordMissingError },
+                  { id: "newPassword", error: passwordsMismatch && "Enter the same password twice" },
+                  { id: "newPassword", error: passwordInsecureMessage }
+                ]}
+              />
             </ErrorSummary>
-          )}
 
-          {invalidPassword && (
-            <ErrorSummary title="Password field is mandatory">{"Password fields cannot be empty."}</ErrorSummary>
-          )}
+            {invalidToken && (
+              <ErrorSummary title="Unable to verify email address">
+                {"This link is either incorrect or may have expired. Please try again."}
+              </ErrorSummary>
+            )}
 
-          {passwordMismatch && (
-            <ErrorSummary title="Passwords do not match">{"Provided new passwords do not match."}</ErrorSummary>
-          )}
-
-          {passwordInsecure && <ErrorSummary title="Password is insecure">{passwordInsecureMessage}</ErrorSummary>}
-
-          {!invalidToken && (
-            <Form method="post" csrfToken={csrfToken}>
-              <TextInput
-                id="newPassword"
-                name="newPassword"
-                label="New password"
-                type="password"
-                isError={invalidPassword || passwordMismatch}
-              />
-              <TextInput
-                id="configmPassword"
-                name="confirmPassword"
-                label="Confirm new password"
-                type="password"
-                isError={passwordMismatch}
-              />
-              <input type="hidden" id="token" name="token" value={token} />
-              <Button noDoubleClick>{"Reset password"}</Button>
-              <SuggestPassword suggestedPassword={suggestedPassword} suggestedPasswordUrl={suggestedPasswordUrl} />
-            </Form>
-          )}
+            {!invalidToken && (
+              <Form method="post" csrfToken={csrfToken}>
+                <TextInput name="newPassword" label="New password" type="password" error={newPasswordError} />
+                <TextInput
+                  name="confirmPassword"
+                  label="Confirm new password"
+                  type="password"
+                  error={passwordsMismatch && passwordMismatchError}
+                />
+                <input type="hidden" id="token" name="token" value={token} />
+                <Button noDoubleClick>{"Reset password"}</Button>
+                <SuggestPassword suggestedPassword={suggestedPassword} suggestedPasswordUrl={suggestedPasswordUrl} />
+              </Form>
+            )}
+          </div>
         </div>
-      </div>
-    </Layout>
-  </>
-)
+      </Layout>
+    </>
+  )
+}
 
 export default ResetPassword

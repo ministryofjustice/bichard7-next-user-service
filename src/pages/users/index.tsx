@@ -145,7 +145,7 @@ const Users = ({ allUsers, csrfToken, currentUser, previousFilter, pageNumber, t
             <Link id="add" className="govuk-button govuk-!-margin-right-8" href="/users/newUser">
               {"Add user"}
             </Link>
-            <TextInput className="align-right" id="filter" name="filter" type="text" defaultValue={previousFilter} />
+            <TextInput className="align-right" id="filter" name="filter" type="text" value={previousFilter} />
             <Button className="govuk-!-margin-left-4" noDoubleClick id="filter">
               {"Filter"}
             </Button>

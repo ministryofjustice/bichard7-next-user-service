@@ -24,8 +24,6 @@ describe("Edit user", () => {
   it("should update user correctly when updating user details", () => {
     cy.visit("users/Bichard01")
     cy.get('a[data-test="edit-user-view"]').click()
-    cy.get('input[id="username"]').clear()
-    cy.get('input[id="username"]').type("Bichard 06")
     cy.get('input[id="forenames"]').clear()
     cy.get('input[id="forenames"]').type("forename change 01")
     cy.get('input[id="endorsedBy"]').clear()
@@ -37,7 +35,7 @@ describe("Edit user", () => {
 
     cy.task("selectFromUsersTable", "bichard01@example.com").then((user) => {
       cy.task("selectFromGroupsTable", "user_id", user.id).then((groups) => {
-        cy.get('input[id="username"]').should("have.value", "Bichard 06")
+        cy.get('input[id="username"]').should("have.value", "Bichard01")
         cy.get('input[id="forenames"]').should("have.value", "forename change 01")
         cy.get('input[id="emailAddress"]').should("have.value", "bichard01@example.com")
         cy.get('input[id="endorsedBy"]').should("have.value", "change endorsed_by")
@@ -50,19 +48,21 @@ describe("Edit user", () => {
   it("should invalidate form correctly when form in not valid", () => {
     cy.visit("users/Bichard01")
     cy.get('a[data-test="edit-user-view"]').click()
-    cy.get('input[id="username"]').clear()
-    cy.get('input[id="username"]').type("Bichard02")
+    cy.get('input[id="forenames"]').clear()
+    cy.get('input[id="surname"]').clear()
     cy.get('button[type="submit"]').click()
-    cy.get('span[id="event-name-error"]').contains("This username already exists. Please try a different one.")
+    cy.get("div.govuk-error-summary").contains("Enter the user's forenames")
+    cy.get("div.govuk-error-summary").contains("Enter the user's surname")
   })
 
   it("should respond with forbidden response code when CSRF tokens are invalid in edit page", (done) => {
     cy.checkCsrf("/users/Bichard01/edit", "POST").then(() => done())
   })
 
-  it("should have the email text input field disabled", () => {
+  it("should have the email and username text input fields readonly", () => {
     cy.visit("users/Bichard02/edit")
-    cy.get('input[value="bichard02@example.com"]').invoke("attr", "disabled").should("eq", "disabled")
+    cy.get('input[value="bichard02@example.com"]').invoke("attr", "readonly").should("eq", "readonly")
+    cy.get('input[value="Bichard02"]').invoke("attr", "readonly").should("eq", "readonly")
   })
 
   it("should show the correct values for groups select input when on the edit user page", () => {

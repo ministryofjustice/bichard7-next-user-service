@@ -1,5 +1,5 @@
 import Button from "components/Button"
-import ErrorSummary from "components/ErrorSummary"
+import ErrorSummary from "components/ErrorSummary/ErrorSummary"
 import GridRow from "components/GridRow"
 import Layout from "components/Layout"
 import Head from "next/head"
@@ -22,11 +22,12 @@ import config from "lib/config"
 import { withCsrf } from "middleware"
 import isPost from "utils/isPost"
 import { ParsedUrlQuery } from "querystring"
+import { ErrorSummaryList } from "components/ErrorSummary"
 
 export const getServerSideProps = withCsrf(
   async (context: GetServerSidePropsContext<ParsedUrlQuery>): Promise<GetServerSidePropsResult<Props>> => {
     const { req, res, formData, csrfToken, query } = context as CsrfServerSidePropsContext
-    let invalidEmail = false
+    const emailError = "Enter a valid email address"
 
     if (isPost(req)) {
       const { emailAddress } = formData as { emailAddress: string }
@@ -40,14 +41,16 @@ export const getServerSideProps = withCsrf(
         if (isError(sent)) {
           console.error(sent)
           return {
-            props: { invalidEmail: true, csrfToken }
+            props: { emailError, csrfToken, emailAddress }
           }
         }
 
         return createRedirectResponse("/login/check-email")
       }
 
-      invalidEmail = true
+      return {
+        props: { emailError, csrfToken, emailAddress }
+      }
     }
 
     const { notYou } = query as { notYou: string }
@@ -74,17 +77,18 @@ export const getServerSideProps = withCsrf(
     }
 
     return {
-      props: { invalidEmail, csrfToken }
+      props: { csrfToken }
     }
   }
 )
 
 interface Props {
-  invalidEmail?: boolean
+  emailAddress?: string
+  emailError?: string
   csrfToken: string
 }
 
-const Index = ({ invalidEmail, csrfToken }: Props) => (
+const Index = ({ emailAddress, emailError, csrfToken }: Props) => (
   <>
     <Head>
       <title>{"Sign in to Bichard 7"}</title>
@@ -93,14 +97,19 @@ const Index = ({ invalidEmail, csrfToken }: Props) => (
       <GridRow>
         <h1 className="govuk-heading-xl">{"Sign in to Bichard 7"}</h1>
 
-        {invalidEmail && (
-          <ErrorSummary title="Invalid email">
-            {"Please check you have entered your email address correctly."}
-          </ErrorSummary>
-        )}
+        <ErrorSummary title="There is a problem" show={!!emailError}>
+          <ErrorSummaryList items={[{ id: "email", error: emailError }]} />
+        </ErrorSummary>
 
         <Form method="post" csrfToken={csrfToken}>
-          <TextInput id="email" name="emailAddress" label="Email address" type="email" />
+          <TextInput
+            id="email"
+            name="emailAddress"
+            label="Email address"
+            type="email"
+            error={emailError}
+            value={emailAddress}
+          />
           <Button>{"Sign in"}</Button>
         </Form>
         <p>

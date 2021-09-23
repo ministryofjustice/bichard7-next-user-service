@@ -44,8 +44,7 @@ describe("Creation of new user", () => {
       cy.get("input[type=password][name=newPassword]").type(newPassword)
       cy.get("input[type=password][name=confirmPassword]").type(newPassword)
       cy.get("button[type=submit]").click()
-      cy.get('span[id="event-name-error"]').should(
-        "have.text",
+      cy.get("div.govuk-error-summary").contains(
         "Password contains user specific sensitive information. Please choose another one."
       )
     })
@@ -73,7 +72,7 @@ describe("Creation of new user", () => {
       cy.get("input[type=password][name=newPassword]").type(newPassword)
       cy.get("input[type=password][name=confirmPassword]").type(newPassword)
       cy.get("button[type=submit]").click()
-      cy.get('span[id="event-name-error"]').should("have.text", "Password is too short.")
+      cy.get("div.govuk-error-summary").contains("Password is too short.")
     })
   })
 
@@ -86,7 +85,7 @@ describe("Creation of new user", () => {
       cy.get("input[type=password][name=newPassword]").type(newPassword)
       cy.get("input[type=password][name=confirmPassword]").type(newPassword)
       cy.get("button[type=submit]").click()
-      cy.get('span[id="event-name-error"]').should("have.text", "Password is too easy to guess.")
+      cy.get("div.govuk-error-summary").contains("Password is too easy to guess.")
     })
   })
 
@@ -107,7 +106,7 @@ describe("Creation of new user", () => {
       cy.get("input[type=password][name=newPassword]").type(newPassword)
       cy.get("input[type=password][name=confirmPassword]").type(newPassword)
       cy.get("button[type=submit]").click()
-      cy.get('span[id="event-name-error"]').should("have.text", "Invalid or expired verification code.")
+      cy.get("div.govuk-error-summary").contains("Invalid or expired verification code.")
     })
   })
 
@@ -150,7 +149,7 @@ describe("Creation of new user", () => {
     cy.get('input[id="orgServes"]').type("B organisation")
 
     cy.get("button").click()
-    cy.get('span[id="event-name-error"]').should("have.text", "Username Bichard01 already exists.")
+    cy.get("div.govuk-error-summary").contains("Username Bichard01 already exists.")
   })
 
   it("should respond with forbidden response code when CSRF tokens are invalid in new user page", (done) => {

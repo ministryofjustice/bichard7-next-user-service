@@ -21,6 +21,8 @@ import { UserGroupResult } from "types/UserGroup"
 import getAuditLogger from "lib/getAuditLogger"
 import config from "lib/config"
 import ButtonGroup from "components/ButtonGroup"
+import createRedirectResponse from "utils/createRedirectResponse"
+import { ErrorSummary, ErrorSummaryList } from "components/ErrorSummary"
 
 export const getServerSideProps = withMultipleServerSideProps(
   withAuthentication,
@@ -28,9 +30,16 @@ export const getServerSideProps = withMultipleServerSideProps(
   async (context: GetServerSidePropsContext<ParsedUrlQuery>): Promise<GetServerSidePropsResult<Props>> => {
     const { req, formData, csrfToken, currentUser } = context as CsrfServerSidePropsContext &
       AuthenticationServerSidePropsContext
-    const missingMandatory = false
     let message = ""
     let isSuccess = true
+
+    const connection = getConnection()
+    const userGroups = await getUserGroups(connection)
+
+    if (isError(userGroups)) {
+      console.error(userGroups)
+      return createRedirectResponse("/500")
+    }
 
     if (isPost(req)) {
       /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
@@ -44,51 +53,46 @@ export const getServerSideProps = withMultipleServerSideProps(
         groupId: string
       }
 
-      const formIsValid = userFormIsValid(userCreateDetails)
+      const formValidationResult = userFormIsValid(userCreateDetails, false)
 
-      if (formIsValid) {
-        const connection = getConnection()
+      if (formValidationResult.isFormValid) {
         const auditLogger = getAuditLogger(context, config)
         const result = await setupNewUser(connection, auditLogger, userCreateDetails)
 
-        let userGroups = await getUserGroups(connection)
-
-        if (isError(userGroups)) {
-          console.error(userGroups)
-
-          // Temp fix here until we can throw a 500 error page
-          userGroups = []
-        }
-
         if (isError(result)) {
           return {
-            props: { message: result.message, isSuccess: false, missingMandatory, csrfToken, currentUser, userGroups }
+            props: {
+              message: result.message,
+              isSuccess: false,
+              ...formValidationResult,
+              csrfToken,
+              currentUser,
+              userGroups
+            }
           }
         }
 
         message = `User ${userCreateDetails.username} has been successfully created.`
         return {
-          props: { message, isSuccess: true, missingMandatory, csrfToken, currentUser, userGroups }
+          props: {
+            message,
+            isSuccess: true,
+            ...formValidationResult,
+            csrfToken,
+            currentUser,
+            userGroups
+          }
         }
       }
 
-      message = "Please fill in all mandatory fields."
       isSuccess = false
-    }
-
-    const connection = getConnection()
-
-    let userGroups = await getUserGroups(connection)
-
-    if (isError(userGroups)) {
-      console.error(userGroups)
-
-      // Temp fix here until we can throw a 500 error page
-      userGroups = []
+      return {
+        props: { ...formValidationResult, message, isSuccess, csrfToken, currentUser, userGroups }
+      }
     }
 
     return {
-      props: { message, isSuccess, missingMandatory, csrfToken, currentUser, userGroups }
+      props: { message, isFormValid: true, isSuccess, csrfToken, currentUser, userGroups }
     }
   }
 )
@@ -96,31 +100,55 @@ export const getServerSideProps = withMultipleServerSideProps(
 interface Props {
   message: string
   isSuccess: boolean
-  missingMandatory: boolean
+  usernameError?: string | false
+  forenamesError?: string | false
+  surnameError?: string | false
+  emailError?: string | false
+  isFormValid: boolean
   csrfToken: string
   currentUser?: Partial<User>
   userGroups?: UserGroupResult[]
 }
 
-const newUser = ({ message, isSuccess, missingMandatory, csrfToken, currentUser, userGroups }: Props) => (
+const newUser = ({
+  message,
+  isSuccess,
+  usernameError,
+  forenamesError,
+  surnameError,
+  emailError,
+  csrfToken,
+  currentUser,
+  userGroups,
+  isFormValid
+}: Props) => (
   <>
     <Head>
       <title>{"New User"}</title>
     </Head>
     <Layout user={currentUser}>
       <h1 className="govuk-heading-l">{"Add a new user"}</h1>
-      {!isSuccess && (
-        <span id="event-name-error" className="govuk-error-message">
-          {message}
-        </span>
-      )}
+
+      <ErrorSummary title="There is a problem" show={!isFormValid || (!isSuccess && !!message)}>
+        <ErrorSummaryList
+          items={[
+            { id: "username", error: usernameError },
+            { id: "forenames", error: forenamesError },
+            { id: "surname", error: surnameError },
+            { id: "emailAddress", error: emailError },
+            { id: "", error: message }
+          ]}
+        />
+      </ErrorSummary>
 
       {isSuccess && message && <SuccessBanner>{message}</SuccessBanner>}
+
       <Form method="post" csrfToken={csrfToken}>
         <UserForm
-          missingUsername={missingMandatory}
-          missingForenames={missingMandatory}
-          missingEmail={missingMandatory}
+          usernameError={usernameError}
+          forenamesError={forenamesError}
+          emailError={emailError}
+          surnameError={surnameError}
           userGroups={userGroups}
         />
         <ButtonGroup>

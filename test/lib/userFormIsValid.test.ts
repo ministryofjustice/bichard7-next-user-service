@@ -10,9 +10,13 @@ describe("userFormIsValid", () => {
       emailAddress: "test-value-04"
     }
 
-    const isValid = userFormIsValid(userDetails)
+    const { isFormValid, forenamesError, surnameError, emailError, usernameError } = userFormIsValid(userDetails, false)
 
-    expect(isValid).toBe(false)
+    expect(isFormValid).toBe(false)
+    expect(forenamesError).toBe(false)
+    expect(surnameError).toBe(false)
+    expect(usernameError).toBe("Enter a username for the new user")
+    expect(emailError).toBe(false)
   })
 
   it("should return false when forenames is empty", () => {
@@ -23,9 +27,13 @@ describe("userFormIsValid", () => {
       emailAddress: "test-value-04"
     }
 
-    const isValid = userFormIsValid(userDetails)
+    const { isFormValid, forenamesError, surnameError, emailError, usernameError } = userFormIsValid(userDetails, false)
 
-    expect(isValid).toBe(false)
+    expect(isFormValid).toBe(false)
+    expect(forenamesError).toBe("Enter the user's forenames")
+    expect(surnameError).toBe(false)
+    expect(usernameError).toBe(false)
+    expect(emailError).toBe(false)
   })
 
   it("should return false when surname is empty", () => {
@@ -36,9 +44,13 @@ describe("userFormIsValid", () => {
       emailAddress: "test-value-04"
     }
 
-    const isValid = userFormIsValid(userDetails)
+    const { isFormValid, forenamesError, surnameError, emailError, usernameError } = userFormIsValid(userDetails, false)
 
-    expect(isValid).toBe(false)
+    expect(isFormValid).toBe(false)
+    expect(forenamesError).toBe(false)
+    expect(surnameError).toBe("Enter the user's surname")
+    expect(usernameError).toBe(false)
+    expect(emailError).toBe(false)
   })
 
   it("should return false when emailAddress is empty", () => {
@@ -49,9 +61,13 @@ describe("userFormIsValid", () => {
       emailAddress: ""
     }
 
-    const isValid = userFormIsValid(userDetails)
+    const { isFormValid, forenamesError, surnameError, emailError, usernameError } = userFormIsValid(userDetails, false)
 
-    expect(isValid).toBe(false)
+    expect(isFormValid).toBe(false)
+    expect(forenamesError).toBe(false)
+    expect(surnameError).toBe(false)
+    expect(usernameError).toBe(false)
+    expect(emailError).toBe("Enter the user's email address")
   })
 
   it("should return true when all relevant fields are valid", () => {
@@ -62,8 +78,12 @@ describe("userFormIsValid", () => {
       emailAddress: "test-value-05"
     }
 
-    const isValid = userFormIsValid(userDetails)
+    const { isFormValid, forenamesError, surnameError, emailError, usernameError } = userFormIsValid(userDetails, false)
 
-    expect(isValid).toBe(true)
+    expect(isFormValid).toBe(true)
+    expect(forenamesError).toBe(false)
+    expect(surnameError).toBe(false)
+    expect(usernameError).toBe(false)
+    expect(emailError).toBe(false)
   })
 })

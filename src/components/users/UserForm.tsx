@@ -1,21 +1,20 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import TextInput from "components/TextInput"
-import Select from "components/Select"
+import Select, { Option } from "components/Select"
 
 interface Props {
-  username?: any
-  forenames?: any
-  surname?: any
-  emailAddress?: any
-  endorsedBy?: any
-  orgServes?: any
-  groupId?: any
-  missingUsername?: boolean
-  missingForenames?: boolean
-  missingSurname?: boolean
-  missingEmail?: boolean
-  disableEmailField?: boolean
-  userGroups?: any
+  username?: string
+  forenames?: string
+  surname?: string
+  emailAddress?: string
+  endorsedBy?: string
+  orgServes?: string
+  groupId?: number
+  userGroups?: Option[]
+  usernameError?: string | false
+  forenamesError?: string | false
+  surnameError?: string | false
+  emailError?: string | false
+  isEdit?: boolean
 }
 
 const UserForm = ({
@@ -25,54 +24,32 @@ const UserForm = ({
   emailAddress,
   endorsedBy,
   orgServes,
-  missingUsername,
-  missingForenames,
-  missingSurname,
-  missingEmail,
-  disableEmailField,
   groupId,
-  userGroups
+  userGroups,
+  usernameError,
+  forenamesError,
+  surnameError,
+  emailError,
+  isEdit = false
 }: Props) => (
   <>
+    <TextInput name="username" label="Username" error={usernameError} value={username} readOnly={isEdit} mandatory />
+    <TextInput name="forenames" label="Forename(s)" error={forenamesError} value={forenames} mandatory />
+    <TextInput name="surname" label="Surname" error={surnameError} value={surname} mandatory />
     <TextInput
-      id="username"
-      name="username"
-      label="Username *"
-      type="text"
-      isError={missingUsername}
-      defaultValue={username}
-    />
-    <TextInput
-      id="forenames"
-      name="forenames"
-      label="Forename(s) *"
-      type="text"
-      isError={missingForenames}
-      defaultValue={forenames}
-    />
-    <TextInput
-      id="surname"
-      name="surname"
-      label="Surname *"
-      type="text"
-      isError={missingSurname}
-      defaultValue={surname}
-    />
-    <TextInput
-      id="emailAddress"
       name="emailAddress"
-      label="Email address *"
+      label="Email address"
       type="email"
-      defaultValue={emailAddress}
-      isError={missingEmail}
-      disabled={disableEmailField}
+      value={emailAddress}
+      error={emailError}
+      readOnly={isEdit}
+      mandatory
     />
 
     <Select options={userGroups} label={"User role *"} id="groupId" defaultValue={groupId} />
-    <TextInput defaultValue={endorsedBy} id="endorsedBy" name="endorsedBy" label="Endorsed by" type="text" />
-    <TextInput defaultValue={orgServes} id="orgServes" name="orgServes" label="Organisation" type="text" />
+    <TextInput value={endorsedBy} name="endorsedBy" label="Endorsed by" />
+    <TextInput value={orgServes} name="orgServes" label="Organisation" />
   </>
 )
 
 export default UserForm
-/* eslint-disable @typescript-eslint/no-explicit-any */

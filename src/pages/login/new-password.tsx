@@ -1,6 +1,8 @@
 import Button from "components/Button"
+import { ErrorSummary, ErrorSummaryList } from "components/ErrorSummary"
 import Form from "components/Form"
 import Layout from "components/Layout"
+import Link from "components/Link"
 import SuggestPassword from "components/SuggestPassword"
 import TextInput from "components/TextInput"
 import config from "lib/config"
@@ -21,7 +23,6 @@ import isPost from "utils/isPost"
 
 export const getServerSideProps = withCsrf(async (context): Promise<GetServerSidePropsResult<Props>> => {
   const { req, query, formData, csrfToken } = context as CsrfServerSidePropsContext
-  let errorMessage = ""
   let suggestedPassword = ""
   const { token, suggestPassword } = query as { token: EmailVerificationToken; suggestPassword: string }
 
@@ -36,24 +37,25 @@ export const getServerSideProps = withCsrf(async (context): Promise<GetServerSid
       confirmPassword: string
     }
 
-    if (newPassword === "" || confirmPassword === "") {
-      errorMessage = "Passwords cannot be empty."
+    if (newPassword === "") {
       return {
-        props: { errorMessage, csrfToken }
+        props: { csrfToken, newPasswordMissing: true }
       }
     }
 
     if (newPassword !== confirmPassword) {
-      errorMessage = "Passwords do not match."
       return {
-        props: { errorMessage, csrfToken }
+        props: { csrfToken, passwordsMismatch: true }
       }
     }
 
     const translatedToken = decodeEmailVerificationToken(token)
     if (isError(translatedToken)) {
       return {
-        props: { errorMessage: "This link is either incorrect or may have expired. Please try again.", csrfToken }
+        props: {
+          invalidToken: true,
+          csrfToken
+        }
       }
     }
     const { emailAddress, verificationCode } = translatedToken
@@ -66,24 +68,44 @@ export const getServerSideProps = withCsrf(async (context): Promise<GetServerSid
       return createRedirectResponse("/login/reset-password/success")
     }
 
-    errorMessage = result.message
-  } else if (suggestPassword === "true") {
+    return {
+      props: { csrfToken, errorMessage: result.message }
+    }
+  }
+
+  if (suggestPassword === "true") {
     suggestedPassword = generateRandomPassword()
   }
 
   return {
-    props: { errorMessage, suggestedPassword, suggestedPasswordUrl, csrfToken }
+    props: { suggestedPassword, suggestedPasswordUrl, csrfToken }
   }
 })
 
 interface Props {
   csrfToken: string
-  errorMessage: string
+  invalidToken?: boolean
+  newPasswordMissing?: boolean
+  passwordsMismatch?: boolean
+  errorMessage?: string
   suggestedPassword?: string
   suggestedPasswordUrl?: string
 }
 
-const NewPassword = ({ csrfToken, errorMessage, suggestedPassword, suggestedPasswordUrl }: Props) => {
+const NewPassword = ({
+  csrfToken,
+  invalidToken,
+  newPasswordMissing,
+  passwordsMismatch,
+  errorMessage,
+  suggestedPassword,
+  suggestedPasswordUrl
+}: Props) => {
+  const passwordMismatchError = "Passwords do not match"
+  const newPasswordMissingError = "New password is mandatory"
+  const newPasswordError =
+    (newPasswordMissing && newPasswordMissingError) || (passwordsMismatch && passwordMismatchError) || errorMessage
+
   return (
     <>
       <Head>
@@ -94,18 +116,40 @@ const NewPassword = ({ csrfToken, errorMessage, suggestedPassword, suggestedPass
           <h3 data-test="check-email" className="govuk-heading-xl">
             {"First time password setup"}
           </h3>
-          <Form method="post" csrfToken={csrfToken}>
-            <span id="event-name-error" className="govuk-error-message">
-              {errorMessage}
-            </span>
+          {invalidToken && (
+            <ErrorSummary title="Unable to verify email address">
+              <p>
+                {"This link is either incorrect or may have expired. Please "}
+                <Link href="/login">{"use forgot password form"}</Link>
+                {" to set your password."}
+              </p>
+              <p>
+                {"If you still have an issue with setting up your account you will need to "}
+                <Link href={config.contactUrl}>{"contact us"}</Link>
+                {"."}
+              </p>
+            </ErrorSummary>
+          )}
 
-            <TextInput id="newPassword" name="newPassword" label="New Password" type="password" width="20" />
+          <ErrorSummary title="There is a problem" show={!!errorMessage || passwordsMismatch || newPasswordMissing}>
+            <ErrorSummaryList
+              items={[
+                { id: "newPassword", error: passwordsMismatch && "Passwords do not match." },
+                { id: "newPassword", error: newPasswordMissing && "Password field is mandatory." },
+                { id: "newPassword", error: errorMessage }
+              ]}
+            />
+          </ErrorSummary>
+
+          <Form method="post" csrfToken={csrfToken}>
+            <TextInput name="newPassword" label="New Password" type="password" width="20" error={newPasswordError} />
             <TextInput
               id="confirmPassword"
               name="confirmPassword"
               label="Confirm Password"
               type="password"
               width="20"
+              error={passwordsMismatch && passwordMismatchError}
             />
 
             <Button noDoubleClick>{"Set password"}</Button>
