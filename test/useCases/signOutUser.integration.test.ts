@@ -51,7 +51,7 @@ describe("SignoutUser", () => {
     expect(authenticationToken).toMatch(/.+\..+\..+/)
     let cookieValues = response.getHeader("Set-Cookie") as string[]
     expect(cookieValues).toHaveLength(1)
-    const regex = new RegExp(`${config.authenticationCookieName}=.+..+..+; HttpOnly`)
+    const regex = new RegExp(`${config.authenticationCookieName}=.+; HttpOnly`)
     expect(cookieValues[0]).toMatch(regex)
 
     const checkDbQuery = `
