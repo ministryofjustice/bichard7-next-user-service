@@ -72,7 +72,7 @@ describe("SignoutUser", () => {
     expect(isError(signoutUserResult)).toBe(false)
 
     cookieValues = response.getHeader("Set-Cookie") as string[]
-    expect(cookieValues).toHaveLength(0)
+    expect(cookieValues).toHaveLength(1)
 
     queryResult = await connection.none(checkDbQuery)
     expect(queryResult).toBe(null)
