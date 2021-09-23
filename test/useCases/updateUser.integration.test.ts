@@ -57,6 +57,7 @@ describe("updatePassword", () => {
     const user = {
       id: initialUser.id,
       username: "Bichard04",
+      email: "bichard04@example.com",
       forenames: "forename04",
       surname: "surname04",
       endorsedBy: "endorsed by 04",
@@ -71,7 +72,8 @@ describe("updatePassword", () => {
     const initialUser02 = initialUserList02[0]
 
     expect(initialUser02.id).toBe(initialUser.id)
-    expect(initialUser02.username).toBe("Bichard04")
+    expect(initialUser02.username).toBe("Bichard01")
+    expect(initialUser02.email).toBe("bichard01@example.com")
     expect(initialUser02.forenames).toBe("forename04")
     expect(initialUser02.surname).toBe("surname04")
     expect(initialUser02.endorsed_by).toBe("endorsed by 04")
