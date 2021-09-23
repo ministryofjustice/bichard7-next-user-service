@@ -15,6 +15,7 @@ import CsrfServerSidePropsContext from "types/CsrfServerSidePropsContext"
 import { isError } from "types/Result"
 import generateRandomPassword from "useCases/generateRandomPassword"
 import initialiseUserPassword from "useCases/initialiseUserPassword"
+import addQueryParams from "utils/addQueryParams"
 import createRedirectResponse from "utils/createRedirectResponse"
 import isPost from "utils/isPost"
 
@@ -23,10 +24,11 @@ export const getServerSideProps = withCsrf(async (context): Promise<GetServerSid
   let errorMessage = ""
   let suggestedPassword = ""
   const { token, suggestPassword } = query as { token: EmailVerificationToken; suggestPassword: string }
-  const generatePassword = new URL("/login/new-password", config.baseUrl)
-  generatePassword.searchParams.append("token", token)
-  generatePassword.searchParams.append("suggestPassword", "true")
-  const suggestedPasswordUrl = generatePassword.href
+
+  const suggestedPasswordUrl = addQueryParams("/login/new-password", {
+    token,
+    suggestPassword: "true"
+  })
 
   if (isPost(req)) {
     const { newPassword, confirmPassword } = formData as {

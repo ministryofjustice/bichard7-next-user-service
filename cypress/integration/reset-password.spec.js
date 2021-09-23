@@ -15,7 +15,7 @@ describe("Reset password", () => {
     it("should send out email to reset password", () => {
       const emailAddress = "bichard01@example.com"
       cy.visit("/login")
-      cy.get("a[href='/login/forgot-password']").click()
+      cy.get("a[data-test='forgot-password']").click()
       cy.get("body").contains(/forgot password/i)
       cy.get("input[type=email]").type(emailAddress)
       cy.get("button[type=submit]").click()
@@ -136,7 +136,7 @@ describe("Reset password", () => {
     it("should not allow to reset using and old password", () => {
       const emailAddress = "bichard02@example.com"
       cy.visit("/login")
-      cy.get("a[href='/login/forgot-password']").click()
+      cy.get("a[data-test='forgot-password']").click()
       cy.get("body").contains(/forgot password/i)
       cy.get("input[type=email]").type(emailAddress)
       cy.get("button[type=submit]").click()
@@ -153,7 +153,7 @@ describe("Reset password", () => {
       })
 
       cy.visit("/login")
-      cy.get("a[href='/login/forgot-password']").click()
+      cy.get("a[data-test='forgot-password']").click()
       cy.get("body").contains(/forgot password/i)
       cy.get("input[type=email]").type(emailAddress)
       cy.get("button[type=submit]").click()

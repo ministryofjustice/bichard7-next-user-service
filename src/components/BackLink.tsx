@@ -1,11 +1,13 @@
+import Link from "./Link"
+
 interface Props {
   href: string
 }
 
 const BackLink = ({ href }: Props) => (
-  <a href={href} className="govuk-back-link">
+  <Link href={href} className="govuk-back-link" data-test="back-link">
     {"Back"}
-  </a>
+  </Link>
 )
 
 export default BackLink

@@ -25,19 +25,23 @@ import { GetServerSidePropsResult } from "next"
 import isPost from "utils/isPost"
 import getAuditLogger from "lib/getAuditLogger"
 import User from "types/User"
+import addQueryParams from "utils/addQueryParams"
 
 export const getServerSideProps = withCsrf(async (context): Promise<GetServerSidePropsResult<Props>> => {
   const { req, res, query, formData, csrfToken } = context as CsrfServerSidePropsContext
   const redirectUrl = getValidRedirectUrl(query, config)
-  const notYourEmailAddressUrlObject = new URL(`/login`, config.baseUrl)
+
+  let redirectParams: { [key: string]: string } = {}
   const authenticationErrorMessage = "Error authenticating the reqest"
 
   if (redirectUrl) {
-    notYourEmailAddressUrlObject.searchParams.append("redirectUrl", redirectUrl as string)
+    redirectParams = { redirectUrl: redirectUrl as string }
   }
 
-  notYourEmailAddressUrlObject.searchParams.append("notYou", "true")
-  const notYourEmailAddressUrl = notYourEmailAddressUrlObject.href
+  const notYourEmailAddressUrl = addQueryParams("/login", {
+    notYou: "true",
+    ...redirectParams
+  })
 
   try {
     if (isPost(req)) {
@@ -78,7 +82,6 @@ export const getServerSideProps = withCsrf(async (context): Promise<GetServerSid
         }
       }
 
-      const bichardUrl = redirectUrl || config.bichardRedirectURL
       const authToken = await signInUser(connection, res, user as unknown as User)
 
       if (isError(authToken)) {
@@ -96,10 +99,12 @@ export const getServerSideProps = withCsrf(async (context): Promise<GetServerSid
         removeEmailAddressCookie(res, config)
       }
 
-      const url = new URL(bichardUrl as string)
-      url.searchParams.append(config.tokenQueryParamName, authToken)
+      const bichardUrl = (redirectUrl as string) || config.bichardRedirectURL
+      const url = addQueryParams(bichardUrl, {
+        [config.tokenQueryParamName]: authToken
+      })
 
-      return createRedirectResponse(url.href)
+      return createRedirectResponse(url)
     }
 
     const { token } = query as { token: EmailVerificationToken }
