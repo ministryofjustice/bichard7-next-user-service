@@ -19,10 +19,8 @@ import { UserGroupResult } from "types/UserGroup"
 import { Option as UserGroupOption } from "components/Select"
 import getAuditLogger from "lib/getAuditLogger"
 import config from "lib/config"
-
-const errorMessageMap = {
-  unique_users_username_idx: "This username already exists. Please try a different one."
-}
+import createRedirectResponse from "utils/createRedirectResponse"
+import { ErrorSummary, ErrorSummaryList } from "components/ErrorSummary"
 
 export const getServerSideProps = withMultipleServerSideProps(
   withAuthentication,
@@ -32,13 +30,11 @@ export const getServerSideProps = withMultipleServerSideProps(
       AuthenticationServerSidePropsContext
     const connection = getConnection()
 
-    let groups = await getUserGroups(connection)
+    const groups = await getUserGroups(connection)
 
     if (isError(groups)) {
       console.error(groups)
-
-      // Temp fix here until we can throw a 500 error page
-      groups = []
+      return createRedirectResponse("/500")
     }
 
     if (isPost(req)) {
@@ -52,14 +48,15 @@ export const getServerSideProps = withMultipleServerSideProps(
             errorMessage: "There was an error retrieving the user details.",
             csrfToken,
             currentUser,
-            groups
+            groups,
+            isFormValid: true
           }
         }
       }
 
-      const formIsValid = userFormIsValid(userDetails)
+      const formValidationResult = userFormIsValid(userDetails, true)
 
-      if (formIsValid) {
+      if (formValidationResult.isFormValid) {
         const auditLogger = getAuditLogger(context, config)
         const userUpdated = await updateUser(connection, auditLogger, userDetails)
 
@@ -68,11 +65,11 @@ export const getServerSideProps = withMultipleServerSideProps(
 
           return {
             props: {
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              errorMessage: (errorMessageMap as any)[(userUpdated as any).constraint] || (userUpdated as any).message,
               csrfToken,
               currentUser,
-              groups
+              groups,
+              ...formValidationResult,
+              errorMessage: userUpdated.message
             }
           }
         }
@@ -87,7 +84,8 @@ export const getServerSideProps = withMultipleServerSideProps(
               errorMessage: "There was an error retrieving the user details.",
               csrfToken,
               currentUser,
-              groups
+              groups,
+              ...formValidationResult
             }
           }
         }
@@ -98,18 +96,19 @@ export const getServerSideProps = withMultipleServerSideProps(
             user: updatedUser,
             csrfToken,
             currentUser,
-            groups
+            groups,
+            ...formValidationResult
           }
         }
       }
       return {
         props: {
-          errorMessage: "Please fill in all mandatory fields.",
           missingMandatory: true,
           user: { ...user, ...userDetails },
           csrfToken,
           currentUser,
-          groups
+          groups,
+          ...formValidationResult
         }
       }
     }
@@ -126,7 +125,8 @@ export const getServerSideProps = withMultipleServerSideProps(
           missingMandatory: false,
           csrfToken,
           currentUser,
-          groups
+          groups,
+          isFormValid: true
         }
       }
     }
@@ -137,7 +137,8 @@ export const getServerSideProps = withMultipleServerSideProps(
         user,
         csrfToken,
         currentUser,
-        groups
+        groups,
+        isFormValid: true
       }
     }
   }
@@ -147,14 +148,30 @@ interface Props {
   errorMessage?: string
   successMessage?: string
   missingMandatory?: boolean
-  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-  user?: any | null
+  user?: Partial<User> | null
   csrfToken: string
   currentUser?: Partial<User>
   groups: UserGroupResult[]
+  usernameError?: string | false
+  forenamesError?: string | false
+  surnameError?: string | false
+  emailError?: string | false
+  isFormValid: boolean
 }
 
-const editUser = ({ errorMessage, successMessage, missingMandatory, user, csrfToken, currentUser, groups }: Props) => (
+const editUser = ({
+  errorMessage,
+  successMessage,
+  usernameError,
+  forenamesError,
+  surnameError,
+  emailError,
+  user,
+  csrfToken,
+  currentUser,
+  groups,
+  isFormValid
+}: Props) => (
   <>
     <Head>
       <title>{"Edit User"}</title>
@@ -165,21 +182,34 @@ const editUser = ({ errorMessage, successMessage, missingMandatory, user, csrfTo
         {(user && user.username) || "user"}
         {"'s details"}
       </h1>
-      <span id="event-name-error" className="govuk-error-message">
+      <ErrorSummary title="Error" show={!!errorMessage}>
         {errorMessage}
-      </span>
+      </ErrorSummary>
+
+      <ErrorSummary title="Please fix the followings:" show={!isFormValid}>
+        <ErrorSummaryList
+          items={[
+            { id: "username", error: usernameError },
+            { id: "forenames", error: forenamesError },
+            { id: "surname", error: surnameError },
+            { id: "emailAddress", error: emailError }
+          ]}
+        />
+      </ErrorSummary>
+
       {successMessage && <SuccessBanner>{successMessage}</SuccessBanner>}
+
       {user && (
         <Form method="post" csrfToken={csrfToken}>
           <UserForm
             /* eslint-disable-next-line react/jsx-props-no-spreading */
             {...user}
-            missingUsername={missingMandatory}
-            missingForenames={missingMandatory}
-            missingSurname={missingMandatory}
-            missingEmail={missingMandatory}
-            disableEmailField
+            usernameError={usernameError}
+            forenamesError={forenamesError}
+            surnameError={surnameError}
+            emailError={emailError}
             userGroups={groups as unknown as UserGroupOption[]}
+            isEdit
           />
           <input type="hidden" name="id" value={user.id} />
           <Button noDoubleClick>{"Update user"}</Button>

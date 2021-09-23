@@ -5,7 +5,7 @@ import Head from "next/head"
 import TextInput from "components/TextInput"
 import { GetServerSidePropsContext, GetServerSidePropsResult } from "next"
 import BackLink from "components/BackLink"
-import ErrorSummary from "components/ErrorSummary"
+import ErrorSummary from "components/ErrorSummary/ErrorSummary"
 import getConnection from "lib/getConnection"
 import { sendPasswordResetEmail } from "useCases"
 import { isError } from "types/Result"
@@ -15,6 +15,7 @@ import CsrfServerSidePropsContext from "types/CsrfServerSidePropsContext"
 import { withCsrf } from "middleware"
 import isPost from "utils/isPost"
 import { ParsedUrlQuery } from "querystring"
+import { ErrorSummaryList } from "components/ErrorSummary"
 
 export const getServerSideProps = withCsrf(
   async (context: GetServerSidePropsContext<ParsedUrlQuery>): Promise<GetServerSidePropsResult<Props>> => {
@@ -26,7 +27,7 @@ export const getServerSideProps = withCsrf(
       if (!emailAddress) {
         return {
           props: {
-            invalidEmail: true,
+            emailError: "Email address is not valid",
             csrfToken
           }
         }
@@ -44,7 +45,6 @@ export const getServerSideProps = withCsrf(
 
     return {
       props: {
-        invalidEmail: false,
         csrfToken
       }
     }
@@ -52,11 +52,11 @@ export const getServerSideProps = withCsrf(
 )
 
 interface Props {
-  invalidEmail: boolean
+  emailError?: string
   csrfToken: string
 }
 
-const ForgotPassword = ({ invalidEmail, csrfToken }: Props) => (
+const ForgotPassword = ({ emailError, csrfToken }: Props) => (
   <>
     <Head>
       <title>{"Forgot password"}</title>
@@ -67,15 +67,17 @@ const ForgotPassword = ({ invalidEmail, csrfToken }: Props) => (
 
         <h1 className="govuk-heading-xl">{"Forgot password"}</h1>
 
-        {invalidEmail && (
-          <ErrorSummary title="Invalid email">{"The supplied email address is not valid."}</ErrorSummary>
-        )}
+        <ErrorSummary title="Invalid email" show={!!emailError}>
+          <ErrorSummaryList
+            items={[{ id: "email", error: "Please check you have entered your email address correctly." }]}
+          />
+        </ErrorSummary>
 
         <p className="govuk-body">
           <p>{"We will email you a link to reset your password."}</p>
 
           <Form method="post" csrfToken={csrfToken}>
-            <TextInput id="email" name="emailAddress" label="Email address" type="email" isError={invalidEmail} />
+            <TextInput id="email" name="emailAddress" label="Email address" type="email" error={emailError} />
             <Button noDoubleClick>{"Send the link"}</Button>
           </Form>
         </p>

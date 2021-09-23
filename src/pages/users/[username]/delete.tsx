@@ -5,7 +5,7 @@ import { GetServerSidePropsContext, GetServerSidePropsResult } from "next"
 import Button from "components/Button"
 import ButtonGroup from "components/ButtonGroup"
 import Link from "components/Link"
-import ErrorSummary from "components/ErrorSummary"
+import ErrorSummary from "components/ErrorSummary/ErrorSummary"
 import { Fieldset, FieldsetHint, FieldsetLegend } from "components/Fieldset"
 import Warning from "components/Warning"
 import TextInput from "components/TextInput"
@@ -21,6 +21,7 @@ import AuthenticationServerSidePropsContext from "types/AuthenticationServerSide
 import isPost from "utils/isPost"
 import getAuditLogger from "lib/getAuditLogger"
 import config from "lib/config"
+import { ErrorSummaryList } from "components/ErrorSummary"
 
 export const getServerSideProps = withMultipleServerSideProps(
   withAuthentication,
@@ -91,11 +92,13 @@ const Delete = ({ user, showInputNotMatchingError, csrfToken, currentUser }: Pro
         <title>{"Users"}</title>
       </Head>
       <Layout user={currentUser}>
-        {showInputNotMatchingError && (
-          <ErrorSummary title="Username mismatch">
-            {"Provided username in the confirmation box is incorrect."}
-          </ErrorSummary>
-        )}
+        <ErrorSummary title="Username mismatch" show={!!showInputNotMatchingError}>
+          <ErrorSummaryList
+            items={[
+              { id: "delete-account-confirmation", error: "Provided username in the confirmation box is incorrect." }
+            ]}
+          />
+        </ErrorSummary>
 
         <Form method="post" csrfToken={csrfToken}>
           <Fieldset>
@@ -109,6 +112,7 @@ const Delete = ({ user, showInputNotMatchingError, csrfToken, currentUser }: Pro
               label={`If you are sure about deleting this account, type '${user.username}' in the box below.`}
               type="text"
               width="20"
+              error={showInputNotMatchingError && "Username does not match"}
             />
           </Fieldset>
           <ButtonGroup>

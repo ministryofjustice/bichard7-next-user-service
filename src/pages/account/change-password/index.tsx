@@ -1,4 +1,5 @@
 import Button from "components/Button"
+import { ErrorSummary, ErrorSummaryList } from "components/ErrorSummary"
 import Form from "components/Form"
 import Layout from "components/Layout"
 import SuggestPassword from "components/SuggestPassword"
@@ -15,6 +16,7 @@ import CsrfServerSidePropsContext from "types/CsrfServerSidePropsContext"
 import { isError } from "types/Result"
 import User from "types/User"
 import { changePassword, signOutUser } from "useCases"
+import checkPassword from "useCases/checkPassword"
 import generateRandomPassword from "useCases/generateRandomPassword"
 import createRedirectResponse from "utils/createRedirectResponse"
 import isPost from "utils/isPost"
@@ -30,7 +32,6 @@ export const getServerSideProps = withMultipleServerSideProps(
       return createRedirectResponse("/login")
     }
 
-    let errorMessage = ""
     let suggestedPassword = ""
     const { suggestPassword } = query as { suggestPassword: string }
 
@@ -45,20 +46,24 @@ export const getServerSideProps = withMultipleServerSideProps(
       }
 
       if (!currentPassword || !newPassword || !confirmPassword) {
-        errorMessage = "Passwords cannot be empty."
         return {
-          props: { errorMessage, csrfToken, currentUser }
-        }
-      }
-
-      if (newPassword !== confirmPassword) {
-        errorMessage = "Passwords do not match."
-        return {
-          props: { errorMessage, csrfToken, currentUser }
+          props: { currentPasswordMissing: !currentPassword, newPasswordMissing: !newPassword, csrfToken, currentUser }
         }
       }
 
       const connection = getConnection()
+      if (!(await checkPassword(connection, currentUser.emailAddress, currentPassword))) {
+        return {
+          props: { invalidCurrentPassword: true, csrfToken, currentUser }
+        }
+      }
+
+      if (newPassword !== confirmPassword) {
+        return {
+          props: { passwordsMismatch: true, csrfToken, currentUser }
+        }
+      }
+
       const auditLogger = getAuditLogger(context, config)
       const changePasswordResult = await changePassword(
         connection,
@@ -69,9 +74,8 @@ export const getServerSideProps = withMultipleServerSideProps(
       )
 
       if (isError(changePasswordResult)) {
-        errorMessage = changePasswordResult.message
         return {
-          props: { errorMessage, csrfToken, currentUser }
+          props: { errorMessage: changePasswordResult.message, csrfToken, currentUser }
         }
       }
 
@@ -85,20 +89,42 @@ export const getServerSideProps = withMultipleServerSideProps(
     }
 
     return {
-      props: { errorMessage, suggestedPassword, suggestedPasswordUrl, csrfToken, currentUser }
+      props: { suggestedPassword, suggestedPasswordUrl, csrfToken, currentUser }
     }
   }
 )
 
 interface Props {
   csrfToken: string
-  errorMessage: string
+  currentPasswordMissing?: boolean
+  newPasswordMissing?: boolean
+  passwordsMismatch?: boolean
+  invalidCurrentPassword?: boolean
+  errorMessage?: string
   suggestedPassword?: string
   suggestedPasswordUrl?: string
   currentUser?: Partial<User>
 }
 
-const ChangePassword = ({ csrfToken, currentUser, errorMessage, suggestedPassword, suggestedPasswordUrl }: Props) => {
+const ChangePassword = ({
+  csrfToken,
+  currentUser,
+  currentPasswordMissing,
+  newPasswordMissing,
+  passwordsMismatch,
+  invalidCurrentPassword,
+  errorMessage,
+  suggestedPassword,
+  suggestedPasswordUrl
+}: Props) => {
+  const passwordMismatchError = "Passwords do not match"
+  const newPasswordMissingError = "New password is mandatory"
+  const newPasswordError =
+    (newPasswordMissing && newPasswordMissingError) || (passwordsMismatch && passwordMismatchError) || errorMessage
+  const currentPasswordError =
+    (currentPasswordMissing && "Current password is mandatory") ||
+    (invalidCurrentPassword && "Current password is not valid")
+
   return (
     <>
       <Head>
@@ -114,20 +140,50 @@ const ChangePassword = ({ csrfToken, currentUser, errorMessage, suggestedPasswor
               {errorMessage}
             </span>
 
+            <ErrorSummary
+              title="Please fix the followings:"
+              show={
+                currentPasswordMissing ||
+                newPasswordMissing ||
+                invalidCurrentPassword ||
+                passwordsMismatch ||
+                !!errorMessage
+              }
+            >
+              <ErrorSummaryList
+                items={[
+                  { id: "currentPassword", error: currentPasswordMissing && "Current password field is mandatory." },
+                  { id: "currentPassword", error: invalidCurrentPassword && "Provided current password is not valid." },
+                  { id: "newPassword", error: newPasswordMissing && "New password field is mandatory." },
+                  { id: "newPassword", error: passwordsMismatch && "Provided new passwords do not match." },
+                  { id: "newPassword", error: errorMessage }
+                ]}
+              />
+            </ErrorSummary>
+
             <TextInput
               id="currentPassword"
               name="currentPassword"
               label="Current Password"
               type="password"
               width="20"
+              error={currentPasswordError}
             />
-            <TextInput id="newPassword" name="newPassword" label="New Password" type="password" width="20" />
+            <TextInput
+              id="newPassword"
+              name="newPassword"
+              label="New Password"
+              type="password"
+              width="20"
+              error={newPasswordError}
+            />
             <TextInput
               id="confirmPassword"
               name="confirmPassword"
               label="Confirm Password"
               type="password"
               width="20"
+              error={passwordsMismatch && passwordMismatchError}
             />
 
             <Button noDoubleClick>{"Update password"}</Button>

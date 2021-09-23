@@ -1,5 +1,5 @@
 import Button from "components/Button"
-import ErrorSummary from "components/ErrorSummary"
+import ErrorSummary from "components/ErrorSummary/ErrorSummary"
 import GridRow from "components/GridRow"
 import Layout from "components/Layout"
 import Head from "next/head"
@@ -25,6 +25,7 @@ import { GetServerSidePropsResult } from "next"
 import isPost from "utils/isPost"
 import getAuditLogger from "lib/getAuditLogger"
 import User from "types/User"
+import { ErrorSummaryList } from "components/ErrorSummary"
 
 export const getServerSideProps = withCsrf(async (context): Promise<GetServerSidePropsResult<Props>> => {
   const { req, res, query, formData, csrfToken } = context as CsrfServerSidePropsContext
@@ -170,8 +171,10 @@ const VerifyEmail = ({
         )}
 
         {invalidCredentials && (
-          <ErrorSummary title="Invalid credentials">
-            {"The supplied email address and password are not valid."}
+          <ErrorSummary title="Invalid credentials" show={invalidCredentials}>
+            <ErrorSummaryList
+              items={[{ id: "password", error: "The supplied email address and password are not valid." }]}
+            />
           </ErrorSummary>
         )}
 
@@ -188,7 +191,14 @@ const VerifyEmail = ({
                 </Link>
                 {"."}
               </p>
-              <TextInput id="password" name="password" label="Password" type="password" />
+
+              <TextInput
+                name="password"
+                label="Password"
+                type="password"
+                error={invalidCredentials && "Password is not valid"}
+              />
+
               <div className="govuk-form-group">
                 <fieldset className="govuk-fieldset" aria-describedby="waste-hint">
                   <legend className="govuk-fieldset__legend">
