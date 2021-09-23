@@ -1,0 +1,25 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`should render error summary component 1`] = `
+<div>
+  <div
+    aria-labelledby="error-summary-title"
+    class="govuk-error-summary"
+    data-module="govuk-error-summary"
+    role="alert"
+    tabindex="-1"
+  >
+    <h2
+      class="govuk-error-summary__title"
+      id="error-summary-title"
+    />
+    <div
+      class="govuk-error-summary__body"
+    >
+      <p>
+        Error summary body
+      </p>
+    </div>
+  </div>
+</div>
+`;
