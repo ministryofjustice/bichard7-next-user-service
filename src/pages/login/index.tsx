@@ -27,7 +27,7 @@ import { ErrorSummaryList } from "components/ErrorSummary"
 export const getServerSideProps = withCsrf(
   async (context: GetServerSidePropsContext<ParsedUrlQuery>): Promise<GetServerSidePropsResult<Props>> => {
     const { req, res, formData, csrfToken, query } = context as CsrfServerSidePropsContext
-    const emailError = "Email address is not valid"
+    const emailError = "Enter a valid email address"
 
     if (isPost(req)) {
       const { emailAddress } = formData as { emailAddress: string }
@@ -97,10 +97,8 @@ const Index = ({ emailAddress, emailError, csrfToken }: Props) => (
       <GridRow>
         <h1 className="govuk-heading-xl">{"Sign in to Bichard 7"}</h1>
 
-        <ErrorSummary title="Invalid email" show={!!emailError}>
-          <ErrorSummaryList
-            items={[{ id: "email", error: "Please check you have entered your email address correctly." }]}
-          />
+        <ErrorSummary title="There is a problem" show={!!emailError}>
+          <ErrorSummaryList items={[{ id: "email", error: emailError }]} />
         </ErrorSummary>
 
         <Form method="post" csrfToken={csrfToken}>

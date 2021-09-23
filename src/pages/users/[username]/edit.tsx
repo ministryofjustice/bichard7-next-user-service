@@ -187,7 +187,7 @@ const editUser = ({
         {errorMessage}
       </ErrorSummary>
 
-      <ErrorSummary title="Please fix the followings:" show={!isFormValid}>
+      <ErrorSummary title="There is a problem" show={!isFormValid}>
         <ErrorSummaryList
           items={[
             { id: "username", error: usernameError },

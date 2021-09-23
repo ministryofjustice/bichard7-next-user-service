@@ -103,7 +103,7 @@ const Delete = ({ user, showInputNotMatchingError, csrfToken, currentUser }: Pro
                 items={[
                   {
                     id: "delete-account-confirmation",
-                    error: "Provided username in the confirmation box is incorrect."
+                    error: "Enter the account username"
                   }
                 ]}
               />

@@ -141,7 +141,7 @@ const ChangePassword = ({
             </span>
 
             <ErrorSummary
-              title="Please fix the followings:"
+              title="There is a problem"
               show={
                 currentPasswordMissing ||
                 newPasswordMissing ||

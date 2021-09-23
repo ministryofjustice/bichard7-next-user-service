@@ -176,9 +176,9 @@ const VerifyEmail = ({
         )}
 
         {invalidCredentials && (
-          <ErrorSummary title="Invalid credentials" show={invalidCredentials}>
+          <ErrorSummary title="Your details do not match" show={invalidCredentials}>
             <ErrorSummaryList
-              items={[{ id: "password", error: "The supplied email address and password are not valid." }]}
+              items={[{ id: "password", error: "Enter a valid email address and password combination" }]}
             />
           </ErrorSummary>
         )}

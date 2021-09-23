@@ -51,8 +51,8 @@ describe("Edit user", () => {
     cy.get('input[id="forenames"]').clear()
     cy.get('input[id="surname"]').clear()
     cy.get('button[type="submit"]').click()
-    cy.get("div.govuk-error-summary").contains("Forenames is mandatory")
-    cy.get("div.govuk-error-summary").contains("Surname is mandatory")
+    cy.get("div.govuk-error-summary").contains("Enter the user's forenames")
+    cy.get("div.govuk-error-summary").contains("Enter the user's surname")
   })
 
   it("should respond with forbidden response code when CSRF tokens are invalid in edit page", (done) => {

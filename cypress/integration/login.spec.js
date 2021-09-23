@@ -66,7 +66,7 @@ describe("Logging In", () => {
       cy.visit(`/login/verify?token=${token}`)
       cy.get("input[type=password]").type("foobar")
       cy.get("button[type=submit]").click()
-      cy.get(".govuk-error-summary").should("be.visible").contains("h2", "Invalid credentials")
+      cy.get(".govuk-error-summary").should("be.visible").contains("h2", "Your details do not match")
     })
 
     it("should display an error if password is correct but token contains wrong verification code", () => {
@@ -74,7 +74,7 @@ describe("Logging In", () => {
       cy.visit(`/login/verify?token=${token}`)
       cy.get("input[type=password]").type("password")
       cy.get("button[type=submit]").click()
-      cy.get(".govuk-error-summary").should("be.visible").contains("h2", "Invalid credentials")
+      cy.get(".govuk-error-summary").should("be.visible").contains("h2", "Your details do not match")
     })
 
     it("should redirect to Bichard with a token when password and verification code are correct", (done) => {

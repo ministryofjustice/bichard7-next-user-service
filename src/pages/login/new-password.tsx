@@ -131,10 +131,7 @@ const NewPassword = ({
             </ErrorSummary>
           )}
 
-          <ErrorSummary
-            title="Please fix the followings:"
-            show={!!errorMessage || passwordsMismatch || newPasswordMissing}
-          >
+          <ErrorSummary title="There is a problem" show={!!errorMessage || passwordsMismatch || newPasswordMissing}>
             <ErrorSummaryList
               items={[
                 { id: "newPassword", error: passwordsMismatch && "Passwords do not match." },

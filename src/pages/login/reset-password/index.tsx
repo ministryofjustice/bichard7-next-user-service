@@ -150,11 +150,12 @@ const ResetPassword = ({
   suggestedPasswordUrl
 }: Props) => {
   const passwordMismatchError = "Passwords do not match"
-  const newPasswordMissingError = "New password is mandatory"
+  const newPasswordMissingError = "Enter a new password"
   const newPasswordError =
     (invalidPassword && newPasswordMissingError) ||
     (passwordsMismatch && passwordMismatchError) ||
     (passwordInsecure && passwordInsecureMessage)
+  const errorSummaryTitle = (passwordsMismatch && "Your passwords do not match") || "There is a problem"
 
   return (
     <>
@@ -168,14 +169,11 @@ const ResetPassword = ({
               {"Reset Password"}
             </h1>
 
-            <ErrorSummary
-              title="Please fix the followings:"
-              show={invalidPassword || passwordsMismatch || !!passwordInsecure}
-            >
+            <ErrorSummary title={errorSummaryTitle} show={invalidPassword || passwordsMismatch || !!passwordInsecure}>
               <ErrorSummaryList
                 items={[
-                  { id: "newPassword", error: invalidPassword && "Password field is mandatory." },
-                  { id: "newPassword", error: passwordsMismatch && "Provided new passwords do not match." },
+                  { id: "newPassword", error: invalidPassword && newPasswordMissingError },
+                  { id: "newPassword", error: passwordsMismatch && "Enter the same password twice" },
                   { id: "newPassword", error: passwordInsecureMessage }
                 ]}
               />

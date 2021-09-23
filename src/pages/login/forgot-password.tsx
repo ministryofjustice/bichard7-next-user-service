@@ -27,7 +27,7 @@ export const getServerSideProps = withCsrf(
       if (!emailAddress) {
         return {
           props: {
-            emailError: "Email address is not valid",
+            emailError: "Enter a valid email address",
             csrfToken
           }
         }
@@ -67,7 +67,7 @@ const ForgotPassword = ({ emailError, csrfToken }: Props) => (
 
         <h1 className="govuk-heading-xl">{"Forgot password"}</h1>
 
-        <ErrorSummary title="Invalid email" show={!!emailError}>
+        <ErrorSummary title="There is a problem" show={!!emailError}>
           <ErrorSummaryList
             items={[{ id: "email", error: "Please check you have entered your email address correctly." }]}
           />

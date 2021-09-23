@@ -93,7 +93,7 @@ describe("Reset password", () => {
         cy.visit(`/login/reset-password?token=${token}`)
         cy.get("body").contains(/reset password/i)
         cy.get("button[type=submit]").click()
-        cy.get(".govuk-error-summary").contains("Password field is mandatory.")
+        cy.get(".govuk-error-summary").contains("Enter a new password")
       })
     })
 
@@ -105,7 +105,7 @@ describe("Reset password", () => {
         cy.get("input[type=password][name=newPassword]").type("Test@123456")
         cy.get("input[type=password][name=confirmPassword]").type("DifferentPassword")
         cy.get("button[type=submit]").click()
-        cy.get(".govuk-error-summary").contains("Provided new passwords do not match.")
+        cy.get(".govuk-error-summary").contains("Enter the same password twice")
       })
     })
 

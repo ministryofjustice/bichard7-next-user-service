@@ -15,7 +15,7 @@ describe("userFormIsValid", () => {
     expect(isFormValid).toBe(false)
     expect(forenamesError).toBe(false)
     expect(surnameError).toBe(false)
-    expect(usernameError).toBe("Username is mandatory")
+    expect(usernameError).toBe("Enter a username for the new user")
     expect(emailError).toBe(false)
   })
 
@@ -30,7 +30,7 @@ describe("userFormIsValid", () => {
     const { isFormValid, forenamesError, surnameError, emailError, usernameError } = userFormIsValid(userDetails, false)
 
     expect(isFormValid).toBe(false)
-    expect(forenamesError).toBe("Forenames is mandatory")
+    expect(forenamesError).toBe("Enter the user's forenames")
     expect(surnameError).toBe(false)
     expect(usernameError).toBe(false)
     expect(emailError).toBe(false)
@@ -48,7 +48,7 @@ describe("userFormIsValid", () => {
 
     expect(isFormValid).toBe(false)
     expect(forenamesError).toBe(false)
-    expect(surnameError).toBe("Surname is mandatory")
+    expect(surnameError).toBe("Enter the user's surname")
     expect(usernameError).toBe(false)
     expect(emailError).toBe(false)
   })
@@ -67,7 +67,7 @@ describe("userFormIsValid", () => {
     expect(forenamesError).toBe(false)
     expect(surnameError).toBe(false)
     expect(usernameError).toBe(false)
-    expect(emailError).toBe("Email address is mandatory")
+    expect(emailError).toBe("Enter the user's email address")
   })
 
   it("should return true when all relevant fields are valid", () => {

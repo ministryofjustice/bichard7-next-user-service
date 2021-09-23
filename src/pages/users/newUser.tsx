@@ -129,7 +129,7 @@ const newUser = ({
     <Layout user={currentUser}>
       <h1 className="govuk-heading-l">{"Add a new user"}</h1>
 
-      <ErrorSummary title="Please fix the followings:" show={!isFormValid || (!isSuccess && !!message)}>
+      <ErrorSummary title="There is a problem" show={!isFormValid || (!isSuccess && !!message)}>
         <ErrorSummaryList
           items={[
             { id: "username", error: usernameError },

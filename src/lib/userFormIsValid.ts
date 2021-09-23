@@ -15,13 +15,13 @@ const userFormIsValid = (
   isEdit: boolean
 ): ValidationResult => {
   const validationResult = {
-    forenamesError: !forenames?.trim() && "Forenames is mandatory",
-    surnameError: !surname?.trim() && "Surname is mandatory"
+    forenamesError: !forenames?.trim() && "Enter the user's forenames",
+    surnameError: !surname?.trim() && "Enter the user's surname"
   } as ValidationResult
 
   if (!isEdit) {
-    validationResult.usernameError = !username?.trim() && "Username is mandatory"
-    validationResult.emailError = !emailAddress?.trim() && "Email address is mandatory"
+    validationResult.usernameError = !username?.trim() && "Enter a username for the new user"
+    validationResult.emailError = !emailAddress?.trim() && "Enter the user's email address"
   }
 
   validationResult.isFormValid =
