@@ -294,7 +294,7 @@ describe("Logging In", () => {
         cy.visit("/logout")
         cy.url().should("not.match", /token=/)
 
-        cy.getCookie(".AUTH").not.should("exist")
+        cy.getCookie(".AUTH").should("not.exist")
       })
     })
   })
