@@ -1,53 +1,62 @@
-import classnames from "classnames"
-
 interface Props {
-  id: string
   label?: string
-  name?: string
-  type?: string
-  width?: string
-  value?: string
-  defaultValue?: string
-  isError?: boolean
-  disabled?: boolean
+  name: string
+  hint?: string
   className?: string
+  error?: string | boolean
+  width?: string
+  id?: string
+  type?: string
+  readOnly?: boolean
+  mandatory?: boolean
+  value?: string
 }
 
 const TextInput = ({
-  id,
   label,
-  name,
-  type,
-  width,
-  value,
-  defaultValue,
+  hint,
+  error,
   className,
-  isError = false,
-  disabled = false
+  name,
+  width,
+  id,
+  readOnly = false,
+  type = "text",
+  value,
+  mandatory = false
 }: Props) => {
-  const inputName = name || id
-  const errorClassName = isError ? " govuk-input--error" : ""
+  const hintElementId = `${name}-hint`
+  const errorElementId = `${name}-error`
   const widthClassName = width ? ` govuk-input--width-${width}` : ""
-
-  const classes = classnames("govuk-form-group", {
-    [className as string]: !!className
-  })
+  const hasError = error && !readOnly
 
   return (
-    <div className={classes}>
-      {!!label && (
-        <label className="govuk-label" htmlFor={inputName}>
+    <div className={`govuk-form-group${className ? ` ${className}` : ""}${hasError ? " govuk-form-group--error" : ""}`}>
+      {label && (
+        <label className="govuk-label" htmlFor={name}>
           {label}
+          {mandatory && " *"}
         </label>
       )}
+
+      {hint && (
+        <div id={hintElementId} className="govuk-hint">
+          {hint}
+        </div>
+      )}
+      {!!hasError && error !== true && (
+        <span id={errorElementId} className="govuk-error-message">
+          <span className="govuk-visually-hidden">{"Error:"}</span> {error}
+        </span>
+      )}
       <input
-        defaultValue={defaultValue}
-        value={value}
-        className={`govuk-input${widthClassName}${errorClassName}`}
-        id={id}
-        name={inputName}
+        className={`govuk-input${widthClassName}${hasError ? " govuk-input--error" : ""}`}
+        id={id || name}
+        name={name}
         type={type}
-        disabled={disabled}
+        defaultValue={value}
+        readOnly={readOnly}
+        aria-describedby={`${hint ? hintElementId : ""} ${hasError ? errorElementId : ""}`}
       />
     </div>
   )
