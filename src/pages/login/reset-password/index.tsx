@@ -170,7 +170,7 @@ const ResetPassword = ({
 
             <ErrorSummary
               title="Please fix the followings:"
-              show={invalidPassword || passwordsMismatch || passwordInsecure}
+              show={invalidPassword || passwordsMismatch || !!passwordInsecure}
             >
               <ErrorSummaryList
                 items={[
