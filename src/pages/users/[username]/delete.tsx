@@ -92,20 +92,23 @@ const Delete = ({ user, showInputNotMatchingError, csrfToken, currentUser }: Pro
         <title>{"Users"}</title>
       </Head>
       <Layout user={currentUser}>
-        <ErrorSummary title="Username mismatch" show={!!showInputNotMatchingError}>
-          <ErrorSummaryList
-            items={[
-              { id: "delete-account-confirmation", error: "Provided username in the confirmation box is incorrect." }
-            ]}
-          />
-        </ErrorSummary>
-
         <Form method="post" csrfToken={csrfToken}>
           <Fieldset>
             <FieldsetLegend>{`Are you sure you want to delete ${fullName}?`}</FieldsetLegend>
             <FieldsetHint>
               <Warning>{"This action is irreversible."}</Warning>
             </FieldsetHint>
+            <ErrorSummary title="Username mismatch" show={!!showInputNotMatchingError}>
+              <ErrorSummaryList
+                items={[
+                  {
+                    id: "delete-account-confirmation",
+                    error: "Provided username in the confirmation box is incorrect."
+                  }
+                ]}
+              />
+            </ErrorSummary>
+
             <TextInput
               id="delete-account-confirmation"
               name="deleteAccountConfirmation"
