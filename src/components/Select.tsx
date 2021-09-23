@@ -1,13 +1,13 @@
 export type Option = {
   name: string
-  id: number
+  id: number | string
 }
 
 export interface Props {
   options?: Option[]
   label: string
   id: string
-  defaultValue?: number
+  defaultValue?: number | string
 }
 
 const Select = ({ options, label, id, defaultValue }: Props) => (
