@@ -1,5 +1,6 @@
 import Button from "components/Button"
 import Layout from "components/Layout"
+import Link from "components/Link"
 import Head from "next/head"
 import SuccessBanner from "components/SuccessBanner"
 import getConnection from "lib/getConnection"
@@ -155,9 +156,9 @@ const newUser = ({
         </ButtonGroup>
       </Form>
 
-      <a href="/users" className="govuk-back-link">
+      <Link href="/users" className="govuk-back-link">
         {"Back"}
-      </a>
+      </Link>
     </Layout>
   </>
 )

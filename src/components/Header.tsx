@@ -1,4 +1,5 @@
 import User from "types/User"
+import Link from "./Link"
 
 interface HeaderProps {
   serviceName: string
@@ -28,10 +29,10 @@ const HeaderLogo = () => {
   /* eslint-disable react/no-danger */
   return (
     <div className="govuk-header__logo">
-      <a href="/" className="govuk-header__link govuk-header__link--homepage">
+      <Link href="/" className="govuk-header__link govuk-header__link--homepage">
         <span className="govuk-header__logotype" dangerouslySetInnerHTML={{ __html: conditionalCommentsInnerHtml }} />
         <span className="govuk-header__logotype-text">{" GOV.UK"}</span>
-      </a>
+      </Link>
     </div>
   )
   /* eslint-enable react/no-danger */
@@ -42,16 +43,16 @@ const Header = ({ serviceName, user }: HeaderProps) => (
     <div className="govuk-header__container govuk-width-container">
       <HeaderLogo />
       <div className="govuk-header__content">
-        <a href="/" className="govuk-header__link govuk-header__link--service-name">
+        <Link href="/" className="govuk-header__link govuk-header__link--service-name">
           {serviceName}
-        </a>
+        </Link>
         {user && (
           <nav>
             <ul id="navigation" className="govuk-header__navigation " aria-label="Navigation menu">
               <li className="govuk-header__navigation-item govuk-header__navigation-item--active">
-                <a className="govuk-header__link" href="/account/change-password">
+                <Link className="govuk-header__link" href="/account/change-password">
                   {"Change Password"}
-                </a>
+                </Link>
               </li>
             </ul>
           </nav>

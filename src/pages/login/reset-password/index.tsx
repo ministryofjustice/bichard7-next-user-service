@@ -18,15 +18,17 @@ import SuggestPassword from "components/SuggestPassword"
 import config from "lib/config"
 import isPost from "utils/isPost"
 import getAuditLogger from "lib/getAuditLogger"
+import addQueryParams from "utils/addQueryParams"
 import { ErrorSummaryList } from "components/ErrorSummary"
 
 export const getServerSideProps = withCsrf(async (context): Promise<GetServerSidePropsResult<Props>> => {
   const { req, query, formData, csrfToken } = context as CsrfServerSidePropsContext
   const { token, suggestPassword } = query as { token: string; suggestPassword: string }
-  const generatePassword = new URL("/login/reset-password", config.baseUrl)
-  generatePassword.searchParams.append("token", token)
-  generatePassword.searchParams.append("suggestPassword", "true")
-  const suggestedPasswordUrl = generatePassword.href
+  const suggestedPasswordUrl = addQueryParams("/login/reset-password", {
+    token,
+    suggestPassword: "true"
+  })
+
   const payload = decodePasswordResetToken(token)
   let suggestedPassword = ""
 

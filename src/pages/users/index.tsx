@@ -20,6 +20,7 @@ import KeyValuePair from "types/KeyValuePair"
 import Link from "components/Link"
 import config from "lib/config"
 import isPost from "utils/isPost"
+import addQueryParams from "utils/addQueryParams"
 
 export const getServerSideProps = withMultipleServerSideProps(
   withAuthentication,
@@ -106,13 +107,15 @@ const tableHeaders: TableHeaders = [
 ]
 
 const Users = ({ allUsers, csrfToken, currentUser, previousFilter, pageNumber, totalUsers }: Props) => {
-  const nextPage = new URL("/users", config.baseUrl)
-  nextPage.searchParams.append("filter", previousFilter)
-  nextPage.searchParams.append("page", (pageNumber + 1).toString())
+  const nextPage = addQueryParams("/users", {
+    filter: previousFilter,
+    page: pageNumber + 1
+  })
 
-  const prevPage = new URL("/users", config.baseUrl)
-  prevPage.searchParams.append("filter", previousFilter)
-  prevPage.searchParams.append("page", (pageNumber - 1).toString())
+  const prevPage = addQueryParams("/users", {
+    filter: previousFilter,
+    page: pageNumber - 1
+  })
 
   const pageNumberStyle = {
     style: {
@@ -139,9 +142,9 @@ const Users = ({ allUsers, csrfToken, currentUser, previousFilter, pageNumber, t
         <h1 className="govuk-heading-l">{"Users"}</h1>
         <Form method="post" csrfToken={csrfToken}>
           <ButtonGroup>
-            <a id="add" className="govuk-button govuk-!-margin-right-8" href="/users/newUser">
+            <Link id="add" className="govuk-button govuk-!-margin-right-8" href="/users/newUser">
               {"Add user"}
-            </a>
+            </Link>
             <TextInput className="align-right" id="filter" name="filter" type="text" value={previousFilter} />
             <Button className="govuk-!-margin-left-4" noDoubleClick id="filter">
               {"Filter"}
@@ -160,11 +163,11 @@ const Users = ({ allUsers, csrfToken, currentUser, previousFilter, pageNumber, t
         )}
 
         <div className="govuk-hint">
-          <Link href={prevPage.toString()} data-test="Prev">
+          <Link href={prevPage} data-test="Prev">
             {pageNumber > 0 && "< Prev"}
           </Link>
           <span style={styles}>{pageString}</span>
-          <Link href={nextPage.toString()} data-test="Next">
+          <Link href={nextPage} data-test="Next">
             {pageNumber + 1 < (totalUsers - 1) / config.maxUsersPerPage && "Next >"}
           </Link>
         </div>

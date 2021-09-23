@@ -19,8 +19,9 @@ import { UserGroupResult } from "types/UserGroup"
 import { Option as UserGroupOption } from "components/Select"
 import getAuditLogger from "lib/getAuditLogger"
 import config from "lib/config"
-import createRedirectResponse from "utils/createRedirectResponse"
+import BackLink from "components/BackLink"
 import { ErrorSummary, ErrorSummaryList } from "components/ErrorSummary"
+import createRedirectResponse from "utils/createRedirectResponse"
 
 export const getServerSideProps = withMultipleServerSideProps(
   withAuthentication,
@@ -216,9 +217,7 @@ const editUser = ({
         </Form>
       )}
 
-      <a href="/users" className="govuk-back-link">
-        {"Back"}
-      </a>
+      <BackLink href="/users" />
     </Layout>
   </>
 )
