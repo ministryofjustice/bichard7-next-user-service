@@ -15,7 +15,6 @@ export default async (
   }
 ) => {
   const { authenticationCookieName } = config
-  const cookies = Object.keys(request.cookies).map((key) => `${key}=${request.cookies[key]}`)
 
   const cookieResult = getCookieValue(request.cookies, authenticationCookieName)
   if (cookieResult === undefined) {
@@ -29,6 +28,6 @@ export default async (
     return removeJwtResult
   }
 
-  removeCookie(response, cookies, authenticationCookieName)
+  removeCookie(response, request.cookies, authenticationCookieName)
   return undefined
 }
