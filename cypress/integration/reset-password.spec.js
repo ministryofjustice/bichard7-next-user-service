@@ -30,8 +30,7 @@ describe("Reset password", () => {
       cy.get("input[type=password][name=newPassword]").type("shorty")
       cy.get("input[type=password][name=confirmPassword]").type("shorty")
       cy.get("button[type=submit]").click()
-      cy.get(".govuk-error-summary").should("be.visible").contains("h2", "Password is insecure")
-      cy.get(".govuk-error-summary__body").should("be.visible").contains("div", "Password is too short.")
+      cy.get(".govuk-error-summary").contains("Password is too short.")
     })
 
     it("should not allow submission when passwords contain sensitive information", () => {
@@ -42,10 +41,9 @@ describe("Reset password", () => {
         cy.get("input[type=password][name=newPassword]").type("bichard01")
         cy.get("input[type=password][name=confirmPassword]").type("bichard01")
         cy.get("button[type=submit]").click()
-        cy.get(".govuk-error-summary").should("be.visible").contains("h2", "Password is insecure")
-        cy.get(".govuk-error-summary__body")
-          .should("be.visible")
-          .contains("div", "Password contains user specific sensitive information. Please choose another one.")
+        cy.get(".govuk-error-summary").contains(
+          "Password contains user specific sensitive information. Please choose another one."
+        )
       })
     })
 
@@ -57,8 +55,7 @@ describe("Reset password", () => {
       cy.get("input[type=password][name=newPassword]").type("123456789")
       cy.get("input[type=password][name=confirmPassword]").type("123456789")
       cy.get("button[type=submit]").click()
-      cy.get(".govuk-error-summary").should("be.visible").contains("h2", "Password is insecure")
-      cy.get(".govuk-error-summary__body").should("be.visible").contains("div", "Password is too easy to guess.")
+      cy.get(".govuk-error-summary").contains("Password is too easy to guess.")
     })
 
     it("should prompt the user that password reset was successful when provided password is valid", (done) => {
@@ -96,7 +93,7 @@ describe("Reset password", () => {
         cy.visit(`/login/reset-password?token=${token}`)
         cy.get("body").contains(/reset password/i)
         cy.get("button[type=submit]").click()
-        cy.get(".govuk-error-summary").should("be.visible").contains("h2", "Password field is mandatory")
+        cy.get(".govuk-error-summary").contains("Password field is mandatory.")
       })
     })
 
@@ -108,7 +105,7 @@ describe("Reset password", () => {
         cy.get("input[type=password][name=newPassword]").type("Test@123456")
         cy.get("input[type=password][name=confirmPassword]").type("DifferentPassword")
         cy.get("button[type=submit]").click()
-        cy.get(".govuk-error-summary").should("be.visible").contains("h2", "Passwords do not match")
+        cy.get(".govuk-error-summary").contains("Provided new passwords do not match.")
       })
     })
 
@@ -165,10 +162,7 @@ describe("Reset password", () => {
         cy.get("input[type=password][name=newPassword]").type(newPassword)
         cy.get("input[type=password][name=confirmPassword]").type(newPassword)
         cy.get("button[type=submit]").click()
-        cy.get(".govuk-error-summary").should("be.visible").contains("h2", "Password is insecure")
-        cy.get(".govuk-error-summary__body")
-          .should("be.visible")
-          .contains("div", "Cannot use previously used password.")
+        cy.get(".govuk-error-summary").contains("Cannot use previously used password.")
       })
     })
   })
