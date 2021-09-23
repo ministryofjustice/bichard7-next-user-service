@@ -318,7 +318,7 @@ describe("Logging In", () => {
       })
     })
 
-    it("can successfully log out after logging in", (done) => {
+    it("can successfully log out after logging in", () => {
       const emailAddress = "bichard01@example.com"
       const password = "password"
 
@@ -334,10 +334,7 @@ describe("Logging In", () => {
         cy.get("button[type=submit]").click()
 
         cy.visit("/logout")
-        cy.url().then((url) => {
-          expect(url.match(/token=([^..]+\.[^..]+\.[^..]+)/)).to.equal(null)
-          done()
-        })
+        cy.url().should("not.match", /token=/)
       })
     })
   })

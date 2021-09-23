@@ -9,7 +9,7 @@ import insertIntoGroupsTable from "../../testFixtures/database/insertIntoGroupsT
 import groups from "../../testFixtures/database/data/groups"
 import selectFromTable from "../../testFixtures/database/selectFromTable"
 
-describe("SignoinUser", () => {
+describe("SigninUser", () => {
   let connection: any
 
   beforeAll(() => {

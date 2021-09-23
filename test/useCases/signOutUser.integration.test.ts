@@ -2,6 +2,7 @@ import { IncomingMessage, ServerResponse } from "http"
 import { NextApiRequestCookies } from "next/dist/server/api-utils"
 import { isError } from "types/Result"
 import User from "types/User"
+import config from "lib/config"
 import { signInUser, signOutUser } from "useCases"
 import createUser from "useCases/createUser"
 import groups from "../../testFixtures/database/data/groups"
@@ -50,7 +51,8 @@ describe("SignoutUser", () => {
     expect(authenticationToken).toMatch(/.+\..+\..+/)
     let cookieValues = response.getHeader("Set-Cookie") as string[]
     expect(cookieValues).toHaveLength(1)
-    expect(cookieValues[0]).toMatch(/.AUTH=.+\..+\..+; HttpOnly/)
+    const regex = new RegExp(`${config.authenticationCookieName}=.+..+..+; HttpOnly`)
+    expect(cookieValues[0]).toMatch(regex)
 
     const checkDbQuery = `
       SELECT *
@@ -62,7 +64,7 @@ describe("SignoutUser", () => {
     let queryResult = await connection.one(checkDbQuery)
     expect(queryResult).not.toBe(null)
 
-    const cookieResults = { ".AUTH": cookieValues[0].split("=")[1] }
+    const cookieResults = { [config.authenticationCookieName]: cookieValues[0].split("=")[1] }
     const request = <IncomingMessage & { cookies: NextApiRequestCookies }>{ method: "GET" }
     request.cookies = cookieResults
 

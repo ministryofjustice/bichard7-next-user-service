@@ -19,7 +19,7 @@ export default async (
 
   const cookieResult = getCookieValue(request.cookies, authenticationCookieName)
   if (cookieResult === undefined) {
-    return new Error("")
+    return new Error("No authentication cookie found")
   }
 
   const jwtId = cookieResult.id
