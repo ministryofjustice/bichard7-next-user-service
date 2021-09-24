@@ -33,7 +33,7 @@ describe("updatePassword", () => {
 
     const user = users[0]
 
-    const createUserDetails: any = {
+    const createUserDetails = {
       username: user.username,
       forenames: user.forenames,
       surname: user.surname,
@@ -138,7 +138,7 @@ describe("updatePassword", () => {
 
     const user = users[0]
 
-    const createUserDetails: any = {
+    const createUserDetails = {
       username: user.username,
       forenames: user.forenames,
       surname: user.surname,
@@ -153,7 +153,7 @@ describe("updatePassword", () => {
     const initialUserList = await selectFromTable("users", "email", "bichard01@example.com")
     const initialUser = initialUserList[0]
 
-    const updateUserDetails: any = {
+    const updateUserDetails = {
       id: initialUser.id,
       username: "new-username-01",
       forenames: "new-forenames-01",
@@ -188,7 +188,7 @@ describe("updatePassword", () => {
 
     const user = users[0]
 
-    const createUserDetails: any = {
+    const createUserDetails = {
       username: user.username,
       forenames: user.forenames,
       surname: user.surname,
@@ -203,7 +203,7 @@ describe("updatePassword", () => {
     const initialUserList = await selectFromTable("users", "email", "bichard01@example.com")
     const initialUser = initialUserList[0]
 
-    const updateUserDetails: any = {
+    const updateUserDetails = {
       id: initialUser.id,
       username: "new-username-01",
       forenames: "new-forenames-01",
@@ -227,7 +227,7 @@ describe("updatePassword", () => {
 
     const user = users[0]
 
-    const createUserDetails: any = {
+    const createUserDetails = {
       username: user.username,
       forenames: user.forenames,
       surname: user.surname,
@@ -242,7 +242,7 @@ describe("updatePassword", () => {
     const initialUserList = await selectFromTable("users", "email", "bichard01@example.com")
     const initialUser = initialUserList[0]
 
-    const updateUserDetails: any = {
+    const updateUserDetails = {
       id: initialUser.id,
       username: "new-username-01",
       forenames: "new-forenames-01",

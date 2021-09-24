@@ -1,6 +1,7 @@
 import { isError } from "types/Result"
 import { getUserGroups } from "useCases"
 import { UserGroupResult } from "types/UserGroup"
+import Database from "types/Database"
 import getTestConnection from "../../testFixtures/getTestConnection"
 import deleteFromTable from "../../testFixtures/database/deleteFromTable"
 import insertIntoGroupsTable from "../../testFixtures/database/insertIntoGroupsTable"
@@ -8,7 +9,7 @@ import groups from "../../testFixtures/database/data/groups"
 import selectFromTable from "../../testFixtures/database/selectFromTable"
 
 describe("getUserGroups", () => {
-  let connection: any
+  let connection: Database
 
   beforeAll(() => {
     connection = getTestConnection()

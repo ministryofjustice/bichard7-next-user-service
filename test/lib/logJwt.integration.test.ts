@@ -1,5 +1,6 @@
 import { getUserByUsername } from "useCases"
 import logJwt from "lib/logJwt"
+import Database from "types/Database"
 import getTestConnection from "../../testFixtures/getTestConnection"
 import deleteFromTable from "../../testFixtures/database/deleteFromTable"
 import selectFromTable from "../../testFixtures/database/selectFromTable"
@@ -8,7 +9,7 @@ import users from "../../testFixtures/database/data/users"
 import groups from "../../testFixtures/database/data/groups"
 
 describe("logJwt", () => {
-  let connection: any
+  let connection: Database
 
   beforeAll(() => {
     connection = getTestConnection()
