@@ -71,7 +71,7 @@ export default async (connection: Database, userDetails: Partial<User>): Promise
   try {
     await connection.tx(async (task: ITask<unknown>) => {
       const { id } = await insertUser(task, userDetails)
-      await insertUserIntoGroup(task, id as unknown as number, userDetails.groupId as number)
+      await insertUserIntoGroup(task, parseInt(id, 10), userDetails.groupId as number)
     })
 
     return undefined

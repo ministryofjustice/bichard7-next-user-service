@@ -1,5 +1,5 @@
 import Database from "types/Database"
-import { PromiseResult } from "types/Result"
+import PromiseResult from "types/PromiseResult"
 import Task from "types/Task"
 
 export default (connection: Database | Task, userId: number, oldPassword: string): PromiseResult<void> => {
