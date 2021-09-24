@@ -45,6 +45,7 @@ export const getServerSideProps = withMultipleServerSideProps(
       const { filter, page, action } = query as {
         filter: string
         page: string
+        action: string
       }
       if (filter) {
         previousFilter = filter
@@ -54,8 +55,14 @@ export const getServerSideProps = withMultipleServerSideProps(
         pageNumber = parseInt(page, 10)
       }
 
-      if (action === "user-created") {
-        bannerMessage = "User created successfully."
+      switch (action) {
+        case "user-created":
+          bannerMessage = "User created successfully."
+          break
+        case "user-deleted":
+          bannerMessage = "User deleted successfully."
+          break
+        default:
       }
     }
 
