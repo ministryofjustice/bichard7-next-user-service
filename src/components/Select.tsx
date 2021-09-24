@@ -15,7 +15,7 @@ const Select = ({ options, label, id, defaultValue }: Props) => (
     <label className="govuk-label govuk-!-padding-top-2" htmlFor={id}>
       {label}
     </label>
-    <select className="govuk-select govuk-!-width-full" id={id} name={id}>
+    <select className="govuk-select" id={id} name={id}>
       {options &&
         options.map((option: Option) => (
           <option selected={option.id === defaultValue} key={option.name} value={option.id}>
