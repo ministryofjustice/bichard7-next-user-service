@@ -21,6 +21,7 @@ import Link from "components/Link"
 import config from "lib/config"
 import isPost from "utils/isPost"
 import addQueryParams from "utils/addQueryParams"
+import SuccessBanner from "components/SuccessBanner"
 
 export const getServerSideProps = withMultipleServerSideProps(
   withAuthentication,
@@ -33,6 +34,7 @@ export const getServerSideProps = withMultipleServerSideProps(
     let totalUsers = 0
     let pageNumber = 0
     let previousFilter = ""
+    let bannerMessage = ""
 
     if (isPost(req)) {
       const { filter } = formData as {
@@ -40,7 +42,7 @@ export const getServerSideProps = withMultipleServerSideProps(
       }
       previousFilter = filter
     } else {
-      const { filter, page } = query as {
+      const { filter, page, action } = query as {
         filter: string
         page: string
       }
@@ -50,6 +52,10 @@ export const getServerSideProps = withMultipleServerSideProps(
 
       if (page) {
         pageNumber = parseInt(page, 10)
+      }
+
+      if (action === "user-created") {
+        bannerMessage = "User created successfully."
       }
     }
 
@@ -69,14 +75,16 @@ export const getServerSideProps = withMultipleServerSideProps(
           currentUser,
           previousFilter,
           pageNumber,
-          totalUsers
+          totalUsers,
+          bannerMessage
         }
       }
     }
     const { result, totalElements } = queryResult
     allUsers = result
-    totalUsers = totalElements
 
+    totalUsers = totalElements
+    totalUsers = totalElements
     return {
       props: {
         allUsers: allUsers as KeyValuePair<string, string>[] | null,
@@ -84,7 +92,8 @@ export const getServerSideProps = withMultipleServerSideProps(
         currentUser,
         previousFilter,
         pageNumber,
-        totalUsers
+        totalUsers,
+        bannerMessage
       }
     }
   }
@@ -97,6 +106,7 @@ interface Props {
   previousFilter: string
   pageNumber: number
   totalUsers: number
+  bannerMessage?: string
 }
 
 const tableHeaders: TableHeaders = [
@@ -106,7 +116,7 @@ const tableHeaders: TableHeaders = [
   ["emailAddress", "Email address"]
 ]
 
-const Users = ({ allUsers, csrfToken, currentUser, previousFilter, pageNumber, totalUsers }: Props) => {
+const Users = ({ allUsers, csrfToken, currentUser, previousFilter, pageNumber, totalUsers, bannerMessage }: Props) => {
   const nextPage = addQueryParams("/users", {
     filter: previousFilter,
     page: pageNumber + 1
@@ -140,6 +150,9 @@ const Users = ({ allUsers, csrfToken, currentUser, previousFilter, pageNumber, t
       </Head>
       <Layout user={currentUser}>
         <h1 className="govuk-heading-l">{"Users"}</h1>
+
+        {!!bannerMessage && <SuccessBanner>{bannerMessage}</SuccessBanner>}
+
         <Form method="post" csrfToken={csrfToken}>
           <ButtonGroup>
             <Link id="add" className="govuk-button govuk-!-margin-right-8" href="/users/newUser">

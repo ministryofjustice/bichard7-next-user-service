@@ -51,6 +51,8 @@ export const getServerSideProps = withMultipleServerSideProps(
         endorsedBy: string
         orgServes: string
         groupId: string
+        save: string
+        saveAndAddAnother: string
       }
 
       const formValidationResult = userFormIsValid(userCreateDetails, false)
@@ -71,6 +73,10 @@ export const getServerSideProps = withMultipleServerSideProps(
               userGroups
             }
           }
+        }
+
+        if (userCreateDetails.save === "save") {
+          return createRedirectResponse("/users?action=user-created")
         }
 
         message = `User ${userCreateDetails.username} has been successfully created.`
@@ -165,7 +171,12 @@ const newUser = ({
           userGroups={userGroups}
         />
         <ButtonGroup>
-          <Button noDoubleClick>{"Add user"}</Button>
+          <Button name="save" value="save" noDoubleClick>
+            {"Save"}
+          </Button>
+          <Button variant="secondary" name="saveAndAddAnother" value="saveAndAddAnother" noDoubleClick>
+            {"Save and add another"}
+          </Button>
         </ButtonGroup>
       </Form>
 
