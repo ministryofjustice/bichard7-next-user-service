@@ -65,6 +65,7 @@ export const getServerSideProps = withMultipleServerSideProps(
               message: result.message,
               isSuccess: false,
               ...formValidationResult,
+              userDetails: userCreateDetails,
               csrfToken,
               currentUser,
               userGroups
@@ -87,7 +88,15 @@ export const getServerSideProps = withMultipleServerSideProps(
 
       isSuccess = false
       return {
-        props: { ...formValidationResult, message, isSuccess, csrfToken, currentUser, userGroups }
+        props: {
+          ...formValidationResult,
+          userDetails: userCreateDetails,
+          message,
+          isSuccess,
+          csrfToken,
+          currentUser,
+          userGroups
+        }
       }
     }
 
@@ -108,6 +117,7 @@ interface Props {
   csrfToken: string
   currentUser?: Partial<User>
   userGroups?: UserGroupResult[]
+  userDetails?: Partial<User>
 }
 
 const newUser = ({
@@ -120,6 +130,7 @@ const newUser = ({
   csrfToken,
   currentUser,
   userGroups,
+  userDetails,
   isFormValid
 }: Props) => (
   <>
@@ -145,6 +156,8 @@ const newUser = ({
 
       <Form method="post" csrfToken={csrfToken}>
         <UserForm
+          // eslint-disable-next-line react/jsx-props-no-spreading
+          {...(userDetails || {})}
           usernameError={usernameError}
           forenamesError={forenamesError}
           emailError={emailError}

@@ -18,7 +18,7 @@ const Select = ({ options, label, id, defaultValue }: Props) => (
     <select className="govuk-select" id={id} name={id}>
       {options &&
         options.map((option: Option) => (
-          <option selected={option.id === defaultValue} key={option.name} value={option.id}>
+          <option selected={String(option.id) === String(defaultValue)} key={option.name} value={option.id}>
             {option.name}
           </option>
         ))}
