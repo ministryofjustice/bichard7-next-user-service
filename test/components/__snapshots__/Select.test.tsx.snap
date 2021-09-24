@@ -12,7 +12,7 @@ exports[`should render select component correctly 1`] = `
       test-select-label
     </label>
     <select
-      class="govuk-select govuk-!-width-full"
+      class="govuk-select"
       id="test-id"
       name="test-id"
     >

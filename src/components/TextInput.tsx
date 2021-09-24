@@ -4,7 +4,7 @@ interface Props {
   hint?: string
   className?: string
   error?: string | boolean
-  width?: string
+  width?: "5" | "10" | "20" | "30"
   id?: string
   type?: string
   readOnly?: boolean
@@ -56,6 +56,7 @@ const TextInput = ({
         type={type}
         defaultValue={value}
         readOnly={readOnly}
+        disabled={readOnly}
         aria-describedby={`${hint ? hintElementId : ""} ${hasError ? errorElementId : ""}`}
       />
     </div>

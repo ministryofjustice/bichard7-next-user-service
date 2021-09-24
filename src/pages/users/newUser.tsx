@@ -51,6 +51,8 @@ export const getServerSideProps = withMultipleServerSideProps(
         endorsedBy: string
         orgServes: string
         groupId: string
+        save: string
+        saveAndAddAnother: string
       }
 
       const formValidationResult = userFormIsValid(userCreateDetails, false)
@@ -65,11 +67,16 @@ export const getServerSideProps = withMultipleServerSideProps(
               message: result.message,
               isSuccess: false,
               ...formValidationResult,
+              userDetails: userCreateDetails,
               csrfToken,
               currentUser,
               userGroups
             }
           }
+        }
+
+        if (userCreateDetails.save === "save") {
+          return createRedirectResponse("/users?action=user-created")
         }
 
         message = `User ${userCreateDetails.username} has been successfully created.`
@@ -87,7 +94,15 @@ export const getServerSideProps = withMultipleServerSideProps(
 
       isSuccess = false
       return {
-        props: { ...formValidationResult, message, isSuccess, csrfToken, currentUser, userGroups }
+        props: {
+          ...formValidationResult,
+          userDetails: userCreateDetails,
+          message,
+          isSuccess,
+          csrfToken,
+          currentUser,
+          userGroups
+        }
       }
     }
 
@@ -108,6 +123,7 @@ interface Props {
   csrfToken: string
   currentUser?: Partial<User>
   userGroups?: UserGroupResult[]
+  userDetails?: Partial<User>
 }
 
 const newUser = ({
@@ -120,6 +136,7 @@ const newUser = ({
   csrfToken,
   currentUser,
   userGroups,
+  userDetails,
   isFormValid
 }: Props) => (
   <>
@@ -145,6 +162,8 @@ const newUser = ({
 
       <Form method="post" csrfToken={csrfToken}>
         <UserForm
+          // eslint-disable-next-line react/jsx-props-no-spreading
+          {...(userDetails || {})}
           usernameError={usernameError}
           forenamesError={forenamesError}
           emailError={emailError}
@@ -152,7 +171,12 @@ const newUser = ({
           userGroups={userGroups}
         />
         <ButtonGroup>
-          <Button noDoubleClick>{"Add user"}</Button>
+          <Button name="save" value="save" noDoubleClick>
+            {"Save"}
+          </Button>
+          <Button variant="secondary" name="saveAndAddAnother" value="saveAndAddAnother" noDoubleClick>
+            {"Save and add another"}
+          </Button>
         </ButtonGroup>
       </Form>
 

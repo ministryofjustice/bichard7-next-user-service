@@ -61,8 +61,7 @@ export const getServerSideProps = withMultipleServerSideProps(
       const deleteUserResult = await deleteUser(connection, auditLogger, user)
 
       if (deleteUserResult.isDeleted) {
-        const userFullName = encodeURIComponent(`${user.forenames} ${user.surname}`)
-        return createRedirectResponse(`/users/${user.username}/deleted?name=${userFullName}`)
+        return createRedirectResponse(`/users?action=user-deleted`)
       }
 
       if (deleteUserResult.serverSideError) {
