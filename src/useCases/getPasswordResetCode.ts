@@ -1,5 +1,6 @@
 import Database from "types/Database"
-import { isError, PromiseResult } from "types/Result"
+import PromiseResult from "types/PromiseResult"
+import { isError } from "types/Result"
 
 export default async (connection: Database, emailAddress: string): PromiseResult<string> => {
   const query = `

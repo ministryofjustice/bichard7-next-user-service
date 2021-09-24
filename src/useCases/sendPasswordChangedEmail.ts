@@ -1,7 +1,8 @@
 import config from "lib/config"
 import getEmailer from "lib/getEmailer"
 import Database from "types/Database"
-import { isError, PromiseResult } from "types/Result"
+import PromiseResult from "types/PromiseResult"
+import { isError } from "types/Result"
 import createPasswordChangedEmail from "./createPasswordChangedEmail"
 import getUserByEmailAddress from "./getUserByEmailAddress"
 

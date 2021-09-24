@@ -5,6 +5,8 @@ import Database from "types/Database"
 import AuditLogger from "types/AuditLogger"
 import { verifySsha } from "lib/ssha"
 import { verifyPassword } from "lib/argon2"
+import PromiseResult from "types/PromiseResult"
+import User from "types/User"
 import resetUserVerificationCode from "./resetUserVerificationCode"
 import updatePassword from "./updatePassword"
 
@@ -78,7 +80,7 @@ const authenticate = async (
   emailAddress: string,
   password: string,
   verificationCode: string
-) => {
+): PromiseResult<User> => {
   const invalidCredentialsError = new Error("Invalid credentials or invalid verification")
 
   if (!emailAddress || !password || !verificationCode || verificationCode.length !== config.verificationCodeLength) {

@@ -1,6 +1,7 @@
 import AuditLogger from "types/AuditLogger"
 import Database from "types/Database"
-import { isError, PromiseResult } from "types/Result"
+import PromiseResult from "types/PromiseResult"
+import { isError } from "types/Result"
 import addPasswordHistory from "./addPasswordHistory"
 import checkPasswordIsBanned from "./checkPasswordIsBanned"
 import checkPasswordIsNew from "./checkPasswordIsNew"
