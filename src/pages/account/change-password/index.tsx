@@ -25,7 +25,7 @@ export const getServerSideProps = withMultipleServerSideProps(
   withAuthentication,
   withCsrf,
   async (context: GetServerSidePropsContext<ParsedUrlQuery>): Promise<GetServerSidePropsResult<Props>> => {
-    const { req, res, query, csrfToken, formData, currentUser } = context as CsrfServerSidePropsContext &
+    const { res, req, query, csrfToken, formData, currentUser } = context as CsrfServerSidePropsContext &
       AuthenticationServerSidePropsContext
 
     if (!currentUser || !currentUser.emailAddress) {
@@ -78,8 +78,7 @@ export const getServerSideProps = withMultipleServerSideProps(
           props: { errorMessage: changePasswordResult.message, csrfToken, currentUser }
         }
       }
-
-      signOutUser(res)
+      await signOutUser(connection, res, req)
 
       return createRedirectResponse("/account/change-password/success")
     }

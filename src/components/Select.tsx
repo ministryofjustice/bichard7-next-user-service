@@ -3,7 +3,7 @@ export type Option = {
   id: number | string
 }
 
-export interface Props {
+interface Props {
   options?: Option[]
   label: string
   id: string
