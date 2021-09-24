@@ -89,9 +89,8 @@ export const getServerSideProps = withMultipleServerSideProps(
     }
     const { result, totalElements } = queryResult
     allUsers = result
+    totalUsers = totalElements
 
-    totalUsers = totalElements
-    totalUsers = totalElements
     return {
       props: {
         allUsers: allUsers as KeyValuePair<string, string>[] | null,
