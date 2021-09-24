@@ -9,7 +9,7 @@ describe("Creation of new user", () => {
     cy.task("insertIntoUsersTable")
   })
 
-  it("should be successful if all of the inputs are populated", () => {
+  it("should be successful and stay on add user page if all of the inputs are populated", () => {
     cy.visit("users/newUser")
 
     cy.get('input[id="username"]').type("Buser")
@@ -19,8 +19,24 @@ describe("Creation of new user", () => {
     cy.get('input[id="endorsedBy"]').type("B Endorsed")
     cy.get('input[id="orgServes"]').type("B organisation")
 
-    cy.get("button").click()
+    cy.get("button[name=saveAndAddAnother]").click()
     cy.get("h3").should("have.text", "User Buser has been successfully created.")
+  })
+
+  it("should be successful and navigate to users page if all of the inputs are populated", () => {
+    cy.visit("users/newUser")
+
+    cy.get('input[id="username"]').type("Buser2")
+    cy.get('input[id="forenames"]').type("B forename")
+    cy.get('input[id="surname"]').type("B surname")
+    cy.get('input[id="emailAddress"]').type("bichardemail2@example.com")
+    cy.get('input[id="endorsedBy"]').type("B Endorsed")
+    cy.get('input[id="orgServes"]').type("B organisation")
+
+    cy.get("button[name=save]").click()
+    cy.url().should("contain", "/users")
+    cy.get("h3").should("have.text", "User created successfully.")
+    cy.get("h1").should("have.text", "Users")
   })
 
   it("should allow user to generate a random password", () => {
@@ -148,7 +164,7 @@ describe("Creation of new user", () => {
     cy.get('input[id="endorsedBy"]').type("B Endorsed")
     cy.get('input[id="orgServes"]').type("B organisation")
 
-    cy.get("button").click()
+    cy.get("button[name=saveAndAddAnother]").click()
     cy.get("div.govuk-error-summary").contains("Username Bichard01 already exists.")
   })
 
@@ -183,7 +199,7 @@ describe("Creation of new user", () => {
     cy.get('input[id="endorsedBy"]').type("B Endorsed zz")
     cy.get('input[id="orgServes"]').type("B organisation zz")
     cy.get("select").select("B7ExceptionHandler_grp")
-    cy.get("button").click()
+    cy.get("button[name=save]").click()
 
     cy.task("selectFromUsersGroupsTable").then((usersGroups) => {
       cy.task("selectFromGroupsTable").then((groups) => {
