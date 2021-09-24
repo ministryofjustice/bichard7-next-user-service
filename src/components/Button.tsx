@@ -16,9 +16,7 @@ const getButtonClass = (variant?: ButtonVariant): string => {
 }
 
 const Button = ({ children, variant, noDoubleClick, id, className }: Props) => {
-  const classes = classnames(getButtonClass(variant), {
-    [className as string]: !!className
-  })
+  const classes = classnames(getButtonClass(variant), className && { [className]: !!className })
 
   return (
     <button
