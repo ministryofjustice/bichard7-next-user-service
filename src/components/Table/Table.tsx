@@ -7,7 +7,7 @@ export type TableHeader = [string, string]
 
 export type TableHeaders = Array<TableHeader>
 
-export type Props = {
+type Props = {
   tableHeaders: TableHeaders
   tableTitle?: string
   tableData: KeyValuePair<string, string>[]

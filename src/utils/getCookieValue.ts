@@ -1,0 +1,13 @@
+import jwt from "jsonwebtoken"
+import { NextApiRequestCookies } from "next/dist/server/api-utils"
+
+export default (cookies: NextApiRequestCookies, cookieName: string) => {
+  if (cookies[cookieName] !== undefined) {
+    const jwtToken = cookies[cookieName].split(";")[0]
+    const result = jwt.decode(jwtToken)
+    if (result !== null && typeof result !== "string") {
+      return result
+    }
+  }
+  return undefined
+}

@@ -214,7 +214,6 @@ describe("updatePassword", () => {
     }
 
     const updateResult = await updateUser(connection, fakeAuditLogger, updateUserDetails)
-    console.log(updateResult)
     expect(isError(updateResult)).toBe(true)
     expect((updateResult as Error).message).toBe("This group does not exist")
   })
