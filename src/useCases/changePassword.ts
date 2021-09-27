@@ -18,6 +18,12 @@ export default async (
   currentPassword: string,
   newPassword: string
 ): PromiseResult<void> => {
+  const passwordCheckResult = passwordSecurityCheck(newPassword)
+
+  if (isError(passwordCheckResult)) {
+    return passwordCheckResult
+  }
+
   const passwordIsBanned = checkPasswordIsBanned(newPassword)
 
   if (isError(passwordIsBanned)) {
@@ -28,12 +34,6 @@ export default async (
 
   if (isError(validatePasswordSensitveResult)) {
     return validatePasswordSensitveResult
-  }
-
-  const passwordCheckResult = passwordSecurityCheck(newPassword)
-
-  if (isError(passwordCheckResult)) {
-    return passwordCheckResult
   }
 
   const passwordMatch = await checkPassword(connection, emailAddress, currentPassword)
