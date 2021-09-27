@@ -75,17 +75,14 @@ if [[ -n "${CODEBUILD_RESOLVED_SOURCE_VERSION}" && -n "${CODEBUILD_START_TIME}" 
     export IMAGE_SHA_HASH=$(cat /tmp/docker.out | grep digest | cut -d':' -f3-4 | cut -d' ' -f2)
 
     if [ "${IS_CD}" = "true" ]; then
+      cat <<EOF>/tmp/user-service.json
+      {
+        "source-hash" : "${CODEBUILD_RESOLVED_SOURCE_VERSION}",
+        "build-time": "${CODEBUILD_START_TIME}",
+        "image-hash": "${IMAGE_SHA_HASH}"
+      }
+EOF
 
-      (
-        echo "Updating User Service Deploy tag  for ${DEPLOY_NAME}"
-        temp_role=$(aws sts assume-role --role-arn "${ASSUME_ROLE_ARN}" --role-session-name "${AWS_ACCOUNT_ID}")
-        export AWS_ACCESS_KEY_ID=$(echo $temp_role | jq -r .Credentials.AccessKeyId)
-        export AWS_SECRET_ACCESS_KEY=$(echo $temp_role | jq -r .Credentials.SecretAccessKey)
-        export AWS_SESSION_TOKEN=$(echo $temp_role | jq -r .Credentials.SessionToken)
-
-        aws ssm put-parameter --name "/cjse-${DEPLOY_NAME}-bichard-7/user_service/image_hash" --value "${IMAGE_SHA_HASH}" --type "SecureString" --overwrite
-      )
-      echo "Starting build ${DEPLOY_JOB_NAME}"
-      aws codebuild start-build --project-name "${DEPLOY_JOB_NAME}"
+    aws s3 cp /tmp/user-service.json ${ARTIFACT_BUCKET}/semaphores/user-service.json
     fi
 fi
