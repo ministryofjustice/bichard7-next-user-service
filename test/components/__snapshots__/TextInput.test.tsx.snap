@@ -21,6 +21,7 @@ exports[`should render text input component 1`] = `
     <input
       aria-describedby="inputName-hint "
       class="govuk-input govuk-input--width-5"
+      disabled=""
       id="inputId"
       name="inputName"
       readonly=""

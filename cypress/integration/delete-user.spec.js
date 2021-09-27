@@ -10,9 +10,8 @@ describe("Delete user", () => {
     cy.get("h1").contains("Are you sure you want to delete Bichard User 02 Surname 02?")
     cy.get("input[id=delete-account-confirmation]").type("Bichard02")
     cy.get("button[type=submit]").click()
-    cy.get(".govuk-notification-banner").contains("User 'Bichard User 02 Surname 02' has been deleted successfully.")
-    cy.get("a.govuk-back-link").click()
     cy.url().should("contains", "/users")
+    cy.get("h3").should("have.text", "User deleted successfully.")
   })
 
   it("should not allow deleting the user when confirmation text is invalid", () => {

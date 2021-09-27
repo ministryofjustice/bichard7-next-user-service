@@ -33,9 +33,17 @@ const UserForm = ({
   isEdit = false
 }: Props) => (
   <>
-    <TextInput name="username" label="Username" error={usernameError} value={username} readOnly={isEdit} mandatory />
-    <TextInput name="forenames" label="Forename(s)" error={forenamesError} value={forenames} mandatory />
-    <TextInput name="surname" label="Surname" error={surnameError} value={surname} mandatory />
+    <TextInput
+      name="username"
+      label="Username"
+      error={usernameError}
+      value={username}
+      readOnly={isEdit}
+      width="20"
+      mandatory
+    />
+    <TextInput name="forenames" label="Forename(s)" error={forenamesError} value={forenames} width="20" mandatory />
+    <TextInput name="surname" label="Surname" error={surnameError} value={surname} width="20" mandatory />
     <TextInput
       name="emailAddress"
       label="Email address"
@@ -43,12 +51,13 @@ const UserForm = ({
       value={emailAddress}
       error={emailError}
       readOnly={isEdit}
+      width="20"
       mandatory
     />
 
     <Select options={userGroups} label={"User role *"} id="groupId" defaultValue={groupId} />
-    <TextInput value={endorsedBy} name="endorsedBy" label="Endorsed by" />
-    <TextInput value={orgServes} name="orgServes" label="Organisation" />
+    <TextInput value={endorsedBy} name="endorsedBy" label="Endorsed by" width="20" />
+    <TextInput value={orgServes} name="orgServes" label="Organisation" width="20" />
   </>
 )
 
