@@ -3,6 +3,7 @@ import User from "types/User"
 import signInUser from "useCases/signInUser"
 import { isError } from "types/Result"
 import createUser from "useCases/createUser"
+import Database from "types/Database"
 import getTestConnection from "../../testFixtures/getTestConnection"
 import deleteFromTable from "../../testFixtures/database/deleteFromTable"
 import insertIntoGroupsTable from "../../testFixtures/database/insertIntoGroupsTable"
@@ -10,7 +11,7 @@ import groups from "../../testFixtures/database/data/groups"
 import selectFromTable from "../../testFixtures/database/selectFromTable"
 
 describe("SigninUser", () => {
-  let connection: any
+  let connection: Database
 
   beforeAll(() => {
     connection = getTestConnection()
@@ -36,7 +37,7 @@ describe("SigninUser", () => {
       surname: "dummyS",
       orgServes: "dummyO",
       groupId: selectedGroups[0].id
-    } as unknown as User
+    } as User
 
     const userCreateResult = await createUser(connection, user)
     expect(isError(userCreateResult)).toBe(false)

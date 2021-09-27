@@ -1,6 +1,7 @@
 import config from "lib/config"
 import Database from "types/Database"
-import { isError, PromiseResult } from "types/Result"
+import PromiseResult from "types/PromiseResult"
+import { isError } from "types/Result"
 
 const validateUserVerificationCode = async (
   connection: Database,

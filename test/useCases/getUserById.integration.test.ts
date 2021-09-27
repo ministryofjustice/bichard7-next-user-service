@@ -2,6 +2,7 @@ import User from "types/User"
 import { isError } from "types/Result"
 import getUserById from "useCases/getUserById"
 import createUser from "useCases/createUser"
+import Database from "types/Database"
 import getTestConnection from "../../testFixtures/getTestConnection"
 import deleteFromTable from "../../testFixtures/database/deleteFromTable"
 import insertIntoUsersTable from "../../testFixtures/database/insertIntoUsersTable"
@@ -11,7 +12,7 @@ import groups from "../../testFixtures/database/data/groups"
 import selectFromTable from "../../testFixtures/database/selectFromTable"
 
 describe("getUserById", () => {
-  let connection: any
+  let connection: Database
 
   beforeAll(() => {
     connection = getTestConnection()
@@ -32,7 +33,7 @@ describe("getUserById", () => {
     const user = users[0] as any
     ;(user as any).groupId = selectedGroupId
 
-    const createUserDetails: any = {
+    const createUserDetails = {
       username: user.username,
       forenames: user.forenames,
       emailAddress: user.email,
@@ -81,10 +82,10 @@ describe("getUserById", () => {
     await insertIntoGroupsTable(groups)
     const selectedGroups = await selectFromTable("groups", undefined, undefined, "name")
     const selectedGroupId = selectedGroups[0].id
-    const user = users[0] as any
+    const user = users[0]
     ;(user as any).groupId = selectedGroupId
 
-    const createUserDetails: any = {
+    const createUserDetails = {
       username: user.username,
       forenames: user.forenames,
       emailAddress: user.email,

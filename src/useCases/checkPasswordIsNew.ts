@@ -1,6 +1,6 @@
 import { verifyPassword } from "lib/argon2"
 import Database from "types/Database"
-import { PromiseResult } from "types/Result"
+import PromiseResult from "types/PromiseResult"
 import Task from "types/Task"
 
 const checkPasswordIsNew = async (

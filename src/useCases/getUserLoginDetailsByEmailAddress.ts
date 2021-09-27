@@ -1,16 +1,15 @@
 import Database from "types/Database"
 import PromiseResult from "types/PromiseResult"
-import UserLoginDetails from "types/UserLoginDetails"
+import UserFullDetails from "types/UserFullDetails"
 
-export default (db: Database, emailAddress: string): PromiseResult<UserLoginDetails> => {
+export default (db: Database, emailAddress: string): PromiseResult<Pick<UserFullDetails, "id" | "password">> => {
   const query = `
       SELECT
         id,
-        password,
-        email
+        password
       FROM br7own.users
       WHERE email = \${emailAddress}
         AND deleted_at IS NULL
     `
-  return db.one<UserLoginDetails>(query, { emailAddress }).catch((error) => error)
+  return db.one<Pick<UserFullDetails, "id" | "password">>(query, { emailAddress }).catch((error) => error)
 }

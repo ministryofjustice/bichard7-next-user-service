@@ -1,6 +1,7 @@
 import { verifyPassword } from "lib/argon2"
 import Database from "types/Database"
-import { isError, PromiseResult } from "types/Result"
+import PromiseResult from "types/PromiseResult"
+import { isError } from "types/Result"
 
 export default async (db: Database, emailAddress: string, password: string): PromiseResult<boolean> => {
   const query = `

@@ -3,6 +3,7 @@ import createUser from "useCases/createUser"
 import User from "types/User"
 import getUserByUsername from "useCases/getUserByUsername"
 import { isError } from "types/Result"
+import Database from "types/Database"
 import insertIntoUserTable from "../../testFixtures/database/insertIntoUsersTable"
 import insertIntoGroupTable from "../../testFixtures/database/insertIntoGroupsTable"
 import selectFromTable from "../../testFixtures/database/selectFromTable"
@@ -12,7 +13,7 @@ import users from "../../testFixtures/database/data/users"
 import groups from "../../testFixtures/database/data/groups"
 
 describe("DeleteUserUseCase", () => {
-  let connection: any
+  let connection: Database
 
   beforeAll(() => {
     connection = getTestConnection()

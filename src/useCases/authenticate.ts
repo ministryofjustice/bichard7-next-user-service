@@ -5,6 +5,8 @@ import Database from "types/Database"
 import AuditLogger from "types/AuditLogger"
 import { verifySsha } from "lib/ssha"
 import { verifyPassword } from "lib/argon2"
+import UserFullDetails from "types/UserFullDetails"
+import PromiseResult from "types/PromiseResult"
 import resetUserVerificationCode from "./resetUserVerificationCode"
 import updatePassword from "./updatePassword"
 
@@ -23,7 +25,7 @@ const fetchGroups = async (task: ITask<unknown>, emailAddress: string): Promise<
   return groups
 }
 
-const getUserWithInterval = async (task: ITask<unknown>, params: unknown[]) => {
+const getUserWithInterval = async (task: ITask<unknown>, params: unknown[]): Promise<UserFullDetails> => {
   const getUserQuery = `
   SELECT
     id,
@@ -78,7 +80,7 @@ const authenticate = async (
   emailAddress: string,
   password: string,
   verificationCode: string
-) => {
+): PromiseResult<UserFullDetails> => {
   const invalidCredentialsError = new Error("Invalid credentials or invalid verification")
 
   if (!emailAddress || !password || !verificationCode || verificationCode.length !== config.verificationCodeLength) {

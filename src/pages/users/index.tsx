@@ -176,7 +176,7 @@ const Users = ({ allUsers, csrfToken, currentUser, previousFilter, pageNumber, t
             <LinkColumn
               data-test="link-to-user-view"
               field="username"
-              href={(user) => `users/${(user as User).username}`}
+              href={(user) => `users/${(user as unknown as User).username}`}
             />
           </Table>
         )}

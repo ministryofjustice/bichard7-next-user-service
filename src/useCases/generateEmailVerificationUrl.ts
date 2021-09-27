@@ -3,7 +3,8 @@ import { UserServiceConfig } from "lib/config"
 import { EmailVerificationTokenPayload, generateEmailVerificationToken } from "lib/token/emailVerificationToken"
 import { addBasePath } from "next/dist/shared/lib/router/router"
 import Database from "types/Database"
-import { isError, PromiseResult } from "types/Result"
+import PromiseResult from "types/PromiseResult"
+import { isError } from "types/Result"
 import storeVerificationCode from "./storeVerificationCode"
 
 export default async (

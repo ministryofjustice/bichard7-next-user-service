@@ -8,6 +8,7 @@ import initialiseUserPassword from "useCases/initialiseUserPassword"
 import storePasswordResetCode from "useCases/storePasswordResetCode"
 import { generateEmailVerificationToken } from "lib/token/emailVerificationToken"
 import EmailContent from "types/EmailContent"
+import Database from "types/Database"
 import insertIntoUsersTable from "../../testFixtures/database/insertIntoUsersTable"
 import insertIntoGroupsTable from "../../testFixtures/database/insertIntoGroupsTable"
 import selectFromTable from "../../testFixtures/database/selectFromTable"
@@ -26,7 +27,7 @@ const mapUserWithVerficationCode = (usersList: any) =>
   }))
 
 describe("AccountSetup", () => {
-  let connection: any
+  let connection: Database
 
   beforeAll(() => {
     connection = getTestConnection()

@@ -2,7 +2,7 @@ import User from "types/User"
 import Database from "types/Database"
 import PromiseResult from "types/PromiseResult"
 
-export default async (db: Database, username: string): PromiseResult<Partial<User> | null> => {
+export default async (db: Database, username: string): PromiseResult<User | null> => {
   let user
 
   /* eslint-disable no-useless-escape */
