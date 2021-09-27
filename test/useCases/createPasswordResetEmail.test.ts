@@ -17,7 +17,7 @@ it("should generate the email subject and body", () => {
     emailAddress: "dummy@example.com",
     forenames: "Dummy forenames",
     surname: "Dummy surname"
-  } as unknown as User
+  } as User
 
   const result = createPasswordResetEmail(user, "123456")
 

@@ -37,7 +37,7 @@ describe("SigninUser", () => {
       surname: "dummyS",
       orgServes: "dummyO",
       groupId: selectedGroups[0].id
-    } as unknown as User
+    } as User
 
     const userCreateResult = await createUser(connection, user)
     expect(isError(userCreateResult)).toBe(false)

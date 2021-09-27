@@ -2,12 +2,9 @@ import config from "lib/config"
 import Database from "types/Database"
 import PaginatedResult from "types/PaginatedResult"
 import PromiseResult from "types/PromiseResult"
-import UserDetails from "types/UserDetails"
+import UserMainDetails from "types/UserMainDetails"
 
-const getAllUsers = async (
-  connection: Database,
-  page: number
-): PromiseResult<PaginatedResult<Partial<UserDetails>[]>> => {
+const getAllUsers = async (connection: Database, page: number): PromiseResult<PaginatedResult<UserMainDetails[]>> => {
   let users
 
   const getAllUsersQuery = `
