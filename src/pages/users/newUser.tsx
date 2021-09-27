@@ -50,7 +50,6 @@ export const getServerSideProps = withMultipleServerSideProps(
         emailAddress: string
         endorsedBy: string
         orgServes: string
-        groupId: string
         save: string
         saveAndAddAnother: string
       }
