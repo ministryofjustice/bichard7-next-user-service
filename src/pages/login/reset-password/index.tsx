@@ -20,6 +20,7 @@ import isPost from "utils/isPost"
 import getAuditLogger from "lib/getAuditLogger"
 import addQueryParams from "utils/addQueryParams"
 import { ErrorSummaryList } from "components/ErrorSummary"
+import Link from "components/Link"
 
 export const getServerSideProps = withCsrf(async (context): Promise<GetServerSidePropsResult<Props>> => {
   const { req, query, formData, csrfToken } = context as CsrfServerSidePropsContext
@@ -181,7 +182,16 @@ const ResetPassword = ({
 
             {invalidToken && (
               <ErrorSummary title="Unable to verify email address">
-                {"This link is either incorrect or may have expired. Please try again."}
+                <p>
+                  {"This link is either incorrect or may have expired. Please "}
+                  <Link href="/login/forgot-password">{"try submitting forgot password form again"}</Link>
+                  {" with your email address to receive another link."}
+                </p>
+                <p>
+                  {"If you still have an issue with resetting your password you will need to "}
+                  <Link href={config.contactUrl}>{"contact us"}</Link>
+                  {"."}
+                </p>
               </ErrorSummary>
             )}
 
