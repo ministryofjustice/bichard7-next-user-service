@@ -23,6 +23,8 @@ import config from "lib/config"
 import ButtonGroup from "components/ButtonGroup"
 import createRedirectResponse from "utils/createRedirectResponse"
 import { ErrorSummary, ErrorSummaryList } from "components/ErrorSummary"
+import IsEmailUnique from "useCases/IsEmailUnique"
+import isUsernameUnique from "useCases/isUsernameUnique"
 
 export const getServerSideProps = withMultipleServerSideProps(
   withAuthentication,
@@ -58,6 +60,38 @@ export const getServerSideProps = withMultipleServerSideProps(
       const formValidationResult = userFormIsValid(userCreateDetails, false)
 
       if (formValidationResult.isFormValid) {
+        const isUsernameUniqueResult = await isUsernameUnique(connection, userCreateDetails.username)
+
+        if (isError(isUsernameUniqueResult)) {
+          return {
+            props: {
+              isSuccess: false,
+              isFormValid: false,
+              usernameError: isUsernameUniqueResult.message,
+              userDetails: userCreateDetails,
+              csrfToken,
+              currentUser,
+              userGroups
+            }
+          }
+        }
+
+        const isEmailAddressUniqueResult = await IsEmailUnique(connection, userCreateDetails.emailAddress)
+
+        if (isError(isEmailAddressUniqueResult)) {
+          return {
+            props: {
+              isSuccess: false,
+              isFormValid: false,
+              emailError: isEmailAddressUniqueResult.message,
+              userDetails: userCreateDetails,
+              csrfToken,
+              currentUser,
+              userGroups
+            }
+          }
+        }
+
         const auditLogger = getAuditLogger(context, config)
         const result = await setupNewUser(connection, auditLogger, userCreateDetails)
 
@@ -113,7 +147,7 @@ export const getServerSideProps = withMultipleServerSideProps(
 )
 
 interface Props {
-  message: string
+  message?: string
   isSuccess: boolean
   usernameError?: string | false
   forenamesError?: string | false
