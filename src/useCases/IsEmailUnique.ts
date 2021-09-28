@@ -1,11 +1,13 @@
 import Database from "types/Database"
+import PromiseResult from "types/PromiseResult"
 
-const CheckName = "Pre-create user check"
-
-export default async (connection: Database, email: string): Promise<Error> => {
+export default async (connection: Database, email: string): PromiseResult<void> => {
   const query = `SELECT COUNT(1) FROM br7own.users WHERE LOWER(email) = LOWER($1)`
   const result = await connection.any(query, [email])
-  return !(result.length === 1 && result[0].count === "1")
-    ? { name: CheckName, message: "" }
-    : { name: CheckName, message: `Email address ${email} already exists.` }
+
+  if (result.length === 1 && result[0].count === "1") {
+    return new Error(`Email address ${email} already exists.`)
+  }
+
+  return undefined
 }

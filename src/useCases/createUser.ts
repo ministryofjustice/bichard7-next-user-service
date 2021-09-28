@@ -2,6 +2,7 @@ import User from "types/User"
 import PromiseResult from "types/PromiseResult"
 import Database from "types/Database"
 import { ITask } from "pg-promise"
+import { isError } from "types/Result"
 import isUsernameUnique from "./isUsernameUnique"
 import isEmailUnique from "./IsEmailUnique"
 
@@ -58,14 +59,14 @@ const insertUserIntoGroup = async (task: ITask<unknown>, userId: number, groupId
 
 export default async (connection: Database, userDetails: Partial<User>): PromiseResult<void> => {
   const groupDoesNotExistsError = new Error("This group does not exist")
-  let checkData = await isUsernameUnique(connection, userDetails.username as string)
-  if (checkData.message !== "") {
-    return new Error(checkData.message)
+  const isUsernameUniqueResult = await isUsernameUnique(connection, userDetails.username as string)
+  if (isError(isUsernameUniqueResult)) {
+    return isUsernameUniqueResult
   }
 
-  checkData = await isEmailUnique(connection, userDetails.emailAddress as string)
-  if (checkData.message !== "") {
-    return new Error(checkData.message)
+  const isEmailUniqueResult = await isEmailUnique(connection, userDetails.emailAddress as string)
+  if (isError(isEmailUniqueResult)) {
+    return isEmailUniqueResult
   }
 
   try {

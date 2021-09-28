@@ -1,6 +1,7 @@
 import Button from "components/Button"
 import { ErrorSummary, ErrorSummaryList } from "components/ErrorSummary"
 import Form from "components/Form"
+import GridRow from "components/GridRow"
 import Layout from "components/Layout"
 import Link from "components/Link"
 import SuggestPassword from "components/SuggestPassword"
@@ -26,6 +27,16 @@ export const getServerSideProps = withCsrf(async (context): Promise<GetServerSid
   let suggestedPassword = ""
   const { token, suggestPassword } = query as { token: EmailVerificationToken; suggestPassword: string }
 
+  const translatedToken = decodeEmailVerificationToken(token)
+  if (isError(translatedToken)) {
+    return {
+      props: {
+        invalidToken: true,
+        csrfToken
+      }
+    }
+  }
+
   const suggestedPasswordUrl = addQueryParams("/login/new-password", {
     token,
     suggestPassword: "true"
@@ -49,15 +60,6 @@ export const getServerSideProps = withCsrf(async (context): Promise<GetServerSid
       }
     }
 
-    const translatedToken = decodeEmailVerificationToken(token)
-    if (isError(translatedToken)) {
-      return {
-        props: {
-          invalidToken: true,
-          csrfToken
-        }
-      }
-    }
     const { emailAddress, verificationCode } = translatedToken
 
     const connection = getConnection()
@@ -112,7 +114,7 @@ const NewPassword = ({
         <title>{"First time password setup"}</title>
       </Head>
       <Layout>
-        <div className="govuk-grid-row">
+        <GridRow>
           <h3 data-test="check-email" className="govuk-heading-xl">
             {"First time password setup"}
           </h3>
@@ -131,7 +133,7 @@ const NewPassword = ({
             </ErrorSummary>
           )}
 
-          <ErrorSummary title="There is a problem" show={!!errorMessage || passwordsMismatch || newPasswordMissing}>
+          <ErrorSummary title="There is a problem" show={!!errorMessage || !!passwordsMismatch || !!newPasswordMissing}>
             <ErrorSummaryList
               items={[
                 { id: "newPassword", error: passwordsMismatch && "Passwords do not match." },
@@ -141,21 +143,23 @@ const NewPassword = ({
             />
           </ErrorSummary>
 
-          <Form method="post" csrfToken={csrfToken}>
-            <TextInput name="newPassword" label="New Password" type="password" width="20" error={newPasswordError} />
-            <TextInput
-              id="confirmPassword"
-              name="confirmPassword"
-              label="Confirm Password"
-              type="password"
-              width="20"
-              error={passwordsMismatch && passwordMismatchError}
-            />
+          {!invalidToken && (
+            <Form method="post" csrfToken={csrfToken}>
+              <TextInput name="newPassword" label="New Password" type="password" width="20" error={newPasswordError} />
+              <TextInput
+                id="confirmPassword"
+                name="confirmPassword"
+                label="Confirm Password"
+                type="password"
+                width="20"
+                error={passwordsMismatch && passwordMismatchError}
+              />
 
-            <Button noDoubleClick>{"Set password"}</Button>
-            <SuggestPassword suggestedPassword={suggestedPassword} suggestedPasswordUrl={suggestedPasswordUrl} />
-          </Form>
-        </div>
+              <Button noDoubleClick>{"Set password"}</Button>
+              <SuggestPassword suggestedPassword={suggestedPassword} suggestedPasswordUrl={suggestedPasswordUrl} />
+            </Form>
+          )}
+        </GridRow>
       </Layout>
     </>
   )
