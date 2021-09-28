@@ -2,12 +2,12 @@ import config from "lib/config"
 import Database from "types/Database"
 import PaginatedResult from "types/PaginatedResult"
 import PromiseResult from "types/PromiseResult"
-import UserDetails from "types/UserDetails"
+import UserFullDetails from "types/UserFullDetails"
 
 const getAllUsers = async (
   connection: Database,
   page: number
-): PromiseResult<PaginatedResult<Partial<UserDetails>[]>> => {
+): PromiseResult<PaginatedResult<Pick<UserFullDetails, "username" | "forenames" | "surname" | "emailAddress">[]>> => {
   let users
 
   const getAllUsersQuery = `

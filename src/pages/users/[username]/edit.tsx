@@ -209,7 +209,7 @@ const editUser = ({
             forenamesError={forenamesError}
             surnameError={surnameError}
             emailError={emailError}
-            userGroups={groups as unknown as UserGroupOption[]}
+            userGroups={groups as UserGroupOption[]}
             isEdit
           />
           <input type="hidden" name="id" value={user.id} />

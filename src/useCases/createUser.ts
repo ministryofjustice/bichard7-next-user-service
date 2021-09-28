@@ -7,7 +7,7 @@ import isUsernameUnique from "./isUsernameUnique"
 import isEmailUnique from "./IsEmailUnique"
 
 type UserId = {
-  id: string
+  id: number
 }
 
 /* eslint-disable require-await */
@@ -72,7 +72,9 @@ export default async (connection: Database, userDetails: Partial<User>): Promise
   try {
     await connection.tx(async (task: ITask<unknown>) => {
       const { id } = await insertUser(task, userDetails)
-      await insertUserIntoGroup(task, id as unknown as number, userDetails.groupId as number)
+      if (userDetails.groupId) {
+        await insertUserIntoGroup(task, id, userDetails.groupId)
+      }
     })
 
     return undefined

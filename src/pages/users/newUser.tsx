@@ -45,14 +45,13 @@ export const getServerSideProps = withMultipleServerSideProps(
 
     if (isPost(req)) {
       /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-      const userCreateDetails: any = formData as {
+      const userCreateDetails = formData as {
         username: string
         forenames: string
         surname: string
         emailAddress: string
         endorsedBy: string
         orgServes: string
-        groupId: string
         save: string
         saveAndAddAnother: string
       }

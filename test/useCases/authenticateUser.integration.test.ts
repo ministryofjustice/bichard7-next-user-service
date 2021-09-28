@@ -7,6 +7,7 @@ import parseFormData from "lib/parseFormData"
 import config from "lib/config"
 import { createSsha } from "lib/ssha"
 import { hashPassword } from "lib/argon2"
+import Database from "types/Database"
 import getTestConnection from "../../testFixtures/getTestConnection"
 import deleteFromTable from "../../testFixtures/database/deleteFromTable"
 import users from "../../testFixtures/database/data/users"
@@ -39,7 +40,7 @@ const insertUsers = async (useMigratedPassword = false) => {
 }
 
 describe("Authenticator", () => {
-  let connection: any
+  let connection: Database
 
   beforeAll(() => {
     connection = getTestConnection()

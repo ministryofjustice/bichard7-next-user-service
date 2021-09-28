@@ -2,6 +2,7 @@ import User from "types/User"
 import { isError } from "types/Result"
 import getFilteredUsers from "useCases/getFilteredUsers"
 import config from "lib/config"
+import Database from "types/Database"
 import getTestConnection from "../../testFixtures/getTestConnection"
 import deleteFromTable from "../../testFixtures/database/deleteFromTable"
 import insertIntoTable from "../../testFixtures/database/insertIntoUsersTable"
@@ -10,7 +11,7 @@ import users from "../../testFixtures/database/data/users"
 import manyUsers from "../../testFixtures/database/data/manyUsers"
 
 describe("getFilteredUsers", () => {
-  let connection: any
+  let connection: Database
 
   beforeAll(() => {
     connection = getTestConnection()

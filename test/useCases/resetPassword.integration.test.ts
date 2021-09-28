@@ -3,6 +3,7 @@ import { resetPassword } from "useCases"
 import { ResetPasswordOptions } from "useCases/resetPassword"
 import storePasswordResetCode from "useCases/storePasswordResetCode"
 import { hashPassword, verifyPassword } from "lib/argon2"
+import Database from "types/Database"
 import getTestConnection from "../../testFixtures/getTestConnection"
 import deleteFromTable from "../../testFixtures/database/deleteFromTable"
 import insertIntoTable from "../../testFixtures/database/insertIntoUsersTable"
@@ -12,7 +13,7 @@ import fakeAuditLogger from "../fakeAuditLogger"
 jest.mock("lib/argon2")
 
 describe("resetPassword", () => {
-  let connection: any
+  let connection: Database
 
   beforeEach(async () => {
     await deleteFromTable("users")

@@ -7,7 +7,7 @@ it("should generate the email content", () => {
     emailAddress: "dummy@example.com",
     forenames: "Dummy forenames",
     surname: "Dummy surname"
-  } as unknown as User
+  } as User
 
   const { subject, text, html } = createPasswordChangedEmail(user)
 

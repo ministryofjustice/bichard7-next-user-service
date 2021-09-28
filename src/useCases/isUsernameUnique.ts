@@ -1,5 +1,5 @@
 import Database from "types/Database"
-import { PromiseResult } from "types/Result"
+import PromiseResult from "types/PromiseResult"
 
 export default async (connection: Database, username: string): PromiseResult<void> => {
   const query = `SELECT COUNT(1) FROM br7own.users WHERE LOWER(username) = LOWER($1)`

@@ -2,6 +2,7 @@ import User from "types/User"
 import { isError } from "types/Result"
 import getUserByUsername from "useCases/getUserByUsername"
 import createUser from "useCases/createUser"
+import Database from "types/Database"
 import getTestConnection from "../../testFixtures/getTestConnection"
 import deleteFromTable from "../../testFixtures/database/deleteFromTable"
 import insertIntoUsersTable from "../../testFixtures/database/insertIntoUsersTable"
@@ -11,7 +12,7 @@ import groups from "../../testFixtures/database/data/groups"
 import selectFromTable from "../../testFixtures/database/selectFromTable"
 
 describe("getUserByUsername", () => {
-  let connection: any
+  let connection: Database
   let selectedGroups: any
   let selectedGroupId: any
   let user: any
@@ -19,10 +20,10 @@ describe("getUserByUsername", () => {
   const insertGroupAndUser = async () => {
     selectedGroups = await selectFromTable("groups", undefined, undefined, "name")
     selectedGroupId = selectedGroups[0].id
-    user = users[0] as any
+    ;[user] = users
     ;(user as any).groupId = selectedGroupId
 
-    const createUserDetails: any = {
+    const createUserDetails = {
       username: user.username,
       forenames: user.forenames,
       emailAddress: user.email,
@@ -51,8 +52,8 @@ describe("getUserByUsername", () => {
 
   it("should return user when user exists in the database", async () => {
     await insertGroupAndUser()
-    const userResult: any = await getUserByUsername(connection, "Bichard01")
-    const expectedUserList: any = await selectFromTable("users", "email", "bichard01@example.com")
+    const userResult = await getUserByUsername(connection, "Bichard01")
+    const expectedUserList = await selectFromTable("users", "email", "bichard01@example.com")
     const expectedUser = expectedUserList[0]
 
     expect(isError(user)).toBe(false)

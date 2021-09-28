@@ -5,6 +5,7 @@ import User from "types/User"
 import config from "lib/config"
 import { signInUser, signOutUser } from "useCases"
 import createUser from "useCases/createUser"
+import Database from "types/Database"
 import groups from "../../testFixtures/database/data/groups"
 import deleteFromTable from "../../testFixtures/database/deleteFromTable"
 import insertIntoGroupsTable from "../../testFixtures/database/insertIntoGroupsTable"
@@ -12,7 +13,7 @@ import selectFromTable from "../../testFixtures/database/selectFromTable"
 import getTestConnection from "../../testFixtures/getTestConnection"
 
 describe("SignoutUser", () => {
-  let connection: any
+  let connection: Database
 
   beforeAll(() => {
     connection = getTestConnection()
@@ -38,7 +39,7 @@ describe("SignoutUser", () => {
       surname: "dummyS",
       orgServes: "dummyO",
       groupId: selectedGroups[0].id
-    } as unknown as User
+    } as User
 
     const userCreateResult = await createUser(connection, user)
     expect(isError(userCreateResult)).toBe(false)

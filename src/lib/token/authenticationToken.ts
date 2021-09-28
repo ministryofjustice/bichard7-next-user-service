@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken"
-import User from "types/User"
 import { Result } from "types/Result"
+import UserFullDetails from "types/UserFullDetails"
 import config from "../config"
 import UserGroup from "../../types/UserGroup"
 
@@ -19,7 +19,7 @@ export interface AuthenticationTokenPayload {
   id: string
 }
 
-export function generateAuthenticationToken(user: Partial<User>, uniqueId: string): AuthenticationToken {
+export function generateAuthenticationToken(user: Partial<UserFullDetails>, uniqueId: string): AuthenticationToken {
   const options: jwt.SignOptions = {
     expiresIn: config.tokenExpiresIn,
     ...signOptions
@@ -31,7 +31,7 @@ export function generateAuthenticationToken(user: Partial<User>, uniqueId: strin
     inclusionList: user.inclusionList as string[],
     emailAddress: user.emailAddress as string,
     /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-    groups: (user as any).groups as UserGroup[],
+    groups: user.groups as UserGroup[],
     id: uniqueId
   }
 

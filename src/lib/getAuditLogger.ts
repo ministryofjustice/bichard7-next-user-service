@@ -1,6 +1,6 @@
 import { GetServerSidePropsContext } from "next"
 import AuditLogger from "types/AuditLogger"
-import { PromiseResult } from "types/Result"
+import PromiseResult from "types/PromiseResult"
 import { UserServiceConfig } from "./config"
 import generateAuditLog from "./generateAuditLog"
 

@@ -24,7 +24,6 @@ import Link from "components/Link"
 import { GetServerSidePropsResult } from "next"
 import isPost from "utils/isPost"
 import getAuditLogger from "lib/getAuditLogger"
-import User from "types/User"
 import addQueryParams from "utils/addQueryParams"
 import { ErrorSummaryList } from "components/ErrorSummary"
 
@@ -83,7 +82,7 @@ export const getServerSideProps = withCsrf(async (context): Promise<GetServerSid
         }
       }
 
-      const authToken = await signInUser(connection, res, user as unknown as User)
+      const authToken = await signInUser(connection, res, user)
 
       if (isError(authToken)) {
         console.error(authToken)

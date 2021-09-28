@@ -3,7 +3,7 @@ import Link from "../Link"
 
 interface Props {
   field: string
-  href: (item: unknown) => string
+  href: (item: KeyValuePair<string, string>) => string
   item?: KeyValuePair<string, string>
   "data-test"?: string
 }

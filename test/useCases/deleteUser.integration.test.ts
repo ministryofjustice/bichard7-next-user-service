@@ -1,4 +1,5 @@
 import deleteUser from "useCases/deleteUser"
+import Database from "types/Database"
 import getTestConnection from "../../testFixtures/getTestConnection"
 import deleteFromTable from "../../testFixtures/database/deleteFromTable"
 import insertIntoTable from "../../testFixtures/database/insertIntoUsersTable"
@@ -7,7 +8,7 @@ import users from "../../testFixtures/database/data/users"
 import fakeAuditLogger from "../fakeAuditLogger"
 
 describe("DeleteUserUseCase", () => {
-  let connection: any
+  let connection: Database
 
   beforeAll(() => {
     connection = getTestConnection()

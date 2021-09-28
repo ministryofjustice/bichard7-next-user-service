@@ -1,5 +1,6 @@
 import { isError } from "types/Result"
 import storePasswordResetCode from "useCases/storePasswordResetCode"
+import Database from "types/Database"
 import getTestConnection from "../../testFixtures/getTestConnection"
 import deleteFromTable from "../../testFixtures/database/deleteFromTable"
 import insertIntoTable from "../../testFixtures/database/insertIntoUsersTable"
@@ -7,7 +8,7 @@ import users from "../../testFixtures/database/data/users"
 import selectFromTable from "../../testFixtures/database/selectFromTable"
 
 describe("storePasswordResetCode", () => {
-  let connection: any
+  let connection: Database
 
   beforeAll(() => {
     connection = getTestConnection()

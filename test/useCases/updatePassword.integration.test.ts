@@ -1,6 +1,7 @@
 import { isError } from "types/Result"
 import updatePassword from "useCases/updatePassword"
 import { hashPassword } from "lib/argon2"
+import Database from "types/Database"
 import getTestConnection from "../../testFixtures/getTestConnection"
 import deleteFromTable from "../../testFixtures/database/deleteFromTable"
 import insertIntoTable from "../../testFixtures/database/insertIntoUsersTable"
@@ -10,7 +11,7 @@ import users from "../../testFixtures/database/data/users"
 jest.mock("lib/argon2")
 
 describe("updatePassword", () => {
-  let connection: any
+  let connection: Database
 
   beforeEach(async () => {
     await deleteFromTable("users")
