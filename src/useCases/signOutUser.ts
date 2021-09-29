@@ -1,6 +1,6 @@
 import { IncomingMessage, ServerResponse } from "http"
 import config from "lib/config"
-import removeJwt from "lib/removeJwt"
+import { removeTokenId } from "lib/token/authenticationToken"
 import Database from "types/Database"
 import { isError } from "types/Result"
 import removeCookie from "utils/removeCookie"
@@ -22,10 +22,10 @@ export default async (
   }
 
   const jwtId = cookieResult.id
-  const removeJwtResult = await removeJwt(connection, jwtId)
-  if (isError(removeJwtResult)) {
-    console.error(removeJwtResult)
-    return removeJwtResult
+  const removeTokenIdResult = await removeTokenId(connection, jwtId)
+  if (isError(removeTokenIdResult)) {
+    console.error(removeTokenIdResult)
+    return removeTokenIdResult
   }
 
   removeCookie(response, request.cookies, authenticationCookieName)

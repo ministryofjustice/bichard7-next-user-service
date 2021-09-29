@@ -1,5 +1,5 @@
 import { getUserByUsername } from "useCases"
-import logJwt from "lib/logJwt"
+import { storeTokenId } from "lib/token/authenticationToken"
 import Database from "types/Database"
 import getTestConnection from "../../testFixtures/getTestConnection"
 import deleteFromTable from "../../testFixtures/database/deleteFromTable"
@@ -8,7 +8,7 @@ import insertIntoUsersAndGroupsTable from "../../testFixtures/database/insertInt
 import users from "../../testFixtures/database/data/users"
 import groups from "../../testFixtures/database/data/groups"
 
-describe("logJwt", () => {
+describe("storeTokenId", () => {
   let connection: Database
 
   beforeAll(() => {
@@ -29,7 +29,7 @@ describe("logJwt", () => {
     const Uuid = "test-value-01"
     const { id } = (await getUserByUsername(connection, "Bichard01")) as any
 
-    const result = await logJwt(connection, id, Uuid)
+    const result = await storeTokenId(connection, id, Uuid)
 
     expect(result).toBeUndefined()
 

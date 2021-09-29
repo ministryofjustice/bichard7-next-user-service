@@ -1,6 +1,8 @@
 import jwt from "jsonwebtoken"
 import { Result } from "types/Result"
 import UserFullDetails from "types/UserFullDetails"
+import Database from "types/Database"
+import PromiseResult from "types/PromiseResult"
 import config from "../config"
 import UserGroup from "../../types/UserGroup"
 
@@ -41,6 +43,48 @@ export function generateAuthenticationToken(user: Partial<UserFullDetails>, uniq
 export function decodeAuthenticationToken(token: string): Result<AuthenticationTokenPayload> {
   try {
     return jwt.verify(token, config.tokenSecret, signOptions) as AuthenticationTokenPayload
+  } catch (error) {
+    return error as Error
+  }
+}
+
+export async function removeTokenId(connection: Database, uniqueId: string): PromiseResult<void> {
+  /* eslint-disable no-useless-escape */
+  const removeTokenIdQuery = `
+    DELETE FROM br7own.jwt_ids
+    WHERE id = $\{uniqueId\};
+  `
+  /* eslint-disable no-useless-escape */
+
+  try {
+    await connection.none(removeTokenIdQuery, { uniqueId })
+    return undefined
+  } catch (error) {
+    return error as Error
+  }
+}
+
+export async function storeTokenId(connection: Database, userId: number, uniqueId: string): PromiseResult<void> {
+  /* eslint-disable no-useless-escape */
+  const storeTokenIdQuery = `
+    INSERT INTO br7own.jwt_ids
+    (
+      id,
+      generated_at,
+      user_id
+    )
+    VALUES
+    (
+      $\{id\},
+      NOW(),
+      $\{user_id\}
+    );
+  `
+  /* eslint-disable no-useless-escape */
+
+  try {
+    await connection.none(storeTokenIdQuery, { id: uniqueId, user_id: userId })
+    return undefined
   } catch (error) {
     return error as Error
   }
