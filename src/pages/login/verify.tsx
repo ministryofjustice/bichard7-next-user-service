@@ -99,8 +99,11 @@ export const getServerSideProps = withCsrf(async (context): Promise<GetServerSid
         removeEmailAddressCookie(res, config)
       }
 
-      const bichardUrl = (redirectUrl as string) || config.bichardRedirectURL
-      const url = addQueryParams(bichardUrl, {
+      if (!redirectUrl) {
+        return createRedirectResponse("/home")
+      }
+
+      const url = addQueryParams(redirectUrl as string, {
         [config.tokenQueryParamName]: authToken
       })
 
