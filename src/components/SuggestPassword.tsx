@@ -16,11 +16,11 @@ const SuggestPassword = ({ suggestedPassword, suggestedPasswordUrl }: Props) => 
         <li>{"It does not contain your details such as first name, last name, username, and email address"}</li>
         <li>
           {"It is not easy to guess. You should avoid using simple patterns and obvious words such as "}
-          <span className="govuk-!-font-weight-bold">{"12345678"}</span>
+          <span className="govuk-!-font-weight-bold">{"qwerty"}</span>
           {", "}
-          <span className="govuk-!-font-weight-bold">{"password123"}</span>
+          <span className="govuk-!-font-weight-bold">{"football"}</span>
           {", or "}
-          <span className="govuk-!-font-weight-bold">{"experienced"}</span>
+          <span className="govuk-!-font-weight-bold">{"dragon"}</span>
           {"."}
         </li>
       </ul>
