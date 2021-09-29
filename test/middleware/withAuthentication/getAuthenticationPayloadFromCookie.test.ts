@@ -1,5 +1,5 @@
 import { AuthenticationTokenPayload, decodeAuthenticationToken } from "lib/token/authenticationToken"
-import getUserFromCookie from "middleware/withAuthentication/getUserFromCookie"
+import getAuthenticationPayloadFromCookie from "middleware/withAuthentication/getAuthenticationPayloadFromCookie"
 import { isError } from "types/Result"
 
 jest.mock("lib/token/authenticationToken")
@@ -15,13 +15,13 @@ const authenticationTokenPayload = {
   emailAddress: "dummy@dummy.com"
 } as AuthenticationTokenPayload
 
-it("should return user when there is avalid authentication cookie", () => {
+it("should return authentication payload when there is avalid authentication cookie", () => {
   const mockedDecodeAuthenticationToken = decodeAuthenticationToken as jest.MockedFunction<
     typeof decodeAuthenticationToken
   >
   mockedDecodeAuthenticationToken.mockReturnValue(authenticationTokenPayload)
 
-  const result = getUserFromCookie(request)
+  const result = getAuthenticationPayloadFromCookie(request)
 
   expect(isError(result)).toBe(false)
   expect(result).toBeDefined()
@@ -32,7 +32,7 @@ it("should return user when there is avalid authentication cookie", () => {
 })
 
 it("should return error when authentication cookie does not exist", () => {
-  const result = getUserFromCookie({ cookies: {} })
+  const result = getAuthenticationPayloadFromCookie({ cookies: {} })
 
   expect(isError(result)).toBe(true)
 
@@ -47,7 +47,7 @@ it("should return error when authentication cookie is invalid", () => {
   >
   mockedDecodeAuthenticationToken.mockReturnValue(expectedError)
 
-  const result = getUserFromCookie(request)
+  const result = getAuthenticationPayloadFromCookie(request)
 
   expect(isError(result)).toBe(true)
 

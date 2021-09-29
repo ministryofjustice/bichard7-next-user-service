@@ -1,17 +1,32 @@
 /* eslint-disable import/first */
-jest.mock("middleware/withAuthentication/getUserFromCookie")
+jest.mock("middleware/withAuthentication/getAuthenticationPayloadFromCookie")
+jest.mock("useCases/getUserByEmailAddress")
 
+import { AuthenticationTokenPayload } from "lib/token/authenticationToken"
 import { withAuthentication } from "middleware"
-import getUserFromCookie from "middleware/withAuthentication/getUserFromCookie"
+import getAuthenticationPayloadFromCookie from "middleware/withAuthentication/getAuthenticationPayloadFromCookie"
 import { GetServerSidePropsContext } from "next"
 import { ParsedUrlQuery } from "querystring"
 import AuthenticationServerSidePropsContext from "types/AuthenticationServerSidePropsContext"
 import User from "types/User"
+import getUserByEmailAddress from "useCases/getUserByEmailAddress"
 
 it("should include current user in the context when successfully get the user", async () => {
-  const expectedUser = { username: "dummy", emailAddress: "dummy@dummy.com" } as Partial<User>
-  const mockedGetUserFormCookie = getUserFromCookie as jest.MockedFunction<typeof getUserFromCookie>
-  mockedGetUserFormCookie.mockReturnValue(expectedUser)
+  const expectedAuthenticationToken = {
+    username: "dummy",
+    emailAddress: "dummy@dummy.com"
+  } as AuthenticationTokenPayload
+  const expectedUser = {
+    username: "dummy",
+    emailAddress: "dummy@dummy.com"
+  } as User
+  const mockedGetAuthenticationPayloadFromCookie = getAuthenticationPayloadFromCookie as jest.MockedFunction<
+    typeof getAuthenticationPayloadFromCookie
+  >
+  mockedGetAuthenticationPayloadFromCookie.mockReturnValue(expectedAuthenticationToken)
+  const mockedGetUserByEmailAddress = getUserByEmailAddress as jest.MockedFunction<typeof getUserByEmailAddress>
+  mockedGetUserByEmailAddress.mockResolvedValue(expectedUser)
+
   const dummyContext = { req: {} } as GetServerSidePropsContext<ParsedUrlQuery>
 
   const handler = withAuthentication((context) => {
@@ -31,8 +46,10 @@ it("should include current user in the context when successfully get the user", 
 })
 
 it("should set current user to undefined in the context when there is an error getting the user", async () => {
-  const mockedGetUserFormCookie = getUserFromCookie as jest.MockedFunction<typeof getUserFromCookie>
-  mockedGetUserFormCookie.mockReturnValue(new Error("Error"))
+  const mockedGetAuthenticationPayloadFromCookie = getAuthenticationPayloadFromCookie as jest.MockedFunction<
+    typeof getAuthenticationPayloadFromCookie
+  >
+  mockedGetAuthenticationPayloadFromCookie.mockReturnValue(new Error("Error"))
   const dummyContext = { req: {} } as GetServerSidePropsContext<ParsedUrlQuery>
 
   const handler = withAuthentication((context) => {
