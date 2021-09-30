@@ -58,8 +58,8 @@ export async function isTokenIdValid(connection: Database, uniqueId: string): Pr
   /* eslint-disable no-useless-escape */
 
   try {
-    const count = await connection.one(query, { uniqueId })
-    return !!count
+    const { count } = await connection.one(query, { uniqueId })
+    return count && count > 0
   } catch (error) {
     return error as Error
   }
