@@ -19,6 +19,7 @@ export default async (
   const storeTokenIdResult = await storeTokenId(connection, user.id, uniqueId)
 
   if (isError(storeTokenIdResult)) {
+    console.error(storeTokenIdResult)
     return storeTokenIdResult
   }
 
