@@ -19,14 +19,14 @@ export default async (connection: Database, page: number): PromiseResult<Paginat
     FETCH NEXT ${config.maxServiceMessagesPerPage} ROWS ONLY
   `
 
-  const serviceMessages = await connection.many(serviceMessagesQuery).catch((error) => error as Error)
+  const serviceMessages = await connection.manyOrNone(serviceMessagesQuery).catch((error) => error as Error)
 
   if (isError(serviceMessages)) {
     return serviceMessages
   }
 
-  return {
-    result: serviceMessages as ServiceMessage[],
-    totalElements: serviceMessages[0]?.allMessages || 0
-  }
+  const result = (serviceMessages || []) as ServiceMessage[]
+  const totalElements = parseInt(serviceMessages[0]?.allMessages || 0, 10)
+
+  return { result, totalElements }
 }

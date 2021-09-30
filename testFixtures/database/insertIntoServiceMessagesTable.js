@@ -1,6 +1,6 @@
 import getTestConnection from "../getTestConnection"
 
-const insertIntoServiceMessagesTable = async (data) => {
+const insertIntoServiceMessagesTable = (data) => {
   const connection = getTestConnection()
 
   /* eslint-disable no-useless-escape */
@@ -10,21 +10,12 @@ const insertIntoServiceMessagesTable = async (data) => {
         message,
         created_at
       ) VALUES (
-        $\{message\}
+        $\{message\},
         $\{created_at\}
       )
   `
-  /* eslint-disable no-useless-escape */
 
-  const dataLen = data.length
-
-  /* eslint-disable */
-  for (let i = 0; i < dataLen; i++) {
-    await connection.none(insertQuery, { ...data[i] })
-  }
-  /* eslint-disable */
-
-  return Promise.resolve()
+  return Promise.allSettled(data.map((item) => connection.none(insertQuery, { ...item })))
 }
 
 export default insertIntoServiceMessagesTable

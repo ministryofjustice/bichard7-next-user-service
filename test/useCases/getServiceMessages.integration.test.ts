@@ -1,5 +1,4 @@
 import { isError } from "types/Result"
-import config from "lib/config"
 import Database from "types/Database"
 import getServiceMessages from "useCases/getServiceMessages"
 import PaginatedResult from "types/PaginatedResult"
@@ -26,27 +25,44 @@ describe("getServiceMessages", () => {
 
   it("should return correct service messages from the database", async () => {
     await insertIntoTable(data)
+
     const pageOneResult = await getServiceMessages(connection, 0)
     expect(isError(pageOneResult)).toBe(false)
 
     const pageOne = pageOneResult as PaginatedResult<ServiceMessage[]>
 
     expect(pageOne.totalElements).toBe(data.length)
-    expect(pageOne.result).toHaveLength(config.maxServiceMessagesPerPage)
+    expect(pageOne.result).toHaveLength(5)
 
     const pageOneItems = pageOne.result
     for (let i = 0; i < pageOneItems.length; i++) {
-      expect(pageOneItems[i].message).toBe(`Message ${i + 1}`)
+      expect(pageOneItems[i].message).toBe(`Message ${data.length - i}`)
     }
 
-    const pageTwo = pageOneResult as PaginatedResult<ServiceMessage[]>
+    const pageTwoResult = await getServiceMessages(connection, 1)
+    expect(isError(pageTwoResult)).toBe(false)
+
+    const pageTwo = pageTwoResult as PaginatedResult<ServiceMessage[]>
 
     expect(pageTwo.totalElements).toBe(data.length)
-    expect(pageTwo.result).toHaveLength(config.maxServiceMessagesPerPage)
+    expect(pageTwo.result).toHaveLength(5)
 
     const pageTwoItems = pageTwo.result
     for (let i = 0; i < pageTwoItems.length; i++) {
-      expect(pageTwoItems[i].message).toBe(`Message ${i + 6}`)
+      expect(pageTwoItems[i].message).toBe(`Message ${data.length - i - 5}`)
+    }
+
+    const pageThreeResult = await getServiceMessages(connection, 2)
+    expect(isError(pageThreeResult)).toBe(false)
+
+    const pageThree = pageThreeResult as PaginatedResult<ServiceMessage[]>
+
+    expect(pageThree.totalElements).toBe(data.length)
+    expect(pageThree.result).toHaveLength(3)
+
+    const pageThreeItems = pageThree.result
+    for (let i = 0; i < pageThreeItems.length; i++) {
+      expect(pageThreeItems[i].message).toBe(`Message ${data.length - i - 10}`)
     }
   })
 })
