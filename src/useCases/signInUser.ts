@@ -1,12 +1,11 @@
 import { serialize } from "cookie"
 import { ServerResponse } from "http"
 import config from "lib/config"
-import { generateAuthenticationToken } from "lib/token/authenticationToken"
+import { generateAuthenticationToken, storeTokenId } from "lib/token/authenticationToken"
 import setCookie from "utils/setCookie"
 import { v4 as uuidv4 } from "uuid"
 import { isError } from "types/Result"
 import Database from "types/Database"
-import logJwt from "lib/logJwt"
 import UserFullDetails from "types/UserFullDetails"
 
 export default async (
@@ -17,10 +16,11 @@ export default async (
   const { authenticationCookieName } = config
   const uniqueId = uuidv4()
 
-  const logJwtResult = await logJwt(connection, user.id, uniqueId)
+  const storeTokenIdResult = await storeTokenId(connection, user.id, uniqueId)
 
-  if (isError(logJwtResult)) {
-    return logJwtResult
+  if (isError(storeTokenIdResult)) {
+    console.error(storeTokenIdResult)
+    return storeTokenIdResult
   }
 
   const authenticationToken = generateAuthenticationToken(user, uniqueId)
