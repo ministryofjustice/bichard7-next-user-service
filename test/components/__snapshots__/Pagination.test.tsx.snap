@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`should render the component and match the snapshot 1`] = `
+exports[`should render the component and match the snapshot when total items is more than zero 1`] = `
 <div>
   <div
     class="govuk-hint"
@@ -27,3 +27,5 @@ exports[`should render the component and match the snapshot 1`] = `
   </div>
 </div>
 `;
+
+exports[`should render the component and match the snapshot when total items is zero 1`] = `<div />`;

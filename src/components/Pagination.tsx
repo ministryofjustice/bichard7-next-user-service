@@ -9,6 +9,10 @@ interface Props {
 }
 
 const Pagination = ({ pageNumber, totalItems, maxItemsPerPage, href }: Props) => {
+  if (totalItems === 0) {
+    return <></>
+  }
+
   const nextPage = addQueryParams(href, {
     page: pageNumber + 1
   })
