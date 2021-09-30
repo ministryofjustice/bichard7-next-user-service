@@ -27,6 +27,7 @@
     "cookie-signature": "^1.1.0",
     "crypto-secure-random-digit": "^1.0.9",
     "csrf": "^3.1.0",
+    "date-fns": "^2.24.0",
     "govuk-frontend": "^3.12.0",
     "jsonwebtoken": "^8.5.1",
     "next": "^11.1.1",
