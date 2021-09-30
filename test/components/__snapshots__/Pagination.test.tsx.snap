@@ -1,0 +1,29 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`should render the component and match the snapshot 1`] = `
+<div>
+  <div
+    class="govuk-hint"
+  >
+    <a
+      class="govuk-link"
+      data-test="Prev"
+      href="/dummy-url?page=0"
+    >
+      &lt; Prev
+    </a>
+    <span
+      style="padding: 10px;"
+    >
+      Page 2 of 10
+    </span>
+    <a
+      class="govuk-link"
+      data-test="Next"
+      href="/dummy-url?page=2"
+    >
+      Next &gt;
+    </a>
+  </div>
+</div>
+`;
