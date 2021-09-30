@@ -13,8 +13,8 @@ import getServiceMessages from "useCases/getServiceMessages"
 import getConnection from "lib/getConnection"
 import ServiceMessage from "types/ServiceMessage"
 import { isError } from "types/Result"
-import { format } from "date-fns"
 import Pagination from "components/Pagination"
+import ServiceMessages from "components/ServiceMessages"
 
 export const getServerSideProps = withMultipleServerSideProps(
   withAuthentication,
@@ -79,38 +79,11 @@ const Home = ({
       <Layout user={currentUser}>
         <div className="govuk-grid-row">
           <div className="govuk-grid-column-two-thirds">
-            <h1 className="govuk-heading-l">
-              {"Welcome "}
-              {currentUser?.forenames}
-              {` `}
-              {currentUser?.surname}
-            </h1>
+            <h1 className="govuk-heading-l">{`Welcome ${currentUser?.forenames} ${currentUser?.surname}`}</h1>
 
             <h2 className="govuk-heading-m">{"Latest service messages"}</h2>
 
-            {serviceMessages.totalElements === 0 && (
-              <p className="govuk-body">{"There are no service messages to display."}</p>
-            )}
-
-            {serviceMessages.map((message) => (
-              <>
-                <div className="govuk-grid-row">
-                  <div className="govuk-grid-column-full">
-                    <p className="govuk-body">
-                      <time
-                        className="govuk-!-font-weight-bold govuk-!-font-size-16"
-                        aria-label="time"
-                        title={format(new Date(message.createdAt), "dd MMMM yyyy HH:mm")}
-                      >
-                        {format(new Date(message.createdAt), "dd MMMM yyyy")}
-                      </time>
-                      <br />
-                      {message.message}
-                    </p>
-                  </div>
-                </div>
-              </>
-            ))}
+            <ServiceMessages messages={serviceMessages} />
 
             <Pagination
               pageNumber={pageNumber}
