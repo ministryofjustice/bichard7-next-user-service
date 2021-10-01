@@ -6,9 +6,10 @@ interface Props {
   totalItems: number
   maxItemsPerPage: number
   href: string
+  className?: string
 }
 
-const Pagination = ({ pageNumber, totalItems, maxItemsPerPage, href }: Props) => {
+const Pagination = ({ pageNumber, totalItems, maxItemsPerPage, href, className }: Props) => {
   if (totalItems === 0) {
     return <></>
   }
@@ -39,13 +40,13 @@ const Pagination = ({ pageNumber, totalItems, maxItemsPerPage, href }: Props) =>
   const pageString = `Page ${pageNumber + 1} of ${Math.ceil(totalItems / maxItemsPerPage)}`
 
   return (
-    <div className="govuk-hint">
+    <div className={`govuk-hint${className ? ` ${className}` : ""}`}>
       <Link href={prevPage} data-test="Prev">
         {pageNumber > 0 && "< Prev"}
       </Link>
       <span style={styles}>{pageString}</span>
       <Link href={nextPage} data-test="Next">
-        {pageNumber + 1 < (totalItems - 1) / maxItemsPerPage && "Next >"}
+        {pageNumber + 1 < totalItems / maxItemsPerPage && "Next >"}
       </Link>
     </div>
   )
