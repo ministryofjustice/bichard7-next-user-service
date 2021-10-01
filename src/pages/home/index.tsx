@@ -15,11 +15,12 @@ import ServiceMessage from "types/ServiceMessage"
 import { isError } from "types/Result"
 import Pagination from "components/Pagination"
 import ServiceMessages from "components/ServiceMessages"
+import addQueryParams from "utils/addQueryParams"
 
 export const getServerSideProps = withMultipleServerSideProps(
   withAuthentication,
   async (context: GetServerSidePropsContext<ParsedUrlQuery>): Promise<GetServerSidePropsResult<Props>> => {
-    const { currentUser, authentication, query } = context as AuthenticationServerSidePropsContext
+    const { currentUser, authentication, query, req } = context as AuthenticationServerSidePropsContext
 
     if (!currentUser || !authentication) {
       return createRedirectResponse("/login")
@@ -38,6 +39,10 @@ export const getServerSideProps = withMultipleServerSideProps(
       serviceMessagesResult = { result: [], totalElements: 0 }
     }
 
+    const bichardUrl = addQueryParams(config.bichardRedirectURL, {
+      [config.tokenQueryParamName]: req.cookies[config.authenticationCookieName]
+    })
+
     return {
       props: {
         currentUser,
@@ -46,7 +51,8 @@ export const getServerSideProps = withMultipleServerSideProps(
         hasAccessToBichard,
         serviceMessages: JSON.parse(JSON.stringify(serviceMessagesResult.result)),
         pageNumber,
-        totalMessages: serviceMessagesResult.totalElements
+        totalMessages: serviceMessagesResult.totalElements,
+        bichardUrl
       }
     }
   }
@@ -60,6 +66,7 @@ interface Props {
   serviceMessages: ServiceMessage[]
   pageNumber: number
   totalMessages: number
+  bichardUrl: string
 }
 
 const Home = ({
@@ -69,7 +76,8 @@ const Home = ({
   hasAccessToBichard,
   serviceMessages,
   pageNumber,
-  totalMessages
+  totalMessages,
+  bichardUrl
 }: Props) => {
   return (
     <>
@@ -101,21 +109,25 @@ const Home = ({
               <ul className="govuk-list govuk-!-font-size-16">
                 {hasAccessToBichard && (
                   <li>
-                    <Link href={config.bichardRedirectURL} className="govuk-link govuk-link--no-underline">
+                    <Link href={bichardUrl} className="govuk-link govuk-link--no-underline" id="bichard-link">
                       {"Bichard"}
                     </Link>
                   </li>
                 )}
                 {hasAccessToUserManagement && (
                   <li>
-                    <Link href="/users" className="govuk-link govuk-link--no-underline">
+                    <Link href="/users" className="govuk-link govuk-link--no-underline" id="user-management-link">
                       {"User management"}
                     </Link>
                   </li>
                 )}
                 {hasAccessToAuditLogging && (
                   <li>
-                    <Link href={config.auditLoggingRedirectURL} className="govuk-link govuk-link--no-underline">
+                    <Link
+                      href={config.auditLoggingRedirectURL}
+                      className="govuk-link govuk-link--no-underline"
+                      id="audit-logging-link"
+                    >
                       {"Audit logging"}
                     </Link>
                   </li>
