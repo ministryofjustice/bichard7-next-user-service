@@ -13,6 +13,7 @@ interface SmtpConfig {
 export interface UserServiceConfig {
   argon2: Argon2Config
   auditLoggerType: string
+  auditLoggingURL: string
   authenticationCookieName: string
   baseUrl: string
   bichardRedirectURL: string
@@ -36,6 +37,7 @@ export interface UserServiceConfig {
   tokenIssuer: string
   tokenQueryParamName: string
   tokenSecret: string
+  maxServiceMessagesPerPage: number
   maxUsersPerPage: number
   verificationCodeLength: number
 }
@@ -49,6 +51,7 @@ const config: UserServiceConfig = {
     timeCost: 2
   },
   auditLoggerType: "console",
+  auditLoggingURL: process.env.AUDIT_LOGGING_URL ?? "https://localhost:3000/audit-logging",
   authenticationCookieName: ".AUTH",
   baseUrl: process.env.BASE_URL ?? "http://localhost:3000/users",
   bichardRedirectURL: process.env.BICHARD_REDIRECT_URL ?? "https://localhost:9443/bichard-ui/Authenticate",
@@ -69,6 +72,7 @@ const config: UserServiceConfig = {
   tokenIssuer: process.env.TOKEN_ISSUER ?? "Bichard",
   tokenQueryParamName: process.env.TOKEN_QUERY_PARAM_NAME ?? "token",
   tokenSecret: process.env.TOKEN_SECRET ?? "OliverTwist",
+  maxServiceMessagesPerPage: 5,
   maxUsersPerPage: 10,
   verificationCodeLength: 6,
   csrf: {

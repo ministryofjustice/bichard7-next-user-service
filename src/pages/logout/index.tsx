@@ -14,7 +14,7 @@ export const getServerSideProps = withMultipleServerSideProps(
     const { req, res } = context as AuthenticationServerSidePropsContext
     const connection = getConnection()
     await signOutUser(connection, res, req)
-    return { props: null }
+    return { props: {} }
   }
 )
 

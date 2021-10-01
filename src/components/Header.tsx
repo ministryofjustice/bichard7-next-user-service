@@ -49,15 +49,15 @@ const Header = ({ serviceName, user }: HeaderProps) => (
         {user && (
           <nav>
             <ul id="navigation" className="govuk-header__navigation " aria-label="Navigation menu">
-              <li className="govuk-header__navigation-item govuk-header__navigation-item--active">
+              <li className="govuk-header__navigation-item">
                 <Link className="govuk-header__link" href="/account/change-password">
                   {"Change Password"}
                 </Link>
               </li>
-              <li>
-                <a className="govuk-header__link" href="/logout">
+              <li className="govuk-header__navigation-item">
+                <Link className="govuk-header__link" href="/logout">
                   {"Sign out"}
-                </a>
+                </Link>
               </li>
             </ul>
           </nav>

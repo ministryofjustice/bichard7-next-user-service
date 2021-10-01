@@ -1,4 +1,4 @@
-import { validToken } from "../helpers/tokens"
+import { validToken, decodeAuthenticationToken } from "../helpers/tokens"
 
 describe("Redirection log in", () => {
   before(() => {
@@ -25,9 +25,18 @@ describe("Redirection log in", () => {
       cy.get("button[type=submit]").click()
 
       cy.url().should("match", /^http:\/\/localhost:3000\/bichard-ui\/customurl/)
-      cy.url().should("match", /\?token=[A-Za-z0-9_.]+/)
 
-      done()
+      cy.url().then((url) => {
+        expect(url).to.match(/\?token=[A-Za-z0-9_.]+/)
+        cy.task("selectFromUsersTable", emailAddress).then((user) => {
+          cy.task("selectFromJwtIdTable").then((jwtId) => {
+            const decodedToken = decodeAuthenticationToken(url.match(/token=([^..]+\.[^..]+\.[^..]+)/)[1])
+            expect(jwtId.id).to.equal(decodedToken.id)
+            expect(jwtId.user_id).to.equal(user.id)
+            done()
+          })
+        })
+      })
     })
   })
 })

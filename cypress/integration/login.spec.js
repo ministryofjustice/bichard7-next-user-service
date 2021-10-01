@@ -1,4 +1,4 @@
-import { invalidToken, validToken, decodeAuthenticationToken } from "../helpers/tokens"
+import { invalidToken, validToken } from "../helpers/tokens"
 
 const emailCookieName = "LOGIN_EMAIL"
 
@@ -245,33 +245,6 @@ describe("Logging In", () => {
 
     it("should respond with forbidden response code when CSRF tokens are invalid in login page", (done) => {
       cy.checkCsrf("/login", "POST").then(() => done())
-    })
-
-    it("should have the correct UUID in the generated JWT token", (done) => {
-      const emailAddress = "bichard01@example.com"
-      const password = "password"
-
-      cy.visit("/login")
-      cy.get("input[type=email]").type(emailAddress)
-      cy.get("button[type=submit]").click()
-      cy.get('h1[data-test="check-email"]').should("exist")
-      cy.task("getVerificationCode", emailAddress).then((verificationCode) => {
-        const token = validToken(emailAddress, verificationCode)
-
-        cy.visit(`/login/verify?token=${token}`)
-        cy.get("input[type=password][name=password]").type(password)
-        cy.get("button[type=submit]").click()
-        cy.url().then((url) => {
-          cy.task("selectFromUsersTable", emailAddress).then((user) => {
-            cy.task("selectFromJwtIdTable").then((jwtId) => {
-              const decodedToken = decodeAuthenticationToken(url.match(/token=([^..]+\.[^..]+\.[^..]+)/)[1])
-              expect(jwtId.id).to.equal(decodedToken.id)
-              expect(jwtId.user_id).to.equal(user.id)
-              done()
-            })
-          })
-        })
-      })
     })
 
     it("can successfully log out after logging in", () => {
