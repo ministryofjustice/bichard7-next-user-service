@@ -107,7 +107,7 @@ export const getServerSideProps = withCsrf(async (context): Promise<GetServerSid
         return createRedirectResponse(url, { basePath: false })
       }
 
-      return createRedirectResponse("/home")
+      return createRedirectResponse("/")
     }
 
     const { token } = query as { token: EmailVerificationToken }

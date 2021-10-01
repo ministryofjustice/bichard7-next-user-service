@@ -4,14 +4,5 @@ module.exports = {
   poweredByHeader: false,
   sassOptions: {
     quietDeps: true
-  },
-  async redirects() {
-    return [
-      {
-        source: "/",
-        destination: "/login",
-        permanent: false
-      }
-    ]
   }
 }
