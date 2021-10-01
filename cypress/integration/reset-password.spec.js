@@ -41,9 +41,7 @@ describe("Reset password", () => {
         cy.get("input[type=password][name=newPassword]").type("bichard01")
         cy.get("input[type=password][name=confirmPassword]").type("bichard01")
         cy.get("button[type=submit]").click()
-        cy.get(".govuk-error-summary").contains(
-          "Password contains user specific sensitive information. Please choose another one."
-        )
+        cy.get(".govuk-error-summary").contains("Password contains personal information.")
       })
     })
 

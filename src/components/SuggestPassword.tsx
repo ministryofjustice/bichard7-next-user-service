@@ -14,7 +14,15 @@ const SuggestPassword = ({ suggestedPassword, suggestedPasswordUrl }: Props) => 
       <ul className="govuk-list govuk-list--bullet">
         <li>{`It has at least ${config.passwordMinLength} characters`}</li>
         <li>{"It does not contain your details such as first name, last name, username, and email address"}</li>
-        <li>{"It is not easy to guess"}</li>
+        <li>
+          {"It is not easy to guess. You should avoid using simple patterns and obvious words such as "}
+          <span className="govuk-!-font-weight-bold">{"qwerty"}</span>
+          {", "}
+          <span className="govuk-!-font-weight-bold">{"football"}</span>
+          {", or "}
+          <span className="govuk-!-font-weight-bold">{"dragon"}</span>
+          {"."}
+        </li>
       </ul>
       <h3 className="govuk-heading-m govuk-!-margin-top-6">{"Not sure what password to choose?"}</h3>
       {!suggestedPassword && (
