@@ -9,9 +9,9 @@ describe("Redirection log in", () => {
   it("should be able to log in given a valid url passed as a 'redirect' query parameter and redirect to the url given in the query parameter", (done) => {
     const emailAddress = "bichard01@example.com"
     const password = "password"
-    const redirectUrl = "http://localhost:3000/bichard-ui/customurl"
+    const redirectPath = "/bichard-ui/customurl"
 
-    cy.visit(`/login?redirect=${redirectUrl}`)
+    cy.visit(`/login?redirect=${redirectPath}`)
 
     cy.get("input[type=email]").type(emailAddress)
     cy.get("button[type=submit]").click()
@@ -19,7 +19,7 @@ describe("Redirection log in", () => {
 
     cy.task("getVerificationCode", emailAddress).then((verificationCode) => {
       const token = validToken(emailAddress, verificationCode)
-      cy.visit(`/login/verify?token=${token}&redirect=${redirectUrl}`)
+      cy.visit(`/login/verify?token=${token}&redirect=${redirectPath}`)
 
       cy.get("input[type=password][name=password]").type(password)
       cy.get("button[type=submit]").click()
