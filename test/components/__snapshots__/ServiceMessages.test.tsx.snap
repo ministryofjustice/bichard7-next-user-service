@@ -9,11 +9,11 @@ exports[`should render the component and match the snapshot when there are messa
       class="govuk-grid-column-full"
     >
       <p
-        class="govuk-body"
+        class="govuk-body govuk-!-font-size-16"
       >
         <time
           aria-label="time"
-          class="govuk-!-font-weight-bold govuk-!-font-size-16"
+          class="govuk-!-font-weight-bold govuk-!-font-size-14"
           title="28 September 2021 10:12"
         >
           28 September 2021
@@ -30,11 +30,11 @@ exports[`should render the component and match the snapshot when there are messa
       class="govuk-grid-column-full"
     >
       <p
-        class="govuk-body"
+        class="govuk-body govuk-!-font-size-16"
       >
         <time
           aria-label="time"
-          class="govuk-!-font-weight-bold govuk-!-font-size-16"
+          class="govuk-!-font-weight-bold govuk-!-font-size-14"
           title="29 September 2021 11:14"
         >
           29 September 2021
@@ -51,11 +51,11 @@ exports[`should render the component and match the snapshot when there are messa
       class="govuk-grid-column-full"
     >
       <p
-        class="govuk-body"
+        class="govuk-body govuk-!-font-size-16"
       >
         <time
           aria-label="time"
-          class="govuk-!-font-weight-bold govuk-!-font-size-16"
+          class="govuk-!-font-weight-bold govuk-!-font-size-14"
           title="30 September 2021 17:45"
         >
           30 September 2021

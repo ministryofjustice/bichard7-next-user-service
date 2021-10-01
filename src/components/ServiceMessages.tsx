@@ -12,9 +12,9 @@ const ServiceMessages = ({ messages }: Props) => (
     {messages.map((message, index) => (
       <div className="govuk-grid-row" key={String(index)}>
         <div className="govuk-grid-column-full">
-          <p className="govuk-body">
+          <p className="govuk-body govuk-!-font-size-16">
             <time
-              className="govuk-!-font-weight-bold govuk-!-font-size-16"
+              className="govuk-!-font-weight-bold govuk-!-font-size-14"
               aria-label="time"
               title={format(new Date(message.createdAt), "dd MMMM yyyy HH:mm")}
             >
