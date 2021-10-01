@@ -124,7 +124,7 @@ const Home = ({
                 {hasAccessToAuditLogging && (
                   <li>
                     <Link
-                      href={config.auditLoggingRedirectURL}
+                      href={config.auditLoggingURL}
                       className="govuk-link govuk-link--no-underline"
                       id="audit-logging-link"
                     >
