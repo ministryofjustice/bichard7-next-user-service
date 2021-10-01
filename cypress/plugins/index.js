@@ -10,10 +10,12 @@ import deleteFromTable from "../../testFixtures/database/deleteFromTable"
 import insertIntoUsersTable from "../../testFixtures/database/insertIntoUsersTable"
 import insertIntoGroupsTable from "../../testFixtures/database/insertIntoGroupsTable"
 import insertIntoUsersAndGroupsTable from "../../testFixtures/database/insertIntoUsersAndGroupsTable"
+import insertIntoServiceMessagesTable from "../../testFixtures/database/insertIntoServiceMessagesTable"
 import selectFromTable from "../../testFixtures/database/selectFromTable"
 import users from "../../testFixtures/database/data/users"
 import groups from "../../testFixtures/database/data/groups"
 import manyUsers from "../../testFixtures/database/data/manyUsers"
+import serviceMessages from "../../testFixtures/database/data/serviceMessages"
 
 /**
  * @type {Cypress.PluginConfig}
@@ -60,6 +62,11 @@ module.exports = (on, config) => {
       return null
     },
 
+    async deleteFromServiceMessagesTable() {
+      await deleteFromTable("service_messages")
+      return null
+    },
+
     async insertIntoUsersTable() {
       await insertIntoUsersTable(users)
       return null
@@ -72,6 +79,11 @@ module.exports = (on, config) => {
 
     async insertManyIntoUsersTable() {
       await insertIntoUsersTable(manyUsers)
+      return null
+    },
+
+    async insertIntoServiceMessagesTable() {
+      await insertIntoServiceMessagesTable(serviceMessages)
       return null
     },
 

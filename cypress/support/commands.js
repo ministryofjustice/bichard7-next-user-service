@@ -38,8 +38,7 @@ Cypress.Commands.add("login", (emailAddress, password) => {
     cy.get("input[type=password][name=password]").type(password)
     cy.get("button[type=submit]").click()
     cy.url().then((url) => {
-      expect(url).to.match(/^http:\/\/localhost:3000\/bichard-ui\/Authenticate/)
-      expect(url).to.match(/\?token=[A-Za-z0-9_.]+/)
+      expect(url).to.equal("http://localhost:3000/users/home")
     })
   })
 })

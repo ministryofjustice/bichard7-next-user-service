@@ -44,6 +44,7 @@ The application makes use of the following environment variables to permit confi
 
 | Variable                         | Default                                            | Description                                                                                          |
 |----------------------------------|----------------------------------------------------|------------------------------------------------------------------------------------------------------|
+| `$AUDIT_LOGGING_URL`    | `"https://localhost:3000/audit-logging"`           | The URL to redirect to audit logging                                                                 |
 | `$BASE_URL`                      | `http://localhost:3000`                            | The URL that the user-service is being served from. Used for generating email links.                 |
 | `$BICHARD_REDIRECT_URL`          | `"https://localhost:9443/bichard-ui/Authenticate"` | The URL to redirect to with a token as a GET parameter when authentication is successful             |
 | `$CONTACT_URL`                   | `"http://localhost:3000/contact-us"`               | The URL to contact the support team                                                                  |

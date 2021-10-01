@@ -1,15 +1,18 @@
 import jwt from "jsonwebtoken"
+import { v4 as uuidv4 } from "uuid"
 import config from "lib/config"
 import {
   AuthenticationTokenPayload,
   decodeAuthenticationToken,
-  generateAuthenticationToken
+  generateAuthenticationToken,
+  storeTokenId
 } from "lib/token/authenticationToken"
 import { isError } from "types/Result"
-import User from "types/User"
+import UserFullDetails from "types/UserFullDetails"
 import UserCredentials from "types/UserCredentials"
+import Database from "types/Database"
 
-const user: User & UserCredentials = {
+const user: UserFullDetails & UserCredentials = {
   id: 1,
   username: "bichard01",
   exclusionList: ["1", "2", "3", "4"],
@@ -21,17 +24,19 @@ const user: User & UserCredentials = {
   emailAddress: "bichard01@example.com",
   groups: ["B7Supervisor"],
   password: "$shiro1$SHA-256$500000$foo$bar",
-  verificationCode: "123456"
+  verificationCode: "123456",
+  emailVerificationCode: "",
+  migratedPassword: ""
 }
 
 describe("generateAuthenticationToken()", () => {
   it("should return a string that looks like a token", () => {
-    const result = generateAuthenticationToken(user)
+    const result = generateAuthenticationToken(user, uuidv4())
     expect(result).toEqual(expect.stringMatching(/^[a-z0-9]+\.[a-z0-9]+\.[a-z0-9_-]+$/i))
   })
 
   it("should return a token that can be successfully decoded and verified", () => {
-    const token = generateAuthenticationToken(user)
+    const token = generateAuthenticationToken(user, uuidv4())
     const payload = jwt.verify(token, config.tokenSecret, { issuer: config.tokenIssuer })
 
     const expectedPayload = {
@@ -46,7 +51,7 @@ describe("generateAuthenticationToken()", () => {
   })
 
   it("should return a token only containing the minimum information", () => {
-    const token = generateAuthenticationToken(user)
+    const token = generateAuthenticationToken(user, uuidv4())
     const payload = jwt.decode(token)
 
     expect(payload).not.toHaveProperty("endorsedBy")
@@ -60,7 +65,7 @@ describe("generateAuthenticationToken()", () => {
 
 describe("decodePasswordResetToken()", () => {
   it("should return decoded token when payload is provided", () => {
-    const token = generateAuthenticationToken(user) as string
+    const token = generateAuthenticationToken(user, uuidv4()) as string
     const result = decodeAuthenticationToken(token)
 
     expect(result).toBeDefined()
@@ -82,5 +87,24 @@ describe("decodePasswordResetToken()", () => {
 
     const actualError = <Error>result
     expect(actualError.message).toBe("jwt malformed")
+  })
+})
+
+describe("storeTokenId()", () => {
+  const database = <Database>(<unknown>{ none: () => {} })
+
+  it("should return error when database returns error", async () => {
+    const expectedError = new Error("Error message")
+
+    jest.spyOn(database, "none").mockImplementation(() => {
+      throw expectedError
+    })
+
+    const result = await storeTokenId(database, 3, uuidv4())
+
+    expect(isError(result)).toBe(true)
+
+    const actualError = <Error>result
+    expect(actualError.message).toBe(expectedError.message)
   })
 })

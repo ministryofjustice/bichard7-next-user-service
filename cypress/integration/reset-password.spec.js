@@ -1,4 +1,4 @@
-import { generatePasswordResetToken, generateLoginVerificationToken } from "../helpers/tokens"
+import { generatePasswordResetToken } from "../helpers/tokens"
 
 describe("Reset password", () => {
   context("720p resolution", () => {
@@ -68,20 +68,8 @@ describe("Reset password", () => {
         cy.get("button[type=submit]").click()
         cy.get("body").contains(/You can now sign in with your new password./i)
 
-        cy.visit("/login")
-        cy.get("input[type=email]").type(emailAddress)
-        cy.get("button[type=submit]").click()
-        cy.task("getVerificationCode", emailAddress).then((verificationCode) => {
-          const verificationToken = generateLoginVerificationToken(emailAddress, verificationCode)
-          cy.visit(`/login/verify?token=${verificationToken}`)
-          cy.get("input[type=password][name=password]").type(newPassword)
-          cy.get("button[type=submit]").click()
-          cy.url().then((url) => {
-            expect(url).to.match(/^http:\/\/localhost:3000\/bichard-ui\/Authenticate/)
-            expect(url).to.match(/\?token=[A-Za-z0-9_.]+/)
-            done()
-          })
-        })
+        cy.login(emailAddress, newPassword)
+        done()
       })
     })
 
