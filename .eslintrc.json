@@ -17,7 +17,8 @@
       ],
       "rules": {
         "@typescript-eslint/no-var-requires": "off",
-        "curly": ["error", "all"]
+        "curly": ["error", "all"],
+        "no-useless-escape": "off"
       }
     },
     {
@@ -41,6 +42,7 @@
         "curly": ["error", "all"],
         "no-console": "off",
         "no-plusplus": "off",
+        "no-useless-escape": "off",
         "require-await": "error",
         "filenames/match-exported": "error",
         "import/first": "error",

@@ -3,9 +3,8 @@ import getTestConnection from "../getTestConnection"
 const insertIntoServiceMessagesTable = (data) => {
   const connection = getTestConnection()
 
-  /* eslint-disable no-useless-escape */
   const insertQuery = `
-    INSERT INTO 
+    INSERT INTO
       br7own.service_messages(
         message,
         created_at

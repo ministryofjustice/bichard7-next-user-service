@@ -19,28 +19,22 @@ const insertIntoUsersAndGroupsTable = async (users, groups) => {
   const selectedGroups = await connection.any(selectFromGroupsQuery)
   const selectedUsers = await connection.any(selectFromUsersQuery)
 
-  /* eslint-disable no-useless-escape */
   const insertQuery = `
-    INSERT INTO 
+    INSERT INTO
       br7own.users_groups(
-        group_id, 
+        group_id,
         user_id
       ) VALUES (
         $\{group_id\},
         $\{user_id\}
       )
   `
-  /* eslint-disable no-useless-escape */
 
-  const usersLen = users.length
+  const queries = selectedUsers.map((user) =>
+    connection.none(insertQuery, { group_id: randomlySelectGroupId(selectedGroups), user_id: user.id })
+  )
 
-  /* eslint-disable */
-  for (let i = 0; i < usersLen; i++) {
-    await connection.none(insertQuery, { group_id: randomlySelectGroupId(selectedGroups), user_id: selectedUsers[i].id })
-  }
-  /* eslint-disable */
-
-  return Promise.resolve()
+  return Promise.all(queries)
 }
 
 export default insertIntoUsersAndGroupsTable

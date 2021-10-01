@@ -1,7 +1,7 @@
 import { ParsedUrlQuery } from "querystring"
 
 export const isValidRedirectPath = (redirect: string): boolean => {
-  const containsOnlyStandardChars = /^[a-z\/._-]+$/i.test(redirect) // eslint-disable-line no-useless-escape
+  const containsOnlyStandardChars = /^[a-z\/._-]+$/i.test(redirect)
   const isAbsoluteNonRootPath = /^\/.+/.test(redirect)
   return containsOnlyStandardChars && isAbsoluteNonRootPath
 }

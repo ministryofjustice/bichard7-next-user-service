@@ -53,7 +53,6 @@ describe("resetPassword", () => {
     expect(result).toBeUndefined()
 
     const actualUser = await connection.oneOrNone(
-      // eslint-disable-next-line no-useless-escape
       `SELECT username, password FROM br7own.users WHERE email = $\{email\}`,
       {
         email: emailAddress
