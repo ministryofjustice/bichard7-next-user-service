@@ -45,7 +45,7 @@ describe("Home", () => {
     it("should show paginated service messages", () => {
       cy.login("bichard01@example.com", "password")
       cy.get("body").contains("Latest service messages")
-      cy.get(".govuk-grid-column-two-thirds > .govuk-grid-row").each((row, index) => {
+      cy.get(".govuk-grid-column-one-third > .govuk-grid-row").each((row, index) => {
         cy.wrap(row)
           .get(".govuk-body")
           .contains(`Message ${13 - index}`)
@@ -53,7 +53,7 @@ describe("Home", () => {
 
       cy.get('a[data-test="Next"]').click()
 
-      cy.get(".govuk-grid-column-two-thirds > .govuk-grid-row").each((row, index) => {
+      cy.get(".govuk-grid-column-one-third > .govuk-grid-row").each((row, index) => {
         cy.wrap(row)
           .get(".govuk-body")
           .contains(`Message ${8 - index}`)
@@ -61,7 +61,7 @@ describe("Home", () => {
 
       cy.get('a[data-test="Prev"]').click()
 
-      cy.get(".govuk-grid-column-two-thirds > .govuk-grid-row").each((row, index) => {
+      cy.get(".govuk-grid-column-one-third > .govuk-grid-row").each((row, index) => {
         cy.wrap(row)
           .get(".govuk-body")
           .contains(`Message ${13 - index}`)
