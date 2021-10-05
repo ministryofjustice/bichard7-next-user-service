@@ -16,6 +16,7 @@ import { withCsrf } from "middleware"
 import isPost from "utils/isPost"
 import { ParsedUrlQuery } from "querystring"
 import { ErrorSummaryList } from "components/ErrorSummary"
+import Link from "components/Link"
 
 export const getServerSideProps = withCsrf(
   async (context: GetServerSidePropsContext<ParsedUrlQuery>): Promise<GetServerSidePropsResult<Props>> => {
@@ -74,7 +75,11 @@ const ForgotPassword = ({ emailError, csrfToken }: Props) => (
         </ErrorSummary>
 
         <p className="govuk-body">
-          <p>{"We will email you a link to reset your password."}</p>
+          <p>
+            {"We will email you a link via "}
+            <Link href="https://www.cjsm.net/">{"CJSM"}</Link>
+            {" to reset your password."}
+          </p>
 
           <Form method="post" csrfToken={csrfToken}>
             <TextInput id="email" name="emailAddress" label="Email address" type="email" error={emailError} />

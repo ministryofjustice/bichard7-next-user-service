@@ -38,7 +38,7 @@ Cypress.Commands.add("login", (emailAddress, password) => {
     cy.get("input[type=password][name=password]").type(password)
     cy.get("button[type=submit]").click()
     cy.url().then((url) => {
-      expect(url).to.equal("http://localhost:3000/users/home")
+      expect(url).to.equal("http://localhost:3000/users")
     })
   })
 })

@@ -5,7 +5,6 @@ import PromiseResult from "types/PromiseResult"
 const getUserById = async (connection: Database, id: number): PromiseResult<Partial<User>> => {
   let user
 
-  /* eslint-disable no-useless-escape */
   const getUserByIdQuery = `
       SELECT
         id,
@@ -20,7 +19,6 @@ const getUserById = async (connection: Database, id: number): PromiseResult<Part
 	    INNER JOIN br7own.users_groups AS ug ON u.id = ug.user_id
       WHERE id = $\{id\} AND deleted_at IS NULL
     `
-  /* eslint-disable no-useless-escape */
 
   try {
     user = await connection.one(getUserByIdQuery, { id })

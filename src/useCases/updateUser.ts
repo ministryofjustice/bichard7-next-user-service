@@ -5,17 +5,14 @@ import User from "types/User"
 import { ITask } from "pg-promise"
 
 const deleteFromUsersGroups = async (task: ITask<unknown>, userId: number) => {
-  /* eslint-disable no-useless-escape */
   const deleteFromUsersGroupsQuery = `
     DELETE FROM br7own.users_groups
     WHERE user_id = $\{userId\}
   `
-  /* eslint-disable no-useless-escape */
   await task.none(deleteFromUsersGroupsQuery, { userId })
 }
 
 const updateUsersGroup = async (task: ITask<unknown>, userId: number, groupId: number) => {
-  /* eslint-disable no-useless-escape */
   const updateUsersGroupQuery = `
     INSERT INTO br7own.users_groups
       (
@@ -26,28 +23,25 @@ const updateUsersGroup = async (task: ITask<unknown>, userId: number, groupId: n
         $\{groupId\}
       )
   `
-  /* eslint-disable no-useless-escape */
   await task.none(updateUsersGroupQuery, { userId, groupId })
 }
-/* eslint-disable @typescript-eslint/return-await */
+
 const updateUserTable = async (task: ITask<unknown>, userDetails: Partial<User>) => {
-  /* eslint-disable no-useless-escape */
   const updateUserQuery = `
     UPDATE br7own.users
-	    SET 
+	    SET
         forenames=$\{forenames\},
         surname=$\{surname\},
         endorsed_by=$\{endorsedBy\},
         org_serves=$\{orgServes\}
 	    WHERE id = $\{id\}
     `
-  /* eslint-disable no-useless-escape */
 
-  return await task.result(updateUserQuery, { ...userDetails })
+  const result = await task.result(updateUserQuery, { ...userDetails })
+  return result
 }
-/* eslint-disable @typescript-eslint/return-await */
 
-/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const notUpdated = (row: any) => row && row.rowCount === 0
 
 const updateUser = async (

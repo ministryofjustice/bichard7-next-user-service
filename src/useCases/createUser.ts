@@ -12,7 +12,6 @@ type UserId = {
 
 /* eslint-disable require-await */
 const insertUser = async (task: ITask<unknown>, userDetails: Partial<User>): Promise<UserId> => {
-  /* eslint-disable no-useless-escape */
   const insertUserQuery = `
       INSERT INTO br7own.users(
         username,
@@ -35,24 +34,20 @@ const insertUser = async (task: ITask<unknown>, userDetails: Partial<User>): Pro
         $\{orgServes\}
       ) RETURNING id;
     `
-  /* eslint-disable no-useless-escape */
 
   return task.one(insertUserQuery, { ...userDetails })
 }
-/* eslint-disable require-await */
 
 const insertUserIntoGroup = async (task: ITask<unknown>, userId: number, groupId: number) => {
-  /* eslint-disable no-useless-escape */
   const insertGroupQuery = `
     INSERT INTO br7own.users_groups(
-      user_id, 
+      user_id,
       group_id
     ) VALUES (
-      $\{userId\}, 
+      $\{userId\},
       $\{groupId\}
     );
   `
-  /* eslint-disable no-useless-escape */
 
   await task.none(insertGroupQuery, { userId, groupId })
 }

@@ -17,7 +17,7 @@ import Link from "components/Link"
 import createRedirectResponse from "utils/createRedirectResponse"
 import Form from "components/Form"
 import CsrfServerSidePropsContext from "types/CsrfServerSidePropsContext"
-import getRedirectUrl from "lib/getRedirectUrl"
+import getRedirectPath from "lib/getRedirectPath"
 import config from "lib/config"
 import { withCsrf } from "middleware"
 import isPost from "utils/isPost"
@@ -35,8 +35,8 @@ export const getServerSideProps = withCsrf(
       if (emailAddress) {
         const connection = getConnection()
 
-        const redirectUrl = getRedirectUrl(query, config)
-        const sent = await sendVerificationEmail(connection, emailAddress, redirectUrl as string)
+        const redirectPath = getRedirectPath(query)
+        const sent = await sendVerificationEmail(connection, emailAddress, redirectPath)
 
         if (isError(sent)) {
           console.error(sent)
@@ -62,12 +62,12 @@ export const getServerSideProps = withCsrf(
 
       if (emailAddressFromCookie) {
         const connection = getConnection()
-        const redirectUrl = getRedirectUrl(query, config)
+        const redirectPath = getRedirectPath(query)
         const verificationUrl = await generateEmailVerificationUrl(
           connection,
           config,
           emailAddressFromCookie,
-          redirectUrl as string
+          redirectPath
         )
 
         if (!isError(verificationUrl)) {

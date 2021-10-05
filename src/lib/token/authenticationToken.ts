@@ -49,13 +49,11 @@ export function decodeAuthenticationToken(token: string): Result<AuthenticationT
 }
 
 export async function isTokenIdValid(connection: Database, uniqueId: string): PromiseResult<boolean> {
-  /* eslint-disable no-useless-escape */
   const query = `
     SELECT COUNT(1)
     FROM br7own.jwt_ids
     WHERE id = $\{uniqueId\};
   `
-  /* eslint-disable no-useless-escape */
 
   try {
     const { count } = await connection.one(query, { uniqueId })
@@ -66,12 +64,10 @@ export async function isTokenIdValid(connection: Database, uniqueId: string): Pr
 }
 
 export async function removeTokenId(connection: Database, uniqueId: string): PromiseResult<void> {
-  /* eslint-disable no-useless-escape */
   const removeTokenIdQuery = `
     DELETE FROM br7own.jwt_ids
     WHERE id = $\{uniqueId\};
   `
-  /* eslint-disable no-useless-escape */
 
   try {
     await connection.none(removeTokenIdQuery, { uniqueId })
@@ -82,7 +78,6 @@ export async function removeTokenId(connection: Database, uniqueId: string): Pro
 }
 
 export async function storeTokenId(connection: Database, userId: number, uniqueId: string): PromiseResult<void> {
-  /* eslint-disable no-useless-escape */
   const storeTokenIdQuery = `
     INSERT INTO br7own.jwt_ids
     (
@@ -97,7 +92,6 @@ export async function storeTokenId(connection: Database, userId: number, uniqueI
       $\{user_id\}
     );
   `
-  /* eslint-disable no-useless-escape */
 
   try {
     await connection.none(storeTokenIdQuery, { id: uniqueId, user_id: userId })

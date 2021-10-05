@@ -60,9 +60,7 @@ describe("Creation of new user", () => {
       cy.get("input[type=password][name=newPassword]").type(newPassword)
       cy.get("input[type=password][name=confirmPassword]").type(newPassword)
       cy.get("button[type=submit]").click()
-      cy.get("div.govuk-error-summary").contains(
-        "Password contains user specific sensitive information. Please choose another one."
-      )
+      cy.get("div.govuk-error-summary").contains("Password contains personal information.")
     })
   })
 
