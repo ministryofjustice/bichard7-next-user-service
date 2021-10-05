@@ -101,7 +101,6 @@ describe("Authenticator", () => {
     expect(isError(isAuth)).toBe(true)
 
     // wait until config.incorrectDelay seconds have passed
-    /* eslint-disable no-useless-escape */
     await connection.none(
       `
       UPDATE br7own.users
@@ -109,7 +108,6 @@ describe("Authenticator", () => {
       WHERE email = $\{email\}`,
       { interval: config.incorrectDelay, email: emailAddress }
     )
-    /* eslint-disable no-useless-escape */
 
     isAuth = await authenticate(connection, fakeAuditLogger, emailAddress, correctPassword, verificationCode)
     expect(isError(isAuth)).toBe(false)
@@ -140,7 +138,6 @@ describe("Authenticator", () => {
     expect(isError(isAuth)).toBe(false)
 
     // wait until config.incorrectDelay seconds have passed
-    /* eslint-disable no-useless-escape */
     await connection.none(
       `
       UPDATE br7own.users
@@ -148,7 +145,6 @@ describe("Authenticator", () => {
       WHERE email = $\{email\}`,
       { interval: config.incorrectDelay, email: emailAddress }
     )
-    /* eslint-disable no-useless-escape */
 
     // login a second time with same values
     isAuth = await authenticate(connection, fakeAuditLogger, emailAddress, correctPassword, verificationCode)

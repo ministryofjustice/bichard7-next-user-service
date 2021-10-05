@@ -1,10 +1,11 @@
-import { GetServerSidePropsResult } from "next"
+import { GetServerSidePropsResult, Redirect } from "next"
 
-export default <Props>(url: string): GetServerSidePropsResult<Props> => {
+export default <Props>(path: string, props?: Partial<Redirect>): GetServerSidePropsResult<Props> => {
   return {
     redirect: {
-      destination: url,
-      statusCode: 302
+      destination: path,
+      statusCode: 302,
+      ...props
     }
   }
 }

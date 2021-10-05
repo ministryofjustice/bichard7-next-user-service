@@ -11,7 +11,7 @@ export default async (
   connection: Database,
   config: UserServiceConfig,
   emailAddress: string,
-  redirectUrl?: string
+  redirectPath?: string
 ): PromiseResult<URL> => {
   const verificationCode = randomDigits(config.verificationCodeLength).join("")
   const storeVerificationCodeResult = await storeVerificationCode(connection, emailAddress, verificationCode)
@@ -33,8 +33,8 @@ export default async (
   const url = new URL(addBasePath("/login/verify"), config.baseUrl)
   url.searchParams.append("token", token)
 
-  if (redirectUrl) {
-    url.searchParams.append("redirect", redirectUrl)
+  if (redirectPath) {
+    url.searchParams.append("redirect", redirectPath)
   }
 
   return url

@@ -138,7 +138,7 @@ const Home = ({
               pageNumber={pageNumber}
               totalItems={totalMessages}
               maxItemsPerPage={config.maxServiceMessagesPerPage}
-              href="/home"
+              href="/"
               className="govuk-!-font-size-16"
             />
           </div>

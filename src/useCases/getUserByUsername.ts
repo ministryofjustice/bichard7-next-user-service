@@ -3,9 +3,6 @@ import Database from "types/Database"
 import PromiseResult from "types/PromiseResult"
 
 export default async (db: Database, username: string): PromiseResult<User | null> => {
-  let user
-
-  /* eslint-disable no-useless-escape */
   const getUserQuery = `
       SELECT
         id,
@@ -22,10 +19,9 @@ export default async (db: Database, username: string): PromiseResult<User | null
         INNER JOIN br7own.users_groups AS ug ON u.id = ug.user_id
       WHERE username = $\{username\} AND deleted_at IS NULL
     `
-  /* eslint-disable no-useless-escape */
 
   try {
-    user = await db.oneOrNone<User>(getUserQuery, { username }).catch((error) => error)
+    const user = await db.oneOrNone<User>(getUserQuery, { username }).catch((error) => error)
 
     if (user === null) {
       return null

@@ -18,7 +18,7 @@ import { isError } from "types/Result"
 import createRedirectResponse from "utils/createRedirectResponse"
 import Form from "components/Form"
 import CsrfServerSidePropsContext from "types/CsrfServerSidePropsContext"
-import getValidRedirectUrl from "lib/getRedirectUrl"
+import getValidRedirectPath from "lib/getRedirectPath"
 import { withCsrf } from "middleware"
 import Link from "components/Link"
 import { GetServerSidePropsResult } from "next"
@@ -29,13 +29,13 @@ import { ErrorSummaryList } from "components/ErrorSummary"
 
 export const getServerSideProps = withCsrf(async (context): Promise<GetServerSidePropsResult<Props>> => {
   const { req, res, query, formData, csrfToken } = context as CsrfServerSidePropsContext
-  const redirectUrl = getValidRedirectUrl(query, config)
+  const redirectPath = getValidRedirectPath(query)
 
   let redirectParams: { [key: string]: string } = {}
   const authenticationErrorMessage = "Error authenticating the reqest"
 
-  if (redirectUrl) {
-    redirectParams = { redirectUrl: redirectUrl as string }
+  if (redirectPath) {
+    redirectParams = { redirectPath }
   }
 
   const notYourEmailAddressUrl = addQueryParams("/login", {
@@ -99,15 +99,15 @@ export const getServerSideProps = withCsrf(async (context): Promise<GetServerSid
         removeEmailAddressCookie(res, config)
       }
 
-      if (!redirectUrl) {
-        return createRedirectResponse("/home")
+      if (redirectPath) {
+        const url = addQueryParams(redirectPath, {
+          [config.tokenQueryParamName]: authToken
+        })
+
+        return createRedirectResponse(url, { basePath: false })
       }
 
-      const url = addQueryParams(redirectUrl as string, {
-        [config.tokenQueryParamName]: authToken
-      })
-
-      return createRedirectResponse(url)
+      return createRedirectResponse("/")
     }
 
     const { token } = query as { token: EmailVerificationToken }
