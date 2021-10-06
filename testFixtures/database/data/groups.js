@@ -16,6 +16,9 @@ const groups = [
   },
   {
     name: "B7TriggerHandler_grp"
+  },
+  {
+    name: "B7UserManager_grp"
   }
 ]
 
