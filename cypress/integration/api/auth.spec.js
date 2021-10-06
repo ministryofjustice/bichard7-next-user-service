@@ -32,7 +32,7 @@ describe("Authentication API endpoint", () => {
       cy.get("button[type=submit]").click()
     })
 
-    cy.request({ url: "/api/auth", headers: { Referer: "/users/users" } }).then((response) => {
+    cy.request({ url: "/api/auth", headers: { Referer: "/" } }).then((response) => {
       expect(response.status).to.eq(200)
       expect(response.body).to.have.property("authenticated", true)
     })
