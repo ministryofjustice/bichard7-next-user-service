@@ -7,7 +7,7 @@ import Head from "next/head"
 const AccessDenied = () => (
   <>
     <Head>
-      <title>{"Page not found"}</title>
+      <title>{"Access denied"}</title>
     </Head>
     <Layout>
       <GridRow>
