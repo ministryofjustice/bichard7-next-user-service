@@ -1,7 +1,7 @@
 import { AuthenticationTokenPayload } from "lib/token/authenticationToken"
 import getUserServiceAccess from "./getUserServiceAccess"
 
-const userServiceUrlExpression = /^\/users\/users.*/
+const userManagementUrlExpression = /^\/users\/users.*/
 const bichardUrlExpression = /^\/bichard-ui.*/
 
 export default (token: AuthenticationTokenPayload, url?: string): boolean => {
@@ -12,7 +12,7 @@ export default (token: AuthenticationTokenPayload, url?: string): boolean => {
   const { hasAccessToBichard, hasAccessToUserManagement } = getUserServiceAccess(token)
 
   if (
-    (url.match(userServiceUrlExpression) && !hasAccessToUserManagement) ||
+    (url.match(userManagementUrlExpression) && !hasAccessToUserManagement) ||
     (url.match(bichardUrlExpression) && !hasAccessToBichard)
   ) {
     return false
