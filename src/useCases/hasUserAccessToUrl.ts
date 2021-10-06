@@ -1,9 +1,8 @@
 import { AuthenticationTokenPayload } from "lib/token/authenticationToken"
 import getUserServiceAccess from "./getUserServiceAccess"
 
-const allowedUrlsExpression =
-  /^\/users$|^\/users\/$|^\/users\/(login|logout|account|assets|_next\/static|access-denied).*/
-const userServiceUrlExpression = /^\/users.*/
+const allowedUrlsExpression = /^\/users$|^\/users\/$|^\/users\/(logout|account).*/
+const userServiceUrlExpression = /^\/users\/users.*/
 const bichardUrlExpression = /^\/bichard-ui.*/
 
 export default (token: AuthenticationTokenPayload, url?: string): boolean => {

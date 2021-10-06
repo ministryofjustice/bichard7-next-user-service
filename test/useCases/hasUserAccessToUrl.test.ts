@@ -53,21 +53,6 @@ const testData: TestData[] = [
     group: null,
     url: "/users/logout",
     expectedResult: true
-  },
-  {
-    group: null,
-    url: "/users/assets",
-    expectedResult: true
-  },
-  {
-    group: null,
-    url: "/users/_next/static",
-    expectedResult: true
-  },
-  {
-    group: null,
-    url: "/users/access-denied",
-    expectedResult: true
   }
 ]
 
