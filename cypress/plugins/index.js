@@ -10,6 +10,7 @@ import deleteFromTable from "../../testFixtures/database/deleteFromTable"
 import insertIntoUsersTable from "../../testFixtures/database/insertIntoUsersTable"
 import insertIntoGroupsTable from "../../testFixtures/database/insertIntoGroupsTable"
 import insertIntoUsersAndGroupsTable from "../../testFixtures/database/insertIntoUsersAndGroupsTable"
+import insertIntoUserGroupsTable from "../../testFixtures/database/insertIntoUserGroupsTable"
 import insertIntoServiceMessagesTable from "../../testFixtures/database/insertIntoServiceMessagesTable"
 import selectFromTable from "../../testFixtures/database/selectFromTable"
 import users from "../../testFixtures/database/data/users"
@@ -79,6 +80,11 @@ module.exports = (on, config) => {
 
     async insertManyIntoUsersTable() {
       await insertIntoUsersTable(manyUsers)
+      return null
+    },
+
+    async insertIntoUserGroupsTable({ email, groups: selectedGroups }) {
+      await insertIntoUserGroupsTable(email, selectedGroups)
       return null
     },
 

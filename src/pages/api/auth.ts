@@ -3,6 +3,7 @@ import getConnection from "lib/getConnection"
 import { decodeAuthenticationToken, isTokenIdValid } from "lib/token/authenticationToken"
 import type { NextApiRequest, NextApiResponse } from "next"
 import { isSuccess } from "types/Result"
+import hasUserAccessToUrl from "useCases/hasUserAccessToUrl"
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   const cookieValue = req.cookies[config.authenticationCookieName]
@@ -11,9 +12,16 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   if (cookieValue && isSuccess(token)) {
     const database = getConnection()
 
-    if (await isTokenIdValid(database, token.id)) {
-      return res.status(200).json({ authenticated: true })
+    if ((await isTokenIdValid(database, token.id)) === false) {
+      return res.status(401).json({ authenticated: false })
     }
+
+    const { referer } = req.headers
+    if (!hasUserAccessToUrl(token, referer)) {
+      return res.status(403).json({ authenticated: true })
+    }
+
+    return res.status(200).json({ authenticated: true })
   }
 
   return res.status(401).json({ authenticated: false })
