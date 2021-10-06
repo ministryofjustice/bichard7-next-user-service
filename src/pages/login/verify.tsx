@@ -213,7 +213,7 @@ const VerifyEmail = ({
                   </legend>
                   <div className="govuk-hint">
                     {
-                      "You will not be asked to verify your email address for 24 hours on this browser. Do not choose 'Yes' if you do not trust this device."
+                      "You will not be asked to verify your email address for 24 hours on this device. Do not choose 'Yes' if you do not trust this device."
                     }
                   </div>
                   <div className="govuk-checkboxes" data-module="govuk-checkboxes">
