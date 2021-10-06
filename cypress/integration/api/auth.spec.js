@@ -2,7 +2,9 @@ import { validToken } from "../../helpers/tokens"
 
 describe("Authentication API endpoint", () => {
   beforeEach(() => {
+    cy.task("deleteFromGroupsTable")
     cy.task("deleteFromUsersTable")
+    cy.task("insertIntoGroupsTable")
     cy.task("insertIntoUsersTable")
     cy.task("insertIntoUserGroupsTable", {
       email: "bichard01@example.com",
