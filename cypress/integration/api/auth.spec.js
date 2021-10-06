@@ -72,7 +72,7 @@ describe("Authentication API endpoint", () => {
     cy.login("bichard02@example.com", "password")
 
     cy.request({ url: "/api/auth", headers: { Referer: "/" }, failOnStatusCode: false }).then((response) => {
-      expect(response.status).to.eq(403)
+      expect(response.status).to.eq(200)
       expect(response.body).to.have.property("authenticated", true)
     })
   })
