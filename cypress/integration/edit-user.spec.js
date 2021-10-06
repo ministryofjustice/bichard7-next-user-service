@@ -51,7 +51,7 @@ describe("Edit user", () => {
     cy.get('input[id="forenames"]').clear()
     cy.get('input[id="surname"]').clear()
     cy.get('button[type="submit"]').click()
-    cy.get("div.govuk-error-summary").contains("Enter the user's forenames")
+    cy.get("div.govuk-error-summary").contains("Enter the user's forename(s)")
     cy.get("div.govuk-error-summary").contains("Enter the user's surname")
   })
 
