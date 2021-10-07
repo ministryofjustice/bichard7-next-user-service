@@ -10,7 +10,7 @@ describe("Creation of new user", () => {
   })
 
   it("should be successful and stay on add user page if all of the inputs are populated", () => {
-    cy.visit("users/newUser")
+    cy.visit("users/new-user")
 
     cy.get('input[id="username"]').type("Buser")
     cy.get('input[id="forenames"]').type("B forename")
@@ -24,7 +24,7 @@ describe("Creation of new user", () => {
   })
 
   it("should be successful and navigate to users page if all of the inputs are populated", () => {
-    cy.visit("users/newUser")
+    cy.visit("users/new-user")
 
     cy.get('input[id="username"]').type("Buser2")
     cy.get('input[id="forenames"]').type("B forename")
@@ -153,7 +153,7 @@ describe("Creation of new user", () => {
   })
 
   it("should fail if previously used username is given", () => {
-    cy.visit("users/newUser")
+    cy.visit("users/new-user")
 
     cy.get('input[id="username"]').type("Bichard01")
     cy.get('input[id="forenames"]').type("B forename")
@@ -167,12 +167,12 @@ describe("Creation of new user", () => {
   })
 
   it("should respond with forbidden response code when CSRF tokens are invalid in new user page", (done) => {
-    cy.checkCsrf("/users/newUser", "POST").then(() => done())
+    cy.checkCsrf("/users/new-user", "POST").then(() => done())
   })
 
   it("should show the correct values for groups select input when on the create new user page", () => {
     cy.task("selectFromGroupsTable").then((groups) => {
-      cy.visit("users/newUser")
+      cy.visit("users/new-user")
       cy.get('select[id="groupId"] option').each(($el, index) => {
         cy.wrap($el).should("have.value", groups[index].id)
         cy.wrap($el).contains(groups[index].name)
@@ -188,7 +188,7 @@ describe("Creation of new user", () => {
     cy.task("deleteFromUsersGroupsTable")
     cy.task("insertIntoGroupsTable")
 
-    cy.visit("users/newUser")
+    cy.visit("users/new-user")
 
     cy.get('input[id="username"]').type("Buserzz")
     cy.get('input[id="forenames"]').type("B forename zz")

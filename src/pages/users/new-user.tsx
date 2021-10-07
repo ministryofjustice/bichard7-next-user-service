@@ -159,7 +159,7 @@ interface Props {
   userDetails?: Partial<User>
 }
 
-const newUser = ({
+const NewUser = ({
   message,
   isSuccess,
   usernameError,
@@ -220,4 +220,4 @@ const newUser = ({
   </>
 )
 
-export default newUser
+export default NewUser
