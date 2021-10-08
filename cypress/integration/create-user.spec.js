@@ -7,9 +7,18 @@ describe("Creation of new user", () => {
     cy.task("deleteFromUsersGroupsTable")
     cy.task("insertIntoGroupsTable")
     cy.task("insertIntoUsersTable")
+    cy.task("insertIntoUserGroupsTable", {
+      email: "bichard01@example.com",
+      groups: ["B7UserManager_grp", "B7Supervisor_grp"]
+    })
+  })
+
+  beforeEach(() => {
+    Cypress.Cookies.preserveOnce(".AUTH")
   })
 
   it("should be successful and stay on add user page if all of the inputs are populated", () => {
+    cy.login("bichard01@example.com", "password")
     cy.visit("users/new-user")
 
     cy.get('input[id="username"]').type("Buser")
@@ -166,27 +175,19 @@ describe("Creation of new user", () => {
     cy.get("div.govuk-error-summary").contains("Username Bichard01 already exists.")
   })
 
-  it("should respond with forbidden response code when CSRF tokens are invalid in new user page", (done) => {
-    cy.checkCsrf("/users/new-user", "POST").then(() => done())
-  })
-
   it("should show the correct values for groups select input when on the create new user page", () => {
     cy.task("selectFromGroupsTable").then((groups) => {
+      const userGroups = groups.filter((g) => g.name === "B7Supervisor_grp" || g.name === "B7UserManager_grp")
       cy.visit("users/new-user")
       cy.get('select[id="groupId"] option').each(($el, index) => {
-        cy.wrap($el).should("have.value", groups[index].id)
-        cy.wrap($el).contains(groups[index].name)
+        cy.wrap($el).should("have.value", userGroups[index].id)
+        cy.wrap($el).contains(userGroups[index].name)
       })
     })
   })
 
   it("should assign the correct group to a newly created user", () => {
     const emailAddress = "bemailzz@example.com"
-
-    cy.task("deleteFromUsersTable")
-    cy.task("deleteFromGroupsTable")
-    cy.task("deleteFromUsersGroupsTable")
-    cy.task("insertIntoGroupsTable")
 
     cy.visit("users/new-user")
 
@@ -196,16 +197,22 @@ describe("Creation of new user", () => {
     cy.get('input[id="emailAddress"]').type(emailAddress)
     cy.get('input[id="endorsedBy"]').type("B Endorsed zz")
     cy.get('input[id="orgServes"]').type("B organisation zz")
-    cy.get("select").select("B7ExceptionHandler_grp")
+    cy.get("select").select("B7UserManager_grp")
     cy.get("button[name=save]").click()
 
     cy.task("selectFromUsersGroupsTable").then((usersGroups) => {
       cy.task("selectFromGroupsTable").then((groups) => {
+        const selectedGroup = groups.filter((g) => g.name === "B7UserManager_grp")[0]
         cy.task("selectFromUsersTable", emailAddress).then((user) => {
-          expect(user.id).to.equal(usersGroups[0].user_id)
-          expect(groups[2].id).to.equal(usersGroups[0].group_id)
+          const userGroups = usersGroups.filter((u) => u.user_id === user.id)
+          expect(user.id).to.equal(userGroups[0].user_id)
+          expect(userGroups[0].group_id).to.equal(selectedGroup.id)
         })
       })
     })
+  })
+
+  it("should respond with forbidden response code when CSRF tokens are invalid in new user page", (done) => {
+    cy.checkCsrf("/users/new-user", "POST").then(() => done())
   })
 })
