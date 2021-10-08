@@ -14,9 +14,8 @@ export default async (db: Database, username: string): PromiseResult<User | null
         org_serves,
         forenames,
         surname,
-        ug.group_id
+        (SELECT group_id FROM br7own.users_groups as ug WHERE ug.user_id = u.id LIMIT 1) as group_id
       FROM br7own.users AS u
-        INNER JOIN br7own.users_groups AS ug ON u.id = ug.user_id
       WHERE username = $\{username\} AND deleted_at IS NULL
     `
 
@@ -40,6 +39,6 @@ export default async (db: Database, username: string): PromiseResult<User | null
       groupId: user.group_id
     }
   } catch (error) {
-    return error
+    return error as Error
   }
 }
