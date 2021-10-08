@@ -9,6 +9,9 @@ import deleteFromTable from "../../testFixtures/database/deleteFromTable"
 import insertIntoGroupsTable from "../../testFixtures/database/insertIntoGroupsTable"
 import groups from "../../testFixtures/database/data/groups"
 import selectFromTable from "../../testFixtures/database/selectFromTable"
+import insertIntoUserGroupsTable from "../../testFixtures/database/insertIntoUserGroupsTable"
+import users from "../../testFixtures/database/data/users"
+import insertIntoUsersTable from "../../testFixtures/database/insertIntoUsersTable"
 
 describe("SigninUser", () => {
   let connection: Database
@@ -18,17 +21,24 @@ describe("SigninUser", () => {
   })
 
   beforeEach(async () => {
+    await deleteFromTable("users_groups")
     await deleteFromTable("users")
+    await deleteFromTable("groups")
   })
 
   afterAll(() => {
     connection.$pool.end()
   })
 
-  /* eslint-disable require-await */
   it("should store authentication token in cookies and DB", async () => {
+    await insertIntoUsersTable(users)
     await insertIntoGroupsTable(groups)
-    const selectedGroups = await selectFromTable("groups", undefined, undefined, "name")
+    await insertIntoUserGroupsTable(
+      "bichard01@example.com",
+      groups.map((g) => g.name)
+    )
+    const currentUserId = (await selectFromTable("users", "username", "Bichard01"))[0].id
+    const selectedGroup = (await selectFromTable("groups", undefined, undefined, "name"))[0]
     const user = {
       emailAddress: "dummy@dummy.com",
       username: "dummy_username",
@@ -36,13 +46,13 @@ describe("SigninUser", () => {
       endorsedBy: "dummyE",
       surname: "dummyS",
       orgServes: "dummyO",
-      groupId: selectedGroups[0].id
+      groupId: selectedGroup.id
     } as User
 
-    const userCreateResult = await createUser(connection, user)
+    const userCreateResult = await createUser(connection, currentUserId, user)
     expect(isError(userCreateResult)).toBe(false)
 
-    const selectedUsers = await selectFromTable("users", undefined, undefined, "username")
+    const selectedUsers = await selectFromTable("users", "username", user.username)
     const response = new ServerResponse({} as IncomingMessage)
     const authenticationToken = await signInUser(connection, response, selectedUsers[0])
     expect(isError(authenticationToken)).toBe(false)
@@ -53,12 +63,11 @@ describe("SigninUser", () => {
 
     const checkDbQuery = `
       SELECT *
-      FROM br7own.jwt_ids
-      INNER JOIN br7own.users ON br7own.users.id = br7own.jwt_ids.user_id
-      WHERE '${user.username}' = br7own.users.username;
+      FROM br7own.jwt_ids AS jwt
+      INNER JOIN br7own.users AS u ON u.id = jwt.user_id
+      WHERE u.username = $\{username\};
     `
-    const queryResult = await connection.one(checkDbQuery)
+    const queryResult = await connection.oneOrNone(checkDbQuery, { username: user.username })
     expect(queryResult).not.toBe(null)
   })
-  /* eslint-disable require-await */
 })
