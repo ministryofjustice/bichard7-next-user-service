@@ -38,6 +38,7 @@ export interface UserServiceConfig {
   tokenSecret: string
   maxServiceMessagesPerPage: number
   maxUsersPerPage: number
+  validateCjsmEmailAddress: string
   verificationCodeLength: number
 }
 
@@ -72,6 +73,7 @@ const config: UserServiceConfig = {
   tokenSecret: process.env.TOKEN_SECRET ?? "OliverTwist",
   maxServiceMessagesPerPage: 5,
   maxUsersPerPage: 10,
+  validateCjsmEmailAddress: process.env.EMAIL_VALIDATE_CJSM_ADDRESS ?? "false",
   verificationCodeLength: 6,
   csrf: {
     tokenName: "CSRFToken",
