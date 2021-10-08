@@ -97,14 +97,19 @@ exports[`should render the component and match the snapshot 1`] = `
             >
               home page
             </a>
-             or 
+             and choose an available service to you.
+          </p>
+          <p
+            class="govuk-body"
+          >
+            If you believe you have permission to access this page, you can 
             <a
               class="govuk-link"
               href="http://localhost:3000/contact-us"
             >
               contact support
             </a>
-             to request access.
+             to report this issue.
           </p>
         </div>
       </div>
