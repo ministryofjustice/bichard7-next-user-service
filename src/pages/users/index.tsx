@@ -161,7 +161,7 @@ const Users = ({ allUsers, csrfToken, currentUser, previousFilter, pageNumber, t
 
         <Form method="post" csrfToken={csrfToken}>
           <ButtonGroup>
-            <Link id="add" className="govuk-button govuk-!-margin-right-8" href="/users/newUser">
+            <Link id="add" className="govuk-button govuk-!-margin-right-8" href="/users/new-user">
               {"Add user"}
             </Link>
             <TextInput className="align-right" id="filter" name="filter" type="text" value={previousFilter} />

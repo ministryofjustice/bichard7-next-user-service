@@ -1,17 +1,14 @@
-import User from "types/User"
 import PromiseResult from "types/PromiseResult"
 import Database from "types/Database"
 import { ITask } from "pg-promise"
 import { isError } from "types/Result"
+import User from "types/User"
 import isUsernameUnique from "./isUsernameUnique"
 import isEmailUnique from "./IsEmailUnique"
 
-type UserId = {
-  id: number
-}
+type InsertUserResult = PromiseResult<{ id: number }>
 
-/* eslint-disable require-await */
-const insertUser = async (task: ITask<unknown>, userDetails: Partial<User>): Promise<UserId> => {
+const insertUser = (task: ITask<unknown>, userDetails: Partial<User>): InsertUserResult => {
   const insertUserQuery = `
       INSERT INTO br7own.users(
         username,
@@ -35,25 +32,41 @@ const insertUser = async (task: ITask<unknown>, userDetails: Partial<User>): Pro
       ) RETURNING id;
     `
 
-  return task.one(insertUserQuery, { ...userDetails })
+  return task.one(insertUserQuery, { ...userDetails }).catch((error) => error)
 }
 
-const insertUserIntoGroup = async (task: ITask<unknown>, userId: number, groupId: number) => {
+const insertUserIntoGroup = async (
+  task: ITask<unknown>,
+  newUserId: number,
+  currentUserId: number,
+  groupIds: number[]
+): PromiseResult<void> => {
   const insertGroupQuery = `
     INSERT INTO br7own.users_groups(
       user_id,
       group_id
-    ) VALUES (
-      $\{userId\},
-      $\{groupId\}
-    );
+    )
+    SELECT 
+      $\{newUserId\} AS user_id,
+      group_id 
+    FROM br7own.users_groups AS ug
+    WHERE
+      ug.user_id = $\{currentUserId\} AND
+      ug.group_id IN ($\{groupIds:csv\});
   `
 
-  await task.none(insertGroupQuery, { userId, groupId })
+  const result = await task
+    .result(insertGroupQuery, { newUserId, currentUserId, groupIds })
+    .catch((error) => error as Error)
+
+  if (isError(result)) {
+    console.error(result)
+  }
+
+  return undefined
 }
 
-export default async (connection: Database, userDetails: Partial<User>): PromiseResult<void> => {
-  const groupDoesNotExistsError = new Error("This group does not exist")
+export default async (connection: Database, currentUserId: number, userDetails: Partial<User>): PromiseResult<void> => {
   const isUsernameUniqueResult = await isUsernameUnique(connection, userDetails.username as string)
   if (isError(isUsernameUniqueResult)) {
     return isUsernameUniqueResult
@@ -64,22 +77,30 @@ export default async (connection: Database, userDetails: Partial<User>): Promise
     return isEmailUniqueResult
   }
 
-  try {
-    await connection.tx(async (task: ITask<unknown>) => {
-      const { id } = await insertUser(task, userDetails)
-      if (userDetails.groupId) {
-        await insertUserIntoGroup(task, id, userDetails.groupId)
-      }
-    })
+  const createUserResult = await connection
+    .tx(async (task: ITask<unknown>) => {
+      const insertUserResult = await insertUser(task, userDetails)
 
-    return undefined
-  } catch (e) {
-    if (
-      e.message ===
-      'insert or update on table "users_groups" violates foreign key constraint "users_groups_group_id_fkey"'
-    ) {
-      return groupDoesNotExistsError
-    }
-    return e
+      if (isError(insertUserResult)) {
+        console.error(insertUserResult)
+        return Error("Could not insert record into users table")
+      }
+
+      if (userDetails.groupId) {
+        const userGroupResult = await insertUserIntoGroup(task, insertUserResult.id, currentUserId, [
+          userDetails.groupId
+        ])
+        return userGroupResult
+      }
+
+      return undefined
+    })
+    .catch((error) => error)
+
+  if (isError(createUserResult)) {
+    console.error(createUserResult)
+    return Error("Could not create user")
   }
+
+  return undefined
 }

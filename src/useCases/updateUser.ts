@@ -3,30 +3,41 @@ import Database from "types/Database"
 import PromiseResult from "types/PromiseResult"
 import User from "types/User"
 import { ITask } from "pg-promise"
+import { isError } from "types/Result"
 
-const deleteFromUsersGroups = async (task: ITask<unknown>, userId: number) => {
+const deleteFromUsersGroups = (task: ITask<unknown>, userId: number, newGroupIds: number[]): PromiseResult<null> => {
   const deleteFromUsersGroupsQuery = `
     DELETE FROM br7own.users_groups
-    WHERE user_id = $\{userId\}
+    WHERE user_id = $\{userId\} AND group_id NOT IN ($\{newGroupIds:csv\})
   `
-  await task.none(deleteFromUsersGroupsQuery, { userId })
+
+  return task.none(deleteFromUsersGroupsQuery, { userId, newGroupIds }).catch((error) => error as Error)
 }
 
-const updateUsersGroup = async (task: ITask<unknown>, userId: number, groupId: number) => {
-  const updateUsersGroupQuery = `
-    INSERT INTO br7own.users_groups
-      (
-        user_id,
-        group_id
-      ) VALUES (
-        $\{userId\},
-        $\{groupId\}
-      )
+const updateUsersGroup = (
+  task: ITask<unknown>,
+  userId: number,
+  currentUserId: number,
+  groupIds: number[]
+): PromiseResult<null> => {
+  const insertGroupQuery = `
+    INSERT INTO br7own.users_groups(
+      user_id,
+      group_id
+    )
+    SELECT 
+      $\{targetUserId\} AS user_id,
+      group_id 
+    FROM br7own.users_groups AS ug
+    WHERE
+      ug.user_id = $\{currentUserId\} AND
+      ug.group_id IN ($\{groupIds:csv\}) AND
+      ug.group_id NOT IN (SELECT group_id FROM br7own.users_groups as ug2 WHERE ug2.user_id = $\{targetUserId\});
   `
-  await task.none(updateUsersGroupQuery, { userId, groupId })
+  return task.none(insertGroupQuery, { targetUserId: userId, currentUserId, groupIds })
 }
 
-const updateUserTable = async (task: ITask<unknown>, userDetails: Partial<User>) => {
+const updateUserTable = async (task: ITask<unknown>, userDetails: Partial<User>): PromiseResult<void> => {
   const updateUserQuery = `
     UPDATE br7own.users
 	    SET
@@ -38,46 +49,55 @@ const updateUserTable = async (task: ITask<unknown>, userDetails: Partial<User>)
     `
 
   const result = await task.result(updateUserQuery, { ...userDetails })
-  return result
-}
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const notUpdated = (row: any) => row && row.rowCount === 0
+  if (isError(result) || result.rowCount === 0) {
+    console.error(result)
+    return Error("Could not update user")
+  }
+
+  return undefined
+}
 
 const updateUser = async (
   connection: Database,
   auditLogger: AuditLogger,
+  currentUserId: number,
   userDetails: Partial<User>
 ): PromiseResult<void | Error> => {
-  const groupDoesNotExistsError = new Error("This group does not exist")
-  try {
-    const result = await connection.tx(async (task: ITask<unknown>) => {
-      await deleteFromUsersGroups(task, userDetails.id as number)
-      const r = await updateUserTable(task, userDetails)
+  const result = await connection.tx(async (task: ITask<unknown>): PromiseResult<void> => {
+    const selectedGroups = [userDetails.groupId as number]
+    const userId = userDetails.id as number
+    const updateUserResult = await updateUserTable(task, userDetails)
 
-      if (notUpdated(r)) {
-        return r
-      }
-      await updateUsersGroup(task, userDetails.id as number, userDetails.groupId as number)
-      return r
-    })
-
-    if (notUpdated(result)) {
-      return new Error("Error updating user")
+    if (isError(updateUserResult)) {
+      return Error("Could not update user")
     }
 
-    await auditLogger("Edit user", { user: userDetails })
+    const deleteUserGroupsResult = await deleteFromUsersGroups(task, userId, selectedGroups)
+
+    if (isError(deleteUserGroupsResult)) {
+      console.error(deleteUserGroupsResult)
+      return Error("Could not delete groups")
+    }
+
+    const updateUserGroupsResult = await updateUsersGroup(task, userId, currentUserId, selectedGroups)
+
+    if (isError(updateUserGroupsResult)) {
+      console.error(updateUserGroupsResult)
+      return Error("Could not insert groups")
+    }
 
     return undefined
-  } catch (error) {
-    if (
-      error.message ===
-      'insert or update on table "users_groups" violates foreign key constraint "users_groups_group_id_fkey"'
-    ) {
-      return groupDoesNotExistsError
-    }
-    return error
+  })
+
+  if (isError(result)) {
+    console.error(result)
+    return new Error("There was an error while updating the user. Please try again.")
   }
+
+  await auditLogger("Edit user", { user: userDetails })
+
+  return undefined
 }
 
 export default updateUser

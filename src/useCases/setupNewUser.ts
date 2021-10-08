@@ -17,9 +17,10 @@ export interface newUserSetupResult {
 export default async (
   connection: Database,
   auditLogger: AuditLogger,
+  currentUserId: number,
   userCreateDetails: any
 ): PromiseResult<newUserSetupResult> => {
-  const result = await createUser(connection, userCreateDetails)
+  const result = await createUser(connection, currentUserId, userCreateDetails)
 
   if (isError(result)) {
     return result
@@ -30,7 +31,7 @@ export default async (
   const passwordSetCode = randomDigits(config.verificationCodeLength).join("")
   const passwordSetCodeResult = await storePasswordResetCode(
     connection,
-    userCreateDetails.emailAddress as string,
+    userCreateDetails.emailAddress,
     passwordSetCode
   )
 
@@ -51,7 +52,7 @@ export default async (
   const emailerResult = await emailer
     .sendMail({
       from: config.emailFrom,
-      to: userCreateDetails.emailAddress as string,
+      to: userCreateDetails.emailAddress,
       ...email
     })
     .catch((error: Error) => error)

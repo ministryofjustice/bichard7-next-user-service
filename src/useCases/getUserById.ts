@@ -14,16 +14,15 @@ const getUserById = async (connection: Database, id: number): PromiseResult<Part
         endorsed_by,
         org_serves,
         email,
-        ug.group_id
+        (SELECT group_id FROM br7own.users_groups as ug WHERE ug.user_id = u.id LIMIT 1) as group_id
       FROM br7own.users AS u
-	    INNER JOIN br7own.users_groups AS ug ON u.id = ug.user_id
       WHERE id = $\{id\} AND deleted_at IS NULL
     `
 
   try {
     user = await connection.one(getUserByIdQuery, { id })
   } catch (error) {
-    return error
+    return error as Error
   }
 
   return {

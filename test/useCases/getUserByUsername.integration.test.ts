@@ -10,6 +10,7 @@ import insertIntoGroupsTable from "../../testFixtures/database/insertIntoGroupsT
 import users from "../../testFixtures/database/data/users"
 import groups from "../../testFixtures/database/data/groups"
 import selectFromTable from "../../testFixtures/database/selectFromTable"
+import insertIntoUserGroupsTable from "../../testFixtures/database/insertIntoUserGroupsTable"
 
 describe("getUserByUsername", () => {
   let connection: Database
@@ -18,10 +19,11 @@ describe("getUserByUsername", () => {
   let user: any
 
   const insertGroupAndUser = async () => {
+    const currentUserId = (await selectFromTable("users", "username", "Bichard01"))[0].id
     selectedGroups = await selectFromTable("groups", undefined, undefined, "name")
     selectedGroupId = selectedGroups[0].id
-    ;[user] = users
-    ;(user as any).groupId = selectedGroupId
+    user = users.filter((u) => u.username === "Bichard02")[0] as any
+    user.groupId = selectedGroupId
 
     const createUserDetails = {
       username: user.username,
@@ -33,7 +35,7 @@ describe("getUserByUsername", () => {
       groupId: selectedGroupId
     }
 
-    await createUser(connection, createUserDetails)
+    await createUser(connection, currentUserId, createUserDetails)
   }
 
   beforeAll(() => {
@@ -41,9 +43,15 @@ describe("getUserByUsername", () => {
   })
 
   beforeEach(async () => {
+    await deleteFromTable("users_groups")
     await deleteFromTable("users")
     await deleteFromTable("groups")
+    await insertIntoUsersTable(users.filter((u) => u.username === "Bichard01"))
     await insertIntoGroupsTable(groups)
+    await insertIntoUserGroupsTable(
+      "bichard01@example.com",
+      groups.map((g) => g.name)
+    )
   })
 
   afterAll(() => {
@@ -76,10 +84,12 @@ describe("getUserByUsername", () => {
   })
 
   it("should return null when user is deleted", async () => {
-    const mappedUsers = users.map((u) => ({
-      ...u,
-      deleted_at: new Date()
-    }))
+    const mappedUsers = users
+      .filter((u) => u.username !== "Bichard01")
+      .map((u) => ({
+        ...u,
+        deleted_at: new Date()
+      }))
 
     await insertIntoUsersTable(mappedUsers)
 
@@ -94,6 +104,8 @@ describe("getUserByUsername", () => {
     const userResult = await getUserByUsername(connection, selectedUserUsername)
 
     expect(isError(userResult)).toBe(false)
-    expect((userResult as any).groupId).toBe(selectedGroupId)
+
+    const actualUser = userResult as User
+    expect(actualUser.groupId).toBe(selectedGroupId)
   })
 })
