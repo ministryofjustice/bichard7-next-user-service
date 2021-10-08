@@ -17,6 +17,8 @@ import isPost from "utils/isPost"
 import { ParsedUrlQuery } from "querystring"
 import { ErrorSummaryList } from "components/ErrorSummary"
 import Link from "components/Link"
+import validateCjsmEmailAddress from "useCases/validateCjsmEmailAddress"
+import config from "lib/config"
 
 export const getServerSideProps = withCsrf(
   async (context: GetServerSidePropsContext<ParsedUrlQuery>): Promise<GetServerSidePropsResult<Props>> => {
@@ -29,6 +31,16 @@ export const getServerSideProps = withCsrf(
         return {
           props: {
             emailError: "Enter a valid email address",
+            csrfToken
+          }
+        }
+      }
+
+      if (!validateCjsmEmailAddress(config, emailAddress)) {
+        return {
+          props: {
+            emailError: "Enter your CJSM email address",
+            emailAddress,
             csrfToken
           }
         }
@@ -54,10 +66,11 @@ export const getServerSideProps = withCsrf(
 
 interface Props {
   emailError?: string
+  emailAddress?: string
   csrfToken: string
 }
 
-const ForgotPassword = ({ emailError, csrfToken }: Props) => (
+const ForgotPassword = ({ emailError, emailAddress, csrfToken }: Props) => (
   <>
     <Head>
       <title>{"Forgot password"}</title>
@@ -82,7 +95,14 @@ const ForgotPassword = ({ emailError, csrfToken }: Props) => (
           </p>
 
           <Form method="post" csrfToken={csrfToken}>
-            <TextInput id="email" name="emailAddress" label="Email address" type="email" error={emailError} />
+            <TextInput
+              id="email"
+              name="emailAddress"
+              label="Email address"
+              type="email"
+              error={emailError}
+              value={emailAddress}
+            />
             <Button noDoubleClick>{"Send the link"}</Button>
           </Form>
         </p>
