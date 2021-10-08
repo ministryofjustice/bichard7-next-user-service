@@ -5,6 +5,7 @@ import User from "types/User"
 export default (db: Database, emailAddress: string): PromiseResult<User | null> => {
   const query = `
       SELECT
+        id,
         username,
         email AS "emailAddress",
         exclusion_list AS "exclusionList",

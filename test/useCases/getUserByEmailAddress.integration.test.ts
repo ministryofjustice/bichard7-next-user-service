@@ -29,6 +29,7 @@ describe("DeleteUserUseCase", () => {
 
     expect(isError(user)).toBe(false)
 
+    expect(user.id).toBeGreaterThan(0)
     expect(user.emailAddress).toBe(emailAddress)
     expect(user.username).toBe("Bichard01")
     expect(user.exclusionList).toBe("1, 2, 3, 4")
