@@ -35,8 +35,12 @@ export const getServerSideProps = withMultipleServerSideProps(
     let message = ""
     let isSuccess = true
 
+    if (!currentUser?.username || !currentUser?.id) {
+      return createRedirectResponse("/login")
+    }
+
     const connection = getConnection()
-    const userGroups = await getUserGroups(connection)
+    const userGroups = await getUserGroups(connection, [currentUser.username])
 
     if (isError(userGroups)) {
       console.error(userGroups)
@@ -44,7 +48,6 @@ export const getServerSideProps = withMultipleServerSideProps(
     }
 
     if (isPost(req)) {
-      /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
       const userCreateDetails = formData as {
         username: string
         forenames: string
@@ -92,7 +95,7 @@ export const getServerSideProps = withMultipleServerSideProps(
         }
 
         const auditLogger = getAuditLogger(context, config)
-        const result = await setupNewUser(connection, auditLogger, userCreateDetails)
+        const result = await setupNewUser(connection, auditLogger, currentUser.id, userCreateDetails)
 
         if (isError(result)) {
           return {
