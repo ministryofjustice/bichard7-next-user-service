@@ -105,7 +105,7 @@ describe("getUserByUsername", () => {
 
     expect(isError(userResult)).toBe(false)
 
-    const acutalUser = userResult as User
-    expect(acutalUser.groupId).toBe(selectedGroupId)
+    const actualUser = userResult as User
+    expect(actualUser.groupId).toBe(selectedGroupId)
   })
 })
