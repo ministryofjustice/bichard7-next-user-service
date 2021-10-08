@@ -23,34 +23,41 @@ import { withCsrf } from "middleware"
 import isPost from "utils/isPost"
 import { ParsedUrlQuery } from "querystring"
 import { ErrorSummaryList } from "components/ErrorSummary"
+import validateCjsmEmailAddress from "useCases/validateCjsmEmailAddress"
 
 export const getServerSideProps = withCsrf(
   async (context: GetServerSidePropsContext<ParsedUrlQuery>): Promise<GetServerSidePropsResult<Props>> => {
     const { req, res, formData, csrfToken, query } = context as CsrfServerSidePropsContext
-    const emailError = "Enter a valid email address"
 
     if (isPost(req)) {
       const { emailAddress } = formData as { emailAddress: string }
 
-      if (emailAddress) {
-        const connection = getConnection()
+      if (!emailAddress) {
+        return {
+          props: { emailError: "Enter a valid email address", csrfToken, emailAddress }
+        }
+      }
 
-        const redirectPath = getRedirectPath(query)
-        const sent = await sendVerificationEmail(connection, emailAddress, redirectPath)
-
-        if (isError(sent)) {
-          console.error(sent)
-          return {
-            props: { emailError, csrfToken, emailAddress }
+      if (!validateCjsmEmailAddress(config, emailAddress)) {
+        return {
+          props: {
+            emailError: "Enter your CJSM email address",
+            csrfToken,
+            emailAddress
           }
         }
-
-        return createRedirectResponse("/login/check-email")
       }
 
-      return {
-        props: { emailError, csrfToken, emailAddress }
+      const connection = getConnection()
+
+      const redirectPath = getRedirectPath(query)
+      const sent = await sendVerificationEmail(connection, emailAddress, redirectPath)
+
+      if (isError(sent)) {
+        console.error(sent)
       }
+
+      return createRedirectResponse("/login/check-email")
     }
 
     const { notYou } = query as { notYou: string }
