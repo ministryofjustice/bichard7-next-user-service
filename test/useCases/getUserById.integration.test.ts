@@ -10,6 +10,7 @@ import insertIntoGroupsTable from "../../testFixtures/database/insertIntoGroupsT
 import users from "../../testFixtures/database/data/users"
 import groups from "../../testFixtures/database/data/groups"
 import selectFromTable from "../../testFixtures/database/selectFromTable"
+import insertIntoUserGroupsTable from "../../testFixtures/database/insertIntoUserGroupsTable"
 
 describe("getUserById", () => {
   let connection: Database
@@ -19,7 +20,9 @@ describe("getUserById", () => {
   })
 
   beforeEach(async () => {
+    await deleteFromTable("users_groups")
     await deleteFromTable("users")
+    await deleteFromTable("groups")
   })
 
   afterAll(() => {
@@ -27,11 +30,14 @@ describe("getUserById", () => {
   })
 
   it("should return user when user exists in the database", async () => {
+    await insertIntoUsersTable(users)
     await insertIntoGroupsTable(groups)
     const selectedGroups = await selectFromTable("groups", undefined, undefined, "name")
-    const selectedGroupId = selectedGroups[0].id
-    const user = users[0] as any
-    ;(user as any).groupId = selectedGroupId
+    const selectedGroup = selectedGroups[0]
+    await insertIntoUserGroupsTable("bichard01@example.com", [selectedGroup.name])
+    const currentUserId = (await selectFromTable("users", "username", "Bichard01"))[0].id
+    const user = users[0]
+    ;(user as any).groupId = selectedGroup.id
 
     const createUserDetails = {
       username: user.username,
@@ -40,10 +46,10 @@ describe("getUserById", () => {
       endorsedBy: user.endorsed_by,
       surname: user.surname,
       orgServes: user.org_serves,
-      groupId: selectedGroupId
+      groupId: selectedGroup.id
     }
 
-    await createUser(connection, createUserDetails)
+    await createUser(connection, currentUserId, createUserDetails)
 
     const selectedUserList = await selectFromTable("users", "email", "bichard01@example.com")
     const selectedUser = selectedUserList[0]
@@ -79,11 +85,16 @@ describe("getUserById", () => {
   })
 
   it("should return the correct group for the user", async () => {
+    await insertIntoUsersTable(users.filter((u) => u.username === "Bichard01"))
     await insertIntoGroupsTable(groups)
+    await insertIntoUserGroupsTable(
+      "bichard01@example.com",
+      groups.map((g) => g.name)
+    )
+    const currentUserId = (await selectFromTable("users", "username", "Bichard01"))[0].id
     const selectedGroups = await selectFromTable("groups", undefined, undefined, "name")
-    const selectedGroupId = selectedGroups[0].id
-    const user = users[0]
-    ;(user as any).groupId = selectedGroupId
+    const selectedGroup = selectedGroups[0]
+    const user = users.filter((u) => u.username === "Bichard02")[0]
 
     const createUserDetails = {
       username: user.username,
@@ -92,15 +103,17 @@ describe("getUserById", () => {
       endorsedBy: user.endorsed_by,
       surname: user.surname,
       orgServes: user.org_serves,
-      groupId: selectedGroupId
+      groupId: selectedGroup.id
     }
 
-    await createUser(connection, createUserDetails)
+    await createUser(connection, currentUserId, createUserDetails)
     const selectedUsers = await selectFromTable("users", "email", user.email)
     const selectedUserId = selectedUsers[0].id
     const userResult = await getUserById(connection, selectedUserId)
 
     expect(isError(userResult)).toBe(false)
-    expect((userResult as any).groupId).toBe(selectedGroupId)
+
+    const actualUser = userResult as Partial<User>
+    expect(actualUser.groupId).toBe(selectedGroup.id)
   })
 })

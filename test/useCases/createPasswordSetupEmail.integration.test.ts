@@ -17,6 +17,7 @@ import getTestConnection from "../../testFixtures/getTestConnection"
 import users from "../../testFixtures/database/data/users"
 import groups from "../../testFixtures/database/data/groups"
 import fakeAuditLogger from "../fakeAuditLogger"
+import insertIntoUserGroupsTable from "../../testFixtures/database/insertIntoUserGroupsTable"
 
 const verificationCode = "123456"
 
@@ -34,7 +35,9 @@ describe("AccountSetup", () => {
   })
 
   beforeEach(async () => {
+    await deleteFromTable("users_groups")
     await deleteFromTable("users")
+    await deleteFromTable("groups")
   })
 
   afterAll(() => {
@@ -42,7 +45,15 @@ describe("AccountSetup", () => {
   })
 
   it("should generate the email subject and body to request user to setup password", async () => {
+    const username = "Bichard02"
+    await insertIntoUsersTable(users.filter((u) => u.username !== username))
     await insertIntoGroupsTable(groups)
+    await insertIntoUserGroupsTable(
+      "bichard01@example.com",
+      groups.map((g) => g.name)
+    )
+    const currentUserId = (await selectFromTable("users", "username", "Bichard01"))[0].id
+
     const selectedGroups = await selectFromTable("groups", undefined, undefined, "name")
     const selectedGroup = selectedGroups[0]
     const mockedGeneratePasswordResetToken = generateEmailVerificationToken as jest.MockedFunction<
@@ -50,17 +61,19 @@ describe("AccountSetup", () => {
     >
     mockedGeneratePasswordResetToken.mockReturnValue("DUMMY_TOKEN")
 
-    const user = [users[0]].map((u) => ({
-      username: u.username,
-      forenames: u.forenames,
-      emailAddress: u.email,
-      endorsedBy: u.endorsed_by,
-      surname: u.surname,
-      orgServes: u.org_serves,
-      groupId: selectedGroup.id
-    }))[0]
+    const user = users
+      .filter((u) => u.username === "Bichard02")
+      .map((u) => ({
+        username: u.username,
+        forenames: u.forenames,
+        emailAddress: u.email,
+        endorsedBy: u.endorsed_by,
+        surname: u.surname,
+        orgServes: u.org_serves,
+        groupId: selectedGroup.id
+      }))[0]
 
-    const result = await createUser(connection, user)
+    const result = await createUser(connection, currentUserId, user)
 
     expect(isError(result)).toBe(false)
 

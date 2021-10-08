@@ -67,7 +67,7 @@ The application makes use of the following environment variables to permit confi
 | `$SMTP_PASSWORD`                 | `"password"`                                       | The password to use when connecting to the SMTP server                                               |
 | `$SMTP_PORT`                     | `587`                                              | The port number to connect to the SMTP server on                                                     |
 | `$SMTP_TLS`                      | `false`                                            | Whether to use TLS when connecting to the SMTP server                                                |
-| `$TOKEN_EXPIRES_IN`              | `"15 seconds"`                                     | The amount of time the tokens should be valid for after issuing                                      |
+| `$TOKEN_EXPIRES_IN`              | `"60 seconds"`                                     | The amount of time the tokens should be valid for after issuing                                      |
 | `$TOKEN_ISSUER`                  | `"Bichard"`                                        | The string to use as the token issuer (`iss`)                                                        |
 | `$TOKEN_QUERY_PARAM_NAME`        | `"token"`                                          | The name to use for the token query parameter when redirecting to `$BICHARD_REDIRECT_URL`            |
 | `$TOKEN_SECRET`                  | `"OliverTwist"`                                    | The HMAC secret to use for signing the tokens                                                        |

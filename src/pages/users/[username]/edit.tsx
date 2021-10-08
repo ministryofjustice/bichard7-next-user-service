@@ -29,9 +29,15 @@ export const getServerSideProps = withMultipleServerSideProps(
   async (context: GetServerSidePropsContext<ParsedUrlQuery>): Promise<GetServerSidePropsResult<Props>> => {
     const { query, req, formData, csrfToken, currentUser } = context as CsrfServerSidePropsContext &
       AuthenticationServerSidePropsContext
+    const { username } = query as { username: string }
+
+    if (!currentUser?.username || !currentUser?.id) {
+      return createRedirectResponse("/login")
+    }
+
     const connection = getConnection()
 
-    const groups = await getUserGroups(connection)
+    const groups = await getUserGroups(connection, [currentUser.username, username])
 
     if (isError(groups)) {
       console.error(groups)
@@ -50,6 +56,7 @@ export const getServerSideProps = withMultipleServerSideProps(
             csrfToken,
             currentUser,
             groups,
+            user: { ...user, ...userDetails },
             isFormValid: true
           }
         }
@@ -59,7 +66,7 @@ export const getServerSideProps = withMultipleServerSideProps(
 
       if (formValidationResult.isFormValid) {
         const auditLogger = getAuditLogger(context, config)
-        const userUpdated = await updateUser(connection, auditLogger, userDetails)
+        const userUpdated = await updateUser(connection, auditLogger, currentUser.id, userDetails)
 
         if (isError(userUpdated)) {
           console.error(userUpdated)
@@ -70,6 +77,7 @@ export const getServerSideProps = withMultipleServerSideProps(
               currentUser,
               groups,
               ...formValidationResult,
+              user: { ...user, ...userDetails },
               errorMessage: userUpdated.message
             }
           }
@@ -86,6 +94,7 @@ export const getServerSideProps = withMultipleServerSideProps(
               csrfToken,
               currentUser,
               groups,
+              user: { ...user, ...userDetails },
               ...formValidationResult
             }
           }
@@ -114,8 +123,7 @@ export const getServerSideProps = withMultipleServerSideProps(
       }
     }
 
-    const { username } = query
-    const user = await getUserByUsername(connection, username as string)
+    const user = await getUserByUsername(connection, username)
 
     if (isError(user)) {
       console.error(user)
