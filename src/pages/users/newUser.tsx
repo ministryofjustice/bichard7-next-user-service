@@ -56,7 +56,7 @@ export const getServerSideProps = withMultipleServerSideProps(
         saveAndAddAnother: string
       }
 
-      const formValidationResult = userFormIsValid(userCreateDetails, false)
+      const formValidationResult = userFormIsValid(config, userCreateDetails, false)
 
       if (formValidationResult.isFormValid) {
         const isUsernameUniqueResult = await isUsernameUnique(connection, userCreateDetails.username)
