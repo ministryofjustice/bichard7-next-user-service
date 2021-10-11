@@ -10,7 +10,7 @@ describe("Home", () => {
       cy.task("insertIntoUsersTable")
       cy.task("insertIntoUserGroupsTable", {
         email: "bichard01@example.com",
-        groups: ["B7UserManager_grp", "B7Supervisor_grp"]
+        groups: ["B7UserManager_grp", "B7AuditLoggingManager_grp", "B7Supervisor_grp"]
       })
       cy.task("insertIntoServiceMessagesTable")
     })
@@ -23,8 +23,11 @@ describe("Home", () => {
       const emailAddress = "bichard01@example.com"
       cy.login(emailAddress, "password")
       cy.get("h1").contains(/welcome bichard user 01/i)
-      cy.get("a[id=user-management-link").should("have.attr", "href").and("equal", "/users/users")
-      cy.get("a[id=bichard-link")
+      cy.get("a[id=user-management-link]").should("have.attr", "href").and("equal", "/users/users")
+      cy.get("a[id=audit-logging-link]")
+        .should("have.attr", "href")
+        .and("equal", "https://localhost:3000/audit-logging")
+      cy.get("a[id=bichard-link]")
         .should("have.attr", "href")
         .and("match", /^http:\/\/localhost:3000\/bichard-ui\/Authenticate\?token=[A-Za-z0-9_.]+/)
 

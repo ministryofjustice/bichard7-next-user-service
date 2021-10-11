@@ -30,6 +30,21 @@ const testData: TestData[] = [
     expectedResult: false
   },
   {
+    group: "B7UserManager",
+    url: "/audit-logging",
+    expectedResult: false
+  },
+  {
+    group: "B7AuditLoggingManager",
+    url: "/audit-logging",
+    expectedResult: true
+  },
+  {
+    group: "B7AuditLoggingManager",
+    url: "/users/users",
+    expectedResult: false
+  },
+  {
     group: null,
     url: "/users/",
     expectedResult: true

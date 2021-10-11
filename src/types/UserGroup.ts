@@ -6,6 +6,7 @@ type UserGroup =
   | "B7Supervisor"
   | "B7TriggerHandler"
   | "B7UserManager"
+  | "B7AuditLoggingManager"
 
 export type UserGroupResult = {
   id: string

@@ -19,6 +19,9 @@ const groups = [
   },
   {
     name: "B7UserManager_grp"
+  },
+  {
+    name: "B7AuditLoggingManager_grp"
   }
 ]
 
