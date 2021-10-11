@@ -18,7 +18,6 @@ describe("authenticationToken", () => {
   })
 
   beforeEach(async () => {
-    await deleteFromTable("jwt_ids")
     await deleteFromTable("users")
   })
 
@@ -35,11 +34,10 @@ describe("authenticationToken", () => {
       const result = await storeTokenId(connection, user.id, tokenId)
       expect(result).toBeUndefined()
 
-      const selectedJwtIds = await selectFromTable("jwt_ids")
+      const selectedJwtIds = await selectFromTable("users", "email", user.emailAddress)
       const selectedJwt = selectedJwtIds[0]
 
-      expect(selectedJwt.id).toBe(tokenId)
-      expect(selectedJwt.user_id).toBe(user.id)
+      expect(selectedJwt.jwt_id).toBe(tokenId)
     })
   })
 
