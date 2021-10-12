@@ -289,6 +289,10 @@ describe("Logging In", () => {
           firstJwtId = user.jwt_id
         })
       })
+      // Note: Although we avoid waits in cypress test as the logic implemented is temporal in nature we can consider this OK
+      // Need to wait 10 seconds after inputting an correct password
+      /* eslint-disable-next-line cypress/no-unnecessary-waiting */
+      cy.wait(10000)
 
       cy.visit("/login")
       cy.get("input[type=email]").type(emailAddress)
