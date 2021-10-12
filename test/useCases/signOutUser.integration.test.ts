@@ -67,9 +67,9 @@ describe("SignoutUser", () => {
 
     const checkDbQuery = `
       SELECT *
-      FROM br7own.jwt_ids AS jwt
-      INNER JOIN br7own.users AS u ON u.id = jwt.user_id
-      WHERE u.username = $\{username\};
+      FROM br7own.users
+      WHERE username = $\{username\}
+        AND jwt_id IS NOT NULL;
     `
 
     let queryResult = await connection.oneOrNone(checkDbQuery, { username: user.username })

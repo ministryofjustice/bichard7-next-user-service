@@ -51,8 +51,8 @@ export function decodeAuthenticationToken(token: string): Result<AuthenticationT
 export async function isTokenIdValid(connection: Database, uniqueId: string): PromiseResult<boolean> {
   const query = `
     SELECT COUNT(1)
-    FROM br7own.jwt_ids
-    WHERE id = $\{uniqueId\};
+    FROM br7own.users
+    WHERE jwt_id = $\{uniqueId\};
   `
 
   try {
@@ -65,8 +65,11 @@ export async function isTokenIdValid(connection: Database, uniqueId: string): Pr
 
 export async function removeTokenId(connection: Database, uniqueId: string): PromiseResult<void> {
   const removeTokenIdQuery = `
-    DELETE FROM br7own.jwt_ids
-    WHERE id = $\{uniqueId\};
+    UPDATE br7own.users
+    SET
+      jwt_id = NULL,
+      jwt_generated_at = NULL
+    WHERE jwt_id = $\{uniqueId\};
   `
 
   try {
@@ -79,18 +82,12 @@ export async function removeTokenId(connection: Database, uniqueId: string): Pro
 
 export async function storeTokenId(connection: Database, userId: number, uniqueId: string): PromiseResult<void> {
   const storeTokenIdQuery = `
-    INSERT INTO br7own.jwt_ids
-    (
-      id,
-      generated_at,
-      user_id
-    )
-    VALUES
-    (
-      $\{id\},
-      NOW(),
-      $\{user_id\}
-    );
+    UPDATE br7own.users
+    SET
+      jwt_id = $\{id\},
+      jwt_generated_at = NOW()
+    WHERE
+      id = $\{user_id\}
   `
 
   try {

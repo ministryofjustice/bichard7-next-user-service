@@ -29,12 +29,9 @@ describe("Redirection log in", () => {
       cy.url().then((url) => {
         expect(url).to.match(/\?token=[A-Za-z0-9_.]+/)
         cy.task("selectFromUsersTable", emailAddress).then((user) => {
-          cy.task("selectFromJwtIdTable").then((jwtId) => {
-            const decodedToken = decodeAuthenticationToken(url.match(/token=([^..]+\.[^..]+\.[^..]+)/)[1])
-            expect(jwtId.id).to.equal(decodedToken.id)
-            expect(jwtId.user_id).to.equal(user.id)
-            done()
-          })
+          const decodedToken = decodeAuthenticationToken(url.match(/token=([^..]+\.[^..]+\.[^..]+)/)[1])
+          expect(user.jwt_id).to.equal(decodedToken.id)
+          done()
         })
       })
     })

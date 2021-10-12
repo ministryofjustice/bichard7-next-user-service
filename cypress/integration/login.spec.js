@@ -9,7 +9,6 @@ describe("Logging In", () => {
       cy.clearCookies()
 
       cy.task("deleteFromUsersTable")
-      cy.task("deleteFromJwtIds")
       cy.task("insertIntoUsersTable")
     })
 
