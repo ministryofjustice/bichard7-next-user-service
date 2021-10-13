@@ -62,7 +62,7 @@ export const getServerSideProps = withMultipleServerSideProps(
         }
       }
 
-      const formValidationResult = userFormIsValid(config, userDetails, true)
+      const formValidationResult = userFormIsValid(userDetails, true)
 
       if (formValidationResult.isFormValid) {
         const auditLogger = getAuditLogger(context, config)
