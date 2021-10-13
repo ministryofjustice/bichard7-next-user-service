@@ -1,8 +1,6 @@
 import KeyValuePair from "types/KeyValuePair"
 import User from "types/User"
 import UserCreateDetails from "types/UserDetails"
-import validateCjsmEmailAddress from "useCases/validateCjsmEmailAddress"
-import { UserServiceConfig } from "./config"
 
 interface ValidationResult {
   usernameError: string | false
@@ -13,7 +11,6 @@ interface ValidationResult {
 }
 
 const userFormIsValid = (
-  config: UserServiceConfig,
   { username, forenames, surname, emailAddress }: Partial<User> | Partial<UserCreateDetails>,
   isEdit: boolean
 ): ValidationResult => {
@@ -25,12 +22,6 @@ const userFormIsValid = (
   if (!isEdit) {
     validationResult.usernameError = !username?.trim() && "Enter a username for the new user"
     validationResult.emailError = !emailAddress?.trim() && "Enter the user's email address"
-
-    if (emailAddress && !validationResult.emailError) {
-      if (!validateCjsmEmailAddress(config, emailAddress)) {
-        validationResult.emailError = "Enter a CJSM email address"
-      }
-    }
   }
 
   validationResult.isFormValid =

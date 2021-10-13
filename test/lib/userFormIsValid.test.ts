@@ -1,4 +1,3 @@
-import config from "lib/config"
 import userFormIsValid from "lib/userFormIsValid"
 import UserCreateDetails from "types/UserDetails"
 
@@ -11,11 +10,7 @@ describe("userFormIsValid", () => {
       emailAddress: "test-value-04"
     }
 
-    const { isFormValid, forenamesError, surnameError, emailError, usernameError } = userFormIsValid(
-      config,
-      userDetails,
-      false
-    )
+    const { isFormValid, forenamesError, surnameError, emailError, usernameError } = userFormIsValid(userDetails, false)
 
     expect(isFormValid).toBe(false)
     expect(forenamesError).toBe(false)
@@ -32,11 +27,7 @@ describe("userFormIsValid", () => {
       emailAddress: "test-value-04"
     }
 
-    const { isFormValid, forenamesError, surnameError, emailError, usernameError } = userFormIsValid(
-      config,
-      userDetails,
-      false
-    )
+    const { isFormValid, forenamesError, surnameError, emailError, usernameError } = userFormIsValid(userDetails, false)
 
     expect(isFormValid).toBe(false)
     expect(forenamesError).toBe("Enter the user's forename(s)")
@@ -53,11 +44,7 @@ describe("userFormIsValid", () => {
       emailAddress: "test-value-04"
     }
 
-    const { isFormValid, forenamesError, surnameError, emailError, usernameError } = userFormIsValid(
-      config,
-      userDetails,
-      false
-    )
+    const { isFormValid, forenamesError, surnameError, emailError, usernameError } = userFormIsValid(userDetails, false)
 
     expect(isFormValid).toBe(false)
     expect(forenamesError).toBe(false)
@@ -74,11 +61,7 @@ describe("userFormIsValid", () => {
       emailAddress: ""
     }
 
-    const { isFormValid, forenamesError, surnameError, emailError, usernameError } = userFormIsValid(
-      config,
-      userDetails,
-      false
-    )
+    const { isFormValid, forenamesError, surnameError, emailError, usernameError } = userFormIsValid(userDetails, false)
 
     expect(isFormValid).toBe(false)
     expect(forenamesError).toBe(false)
@@ -95,39 +78,12 @@ describe("userFormIsValid", () => {
       emailAddress: "test-value-05"
     }
 
-    const { isFormValid, forenamesError, surnameError, emailError, usernameError } = userFormIsValid(
-      config,
-      userDetails,
-      false
-    )
+    const { isFormValid, forenamesError, surnameError, emailError, usernameError } = userFormIsValid(userDetails, false)
 
     expect(isFormValid).toBe(true)
     expect(forenamesError).toBe(false)
     expect(surnameError).toBe(false)
     expect(usernameError).toBe(false)
     expect(emailError).toBe(false)
-  })
-
-  it("should return false when emailAddress is not a CJSM address", () => {
-    const userDetails: Partial<UserCreateDetails> = {
-      username: "test-value-01",
-      forenames: "test-value-02",
-      surname: "test-value-03",
-      emailAddress: "non_cjsm_email_address@example.com"
-    }
-
-    const customConfig = { ...config, validateCjsmEmailAddress: "true" }
-
-    const { isFormValid, forenamesError, surnameError, emailError, usernameError } = userFormIsValid(
-      customConfig,
-      userDetails,
-      false
-    )
-
-    expect(isFormValid).toBe(false)
-    expect(forenamesError).toBe(false)
-    expect(surnameError).toBe(false)
-    expect(usernameError).toBe(false)
-    expect(emailError).toBe("Enter a CJSM email address")
   })
 })
