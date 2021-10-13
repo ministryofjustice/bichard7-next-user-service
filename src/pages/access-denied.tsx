@@ -17,9 +17,12 @@ const AccessDenied = () => (
         <p className="govuk-body">
           {"We suggest that you return to the "}
           <Link href="/">{"home page"}</Link>
-          {" or "}
+          {" and choose an available service to you."}
+        </p>
+        <p className="govuk-body">
+          {"If you believe you have permission to access this page, you can "}
           <Link href={config.contactUrl}>{"contact support"}</Link>
-          {" to request access."}
+          {" to report this issue."}
         </p>
       </GridRow>
     </Layout>

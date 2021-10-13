@@ -30,7 +30,7 @@ describe("userFormIsValid", () => {
     const { isFormValid, forenamesError, surnameError, emailError, usernameError } = userFormIsValid(userDetails, false)
 
     expect(isFormValid).toBe(false)
-    expect(forenamesError).toBe("Enter the user's forenames")
+    expect(forenamesError).toBe("Enter the user's forename(s)")
     expect(surnameError).toBe(false)
     expect(usernameError).toBe(false)
     expect(emailError).toBe(false)

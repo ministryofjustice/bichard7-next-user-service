@@ -15,7 +15,7 @@ const userFormIsValid = (
   isEdit: boolean
 ): ValidationResult => {
   const validationResult = {
-    forenamesError: !forenames?.trim() && "Enter the user's forenames",
+    forenamesError: !forenames?.trim() && "Enter the user's forename(s)",
     surnameError: !surname?.trim() && "Enter the user's surname"
   } as ValidationResult
 

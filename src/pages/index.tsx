@@ -89,40 +89,58 @@ const Home = ({
           <div className="govuk-grid-column-two-thirds">
             <h1 className="govuk-heading-l">{`Welcome ${currentUser?.forenames} ${currentUser?.surname}`}</h1>
 
-            <h3 className="govuk-heading-m" id="services-title">
-              {"Quick access"}
-            </h3>
-            <nav role="navigation" aria-labelledby="services-title">
-              <ul className="govuk-list">
-                {hasAccessToBichard && (
-                  <li>
-                    <Link href={bichardUrl} className="govuk-link govuk-link--no-underline" id="bichard-link">
-                      {"Bichard"}
-                    </Link>
-                  </li>
-                )}
-                {hasAccessToUserManagement && (
-                  <li>
-                    <Link href="/users" className="govuk-link govuk-link--no-underline" id="user-management-link">
-                      {"User management"}
-                    </Link>
-                  </li>
-                )}
-                {hasAccessToAuditLogging && (
-                  <li>
-                    <Link
-                      href={config.auditLoggingURL}
-                      className="govuk-link govuk-link--no-underline"
-                      id="audit-logging-link"
-                    >
-                      {"Audit logging"}
-                    </Link>
-                  </li>
-                )}
-              </ul>
-            </nav>
+            {hasAccessToBichard && (
+              <Link
+                href={bichardUrl}
+                className="govuk-button govuk-button--start govuk-!-margin-top-5"
+                id="bichard-link"
+              >
+                {"Access Bichard"}
+                <svg
+                  className="govuk-button__start-icon"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="17.5"
+                  height="19"
+                  viewBox="0 0 33 40"
+                  aria-hidden="true"
+                  focusable="false"
+                >
+                  <path fill="currentColor" d="M0 0h13l20 20-20 20H0l20-20z" />
+                </svg>
+              </Link>
+            )}
 
-            <h3 className="govuk-heading-m govuk-!-margin-top-7">{"Need help?"}</h3>
+            {(hasAccessToUserManagement || hasAccessToAuditLogging) && (
+              <>
+                <h3 className="govuk-heading-m govuk-!-margin-top-5" id="services-title">
+                  {"Quick access"}
+                </h3>
+                <nav role="navigation" aria-labelledby="services-title">
+                  <ul className="govuk-list">
+                    {hasAccessToUserManagement && (
+                      <li>
+                        <Link href="/users" className="govuk-link govuk-link--no-underline" id="user-management-link">
+                          {"User management"}
+                        </Link>
+                      </li>
+                    )}
+                    {hasAccessToAuditLogging && (
+                      <li>
+                        <Link
+                          href={config.auditLoggingURL}
+                          className="govuk-link govuk-link--no-underline"
+                          id="audit-logging-link"
+                        >
+                          {"Audit logging"}
+                        </Link>
+                      </li>
+                    )}
+                  </ul>
+                </nav>
+              </>
+            )}
+
+            <h3 className="govuk-heading-m govuk-!-margin-top-5">{"Need help?"}</h3>
             <p className="govuk-body">
               {"If you need help, you can "}
               <Link href={config.contactUrl}>{"contact support"}</Link>
