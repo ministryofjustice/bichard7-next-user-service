@@ -32,12 +32,8 @@ export const getServerSideProps = withCsrf(
     const authCookie = req.cookies[config.authenticationCookieName]
     const token = decodeAuthenticationToken(authCookie)
 
-    if (authCookie && isSuccess(token)) {
-      const database = getConnection()
-
-      if (await isTokenIdValid(database, token.id)) {
-        return createRedirectResponse("/")
-      }
+    if (authCookie && isSuccess(token) && (await isTokenIdValid(getConnection(), token.id))) {
+      return createRedirectResponse("/")
     }
 
     if (isPost(req)) {
