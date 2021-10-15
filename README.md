@@ -172,8 +172,12 @@ There are a number of different types of test that form part of the user-service
 
 - **UI tests:** tests that drive the service interface within a web browser using [Cypress](https://www.cypress.io/), to validate the interface and interactions from a user perspective. Also requires [a database connection](#running-the-database).
   ```shell
-  # Build a production copy of the app and run the UI tests against it
+  # Build a production copy of the app and run all of the UI tests against it
   $ npm run test:ui
+
+  # Build a production copy of the app and run one or more of the UI tests against it
+  $ npm run test:ui cypress/integration/login.spec.js
+  $ npm run test:ui login.spec.js users.spec.js
 
   # Run the UI tests against a version of the app that is already running
   $ npm run cypress:run
