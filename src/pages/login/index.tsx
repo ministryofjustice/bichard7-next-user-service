@@ -12,7 +12,7 @@ import {
   sendVerificationEmail
 } from "useCases"
 import getConnection from "lib/getConnection"
-import { isError } from "types/Result"
+import { isError, isSuccess } from "types/Result"
 import Link from "components/Link"
 import createRedirectResponse from "utils/createRedirectResponse"
 import Form from "components/Form"
@@ -23,14 +23,22 @@ import { withCsrf } from "middleware"
 import isPost from "utils/isPost"
 import { ParsedUrlQuery } from "querystring"
 import { ErrorSummaryList } from "components/ErrorSummary"
+import { decodeAuthenticationToken, isTokenIdValid } from "lib/token/authenticationToken"
 
 export const getServerSideProps = withCsrf(
   async (context: GetServerSidePropsContext<ParsedUrlQuery>): Promise<GetServerSidePropsResult<Props>> => {
     const { req, res, formData, csrfToken, query } = context as CsrfServerSidePropsContext
-    const emailError = "Enter a valid email address"
+
+    const authCookie = req.cookies[config.authenticationCookieName]
+    const token = decodeAuthenticationToken(authCookie)
+
+    if (authCookie && isSuccess(token) && (await isTokenIdValid(getConnection(), token.id))) {
+      return createRedirectResponse("/")
+    }
 
     if (isPost(req)) {
       const { emailAddress } = formData as { emailAddress: string }
+      const emailError = "Enter a valid email address"
 
       if (emailAddress) {
         const connection = getConnection()

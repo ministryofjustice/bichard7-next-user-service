@@ -5,24 +5,23 @@ import type { NextApiRequest, NextApiResponse } from "next"
 import { isSuccess } from "types/Result"
 import hasUserAccessToUrl from "useCases/hasUserAccessToUrl"
 
+const unauthenticated = (res: NextApiResponse) => res.status(401).json({ authenticated: false, authorised: false })
+const unauthorised = (res: NextApiResponse) => res.status(403).json({ authenticated: true, authorised: false })
+const allowed = (res: NextApiResponse) => res.status(200).json({ authenticated: true, authorised: true })
+
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   const cookieValue = req.cookies[config.authenticationCookieName]
   const token = decodeAuthenticationToken(cookieValue)
 
-  if (cookieValue && isSuccess(token)) {
-    const database = getConnection()
-
-    if ((await isTokenIdValid(database, token.id)) === false) {
-      return res.status(401).json({ authenticated: false })
-    }
-
+  if (cookieValue && isSuccess(token) && (await isTokenIdValid(getConnection(), token.id))) {
     const { referer } = req.headers
-    if (!hasUserAccessToUrl(token, referer)) {
-      return res.status(403).json({ authenticated: true })
+
+    if (hasUserAccessToUrl(token, referer)) {
+      return allowed(res)
     }
 
-    return res.status(200).json({ authenticated: true })
+    return unauthorised(res)
   }
 
-  return res.status(401).json({ authenticated: false })
+  return unauthenticated(res)
 }
