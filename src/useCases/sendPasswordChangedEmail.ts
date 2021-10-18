@@ -1,3 +1,4 @@
+import cjsmify from "lib/cjsmify"
 import config from "lib/config"
 import getEmailer from "lib/getEmailer"
 import Database from "types/Database"
@@ -23,7 +24,7 @@ export default async (connection: Database, emailAddress: string): PromiseResult
   return emailer
     .sendMail({
       from: config.emailFrom,
-      to: emailAddress,
+      to: cjsmify(emailAddress),
       ...emailContent
     })
     .catch((error: Error) => error)

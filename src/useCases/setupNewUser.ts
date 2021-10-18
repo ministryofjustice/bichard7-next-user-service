@@ -1,4 +1,5 @@
 import { randomDigits } from "crypto-secure-random-digit"
+import cjsmify from "lib/cjsmify"
 import config from "lib/config"
 import getEmailer from "lib/getEmailer"
 import AuditLogger from "types/AuditLogger"
@@ -49,19 +50,12 @@ export default async (
   const email = createNewUserEmailResult
   const emailer = getEmailer()
 
-  const emailerResult = await emailer
+  return emailer
     .sendMail({
       from: config.emailFrom,
-      to: userCreateDetails.emailAddress,
+      to: cjsmify(userCreateDetails.emailAddress),
       ...email
     })
     .catch((error: Error) => error)
-
-  if (isError(emailerResult)) {
-    console.error(emailerResult)
-    return Error("Server error. Please try again later.")
-  }
-
-  return emailerResult
 }
 /* eslint-disable @typescript-eslint/no-explicit-any */
