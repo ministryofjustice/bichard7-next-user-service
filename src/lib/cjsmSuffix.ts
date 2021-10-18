@@ -6,4 +6,8 @@ const addCjsmSuffix = (emailAddress: string): string => {
   return `${emailAddress}.cjsm.net`
 }
 
-export { addCjsmSuffix }
+const removeCjsmSuffix = (emailAddress: string): string => {
+  return emailAddress.replace(/\.cjsm\.net$/i, "")
+}
+
+export { addCjsmSuffix, removeCjsmSuffix }
