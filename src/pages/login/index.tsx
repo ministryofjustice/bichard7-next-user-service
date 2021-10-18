@@ -24,6 +24,7 @@ import isPost from "utils/isPost"
 import { ParsedUrlQuery } from "querystring"
 import { ErrorSummaryList } from "components/ErrorSummary"
 import { decodeAuthenticationToken, isTokenIdValid } from "lib/token/authenticationToken"
+import { removeCjsmSuffix } from "lib/cjsmSuffix"
 
 export const getServerSideProps = withCsrf(
   async (context: GetServerSidePropsContext<ParsedUrlQuery>): Promise<GetServerSidePropsResult<Props>> => {
@@ -38,13 +39,14 @@ export const getServerSideProps = withCsrf(
 
     if (isPost(req)) {
       const { emailAddress } = formData as { emailAddress: string }
+      const normalisedEmail = removeCjsmSuffix(emailAddress)
       const emailError = "Enter a valid email address"
 
       if (emailAddress) {
         const connection = getConnection()
 
         const redirectPath = getRedirectPath(query)
-        const sent = await sendVerificationEmail(connection, emailAddress, redirectPath)
+        const sent = await sendVerificationEmail(connection, normalisedEmail, redirectPath)
 
         if (isError(sent)) {
           console.error(sent)

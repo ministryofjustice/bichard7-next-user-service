@@ -21,7 +21,9 @@ const userFormIsValid = (
 
   if (!isEdit) {
     validationResult.usernameError = !username?.trim() && "Enter a username for the new user"
-    validationResult.emailError = !emailAddress?.trim() && "Enter the user's email address"
+    validationResult.emailError =
+      (!emailAddress?.trim() && "Enter the user's email address") ||
+      (!!emailAddress?.match(/\.cjsm\.net$/i) && "The user's email address should not end with .cjsm.net")
   }
 
   validationResult.isFormValid =

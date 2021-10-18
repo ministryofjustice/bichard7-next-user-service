@@ -1,4 +1,4 @@
-import { invalidToken, validToken } from "../helpers/tokens"
+import { generateLoginVerificationToken, invalidToken, validToken } from "../helpers/tokens"
 
 const emailCookieName = "LOGIN_EMAIL"
 
@@ -299,6 +299,25 @@ describe("Logging In", () => {
       cy.visit("/login")
       cy.url().should("not.match", /\/login\//)
       cy.get("input[type=email]").should("not.exist")
+    })
+
+    it("allows a user to login with their CJSM email address", () => {
+      const emailAddress = "bichard01@example.com"
+      const cjsmEmailAddress = `${emailAddress}.cjsm.net`
+      const password = "password"
+
+      cy.visit("/login")
+      cy.get("input[type=email]").type(cjsmEmailAddress)
+      cy.get("button[type=submit]").click()
+
+      cy.task("getVerificationCode", emailAddress).then((verificationCode) => {
+        const verificationToken = generateLoginVerificationToken(emailAddress, verificationCode)
+        cy.visit(`/login/verify?token=${verificationToken}`)
+        cy.get("input[type=password][name=password]").type(password)
+        cy.get("button[type=submit]").click()
+      })
+
+      cy.url().should("match", /\/users$/)
     })
   })
 })
