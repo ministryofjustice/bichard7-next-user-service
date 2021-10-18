@@ -1,5 +1,5 @@
 import { randomDigits } from "crypto-secure-random-digit"
-import cjsmify from "lib/cjsmify"
+import { addCjsmSuffix } from "lib/cjsmSuffix"
 import config from "lib/config"
 import getEmailer from "lib/getEmailer"
 import Database from "types/Database"
@@ -39,7 +39,7 @@ export default async (connection: Database, emailAddress: string): PromiseResult
   return emailer
     .sendMail({
       from: config.emailFrom,
-      to: cjsmify(emailAddress),
+      to: addCjsmSuffix(emailAddress),
       ...email
     })
     .catch((error: Error) => error)

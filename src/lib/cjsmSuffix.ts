@@ -1,7 +1,9 @@
-export default (emailAddress: string): string => {
+const addCjsmSuffix = (emailAddress: string): string => {
   if (emailAddress.match(/\.cjsm\.net$/i)) {
     return emailAddress
   }
 
   return `${emailAddress}.cjsm.net`
 }
+
+export { addCjsmSuffix }
