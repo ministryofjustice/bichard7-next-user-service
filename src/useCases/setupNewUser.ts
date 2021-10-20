@@ -48,7 +48,7 @@ export default async (
   }
 
   const email = createNewUserEmailResult
-  const emailer = getEmailer()
+  const emailer = getEmailer(userCreateDetails.emailAddress)
 
   return emailer
     .sendMail({

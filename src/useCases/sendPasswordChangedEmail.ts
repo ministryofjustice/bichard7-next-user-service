@@ -20,7 +20,7 @@ export default async (connection: Database, emailAddress: string): PromiseResult
 
   const emailContent = createPasswordChangedEmail(user)
 
-  const emailer = getEmailer()
+  const emailer = getEmailer(emailAddress)
   return emailer
     .sendMail({
       from: config.emailFrom,
