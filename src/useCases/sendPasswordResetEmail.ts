@@ -35,7 +35,7 @@ export default async (connection: Database, emailAddress: string): PromiseResult
 
   const email = createPasswordResetEmailResult
 
-  const emailer = getEmailer()
+  const emailer = getEmailer(emailAddress)
   return emailer
     .sendMail({
       from: config.emailFrom,

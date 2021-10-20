@@ -22,7 +22,7 @@ export default async (connection: Database, emailAddress: string, redirectPath?:
 
   const emailContent = createVerificationEmailResult
 
-  const emailer = getEmailer()
+  const emailer = getEmailer(emailAddress)
   return emailer
     .sendMail({
       from: config.emailFrom,

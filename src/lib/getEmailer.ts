@@ -26,7 +26,12 @@ const getConsoleMailer = (): Emailer => ({
 
 let emailer: Emailer
 
-export default function getEmailer(): Emailer {
+export default function getEmailer(emailAddress: string): Emailer {
+  if (config.smtp.host !== "console" && emailAddress.match(/example\.com(\.cjsm\.net)?$/i)) {
+    console.error("Would have sent an actual email to an example.com email address! Printing to console instead.")
+    return getConsoleMailer()
+  }
+
   if (emailer) {
     return emailer
   }
