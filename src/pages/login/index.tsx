@@ -39,28 +39,28 @@ export const getServerSideProps = withCsrf(
 
     if (isPost(req)) {
       const { emailAddress } = formData as { emailAddress: string }
-      const normalisedEmail = removeCjsmSuffix(emailAddress)
-      const emailError = "Enter a valid email address"
 
-      if (emailAddress) {
-        const connection = getConnection()
-
-        const redirectPath = getRedirectPath(query)
-        const sent = await sendVerificationEmail(connection, normalisedEmail, redirectPath)
-
-        if (isError(sent)) {
-          console.error(sent)
-          return {
-            props: { emailError, csrfToken, emailAddress }
+      if (!emailAddress.match(/\S+@\S+\.\S+/)) {
+        return {
+          props: {
+            csrfToken,
+            emailAddress,
+            emailError: "Enter a valid email address"
           }
         }
-
-        return createRedirectResponse("/login/check-email")
       }
 
-      return {
-        props: { emailError, csrfToken, emailAddress }
+      const normalisedEmail = removeCjsmSuffix(emailAddress)
+      const sent = await sendVerificationEmail(getConnection(), normalisedEmail, getRedirectPath(query))
+
+      if (isError(sent)) {
+        console.error(sent)
+        return {
+          props: { csrfToken, emailAddress, sendingError: true }
+        }
       }
+
+      return createRedirectResponse("/login/check-email")
     }
 
     const { notYou } = query as { notYou: string }
@@ -96,9 +96,10 @@ interface Props {
   emailAddress?: string
   emailError?: string
   csrfToken: string
+  sendingError?: boolean
 }
 
-const Index = ({ emailAddress, emailError, csrfToken }: Props) => (
+const Index = ({ emailAddress, emailError, csrfToken, sendingError }: Props) => (
   <>
     <Head>
       <title>{"Sign in to Bichard 7"}</title>
@@ -106,6 +107,19 @@ const Index = ({ emailAddress, emailError, csrfToken }: Props) => (
     <Layout>
       <GridRow>
         <h1 className="govuk-heading-xl">{"Sign in to Bichard 7"}</h1>
+
+        <ErrorSummary title="There is a problem" show={!!sendingError}>
+          <p>
+            {"There is a problem sending an email to "}
+            <b>{emailAddress}</b>
+            {"."}
+          </p>
+          <p>
+            {"Please try again or "}
+            <Link href={config.contactUrl}>{"contact support"}</Link>
+            {" to report this issue."}
+          </p>
+        </ErrorSummary>
 
         <ErrorSummary title="There is a problem" show={!!emailError}>
           <ErrorSummaryList items={[{ id: "email", error: emailError }]} />
