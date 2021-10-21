@@ -26,6 +26,13 @@ describe("Logging In", () => {
       cy.get("body").contains(/check your email/i)
     })
 
+    it("should prompt the user to check their emails even if the entered email address does not belong to a user", () => {
+      cy.visit("/login")
+      cy.get("input[type=email]").type("userdoesnotexist@example.com")
+      cy.get("button[type=submit]").click()
+      cy.get("body").contains(/check your email/i)
+    })
+
     it("should not allow submission of something that isn't an email address", () => {
       cy.visit("/login")
       cy.get("input[type=email]").type("foobar")

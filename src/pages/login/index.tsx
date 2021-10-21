@@ -80,7 +80,7 @@ export const getServerSideProps = withCsrf(
           redirectPath
         )
 
-        if (!isError(verificationUrl)) {
+        if (!isError(verificationUrl) && typeof verificationUrl !== "undefined") {
           return createRedirectResponse(verificationUrl.href)
         }
       }
@@ -110,7 +110,7 @@ const Index = ({ emailAddress, emailError, csrfToken, sendingError }: Props) => 
 
         <ErrorSummary title="There is a problem" show={!!sendingError}>
           <p>
-            {"There is a problem sending an email to "}
+            {"There is a problem signing in "}
             <b>{emailAddress}</b>
             {"."}
           </p>
