@@ -15,12 +15,11 @@ import ServiceMessage from "types/ServiceMessage"
 import { isError } from "types/Result"
 import Pagination from "components/Pagination"
 import ServiceMessages from "components/ServiceMessages"
-import addQueryParams from "utils/addQueryParams"
 
 export const getServerSideProps = withMultipleServerSideProps(
   withAuthentication,
   async (context: GetServerSidePropsContext<ParsedUrlQuery>): Promise<GetServerSidePropsResult<Props>> => {
-    const { currentUser, authentication, query, req } = context as AuthenticationServerSidePropsContext
+    const { currentUser, authentication, query } = context as AuthenticationServerSidePropsContext
 
     if (!currentUser || !authentication) {
       return createRedirectResponse("/login")
@@ -39,10 +38,6 @@ export const getServerSideProps = withMultipleServerSideProps(
       serviceMessagesResult = { result: [], totalElements: 0 }
     }
 
-    const bichardUrl = addQueryParams(config.bichardRedirectURL, {
-      [config.tokenQueryParamName]: req.cookies[config.authenticationCookieName]
-    })
-
     return {
       props: {
         currentUser,
@@ -51,8 +46,7 @@ export const getServerSideProps = withMultipleServerSideProps(
         hasAccessToBichard,
         serviceMessages: JSON.parse(JSON.stringify(serviceMessagesResult.result)),
         pageNumber,
-        totalMessages: serviceMessagesResult.totalElements,
-        bichardUrl
+        totalMessages: serviceMessagesResult.totalElements
       }
     }
   }
@@ -66,7 +60,6 @@ interface Props {
   serviceMessages: ServiceMessage[]
   pageNumber: number
   totalMessages: number
-  bichardUrl: string
 }
 
 const Home = ({
@@ -76,8 +69,7 @@ const Home = ({
   hasAccessToBichard,
   serviceMessages,
   pageNumber,
-  totalMessages,
-  bichardUrl
+  totalMessages
 }: Props) => {
   return (
     <>
@@ -91,7 +83,7 @@ const Home = ({
 
             {hasAccessToBichard && (
               <Link
-                href={bichardUrl}
+                href={config.bichardRedirectURL}
                 className="govuk-button govuk-button--start govuk-!-margin-top-5"
                 id="bichard-link"
               >

@@ -1,5 +1,3 @@
-import { decodeAuthenticationToken } from "../helpers/tokens"
-
 describe("Home", () => {
   context("720p resolution", () => {
     beforeEach(() => {
@@ -19,28 +17,13 @@ describe("Home", () => {
       cy.viewport(1280, 720)
     })
 
-    it("should redirect user to home page after successful login", (done) => {
+    it("should redirect user to home page after successful login", () => {
       const emailAddress = "bichard01@example.com"
       cy.login(emailAddress, "password")
       cy.get("h1").contains(/welcome bichard user 01/i)
       cy.get("a[id=user-management-link]").should("have.attr", "href").and("equal", "/users/users")
-      cy.get("a[id=audit-logging-link]")
-        .should("have.attr", "href")
-        .and("equal", "https://localhost:3000/audit-logging")
-      cy.get("a[id=bichard-link]")
-        .should("have.attr", "href")
-        .and("match", /^http:\/\/localhost:3000\/bichard-ui\/Authenticate\?token=[A-Za-z0-9_.]+/)
-
-      cy.get("a[id=bichard-link")
-        .invoke("attr", "href")
-        .then((url) => {
-          expect(url).to.match(/\?token=[A-Za-z0-9_.]+/)
-          cy.task("selectFromUsersTable", emailAddress).then((user) => {
-            const decodedToken = decodeAuthenticationToken(url.match(/token=([^..]+\.[^..]+\.[^..]+)/)[1])
-            expect(user.jwt_id).to.equal(decodedToken.id)
-            done()
-          })
-        })
+      cy.get("a[id=audit-logging-link]").should("have.attr", "href").and("equal", "/audit-logging")
+      cy.get("a[id=bichard-link]").should("have.attr", "href").and("equal", "/bichard-ui/InitialRefreshList")
     })
 
     it("should show paginated service messages", () => {
