@@ -84,6 +84,7 @@ const Home = ({
             {hasAccessToBichard && (
               <Link
                 href={config.bichardRedirectURL}
+                basePath={false}
                 className="govuk-button govuk-button--start govuk-!-margin-top-5"
                 id="bichard-link"
               >
@@ -120,6 +121,7 @@ const Home = ({
                       <li>
                         <Link
                           href={config.auditLoggingURL}
+                          basePath={false}
                           className="govuk-link govuk-link--no-underline"
                           id="audit-logging-link"
                         >

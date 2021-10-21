@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 set -e
 
-export BICHARD_REDIRECT_URL="http://localhost:3000/bichard-ui/Authenticate"
-
 npm run build
 
 START_CMD="npm:start > /dev/null 2>&1"
