@@ -34,7 +34,6 @@ export interface UserServiceConfig {
   smtp: SmtpConfig
   tokenExpiresIn: string
   tokenIssuer: string
-  tokenQueryParamName: string
   tokenSecret: string
   maxServiceMessagesPerPage: number
   maxUsersPerPage: number
@@ -68,7 +67,6 @@ const config: UserServiceConfig = {
   suggestedPasswordMaxWordLength: 8,
   tokenExpiresIn: process.env.TOKEN_EXPIRES_IN ?? "60 seconds",
   tokenIssuer: process.env.TOKEN_ISSUER ?? "Bichard",
-  tokenQueryParamName: process.env.TOKEN_QUERY_PARAM_NAME ?? "token",
   tokenSecret: process.env.TOKEN_SECRET ?? "OliverTwist",
   maxServiceMessagesPerPage: 5,
   maxUsersPerPage: 10,
