@@ -49,7 +49,7 @@ it("should set current user to undefined in the context when there is an error g
   const mockedGetAuthenticationPayloadFromCookie = getAuthenticationPayloadFromCookie as jest.MockedFunction<
     typeof getAuthenticationPayloadFromCookie
   >
-  mockedGetAuthenticationPayloadFromCookie.mockReturnValue(new Error("Error"))
+  mockedGetAuthenticationPayloadFromCookie.mockReturnValue(null)
   const dummyContext = { req: {} } as GetServerSidePropsContext<ParsedUrlQuery>
 
   const handler = withAuthentication((context) => {

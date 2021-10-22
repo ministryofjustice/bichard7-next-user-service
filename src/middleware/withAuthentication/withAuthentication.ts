@@ -1,9 +1,8 @@
 import getConnection from "lib/getConnection"
-import { AuthenticationTokenPayload } from "lib/token/authenticationToken"
 import { GetServerSideProps, GetServerSidePropsContext, GetServerSidePropsResult } from "next"
 import { ParsedUrlQuery } from "querystring"
 import AuthenticationServerSidePropsContext from "types/AuthenticationServerSidePropsContext"
-import { isError, Result } from "types/Result"
+import { isSuccess } from "types/Result"
 import User from "types/User"
 import getUserByEmailAddress from "useCases/getUserByEmailAddress"
 import getAuthenticationPayloadFromCookie from "./getAuthenticationPayloadFromCookie"
@@ -14,20 +13,18 @@ export default <Props>(getServerSidePropsFunction: GetServerSideProps<Props>): G
   ): Promise<GetServerSidePropsResult<Props>> => {
     const { req } = context
 
-    let authentication: Result<AuthenticationTokenPayload> | null = getAuthenticationPayloadFromCookie(req)
+    const authentication = getAuthenticationPayloadFromCookie(req)
+    let currentUser: User | null = null
 
-    if (isError(authentication)) {
-      console.error(authentication)
-      authentication = null
-    }
+    if (authentication) {
+      const connection = getConnection()
+      const user = await getUserByEmailAddress(connection, authentication.emailAddress)
 
-    const connection = getConnection()
-    let currentUser: Result<User | null> | null =
-      authentication && (await getUserByEmailAddress(connection, authentication.emailAddress))
-
-    if (isError(currentUser)) {
-      console.error(currentUser)
-      currentUser = null
+      if (isSuccess(user)) {
+        currentUser = user
+      } else {
+        console.error(user)
+      }
     }
 
     return getServerSidePropsFunction({
