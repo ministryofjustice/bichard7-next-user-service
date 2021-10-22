@@ -100,11 +100,7 @@ export const getServerSideProps = withCsrf(async (context): Promise<GetServerSid
       }
 
       if (redirectPath) {
-        const url = addQueryParams(redirectPath, {
-          [config.tokenQueryParamName]: authToken
-        })
-
-        return createRedirectResponse(url, { basePath: false })
+        return createRedirectResponse(redirectPath, { basePath: false })
       }
 
       return createRedirectResponse("/")

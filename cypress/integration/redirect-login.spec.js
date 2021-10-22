@@ -1,4 +1,4 @@
-import { validToken, decodeAuthenticationToken } from "../helpers/tokens"
+import { validToken } from "../helpers/tokens"
 
 describe("Redirection log in", () => {
   before(() => {
@@ -6,7 +6,7 @@ describe("Redirection log in", () => {
     cy.task("insertIntoUsersTable")
   })
 
-  it("should be able to log in given a valid url passed as a 'redirect' query parameter and redirect to the url given in the query parameter", (done) => {
+  it("should be able to log in given a valid url passed as a 'redirect' query parameter and redirect to the url given in the query parameter", () => {
     const emailAddress = "bichard01@example.com"
     const password = "password"
     const redirectPath = "/bichard-ui/customurl"
@@ -25,15 +25,6 @@ describe("Redirection log in", () => {
       cy.get("button[type=submit]").click()
 
       cy.url().should("match", /^http:\/\/localhost:3000\/bichard-ui\/customurl/)
-
-      cy.url().then((url) => {
-        expect(url).to.match(/\?token=[A-Za-z0-9_.]+/)
-        cy.task("selectFromUsersTable", emailAddress).then((user) => {
-          const decodedToken = decodeAuthenticationToken(url.match(/token=([^..]+\.[^..]+\.[^..]+)/)[1])
-          expect(user.jwt_id).to.equal(decodedToken.id)
-          done()
-        })
-      })
     })
   })
 })

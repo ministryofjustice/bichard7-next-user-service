@@ -3,6 +3,7 @@ import { ReactNode } from "react"
 
 interface Props {
   children: ReactNode
+  basePath?: boolean
   className?: string
   "data-test"?: string
   href: string
@@ -10,8 +11,14 @@ interface Props {
   rel?: string
 }
 
-const Link = ({ children, className, "data-test": dataTest, href, id, rel }: Props) => (
-  <a data-test={dataTest} href={addBasePath(href)} className={className || "govuk-link"} id={id} rel={rel}>
+const Link = ({ children, basePath = true, className, "data-test": dataTest, href, id, rel }: Props) => (
+  <a
+    data-test={dataTest}
+    href={basePath ? addBasePath(href) : href}
+    className={className || "govuk-link"}
+    id={id}
+    rel={rel}
+  >
     {children}
   </a>
 )

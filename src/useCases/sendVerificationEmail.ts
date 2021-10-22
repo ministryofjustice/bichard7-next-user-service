@@ -10,7 +10,7 @@ import generateEmailVerificationUrl from "./generateEmailVerificationUrl"
 export default async (connection: Database, emailAddress: string, redirectPath?: string): PromiseResult<void> => {
   const verificationUrl = await generateEmailVerificationUrl(connection, config, emailAddress, redirectPath)
 
-  if (isError(verificationUrl)) {
+  if (isError(verificationUrl) || typeof verificationUrl === "undefined") {
     return verificationUrl
   }
 

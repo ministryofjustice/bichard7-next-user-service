@@ -12,12 +12,18 @@ export default async (
   config: UserServiceConfig,
   emailAddress: string,
   redirectPath?: string
-): PromiseResult<URL> => {
+): PromiseResult<URL | undefined> => {
   const verificationCode = randomDigits(config.verificationCodeLength).join("")
   const storeVerificationCodeResult = await storeVerificationCode(connection, emailAddress, verificationCode)
 
   if (isError(storeVerificationCodeResult)) {
     return storeVerificationCodeResult
+  }
+
+  // If we successfully didn't store the verification code (i.e. the user doesn't exist)
+  // then don't generate a URL
+  if (!storeVerificationCodeResult) {
+    return undefined
   }
 
   const payload: EmailVerificationTokenPayload = {

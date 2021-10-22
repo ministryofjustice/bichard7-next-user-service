@@ -1,6 +1,5 @@
 import { AuthenticationTokenPayload, decodeAuthenticationToken } from "lib/token/authenticationToken"
 import getAuthenticationPayloadFromCookie from "middleware/withAuthentication/getAuthenticationPayloadFromCookie"
-import { isError } from "types/Result"
 
 jest.mock("lib/token/authenticationToken")
 
@@ -15,7 +14,7 @@ const authenticationTokenPayload = {
   emailAddress: "dummy@dummy.com"
 } as AuthenticationTokenPayload
 
-it("should return authentication payload when there is avalid authentication cookie", () => {
+it("should return authentication payload when there is a valid authentication cookie", () => {
   const mockedDecodeAuthenticationToken = decodeAuthenticationToken as jest.MockedFunction<
     typeof decodeAuthenticationToken
   >
@@ -23,24 +22,19 @@ it("should return authentication payload when there is avalid authentication coo
 
   const result = getAuthenticationPayloadFromCookie(request)
 
-  expect(isError(result)).toBe(false)
   expect(result).toBeDefined()
 
-  const { username, emailAddress } = <AuthenticationTokenPayload>result
+  const { username, emailAddress } = result as AuthenticationTokenPayload
   expect(username).toBe(authenticationTokenPayload.username)
   expect(emailAddress).toBe(authenticationTokenPayload.emailAddress)
 })
 
-it("should return error when authentication cookie does not exist", () => {
+it("should return null when authentication cookie does not exist", () => {
   const result = getAuthenticationPayloadFromCookie({ cookies: {} })
-
-  expect(isError(result)).toBe(true)
-
-  const actualError = <Error>result
-  expect(actualError.message).toBe("Authentication token not found.")
+  expect(result).toBeNull()
 })
 
-it("should return error when authentication cookie is invalid", () => {
+it("should return null when authentication cookie is invalid", () => {
   const expectedError = new Error("Dummy Error")
   const mockedDecodeAuthenticationToken = decodeAuthenticationToken as jest.MockedFunction<
     typeof decodeAuthenticationToken
@@ -49,8 +43,5 @@ it("should return error when authentication cookie is invalid", () => {
 
   const result = getAuthenticationPayloadFromCookie(request)
 
-  expect(isError(result)).toBe(true)
-
-  const actualError = <Error>result
-  expect(actualError.message).toBe(expectedError.message)
+  expect(result).toBeNull()
 })
