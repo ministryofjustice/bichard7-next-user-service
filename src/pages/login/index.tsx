@@ -12,28 +12,28 @@ import {
   sendVerificationEmail
 } from "useCases"
 import getConnection from "lib/getConnection"
-import { isError, isSuccess } from "types/Result"
+import { isError } from "types/Result"
 import Link from "components/Link"
 import createRedirectResponse from "utils/createRedirectResponse"
 import Form from "components/Form"
 import CsrfServerSidePropsContext from "types/CsrfServerSidePropsContext"
 import getRedirectPath from "lib/getRedirectPath"
 import config from "lib/config"
-import { withCsrf } from "middleware"
+import { withAuthentication, withCsrf, withMultipleServerSideProps } from "middleware"
 import isPost from "utils/isPost"
 import { ParsedUrlQuery } from "querystring"
 import { ErrorSummaryList } from "components/ErrorSummary"
-import { decodeAuthenticationToken, isTokenIdValid } from "lib/token/authenticationToken"
 import { removeCjsmSuffix } from "lib/cjsmSuffix"
+import AuthenticationServerSidePropsContext from "types/AuthenticationServerSidePropsContext"
 
-export const getServerSideProps = withCsrf(
+export const getServerSideProps = withMultipleServerSideProps(
+  withAuthentication,
+  withCsrf,
   async (context: GetServerSidePropsContext<ParsedUrlQuery>): Promise<GetServerSidePropsResult<Props>> => {
-    const { req, res, formData, csrfToken, query } = context as CsrfServerSidePropsContext
+    const { req, res, formData, csrfToken, query, currentUser } = context as CsrfServerSidePropsContext &
+      AuthenticationServerSidePropsContext
 
-    const authCookie = req.cookies[config.authenticationCookieName]
-    const token = decodeAuthenticationToken(authCookie)
-
-    if (authCookie && isSuccess(token) && (await isTokenIdValid(getConnection(), token.id))) {
+    if (currentUser) {
       return createRedirectResponse("/")
     }
 
