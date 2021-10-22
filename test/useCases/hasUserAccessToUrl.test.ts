@@ -20,16 +20,6 @@ const testData: TestData[] = [
     expectedResult: false
   },
   {
-    group: "B7GeneralHandler",
-    url: "/bichard-ui",
-    expectedResult: true
-  },
-  {
-    group: "B7UserManager",
-    url: "/bichard-ui",
-    expectedResult: false
-  },
-  {
     group: "B7UserManager",
     url: "/audit-logging",
     expectedResult: false
@@ -71,9 +61,34 @@ const testData: TestData[] = [
   }
 ]
 
+const bichardUsers = [
+  "B7Allocator",
+  "B7Audit",
+  "B7ExceptionHandler",
+  "B7GeneralHandler",
+  "B7Supervisor",
+  "B7TriggerHandler"
+]
+
+const nonBichardUsers = ["B7UserManager", "B7AuditLoggingManager"]
+
 test.each(testData)("should return the correct result for %s", ({ group, url, expectedResult }) => {
   const token = { groups: group ? [group] : [] } as unknown as AuthenticationTokenPayload
   const result = hasUserAccessToUrl(token, url)
 
   expect(result).toBe(expectedResult)
+})
+
+test.each(bichardUsers)("should allow correct access for %s group", (group) => {
+  const token = { groups: group ? [group] : [] } as unknown as AuthenticationTokenPayload
+
+  expect(hasUserAccessToUrl(token, "/bichard-ui")).toBeTruthy()
+  expect(hasUserAccessToUrl(token, "/reports/foo")).toBeTruthy()
+})
+
+test.each(nonBichardUsers)("should allow correct access for %s group", (group) => {
+  const token = { groups: group ? [group] : [] } as unknown as AuthenticationTokenPayload
+
+  expect(hasUserAccessToUrl(token, "/bichard-ui")).toBeFalsy()
+  expect(hasUserAccessToUrl(token, "/reports/foo")).toBeFalsy()
 })
