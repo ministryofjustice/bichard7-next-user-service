@@ -68,6 +68,15 @@ describe("Authentication API endpoint", () => {
     })
   })
 
+  it("should say user doesn't have permission to access the reports url if user is not in the bichard group", () => {
+    cy.login("bichard02@example.com", "password")
+
+    cy.request({ url: "/api/auth", headers: { Referer: "/reports/foo" }, failOnStatusCode: false }).then((response) => {
+      expect(response.status).to.eq(403)
+      expect(response.body).to.have.property("authenticated", true)
+    })
+  })
+
   it("should say user can access home page even if user does not belong to any group", () => {
     cy.login("bichard02@example.com", "password")
 
