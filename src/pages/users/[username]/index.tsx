@@ -23,6 +23,7 @@ export const getServerSideProps = withMultipleServerSideProps(
     const user = await getUserByUsername(connection, username as string)
 
     if (isError(user)) {
+      console.error(user)
       return createRedirectResponse("/500")
     }
 
