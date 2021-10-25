@@ -21,7 +21,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     const { referer } = req.headers
 
     if (hasUserAccessToUrl(token, referer)) {
-      const hasBeenInactive = await hasUserBeenInactive(connection, token)
+      const hasBeenInactive = await hasUserBeenInactive(connection, token.emailAddress)
       if (hasBeenInactive) {
         await signOutUser(connection, res, req)
         return unauthenticated(res)
