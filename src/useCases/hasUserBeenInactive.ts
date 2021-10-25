@@ -12,7 +12,6 @@ export default async ({ emailAddress }: AuthenticationTokenPayload): Promise<boo
   const timeFromLastLogin = Math.floor(
     (new Date().getTime() - new Date(lastLogIn.last_logged_in).getTime()) / (1000 * 60)
   )
-  console.log(timeFromLastLogin, config.timeoutInactivity)
   if (timeFromLastLogin > config.timeoutInactivity) {
     return true
   }

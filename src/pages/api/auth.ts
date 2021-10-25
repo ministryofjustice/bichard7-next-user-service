@@ -22,7 +22,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     if (hasUserAccessToUrl(token, referer)) {
       const connection = getConnection()
       const hasBeenInactive = await hasUserBeenInactive(token)
-      console.log("inactive", hasBeenInactive)
       if (hasBeenInactive) {
         await signOutUser(connection, res, req)
         return unauthenticated(res)
