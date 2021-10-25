@@ -16,7 +16,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   const cookieValue = req.cookies[config.authenticationCookieName]
   const token = decodeAuthenticationToken(cookieValue)
 
-  if (cookieValue && isSuccess(token) && (await isTokenIdValid(getConnection(), token.id))) {
+  if (cookieValue && isSuccess(token) && (await isTokenIdValid(getConnection(), token.username))) {
     const { referer } = req.headers
 
     if (hasUserAccessToUrl(token, referer)) {
@@ -26,7 +26,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         await signOutUser(connection, res, req)
         return unauthenticated(res)
       }
-      await updateUserLastLogin(connection, token.emailAddress)
+      await updateUserLastLogin(connection, token.id)
       return allowed(res)
     }
 

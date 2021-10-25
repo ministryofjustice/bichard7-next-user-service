@@ -10,7 +10,7 @@ export default async ({ emailAddress }: AuthenticationTokenPayload): Promise<boo
     return false
   }
   const timeFromLastLogin = Math.floor(
-    (new Date().getTime() - new Date(lastLogIn.last_logged_in).getTime()) / (1000 * 60)
+    (new Date().getUTCDate() - new Date(lastLogIn.last_logged_in).getUTCDate()) / (1000 * 60)
   )
   if (timeFromLastLogin > config.timeoutInactivity) {
     return true

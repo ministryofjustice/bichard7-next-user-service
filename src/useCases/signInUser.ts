@@ -24,7 +24,7 @@ export default async (
     return storeTokenIdResult
   }
 
-  const storeLastLogin = await updateUserLastLogin(connection, user.emailAddress)
+  const storeLastLogin = await updateUserLastLogin(connection, user.username)
 
   if (isError(storeLastLogin)) {
     console.error(storeLastLogin)

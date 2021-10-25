@@ -4,6 +4,7 @@ import signInUser from "useCases/signInUser"
 import { isError } from "types/Result"
 import createUser from "useCases/createUser"
 import Database from "types/Database"
+import hasUserBeenInactive from "useCases/hasUserBeenInactive"
 import getTestConnection from "../../testFixtures/getTestConnection"
 import deleteFromTable from "../../testFixtures/database/deleteFromTable"
 import insertIntoGroupsTable from "../../testFixtures/database/insertIntoGroupsTable"
@@ -69,5 +70,16 @@ describe("SigninUser", () => {
     `
     const queryResult = await connection.oneOrNone(checkDbQuery, { username: user.username })
     expect(queryResult).not.toBe(null)
+    expect(queryResult.last_logged_in).not.toBe(null)
+
+    const isUserInactive = await hasUserBeenInactive({
+      emailAddress: user.emailAddress,
+      username: user.username,
+      id: "",
+      exclusionList: [""],
+      inclusionList: [""],
+      groups: []
+    })
+    expect(isUserInactive).toBe(false)
   })
 })
