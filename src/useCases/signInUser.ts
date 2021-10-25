@@ -7,6 +7,7 @@ import { v4 as uuidv4 } from "uuid"
 import { isError } from "types/Result"
 import Database from "types/Database"
 import UserFullDetails from "types/UserFullDetails"
+import updateUserLastLogin from "./updateUserLastLogin"
 
 export default async (
   connection: Database,
@@ -21,6 +22,13 @@ export default async (
   if (isError(storeTokenIdResult)) {
     console.error(storeTokenIdResult)
     return storeTokenIdResult
+  }
+
+  const storeLastLogin = await updateUserLastLogin(connection, user.emailAddress)
+
+  if (isError(storeLastLogin)) {
+    console.error(storeLastLogin)
+    return storeLastLogin
   }
 
   const authenticationToken = generateAuthenticationToken(user, uniqueId)
