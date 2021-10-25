@@ -1,3 +1,4 @@
+import config from "lib/config"
 import Database from "types/Database"
 import PromiseResult from "types/PromiseResult"
 
@@ -6,7 +7,9 @@ export default (db: Database, emailAddress: string): PromiseResult<{ last_logged
       SELECT
         last_logged_in
       FROM br7own.users
-      WHERE email = $1 AND deleted_at IS NULL
+      WHERE email = $1
+        AND last_logged_in > NOW() - INTERVAL '$2 seconds'
+        AND deleted_at IS NULL
     `
-  return db.oneOrNone(query, [emailAddress]).catch((error) => error)
+  return db.oneOrNone(query, [emailAddress, config.timeoutInactivity * 60]).catch((error) => error)
 }

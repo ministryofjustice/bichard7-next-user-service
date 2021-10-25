@@ -72,7 +72,7 @@ describe("SigninUser", () => {
     expect(queryResult).not.toBe(null)
     expect(queryResult.last_logged_in).not.toBe(null)
 
-    const isUserInactive = await hasUserBeenInactive({
+    let isUserInactive = await hasUserBeenInactive({
       emailAddress: user.emailAddress,
       username: user.username,
       id: "",
@@ -81,5 +81,20 @@ describe("SigninUser", () => {
       groups: []
     })
     expect(isUserInactive).toBe(false)
+
+    const setLastLogin = `
+      UPDATE br7own.users
+      SET last_logged_in = NOW() - INTERVAL '600 seconds'
+      WHERE username = $\{username\}`
+    await connection.none(setLastLogin, { username: user.username })
+    isUserInactive = await hasUserBeenInactive({
+      emailAddress: user.emailAddress,
+      username: user.username,
+      id: "",
+      exclusionList: [""],
+      inclusionList: [""],
+      groups: []
+    })
+    expect(isUserInactive).toBe(true)
   })
 })
