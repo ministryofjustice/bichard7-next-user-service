@@ -7,6 +7,7 @@ import { v4 as uuidv4 } from "uuid"
 import { isError } from "types/Result"
 import Database from "types/Database"
 import UserFullDetails from "types/UserFullDetails"
+import { generateTimeoutToken } from "lib/token/timeoutToken"
 import updateUserLastLogin from "./updateUserLastLogin"
 
 export default async (
@@ -14,7 +15,7 @@ export default async (
   response: ServerResponse,
   user: UserFullDetails
 ): Promise<string | Error> => {
-  const { authenticationCookieName } = config
+  const { authenticationCookieName, timeoutInactivityCookieName } = config
   const uniqueId = uuidv4()
 
   const storeTokenIdResult = await storeTokenId(connection, user.id, uniqueId)
@@ -33,6 +34,8 @@ export default async (
 
   const authenticationToken = generateAuthenticationToken(user, uniqueId)
   setCookie(response, serialize(authenticationCookieName, authenticationToken, { httpOnly: true, path: "/" }))
+  const timeoutToken = generateTimeoutToken(user.username, uniqueId)
+  setCookie(response, serialize(timeoutInactivityCookieName, timeoutToken, { httpOnly: true, path: "/" }))
 
   return authenticationToken
 }

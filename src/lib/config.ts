@@ -33,6 +33,7 @@ export interface UserServiceConfig {
   suggestedPasswordMaxWordLength: number
   smtp: SmtpConfig
   timeoutInactivity: number
+  timeoutInactivityCookieName: string
   tokenExpiresIn: string
   tokenIssuer: string
   tokenQueryParamName: string
@@ -68,6 +69,7 @@ const config: UserServiceConfig = {
   suggestedPasswordMinWordLength: 3,
   suggestedPasswordMaxWordLength: 8,
   timeoutInactivity: 10,
+  timeoutInactivityCookieName: ".TIMEOUT",
   tokenExpiresIn: process.env.TOKEN_EXPIRES_IN ?? "60 seconds",
   tokenIssuer: process.env.TOKEN_ISSUER ?? "Bichard",
   tokenQueryParamName: process.env.TOKEN_QUERY_PARAM_NAME ?? "token",
