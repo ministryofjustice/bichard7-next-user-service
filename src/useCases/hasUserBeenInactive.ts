@@ -1,10 +1,9 @@
-import getConnection from "lib/getConnection"
-import { AuthenticationTokenPayload } from "lib/token/authenticationToken"
+import Database from "types/Database"
 import { isError } from "types/Result"
 import getUsersLastLogin from "./getUsersLastLogin"
 
-export default async ({ emailAddress }: AuthenticationTokenPayload): Promise<boolean> => {
-  const lastLogIn = await getUsersLastLogin(getConnection(), emailAddress)
+export default async (connection: Database, emailAddress: string): Promise<boolean> => {
+  const lastLogIn = await getUsersLastLogin(connection, emailAddress)
   if (!lastLogIn || isError(lastLogIn)) {
     return true
   }

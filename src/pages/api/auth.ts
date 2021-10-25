@@ -15,13 +15,13 @@ const allowed = (res: NextApiResponse) => res.status(200).json({ authenticated: 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   const cookieValue = req.cookies[config.authenticationCookieName]
   const token = decodeAuthenticationToken(cookieValue)
+  const connection = getConnection()
 
-  if (cookieValue && isSuccess(token) && (await isTokenIdValid(getConnection(), token.username))) {
+  if (cookieValue && isSuccess(token) && (await isTokenIdValid(connection, token.username))) {
     const { referer } = req.headers
 
     if (hasUserAccessToUrl(token, referer)) {
-      const connection = getConnection()
-      const hasBeenInactive = await hasUserBeenInactive(token)
+      const hasBeenInactive = await hasUserBeenInactive(connection, token)
       if (hasBeenInactive) {
         await signOutUser(connection, res, req)
         return unauthenticated(res)
