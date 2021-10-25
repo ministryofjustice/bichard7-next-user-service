@@ -11,10 +11,6 @@ export default async (db: Database, emailAddress: string): PromiseResult<{ last_
         AND last_logged_in > NOW() - INTERVAL '$2 seconds'
         AND deleted_at IS NULL
     `
-
-  try {
-    return await db.oneOrNone(query, [emailAddress, config.timeoutInactivity * 60]).catch((error) => error)
-  } catch (error) {
-    return error as Error
-  }
+  const result = await db.oneOrNone(query, [emailAddress, config.timeoutInactivity * 60]).catch((error) => error)
+  return result
 }

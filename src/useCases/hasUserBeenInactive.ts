@@ -5,6 +5,9 @@ import getUsersLastLogin from "./getUsersLastLogin"
 export default async (connection: Database, emailAddress: string): Promise<boolean> => {
   const lastLogIn = await getUsersLastLogin(connection, emailAddress)
   if (!lastLogIn || isError(lastLogIn)) {
+    if (isError(lastLogIn)) {
+      console.error(lastLogIn)
+    }
     return true
   }
   return false

@@ -75,11 +75,11 @@ describe("SigninUser", () => {
     let isUserInactive = await hasUserBeenInactive(connection, user.emailAddress)
     expect(isUserInactive).toBe(false)
 
-    const setLastLogin = `
+    const setLastLoginQuery = `
       UPDATE br7own.users
       SET last_logged_in = NOW() - INTERVAL '600 seconds'
       WHERE username = $\{username\}`
-    await connection.none(setLastLogin, { username: user.username })
+    await connection.none(setLastLoginQuery, { username: user.username })
     isUserInactive = await hasUserBeenInactive(connection, user.emailAddress)
     expect(isUserInactive).toBe(true)
   })
