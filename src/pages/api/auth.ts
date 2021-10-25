@@ -17,7 +17,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   const token = decodeAuthenticationToken(cookieValue)
   const connection = getConnection()
 
-  if (cookieValue && isSuccess(token) && (await isTokenIdValid(connection, token.username))) {
+  if (cookieValue && isSuccess(token) && (await isTokenIdValid(connection, token.id))) {
     const { referer } = req.headers
 
     if (hasUserAccessToUrl(token, referer)) {
