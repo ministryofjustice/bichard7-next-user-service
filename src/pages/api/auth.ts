@@ -5,7 +5,6 @@ import { decodeAuthenticationToken, generateAuthenticationToken, isTokenIdValid 
 import type { NextApiRequest, NextApiResponse } from "next"
 import { isSuccess } from "types/Result"
 import hasUserAccessToUrl from "useCases/hasUserAccessToUrl"
-import updateUserLastLogin from "useCases/updateUserLastLogin"
 import setCookie from "utils/setCookie"
 
 const unauthenticated = (res: NextApiResponse) => res.status(401).json({ authenticated: false, authorised: false })
@@ -32,8 +31,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         authToken.id
       )
       setCookie(res, serialize(config.authenticationCookieName, authenticationToken, { httpOnly: true, path: "/" }))
-
-      await updateUserLastLogin(connection, authToken.username)
       return allowed(res)
     }
     return unauthorised(res)
