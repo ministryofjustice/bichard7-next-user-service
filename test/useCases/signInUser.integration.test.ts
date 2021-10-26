@@ -69,6 +69,5 @@ describe("SigninUser", () => {
     `
     const queryResult = await connection.oneOrNone(checkDbQuery, { username: user.username })
     expect(queryResult).not.toBe(null)
-    expect(queryResult.last_logged_in).not.toBe(null)
   })
 })

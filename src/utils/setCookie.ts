@@ -11,17 +11,6 @@ export default (response: ServerResponse, cookie: string) => {
     cookies = [existingCookies as string]
   }
 
-  let replacedOldCookie = false
-  const cookieName = cookie.split("=")[0]
-  for (let i = 0; i < cookies.length && !replacedOldCookie; i += 1) {
-    if (cookies[i].startsWith(cookieName)) {
-      cookies[i] = `${cookie}; Overwrite=true`
-      replacedOldCookie = true
-    }
-  }
-  console.log("replace old cookie ", cookies, " -- ", cookie)
-  if (!replacedOldCookie) {
-    cookies.push(`${cookie}; Overwrite=true`)
-  }
+  cookies.push(cookie)
   response.setHeader("Set-Cookie", cookies)
 }
