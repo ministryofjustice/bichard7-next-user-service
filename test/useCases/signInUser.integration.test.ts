@@ -4,7 +4,6 @@ import signInUser from "useCases/signInUser"
 import { isError } from "types/Result"
 import createUser from "useCases/createUser"
 import Database from "types/Database"
-import hasUserBeenInactive from "useCases/hasUserBeenInactive"
 import getTestConnection from "../../testFixtures/getTestConnection"
 import deleteFromTable from "../../testFixtures/database/deleteFromTable"
 import insertIntoGroupsTable from "../../testFixtures/database/insertIntoGroupsTable"
@@ -59,7 +58,7 @@ describe("SigninUser", () => {
     expect(isError(authenticationToken)).toBe(false)
     expect(authenticationToken).toMatch(/.+\..+\..+/)
     const cookieValues = response.getHeader("Set-Cookie") as string[]
-    expect(cookieValues).toHaveLength(2)
+    expect(cookieValues).toHaveLength(1)
     expect(cookieValues[0]).toMatch(/.AUTH=.+\..+\..+; HttpOnly/)
 
     const checkDbQuery = `
@@ -71,16 +70,5 @@ describe("SigninUser", () => {
     const queryResult = await connection.oneOrNone(checkDbQuery, { username: user.username })
     expect(queryResult).not.toBe(null)
     expect(queryResult.last_logged_in).not.toBe(null)
-
-    let isUserInactive = await hasUserBeenInactive(connection, user.emailAddress)
-    expect(isUserInactive).toBe(false)
-
-    const setLastLoginQuery = `
-      UPDATE br7own.users
-      SET last_logged_in = NOW() - INTERVAL '600 seconds'
-      WHERE username = $\{username\}`
-    await connection.none(setLastLoginQuery, { username: user.username })
-    isUserInactive = await hasUserBeenInactive(connection, user.emailAddress)
-    expect(isUserInactive).toBe(true)
   })
 })

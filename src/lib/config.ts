@@ -70,7 +70,7 @@ const config: UserServiceConfig = {
   suggestedPasswordMaxWordLength: 8,
   timeoutInactivity: 10,
   timeoutInactivityCookieName: ".TIMEOUT",
-  tokenExpiresIn: process.env.TOKEN_EXPIRES_IN ?? "60 seconds",
+  tokenExpiresIn: process.env.TOKEN_EXPIRES_IN ?? "10 minutes",
   tokenIssuer: process.env.TOKEN_ISSUER ?? "Bichard",
   tokenQueryParamName: process.env.TOKEN_QUERY_PARAM_NAME ?? "token",
   tokenSecret: process.env.TOKEN_SECRET ?? "OliverTwist",

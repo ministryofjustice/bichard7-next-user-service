@@ -1,16 +1,12 @@
 import { serialize } from "cookie"
 import config from "lib/config"
 import getConnection from "lib/getConnection"
-import { decodeAuthenticationToken, isTokenIdValid } from "lib/token/authenticationToken"
-import { decodeTimeoutToken, generateTimeoutToken } from "lib/token/timeoutToken"
+import { decodeAuthenticationToken, generateAuthenticationToken, isTokenIdValid } from "lib/token/authenticationToken"
 import type { NextApiRequest, NextApiResponse } from "next"
 import { isSuccess } from "types/Result"
-import { signOutUser } from "useCases"
 import hasUserAccessToUrl from "useCases/hasUserAccessToUrl"
 import updateUserLastLogin from "useCases/updateUserLastLogin"
-import removeCookie from "utils/removeCookie"
 import setCookie from "utils/setCookie"
-import { v4 as uuid } from "uuid"
 
 const unauthenticated = (res: NextApiResponse) => res.status(401).json({ authenticated: false, authorised: false })
 const unauthorised = (res: NextApiResponse) => res.status(403).json({ authenticated: true, authorised: false })
@@ -25,30 +21,22 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     const { referer } = req.headers
 
     if (hasUserAccessToUrl(authToken, referer)) {
-      const timeoutCookieValue = req.cookies[config.timeoutInactivityCookieName]
-      const timeoutToken = decodeTimeoutToken(timeoutCookieValue)
-      console.log(" - token ", timeoutToken)
+      const authenticationToken = generateAuthenticationToken(
+        {
+          username: authToken.username,
+          exclusionList: authToken.exclusionList,
+          inclusionList: authToken.inclusionList,
+          emailAddress: authToken.emailAddress,
+          groups: authToken.groups
+        },
+        authToken.id
+      )
+      setCookie(res, serialize(config.authenticationCookieName, authenticationToken, { httpOnly: true, path: "/" }))
 
-      if (
-        timeoutCookieValue &&
-        isSuccess(timeoutToken) &&
-        new Date().getTime() - new Date(timeoutToken.dateOfCreation).getTime() < 1000 * 30
-      ) {
-        const newTimeoutToken = generateTimeoutToken(authToken.username, uuid(), new Date())
-
-        removeCookie(res, req.cookies, config.timeoutInactivityCookieName)
-        setCookie(res, serialize(config.timeoutInactivityCookieName, newTimeoutToken, { httpOnly: true, path: "/" }))
-
-        await updateUserLastLogin(connection, authToken.username)
-        return allowed(res)
-      }
-
-      await signOutUser(connection, res, req)
-      return unauthenticated(res)
+      await updateUserLastLogin(connection, authToken.username)
+      return allowed(res)
     }
-
     return unauthorised(res)
   }
-
   return unauthenticated(res)
 }
