@@ -14,7 +14,7 @@ export interface TimeoutTokenPayload {
   id: string
 }
 
-export function generateTimeoutToken(username: string, uniqueId: string): TimeoutToken {
+export function generateTimeoutToken(username: string, uniqueId: string, dateCreated: Date): TimeoutToken {
   const options: jwt.SignOptions = {
     expiresIn: config.tokenExpiresIn,
     ...signOptions
@@ -22,10 +22,10 @@ export function generateTimeoutToken(username: string, uniqueId: string): Timeou
 
   const payload: TimeoutTokenPayload = {
     username,
-    dateOfCreation: new Date(),
+    dateOfCreation: dateCreated,
     id: uniqueId
   }
-
+  console.log("new console ", payload)
   return jwt.sign(payload, config.tokenSecret, options)
 }
 

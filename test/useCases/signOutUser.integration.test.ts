@@ -61,7 +61,7 @@ describe("SignoutUser", () => {
 
     expect(authenticationToken).toMatch(/.+\..+\..+/)
     let cookieValues = response.getHeader("Set-Cookie") as string[]
-    expect(cookieValues).toHaveLength(1)
+    expect(cookieValues).toHaveLength(2)
     const regex = new RegExp(`${config.authenticationCookieName}=.+; HttpOnly`)
     expect(cookieValues[0]).toMatch(regex)
 
@@ -83,7 +83,7 @@ describe("SignoutUser", () => {
     expect(isError(signoutUserResult)).toBe(false)
 
     cookieValues = response.getHeader("Set-Cookie") as string[]
-    expect(cookieValues).toHaveLength(1)
+    expect(cookieValues).toHaveLength(2)
 
     queryResult = await connection.none(checkDbQuery, { username: user.username })
     expect(queryResult).toBe(null)

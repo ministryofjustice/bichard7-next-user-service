@@ -59,7 +59,7 @@ describe("SigninUser", () => {
     expect(isError(authenticationToken)).toBe(false)
     expect(authenticationToken).toMatch(/.+\..+\..+/)
     const cookieValues = response.getHeader("Set-Cookie") as string[]
-    expect(cookieValues).toHaveLength(1)
+    expect(cookieValues).toHaveLength(2)
     expect(cookieValues[0]).toMatch(/.AUTH=.+\..+\..+; HttpOnly/)
 
     const checkDbQuery = `

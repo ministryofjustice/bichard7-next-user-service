@@ -34,7 +34,7 @@ export default async (
 
   const authenticationToken = generateAuthenticationToken(user, uniqueId)
   setCookie(response, serialize(authenticationCookieName, authenticationToken, { httpOnly: true, path: "/" }))
-  const timeoutToken = generateTimeoutToken(user.username, uniqueId)
+  const timeoutToken = generateTimeoutToken(user.username, uniqueId, new Date())
   setCookie(response, serialize(timeoutInactivityCookieName, timeoutToken, { httpOnly: true, path: "/" }))
 
   return authenticationToken
