@@ -32,6 +32,26 @@ commands:
           working_directory: ~/bichard7-next
           command: make run-pg
 
+  fetch_docker_images:
+    description: Fetch all of the required docker images from ECR
+    steps:
+      - run:
+          name: Fetch the BeanConnect image
+          working_directory: ~/bichard7-next
+          command: bash scripts/fetch_beanconnect_docker.sh
+      - run:
+          name: Fetch the E2E tests image
+          working_directory: ~/bichard7-next
+          command: bash scripts/fetch_e2etests_docker.sh
+      - run:
+          name: Fetch the Nginx Auth Proxy image
+          working_directory: ~/bichard7-next
+          command: bash scripts/fetch_nginx_auth_proxy_docker.sh
+      - run:
+          name: Fetch the PNC Emulator image
+          working_directory: ~/bichard7-next
+          command: bash scripts/fetch_pncemulator_docker.sh
+
 jobs:
   build:
     docker:
@@ -102,6 +122,37 @@ jobs:
       - store_artifacts:
           path: ./cypress/screenshots
 
+  e2e_test:
+    machine:
+      image: ubuntu-2004:202104-01
+      docker_layer_caching: true
+    working_directory: ~
+    steps:
+      - checkout_and_install
+      - attach_workspace:
+          at: .
+      - run:
+          name: Build user-service docker image
+          command: make build
+      - clone_bichard_repo
+      - fetch_docker_images
+      - run:
+          name: Run full stack
+          working_directory: ~/bichard7-next
+          command: make run-all
+      - run:
+          name: Wait for Bichard
+          working_directory: ~/bichard7-next
+          command: bash ./scripts/wait_for_bichard.sh
+      - run:
+          name: Run end-to-end tests
+          working_directory: ~/bichard7-next
+          command: bash -c ". ./scripts/e2e-tests/e2e-tests-env.sh && docker-compose run e2e-tests npm run test:must"
+          environment:
+            STACK_TYPE: next
+            WORKSPACE: local-next
+            AUTH_TYPE: user-service
+
 workflows:
   version: 2
   build-and-test:
@@ -114,5 +165,8 @@ workflows:
           requires:
             - build
       - ui_test:
+          requires:
+            - build
+      - e2e_test:
           requires:
             - build
