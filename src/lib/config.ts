@@ -65,7 +65,7 @@ const config: UserServiceConfig = {
   suggestedPasswordNumWords: 3,
   suggestedPasswordMinWordLength: 3,
   suggestedPasswordMaxWordLength: 8,
-  tokenExpiresIn: process.env.TOKEN_EXPIRES_IN ?? "60 seconds",
+  tokenExpiresIn: process.env.TOKEN_EXPIRES_IN ?? "10 minutes",
   tokenIssuer: process.env.TOKEN_ISSUER ?? "Bichard",
   tokenSecret: process.env.TOKEN_SECRET ?? "OliverTwist",
   maxServiceMessagesPerPage: 5,
