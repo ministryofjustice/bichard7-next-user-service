@@ -8,5 +8,5 @@ it("should expire the email address cookie and empty the value", () => {
 
   const cookieValues = response.getHeader("Set-Cookie") as string[]
   expect(cookieValues).toHaveLength(1)
-  expect(cookieValues[0]).toMatch(/LOGIN_EMAIL=; Max-Age=0; Path=\/login; HttpOnly/)
+  expect(cookieValues[0]).toMatch(/LOGIN_EMAIL=; Max-Age=0; Path=\/users\/login; HttpOnly/)
 })

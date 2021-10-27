@@ -18,6 +18,6 @@ export default (response: ServerResponse, config: UserServiceConfig, emailAddres
 
   setCookie(
     response,
-    serialize(cookieName, signedCookieValue, { httpOnly: true, maxAge: maxAgeInMinutes * 60, path: "/login" })
+    serialize(cookieName, signedCookieValue, { httpOnly: true, maxAge: maxAgeInMinutes * 60, path: "/users/login" })
   )
 }
