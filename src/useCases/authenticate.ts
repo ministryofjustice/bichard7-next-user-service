@@ -50,11 +50,19 @@ const getUserWithInterval = async (task: ITask<unknown>, params: unknown[]): Pro
 
   const user = await task.one(getUserQuery, params)
 
+  let inclusionList: string[] = []
+  if (user.visible_courts) {
+    inclusionList = inclusionList.concat(user.visible_courts.split(/[, ]/))
+  }
+  if (user.visible_forces) {
+    inclusionList = inclusionList.concat(user.visible_forces.split(/[, ]/))
+  }
+
   return {
     id: user.id,
     username: user.username,
-    exclusionList: user.excluded_triggers.split(/[, ]/),
-    inclusionList: user.visible_courts.split(/[, ]/).concat(user.visible_forces.split(/[, ]/)),
+    exclusionList: user.excluded_triggers ? user.excluded_triggers.split(/[, ]/) : [],
+    inclusionList,
     endorsedBy: user.endorsed_by,
     orgServes: user.org_serves,
     forenames: user.forenames,
