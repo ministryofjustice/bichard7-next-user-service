@@ -14,8 +14,8 @@ commands:
           name: Install node dependencies
           command: npm ci
 
-  run_bichard_database:
-    description: Check out the b7-next repo and spin up the postgres database
+  clone_bichard_repo:
+    description: Check out the bichard7-next repo
     steps:
       - add_ssh_keys:
           fingerprints:
@@ -23,10 +23,34 @@ commands:
       - run:
           name: Clone Bichard7 Next
           command: git clone --depth 1 git@github.com:ministryofjustice/bichard7-next.git ~/bichard7-next
+
+  run_postgres_database:
+    description: Spin up the postgres database
+    steps:
       - run:
           name: Spin up PostgreSQL database
           working_directory: ~/bichard7-next
           command: make run-pg
+
+  fetch_docker_images:
+    description: Fetch all of the required docker images from ECR
+    steps:
+      - run:
+          name: Fetch the BeanConnect image
+          working_directory: ~/bichard7-next
+          command: bash scripts/fetch_beanconnect_docker.sh
+      - run:
+          name: Fetch the E2E tests image
+          working_directory: ~/bichard7-next
+          command: bash scripts/fetch_e2etests_docker.sh
+      - run:
+          name: Fetch the Nginx Auth Proxy image
+          working_directory: ~/bichard7-next
+          command: bash scripts/fetch_nginx_auth_proxy_docker.sh
+      - run:
+          name: Fetch the PNC Emulator image
+          working_directory: ~/bichard7-next
+          command: bash scripts/fetch_pncemulator_docker.sh
 
 jobs:
   build:
@@ -70,7 +94,8 @@ jobs:
       - checkout_and_install
       - attach_workspace:
           at: .
-      - run_bichard_database
+      - clone_bichard_repo
+      - run_postgres_database
       - run:
           name: Run integration tests
           command: npm run test:integration
@@ -87,7 +112,8 @@ jobs:
       - run:
           name: Install Cypress
           command: ./.circleci/scripts/install-cypress.sh
-      - run_bichard_database
+      - clone_bichard_repo
+      - run_postgres_database
       - run:
           name: Run UI tests
           command: npm run test:ui
@@ -95,6 +121,37 @@ jobs:
           path: ./cypress/videos
       - store_artifacts:
           path: ./cypress/screenshots
+
+  e2e_test:
+    machine:
+      image: ubuntu-2004:202104-01
+      docker_layer_caching: true
+    working_directory: ~
+    steps:
+      - checkout_and_install
+      - attach_workspace:
+          at: .
+      - run:
+          name: Build user-service docker image
+          command: make build
+      - clone_bichard_repo
+      - fetch_docker_images
+      - run:
+          name: Run full stack
+          working_directory: ~/bichard7-next
+          command: make run-all
+      - run:
+          name: Wait for Bichard
+          working_directory: ~/bichard7-next
+          command: bash ./scripts/wait_for_bichard.sh
+      - run:
+          name: Run end-to-end tests
+          working_directory: ~/bichard7-next
+          command: bash -c ". ./scripts/e2e-tests/e2e-tests-env.sh && docker-compose run e2e-tests npm run test:must"
+          environment:
+            STACK_TYPE: next
+            WORKSPACE: local-next
+            AUTH_TYPE: user-service
 
 workflows:
   version: 2
@@ -108,5 +165,8 @@ workflows:
           requires:
             - build
       - ui_test:
+          requires:
+            - build
+      - e2e_test:
           requires:
             - build
