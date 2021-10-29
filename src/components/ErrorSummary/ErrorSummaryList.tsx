@@ -1,5 +1,7 @@
+import { ReactNode } from "react"
+
 interface Props {
-  items: { id?: string; error?: string | false }[]
+  items: { id?: string; error?: ReactNode | false }[]
 }
 
 const ErrorSummaryList = ({ items }: Props) => (
