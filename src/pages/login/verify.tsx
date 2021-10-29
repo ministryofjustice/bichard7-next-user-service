@@ -182,7 +182,10 @@ const VerifyEmail = ({
                   error: (
                     <>
                       {"Please wait "}
-                      <b>{"10 seconds"}</b>
+                      <b>
+                        {config.incorrectDelay}
+                        {" seconds"}
+                      </b>
                       {" before trying again."}
                     </>
                   )
