@@ -1,10 +1,11 @@
 import { CookieSerializeOptions, serialize } from "cookie"
 import { ServerResponse } from "http"
+import config from "lib/config"
 
 const cookieOptions: CookieSerializeOptions = {
   httpOnly: true,
   sameSite: "strict",
-  secure: true
+  secure: config.cookiesSecureOption
 }
 
 const getExistingCookies = (response: ServerResponse): string[] => {

@@ -49,6 +49,7 @@ The application makes use of the following environment variables to permit confi
 | `$BICHARD_REDIRECT_URL`          | `"/bichard-ui/InitialRefreshList"` | The URL to redirect to with a token as a GET parameter when authentication is successful             |
 | `$CONTACT_URL`                   | `"/contact-us"`                    | The URL to contact the support team                                                                  |
 | `$COOKIE_SECRET`                 | `"OliverTwist"`                    | The secret to use for signing the cookies                                                            |
+| `$COOKIES_SECURE`                | `true`                             | Whether to enable the `Secure` cookie flag (prevents cookies from being sent in non-https requests)  |
 | `$CSRF_COOKIE_SECRET`            | `"OliverTwist2"`                   | The secret to use for signing the CSRF cookie token                                                  |
 | `$CSRF_FORM_SECRET`              | `"OliverTwist1"`                   | The secret to use for signing the CSRF form token                                                    |
 | `$CSRF_TOKEN_MAX_AGE`            | `600`                              | The maximum validity of CSRF tokens in seconds                                                       |

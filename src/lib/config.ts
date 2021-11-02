@@ -19,6 +19,7 @@ export interface UserServiceConfig {
   bichardRedirectURL: string
   contactUrl: string
   cookieSecret: string
+  cookiesSecureOption: boolean
   csrf: CsrfConfig
   database: DatabaseConfig
   debugMode: string
@@ -55,6 +56,7 @@ const config: UserServiceConfig = {
   bichardRedirectURL: process.env.BICHARD_REDIRECT_URL ?? "/bichard-ui/InitialRefreshList",
   contactUrl: process.env.CONTACT_URL ?? "/contact-us",
   cookieSecret: process.env.COOKIE_SECRET ?? "OliverTwist",
+  cookiesSecureOption: (process.env.COOKIES_SECURE ?? "true") === "true",
   debugMode: "false",
   emailFrom: `Bichard7 <${process.env.EMAIL_FROM ?? "bichard@cjse.org"}>`,
   emailVerificationExpiresIn: parseInt(process.env.EMAIL_VERIFICATION_EXPIRY ?? "30", 10),
