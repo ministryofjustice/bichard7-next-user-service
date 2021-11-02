@@ -32,7 +32,10 @@ const Index = () => (
           <p>{"You have been signed out of your account."}</p>
           <p>
             {"In order to sign back in, please click "}
-            <Link href="/login">{"here"}</Link>
+            <Link href="/login" data-test="log-back-in">
+              {"here"}
+            </Link>
+            {"."}
           </p>
         </p>
       </GridRow>
