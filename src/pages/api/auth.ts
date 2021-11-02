@@ -1,4 +1,3 @@
-import { serialize } from "cookie"
 import config from "lib/config"
 import getConnection from "lib/getConnection"
 import { decodeAuthenticationToken, generateAuthenticationToken, isTokenIdValid } from "lib/token/authenticationToken"
@@ -30,7 +29,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         },
         authToken.id
       )
-      setCookie(res, serialize(config.authenticationCookieName, authenticationToken, { httpOnly: true, path: "/" }))
+      setCookie(res, config.authenticationCookieName, authenticationToken, { path: "/" })
       return allowed(res)
     }
     return unauthorised(res)

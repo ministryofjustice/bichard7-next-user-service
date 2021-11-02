@@ -1,4 +1,3 @@
-import { serialize } from "cookie"
 import { ServerResponse } from "http"
 import config from "lib/config"
 import { generateAuthenticationToken, storeTokenId } from "lib/token/authenticationToken"
@@ -32,7 +31,7 @@ export default async (
   }
 
   const authenticationToken = generateAuthenticationToken(user, uniqueId)
-  setCookie(response, serialize(authenticationCookieName, authenticationToken, { httpOnly: true, path: "/" }))
+  setCookie(response, authenticationCookieName, authenticationToken, { path: "/" })
 
   return authenticationToken
 }
