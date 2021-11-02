@@ -4,8 +4,8 @@ import { removeTokenId } from "lib/token/authenticationToken"
 import Database from "types/Database"
 import { isError } from "types/Result"
 import removeCookie from "utils/removeCookie"
-import getCookieValue from "utils/getCookieValue"
 import { NextApiRequestCookies } from "next/dist/server/api-utils"
+import getAuthenticationPayloadFromCookie from "middleware/withAuthentication/getAuthenticationPayloadFromCookie"
 
 export default async (
   connection: Database,
@@ -14,20 +14,16 @@ export default async (
     cookies: NextApiRequestCookies
   }
 ) => {
-  const { authenticationCookieName } = config
+  const authToken = getAuthenticationPayloadFromCookie(request)
 
-  const cookieResult = getCookieValue(request.cookies, authenticationCookieName)
-  if (cookieResult === undefined) {
-    return new Error("No authentication cookie found")
+  if (authToken) {
+    const removeTokenIdResult = await removeTokenId(connection, authToken.id)
+    if (isError(removeTokenIdResult)) {
+      console.error(removeTokenIdResult)
+      return removeTokenIdResult
+    }
   }
 
-  const jwtId = cookieResult.id
-  const removeTokenIdResult = await removeTokenId(connection, jwtId)
-  if (isError(removeTokenIdResult)) {
-    console.error(removeTokenIdResult)
-    return removeTokenIdResult
-  }
-
-  removeCookie(response, request.cookies, authenticationCookieName)
+  removeCookie(response, request.cookies, config.authenticationCookieName)
   return undefined
 }
