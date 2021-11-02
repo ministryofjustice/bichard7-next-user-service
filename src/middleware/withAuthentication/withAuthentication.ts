@@ -1,4 +1,5 @@
 import getConnection from "lib/getConnection"
+import { isTokenIdValid } from "lib/token/authenticationToken"
 import { GetServerSideProps, GetServerSidePropsContext, GetServerSidePropsResult } from "next"
 import { ParsedUrlQuery } from "querystring"
 import AuthenticationServerSidePropsContext from "types/AuthenticationServerSidePropsContext"
@@ -12,13 +13,13 @@ export default <Props>(getServerSidePropsFunction: GetServerSideProps<Props>): G
     context: GetServerSidePropsContext<ParsedUrlQuery>
   ): Promise<GetServerSidePropsResult<Props>> => {
     const { req } = context
+    const connection = getConnection()
 
-    const authentication = getAuthenticationPayloadFromCookie(req)
+    const authToken = getAuthenticationPayloadFromCookie(req)
     let currentUser: User | null = null
 
-    if (authentication) {
-      const connection = getConnection()
-      const user = await getUserByEmailAddress(connection, authentication.emailAddress)
+    if (authToken && (await isTokenIdValid(connection, authToken.id))) {
+      const user = await getUserByEmailAddress(connection, authToken.emailAddress)
 
       if (isSuccess(user)) {
         currentUser = user
@@ -30,7 +31,7 @@ export default <Props>(getServerSidePropsFunction: GetServerSideProps<Props>): G
     return getServerSidePropsFunction({
       ...context,
       currentUser,
-      authentication
+      authentication: authToken
     } as AuthenticationServerSidePropsContext)
   }
 
