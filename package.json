@@ -8,6 +8,7 @@
     "install:assets": "./scripts/copy-govuk-frontend-assets.sh",
     "install:hooks": "./scripts/install-git-hooks.sh",
     "start": "COOKIES_SECURE=false next start",
+    "start:prod": "next start",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "cypress:open": "cypress open",
