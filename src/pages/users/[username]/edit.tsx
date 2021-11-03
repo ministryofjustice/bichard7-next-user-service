@@ -4,7 +4,7 @@ import Head from "next/head"
 import SuccessBanner from "components/SuccessBanner"
 import getConnection from "lib/getConnection"
 import userFormIsValid from "lib/userFormIsValid"
-import UserForm from "components/users/UserForm"
+import UserForm, { listOfForces } from "components/users/UserForm"
 import { updateUser, getUserById, getUserByUsername, getUserGroups } from "useCases"
 import { isError } from "types/Result"
 import User from "types/User"
@@ -43,6 +43,7 @@ export const getServerSideProps = withMultipleServerSideProps(
       console.error(groups)
       return createRedirectResponse("/500")
     }
+    console.log(formData)
 
     if (isPost(req)) {
       const userDetails: Partial<User> = formData
@@ -61,6 +62,8 @@ export const getServerSideProps = withMultipleServerSideProps(
           }
         }
       }
+
+      userDetails.visibleForces = updateUserCodes(user.visibleForces, listOfForces, "visibleForces", formData)
 
       const formValidationResult = userFormIsValid(userDetails, true)
 
@@ -124,7 +127,7 @@ export const getServerSideProps = withMultipleServerSideProps(
     }
 
     const user = await getUserByUsername(connection, username)
-
+    console.log(user)
     if (isError(user)) {
       console.error(user)
 
