@@ -16,7 +16,6 @@ import { ParsedUrlQuery } from "querystring"
 import AuthenticationServerSidePropsContext from "types/AuthenticationServerSidePropsContext"
 import isPost from "utils/isPost"
 import { UserGroupResult } from "types/UserGroup"
-import { Option as UserGroupOption } from "components/Select"
 import getAuditLogger from "lib/getAuditLogger"
 import config from "lib/config"
 import BackLink from "components/BackLink"
@@ -217,7 +216,8 @@ const editUser = ({
             forenamesError={forenamesError}
             surnameError={surnameError}
             emailError={emailError}
-            userGroups={groups as UserGroupOption[]}
+            allGroups={groups}
+            userGroups={user.groups}
             isEdit
           />
           <input type="hidden" name="id" value={user.id} />

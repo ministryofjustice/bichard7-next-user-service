@@ -1,3 +1,5 @@
+import { UserGroupResult } from "./UserGroup";
+
 interface User {
   id: number
   username: string
@@ -8,7 +10,7 @@ interface User {
   forenames: string
   surname: string
   emailAddress: string
-  groupId: number
+  groups: UserGroupResult[]
 }
 
 export default User

@@ -1,5 +1,6 @@
 import TextInput from "components/TextInput"
-import Select, { Option } from "components/Select"
+import { UserGroupResult } from "types/UserGroup"
+import { Fieldset } from "components/Fieldset"
 
 interface Props {
   username?: string
@@ -8,8 +9,8 @@ interface Props {
   emailAddress?: string
   endorsedBy?: string
   orgServes?: string
-  groupId?: number
-  userGroups?: Option[]
+  userGroups?: UserGroupResult[]
+  allGroups?: UserGroupResult[]
   usernameError?: string | false
   forenamesError?: string | false
   surnameError?: string | false
@@ -24,8 +25,8 @@ const UserForm = ({
   emailAddress,
   endorsedBy,
   orgServes,
-  groupId,
   userGroups,
+  allGroups,
   usernameError,
   forenamesError,
   surnameError,
@@ -55,7 +56,28 @@ const UserForm = ({
       mandatory
     />
 
-    <Select options={userGroups} label={"User role *"} id="groupId" defaultValue={groupId} />
+    <Fieldset>
+      <div className="govuk-checkboxes" data-module="govuk-checkboxes">
+
+        {allGroups?.map((group: UserGroupResult) => (
+          <div className="govuk-checkboxes__item">
+            <input
+              className="govuk-checkboxes__input"
+              id={group.id}
+              name={group.name}
+              type="checkbox"
+              value={userGroups && userGroups.length ? "yes" : "no"}
+            />
+
+            <label className="govuk-label govuk-checkboxes__label" htmlFor={group.id}>
+              {group.name}
+            </label>
+          </div>
+        ))}
+
+      </div>
+    </Fieldset>
+
     <TextInput value={endorsedBy} name="endorsedBy" label="Endorsed by" width="20" />
     <TextInput value={orgServes} name="orgServes" label="Organisation" width="20" />
   </>
