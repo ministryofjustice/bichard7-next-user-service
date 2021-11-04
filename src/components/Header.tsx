@@ -55,7 +55,7 @@ const Header = ({ serviceName, user }: HeaderProps) => (
                 </Link>
               </li>
               <li className="govuk-header__navigation-item">
-                <Link className="govuk-header__link" href="/logout">
+                <Link className="govuk-header__link" href="/logout" data-test="logout">
                   {"Sign out"}
                 </Link>
               </li>

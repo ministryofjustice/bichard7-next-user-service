@@ -249,30 +249,6 @@ describe("Logging In", () => {
       cy.checkCsrf("/login", "POST").then(() => done())
     })
 
-    it("can successfully log out after logging in", () => {
-      const emailAddress = "bichard01@example.com"
-      const password = "password"
-
-      cy.visit("/login")
-      cy.get("input[type=email]").type(emailAddress)
-      cy.get("button[type=submit]").click()
-      cy.get('h1[data-test="check-email"]').should("exist")
-      cy.task("getVerificationCode", emailAddress).then((verificationCode) => {
-        const token = validToken(emailAddress, verificationCode)
-
-        cy.visit(`/login/verify?token=${token}`)
-        cy.get("input[type=password][name=password]").type(password)
-        cy.get("button[type=submit]").click()
-
-        cy.getCookie(".AUTH").should("exist")
-
-        cy.visit("/logout")
-        cy.url().should("not.match", /token=/)
-
-        cy.getCookie(".AUTH").should("not.exist")
-      })
-    })
-
     it("can login a second time and update the jwt token in the users table", () => {
       const emailAddress = "bichard01@example.com"
       const password = "password"
