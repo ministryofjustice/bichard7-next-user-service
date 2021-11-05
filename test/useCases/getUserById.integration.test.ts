@@ -46,7 +46,10 @@ describe("getUserById", () => {
       endorsedBy: user.endorsed_by,
       surname: user.surname,
       orgServes: user.org_serves,
-      groupId: selectedGroup.id
+      groupId: selectedGroup.id,
+      visibleForces: "001,004,",
+      visibleCourts: "B01,B41ME00",
+      excludedTriggers: "TRPR0001,"
     }
 
     await createUser(connection, currentUserId, createUserDetails)
@@ -103,7 +106,10 @@ describe("getUserById", () => {
       endorsedBy: user.endorsed_by,
       surname: user.surname,
       orgServes: user.org_serves,
-      groupId: selectedGroup.id
+      groupId: selectedGroup.id,
+      visibleForces: "001,004,",
+      visibleCourts: "B01,B41ME00",
+      excludedTriggers: "TRPR0001,"
     }
 
     await createUser(connection, currentUserId, createUserDetails)

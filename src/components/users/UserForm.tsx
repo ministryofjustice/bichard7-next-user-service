@@ -80,14 +80,12 @@ const UserForm = ({
       <TextInput value={endorsedBy} name="endorsedBy" label="Endorsed by" width="20" />
       <TextInput value={orgServes} name="orgServes" label="Organisation" width="20" />
 
-      <div className="govuk-details__text">
-        <MultiSelectCheckbox
-          label="Show records from force"
-          name="visibleForces"
-          values={visibleForces}
-          codes={listOfForces}
-        />
-      </div>
+      <MultiSelectCheckbox
+        label="Show records from force"
+        name="visibleForces"
+        values={visibleForces}
+        codes={listOfForces}
+      />
       <TextInput
         value={visibleCourts}
         name="visibleCourts"
@@ -95,14 +93,12 @@ const UserForm = ({
         width="20"
       />
 
-      <div className="govuk-details__text">
-        <MultiSelectCheckbox
-          label="Exclude Triggers"
-          name="excludedTriggers"
-          values={excludedTriggers}
-          codes={listOfTriggers}
-        />
-      </div>
+      <MultiSelectCheckbox
+        label="Exclude Triggers"
+        name="excludedTriggers"
+        values={excludedTriggers}
+        codes={listOfTriggers}
+      />
       <br />
     </>
   )

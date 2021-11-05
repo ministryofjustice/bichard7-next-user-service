@@ -111,7 +111,10 @@ describe("DeleteUserUseCase", () => {
       endorsedBy: user.endorsed_by,
       surname: user.surname,
       orgServes: user.org_serves,
-      groupId: selectedGroup.id
+      groupId: selectedGroup.id,
+      visibleForces: "001,004,",
+      visibleCourts: "B01,B41ME00",
+      excludedTriggers: "TRPR0001,"
     }
 
     const createResult = await createUser(connection, currentUserId, createUserDetails)
@@ -150,7 +153,10 @@ describe("DeleteUserUseCase", () => {
       endorsedBy: user.endorsed_by,
       surname: user.surname,
       orgServes: user.org_serves,
-      groupId: group.id
+      groupId: group.id,
+      visibleForces: "001,004,",
+      visibleCourts: "B01,B41ME00",
+      excludedTriggers: "TRPR0001,"
     }
 
     const createResult = await createUser(connection, currentUserId, createUserDetails)
@@ -190,7 +196,10 @@ describe("DeleteUserUseCase", () => {
       endorsedBy: user.endorsed_by,
       surname: user.surname,
       orgServes: user.org_serves,
-      groupId: greatestPossibleIdPlusOne
+      groupId: greatestPossibleIdPlusOne,
+      visibleForces: "001,004,",
+      visibleCourts: "B01,B41ME00",
+      excludedTriggers: "TRPR0001,"
     }
 
     const createResult = await createUser(connection, currentUserId, createUserDetails)
@@ -216,7 +225,10 @@ describe("DeleteUserUseCase", () => {
       endorsedBy: user.endorsed_by,
       surname: user.surname,
       orgServes: user.org_serves,
-      groupId: selectedGroups[0].id
+      groupId: selectedGroups[0].id,
+      visibleForces: "001,004,",
+      visibleCourts: "B01,B41ME00",
+      excludedTriggers: "TRPR0001,"
     }
 
     const createResult = await createUser(connection, currentUserId, createUserDetails)

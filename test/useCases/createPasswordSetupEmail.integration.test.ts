@@ -70,7 +70,10 @@ describe("AccountSetup", () => {
         endorsedBy: u.endorsed_by,
         surname: u.surname,
         orgServes: u.org_serves,
-        groupId: selectedGroup.id
+        groupId: selectedGroup.id,
+        visibleForces: "001,004,",
+        visibleCourts: "B01,B41ME00",
+        excludedTriggers: "TRPR0001,"
       }))[0]
 
     const result = await createUser(connection, currentUserId, user)
