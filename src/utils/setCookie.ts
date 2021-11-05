@@ -1,6 +1,14 @@
+import { CookieSerializeOptions, serialize } from "cookie"
 import { ServerResponse } from "http"
+import config from "lib/config"
 
-export default (response: ServerResponse, cookie: string) => {
+const cookieOptions: CookieSerializeOptions = {
+  httpOnly: true,
+  sameSite: "strict",
+  secure: config.cookiesSecureOption
+}
+
+const getExistingCookies = (response: ServerResponse): string[] => {
   let cookies: string[] = []
   const existingCookies = response.getHeader("Set-Cookie")
 
@@ -10,6 +18,12 @@ export default (response: ServerResponse, cookie: string) => {
     cookies = [existingCookies as string]
   }
 
-  cookies.push(cookie)
+  return cookies
+}
+
+export default (response: ServerResponse, name: string, value: string, options?: CookieSerializeOptions) => {
+  const cookies = getExistingCookies(response)
+  const cookieValue = serialize(name, value, { ...cookieOptions, ...options })
+  cookies.push(cookieValue)
   response.setHeader("Set-Cookie", cookies)
 }

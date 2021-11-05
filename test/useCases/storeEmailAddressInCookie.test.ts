@@ -8,5 +8,7 @@ it("should set the email address cookie", () => {
 
   const cookieValues = response.getHeader("Set-Cookie") as string[]
   expect(cookieValues).toHaveLength(1)
-  expect(cookieValues[0]).toMatch(/LOGIN_EMAIL=\d+%7Cdummy%40dummy\.com\..+; Max-Age=86400; Path=\/login; HttpOnly/)
+  expect(cookieValues[0]).toMatch(
+    /LOGIN_EMAIL=\d+%7Cdummy%40dummy\.com\..+; Max-Age=86400; Path=\/users\/login; HttpOnly/
+  )
 })

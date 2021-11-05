@@ -1,9 +1,8 @@
-import { serialize } from "cookie"
 import config from "lib/config"
 import getConnection from "lib/getConnection"
-import { decodeAuthenticationToken, generateAuthenticationToken, isTokenIdValid } from "lib/token/authenticationToken"
+import { generateAuthenticationToken, isTokenIdValid } from "lib/token/authenticationToken"
+import getAuthenticationPayloadFromCookie from "middleware/withAuthentication/getAuthenticationPayloadFromCookie"
 import type { NextApiRequest, NextApiResponse } from "next"
-import { isSuccess } from "types/Result"
 import hasUserAccessToUrl from "useCases/hasUserAccessToUrl"
 import setCookie from "utils/setCookie"
 
@@ -12,11 +11,10 @@ const unauthorised = (res: NextApiResponse) => res.status(403).json({ authentica
 const allowed = (res: NextApiResponse) => res.status(200).json({ authenticated: true, authorised: true })
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
-  const authCookieValue = req.cookies[config.authenticationCookieName]
-  const authToken = decodeAuthenticationToken(authCookieValue)
+  const authToken = getAuthenticationPayloadFromCookie(req)
   const connection = getConnection()
 
-  if (authCookieValue && isSuccess(authToken) && (await isTokenIdValid(connection, authToken.id))) {
+  if (authToken && (await isTokenIdValid(connection, authToken.id))) {
     const { referer } = req.headers
 
     if (hasUserAccessToUrl(authToken, referer)) {
@@ -30,10 +28,12 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         },
         authToken.id
       )
-      setCookie(res, serialize(config.authenticationCookieName, authenticationToken, { httpOnly: true, path: "/" }))
+      setCookie(res, config.authenticationCookieName, authenticationToken, { path: "/" })
       return allowed(res)
     }
+
     return unauthorised(res)
   }
+
   return unauthenticated(res)
 }

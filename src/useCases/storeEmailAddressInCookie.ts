@@ -1,4 +1,3 @@
-import { serialize } from "cookie"
 import { sign } from "cookie-signature"
 import { ServerResponse } from "http"
 import { UserServiceConfig } from "lib/config"
@@ -16,8 +15,5 @@ export default (response: ServerResponse, config: UserServiceConfig, emailAddres
   const cookieValue = `${expiryDate.getTime()}|${emailAddress}`
   const signedCookieValue = sign(cookieValue, cookieSecret)
 
-  setCookie(
-    response,
-    serialize(cookieName, signedCookieValue, { httpOnly: true, maxAge: maxAgeInMinutes * 60, path: "/login" })
-  )
+  setCookie(response, cookieName, signedCookieValue, { maxAge: maxAgeInMinutes * 60, path: "/users/login" })
 }

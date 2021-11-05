@@ -158,31 +158,28 @@ describe("Logging In", () => {
         cy.get("input[id=rememberEmailYes]").click()
         cy.get("button[type=submit]").click()
 
-        cy.url().should("match", /^http:\/\/localhost:3000\/bichard-ui\/Authenticate/)
-        cy.url().should("match", /\?token=[A-Za-z0-9_.]+/)
+        const expectedRememberEmailCookieExpiry = new Date()
+        expectedRememberEmailCookieExpiry.setHours(expectedRememberEmailCookieExpiry.getHours() + 24)
 
-        done()
+        cy.url().should("match", /^http:\/\/localhost:3000\/users/)
+
+        cy.clearCookie(".AUTH")
+        cy.visit("/login")
+        cy.url().should("match", /\/login\/verify[^/]*/)
+
+        cy.getCookie(emailCookieName)
+          .should("exist")
+          .then((cookie) => {
+            const { expiry, httpOnly } = cookie
+            const actualExpiry = new Date(expiry * 1000)
+
+            expect(httpOnly).to.equal(true)
+            expect(actualExpiry.toDateString()).to.equal(expectedRememberEmailCookieExpiry.toDateString())
+            expect(actualExpiry.getHours()).to.equal(expectedRememberEmailCookieExpiry.getHours())
+            expect(actualExpiry.getMinutes()).to.equal(expectedRememberEmailCookieExpiry.getMinutes())
+            done()
+          })
       })
-
-      cy.visit("/login")
-      cy.url().should("match", /\/login\/verify[^/]*/)
-
-      cy.getCookie(emailCookieName)
-        .should("exist")
-        .should("have.property", "value")
-        .should("have.property", "httpOnly", true)
-        .should("have.property", "expiry")
-        .then((cookie) => {
-          const { expiry } = cookie
-          const actualExpiry = new Date(expiry)
-
-          const now = new Date()
-          const expectedExpiry = new Date()
-          expectedExpiry.setHours(now.getHours() + 24)
-
-          expect(actualExpiry).to.equal(expectedExpiry)
-          done()
-        })
     })
 
     it("should not remember email address when remember checkbox is not checked", (done) => {
@@ -202,15 +199,15 @@ describe("Logging In", () => {
         cy.get("input[type=password][name=password]").type(password)
         cy.get("button[type=submit]").click()
 
-        cy.url().should("match", /^http:\/\/localhost:3000\/bichard-ui\/Authenticate/)
-        cy.url().should("match", /\?token=[A-Za-z0-9_.]+/)
+        cy.url().should("match", /^http:\/\/localhost:3000\/users/)
+
+        cy.clearCookie(".AUTH")
+        cy.visit("/login")
+        cy.url().should("match", /\/login[^/]$/)
+        cy.getCookie(emailCookieName).should("not.exist")
 
         done()
       })
-
-      cy.visit("/login")
-      cy.url().should("match", /\/login[^/]*/)
-      cy.getCookie(emailCookieName).should("not.exist")
     })
 
     it("should forget remembered email address when 'not you' link is clicked", (done) => {
@@ -231,18 +228,17 @@ describe("Logging In", () => {
         cy.get("input[id=rememberEmailYes]").click()
         cy.get("button[type=submit]").click()
 
-        cy.url().should("match", /^http:\/\/localhost:3000\/bichard-ui\/Authenticate/)
-        cy.url().should("match", /\?token=[A-Za-z0-9_.]+/)
+        cy.url().should("match", /^http:\/\/localhost:3000\/users/)
+
+        cy.visit("/login")
+        cy.url().should("match", /\/login\/verify[^/]*/)
+
+        cy.get("a[data-test=not-you-link").click()
+        cy.url().should("match", /\/login[^/]$/)
+        cy.getCookie(emailCookieName).should("not.exist")
 
         done()
       })
-
-      cy.visit("/login")
-      cy.url().should("match", /\/login\/verify[^/]*/)
-
-      cy.get("a[data-test=not-you-link").click()
-      cy.url().should("match", /\/login[^/]/)
-      cy.getCookie(emailCookieName).should("not.exist")
     })
 
     it("should respond with forbidden response code when CSRF tokens are invalid in verify page", (done) => {
@@ -251,30 +247,6 @@ describe("Logging In", () => {
 
     it("should respond with forbidden response code when CSRF tokens are invalid in login page", (done) => {
       cy.checkCsrf("/login", "POST").then(() => done())
-    })
-
-    it("can successfully log out after logging in", () => {
-      const emailAddress = "bichard01@example.com"
-      const password = "password"
-
-      cy.visit("/login")
-      cy.get("input[type=email]").type(emailAddress)
-      cy.get("button[type=submit]").click()
-      cy.get('h1[data-test="check-email"]').should("exist")
-      cy.task("getVerificationCode", emailAddress).then((verificationCode) => {
-        const token = validToken(emailAddress, verificationCode)
-
-        cy.visit(`/login/verify?token=${token}`)
-        cy.get("input[type=password][name=password]").type(password)
-        cy.get("button[type=submit]").click()
-
-        cy.getCookie(".AUTH").should("exist")
-
-        cy.visit("/logout")
-        cy.url().should("not.match", /token=/)
-
-        cy.getCookie(".AUTH").should("not.exist")
-      })
     })
 
     it("can login a second time and update the jwt token in the users table", () => {
