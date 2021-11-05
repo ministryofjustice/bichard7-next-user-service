@@ -41,7 +41,9 @@ const MultiSelectCheckbox = ({ label, name, values, codes }: Props) => {
 
   return (
     <>
-      <h3 className="govuk-heading-m govuk-!-margin-top-5">{label}</h3>
+      <div id="waste-hint" className="govuk-hint">
+        {label}
+      </div>
       <div className="govuk-checkboxes" data-module="govuk-checkboxes">
         {codeCheckboxes}
       </div>
