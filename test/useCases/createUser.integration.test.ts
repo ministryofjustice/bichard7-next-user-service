@@ -51,7 +51,10 @@ describe("DeleteUserUseCase", () => {
       endorsedBy: user.endorsed_by,
       surname: user.surname,
       orgServes: user.org_serves,
-      groupId: selectedGroup.group_id
+      groupId: selectedGroup.group_id,
+      visibleForces: "001,004,",
+      visibleCourts: "B01,B41ME00",
+      excludedTriggers: "TRPR0001,"
     }
 
     const result = await createUser(connection, currentUserId, createUserDetails)
@@ -80,7 +83,10 @@ describe("DeleteUserUseCase", () => {
       endorsedBy: `${user.endorsed_by}xyz`,
       surname: `${user.surname}xyz`,
       orgServes: `${user.org_serves}xyz`,
-      groupId: selectedGroup.group_id
+      groupId: selectedGroup.group_id,
+      visibleForces: "001,004,",
+      visibleCourts: "B01,B41ME00",
+      excludedTriggers: "TRPR0001,"
     }
 
     const expectedError = new Error(`Email address bichard01@example.com already exists.`)
@@ -129,6 +135,9 @@ describe("DeleteUserUseCase", () => {
     expect(actualUser.endorsedBy).toBe(user.endorsed_by)
     expect(actualUser.orgServes).toBe(user.org_serves)
     expect(actualUser.forenames).toBe(user.forenames)
+    expect(actualUser.visibleForces).toBe(user.visible_forces)
+    expect(actualUser.visibleCourts).toBe(user.visible_courts)
+    expect(actualUser.excludedTriggers).toBe(user.excluded_triggers)
   })
 
   it("should add the user to the correct group that exists in the user table", async () => {

@@ -67,6 +67,9 @@ describe("getUserById", () => {
     expect(actualUser.endorsedBy).toBe(selectedUser.endorsed_by)
     expect(actualUser.orgServes).toBe(selectedUser.org_serves)
     expect(actualUser.forenames).toBe(selectedUser.forenames)
+    expect(actualUser.visibleForces).toBe(user.visible_forces)
+    expect(actualUser.visibleCourts).toBe(user.visible_courts)
+    expect(actualUser.excludedTriggers).toBe(user.excluded_triggers)
   })
 
   it("should return error when user does not exist in the database", async () => {
