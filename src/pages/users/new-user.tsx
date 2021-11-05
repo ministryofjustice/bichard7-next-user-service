@@ -7,7 +7,7 @@ import getConnection from "lib/getConnection"
 import setupNewUser from "useCases/setupNewUser"
 import { isError } from "types/Result"
 import userFormIsValid from "lib/userFormIsValid"
-import UserForm from "components/users/UserForm"
+import UserForm, { listOfForces, listOfTriggers } from "components/users/UserForm"
 import CsrfServerSidePropsContext from "types/CsrfServerSidePropsContext"
 import Form from "components/Form"
 import { GetServerSidePropsContext, GetServerSidePropsResult } from "next"
@@ -25,6 +25,7 @@ import createRedirectResponse from "utils/createRedirectResponse"
 import { ErrorSummary, ErrorSummaryList } from "components/ErrorSummary"
 import IsEmailUnique from "useCases/IsEmailUnique"
 import isUsernameUnique from "useCases/isUsernameUnique"
+import updateUserCodes from "useCases/updateUserCodes"
 
 export const getServerSideProps = withMultipleServerSideProps(
   withAuthentication,
@@ -57,8 +58,13 @@ export const getServerSideProps = withMultipleServerSideProps(
         orgServes: string
         save: string
         saveAndAddAnother: string
+        visibleForces: string
+        visibleCourts: string
+        excludedTriggers: string
       }
 
+      userCreateDetails.visibleForces = updateUserCodes("", listOfForces, "visibleForces", formData)
+      userCreateDetails.excludedTriggers = updateUserCodes("", listOfTriggers, "excludedTriggers", formData)
       const formValidationResult = userFormIsValid(userCreateDetails, false)
 
       if (formValidationResult.isFormValid) {

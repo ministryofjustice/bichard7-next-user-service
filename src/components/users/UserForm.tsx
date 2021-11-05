@@ -24,14 +24,14 @@ interface Props {
 }
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-export const listOfForces = Object.keys(forceInclusions)
-  .map((x: any) => {
-    return { id: x, name: forceInclusions[x].Name }
+export const listOfForces = forceInclusions
+  .map((x: { Code: string; Name: string }) => {
+    return { id: x.Code, name: x.Name }
   })
-  .filter((x) => x.id[0] !== "B" && x.id[0] !== "C")
-  .sort((x, y) => (x.id > y.id ? 1 : -1))
-export const listOfTriggers = Object.keys(triggersList).map((x: any) => {
-  return { id: x, name: triggersList[x] }
+  .filter((x: { id: string; name: string }) => x.id[0] !== "B" && x.id[0] !== "C")
+  .sort((x: { id: string; name: string }, y: { id: string; name: string }) => (x.id > y.id ? 1 : -1))
+export const listOfTriggers = triggersList.map((x: { Code: string; Description: string }) => {
+  return { id: x.Code, name: x.Description }
 })
 
 const UserForm = ({
@@ -80,14 +80,14 @@ const UserForm = ({
       <TextInput value={endorsedBy} name="endorsedBy" label="Endorsed by" width="20" />
       <TextInput value={orgServes} name="orgServes" label="Organisation" width="20" />
 
-      <details className="govuk-details" data-module="govuk-details">
-        <summary className="govuk-details__summary">
-          <span className="govuk-details__summary-text">{"Show records from force"}</span>
-        </summary>
-        <div className="govuk-details__text">
-          <MultiSelectCheckbox name="visibleForces" values={visibleForces} codes={listOfForces} />
-        </div>
-      </details>
+      <div className="govuk-details__text">
+        <MultiSelectCheckbox
+          label="Show records from force"
+          name="visibleForces"
+          values={visibleForces}
+          codes={listOfForces}
+        />
+      </div>
       <TextInput
         value={visibleCourts}
         name="visibleCourts"
@@ -95,14 +95,15 @@ const UserForm = ({
         width="20"
       />
 
-      <details className="govuk-details" data-module="govuk-details">
-        <summary className="govuk-details__summary">
-          <span className="govuk-details__summary-text">{"Display Triggers"}</span>
-        </summary>
-        <div className="govuk-details__text">
-          <MultiSelectCheckbox name="excludedTriggers" values={excludedTriggers} codes={listOfTriggers} />
-        </div>
-      </details>
+      <div className="govuk-details__text">
+        <MultiSelectCheckbox
+          label="Exclude Triggers"
+          name="excludedTriggers"
+          values={excludedTriggers}
+          codes={listOfTriggers}
+        />
+      </div>
+      <br />
     </>
   )
 }

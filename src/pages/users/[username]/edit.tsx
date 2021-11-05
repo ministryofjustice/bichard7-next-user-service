@@ -4,7 +4,7 @@ import Head from "next/head"
 import SuccessBanner from "components/SuccessBanner"
 import getConnection from "lib/getConnection"
 import userFormIsValid from "lib/userFormIsValid"
-import UserForm, { listOfForces } from "components/users/UserForm"
+import UserForm, { listOfForces, listOfTriggers } from "components/users/UserForm"
 import { updateUser, getUserById, getUserByUsername, getUserGroups } from "useCases"
 import { isError } from "types/Result"
 import User from "types/User"
@@ -22,6 +22,7 @@ import config from "lib/config"
 import BackLink from "components/BackLink"
 import { ErrorSummary, ErrorSummaryList } from "components/ErrorSummary"
 import createRedirectResponse from "utils/createRedirectResponse"
+import updateUserCodes from "useCases/updateUserCodes"
 
 export const getServerSideProps = withMultipleServerSideProps(
   withAuthentication,
@@ -64,6 +65,12 @@ export const getServerSideProps = withMultipleServerSideProps(
       }
 
       userDetails.visibleForces = updateUserCodes(user.visibleForces, listOfForces, "visibleForces", formData)
+      userDetails.excludedTriggers = updateUserCodes(
+        user.excludedTriggers,
+        listOfTriggers,
+        "excludedTriggers",
+        formData
+      )
 
       const formValidationResult = userFormIsValid(userDetails, true)
 

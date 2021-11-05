@@ -1,48 +1,10 @@
-{
-    "TRPR0001": "Driver Disqualification - Update DD screen.",
-    "TRPR0002": "Warrant issued - Update Wanted/Missing",
-    "TRPR0003": "Order Issues - Update Wanted/Missing, check and amend Disposal",
-    "TRPR0004": "Convicted of Sexual Offence or Sexual Order made - Update Markers and Register(s) as appropriate",
-    "TRPR0005": "Defendant remanded in custody - update custody history",
-    "TRPR0006": "Defendant imprisoned - update custody history",
-    "TRPR0007": "Defendant dead - update death marker",
-    "TRPR0008": "Defendant has breached bail - Update breach of bail marker",
-    "TRPR0009": "Order revoked - update Wanted/Missing screen",
-    "TRPR0010": "Bail conditions imposed/varied/cancelled - update remand screen",
-    "TRPR0011": "Order varied - update Wanted/Missing screen. Check 3042 code exists",
-    "TRPR0012": "Warrant not executed/Withdrawn - update Wanted/Missing screen",
-    "TRPR0013": "Offence added by the court - Update MO Screen/Offence Location/Update 3042",
-    "TRPR0014": "Too many offences - manual update",
-    "TRPR0015": "Personal details changed",
-    "TRPR0016": "Forfeiture order made - update records as appropriate",
-    "TRPR0017": "Adjourned Sine Die - update case details",
-    "TRPR0018": "Update offence date(s) on PNC",
-    "TRPR0019": "Remanded in custody with bail direction",
-    "TRPR0020": "Update original case with conviction and sentence details",
-    "TRPR0021": "Disqualification or Revocation Order made (not motoring)",
-    "TRPR0022": "Extradition ordered or Proceedings pending",
-    "TRPR0023": "Domestic Violence Case",
-    "TRPR0024": "Vulnerable or Intimidated victim/witness",
-    "TRPR0025": "Original case has been re-opened/stat dec made - check new sentence details",
-    "TRPR0026": "Driving disqualification suspended",
-    "TRPR0027": "Out of Area case",
-    "TRPR0028": "Trigger only case reallocated from another force",
-    "TRPR0029": "Civil proceedings granted or Order made - update records as appropriate",
-    "TRPR0030": "Pre-charge bail application",
-    "TRPRA001": "Appeal against Driver Disqualification - Update DD screen.",
-    "TRPRA004": "Appeal against conviction for Violent/Sexual offence - Update Markers and Register(s) as appropriate",
-    "TRPRA006": "Appeal against Imprisonment - update custody history",
-    "TRPS0001": "Enter the restraining order detail",
-    "TRPS0002": "Confirm address on PNC",
-    "TRPS0003": "Disposal text was truncated - revise on PNC if wanted",
-    "TRPS0004": "Split Adjournment - manual split required",
-    "TRPS0008": "Enter details of curfew order",
-    "TRPS0009": "Add original conviction/sentence date",
-    "TRPS0010": "Offence added to the PNC - Update MO Screen/Offence Location/Update 3042",
-    "TRPS0011": "Offence added at court - add to PNC",
-    "TRPS0013": "Offences taken into consideration - add to offence",
-    "TRPSA001": "Appeal - Amend the restraining order detail",
-    "TRPSA002": "Appeal - Amend address on PNC",
-    "TRPSA007": "Appeal - Amend the exclusion requirement",
-    "TRPSA008": "Appeal - Amend details of curfew order"
-}
+[
+    {
+        "Code": "TRPR0001",
+        "Description": "Driver Disqualification - Update DD screen."
+    },
+    {
+       "Code": "TRPR0002",
+       "Description": "Warrant issued - Update Wanted/Missing"
+    }
+]

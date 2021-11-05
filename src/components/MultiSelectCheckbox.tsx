@@ -1,12 +1,13 @@
 import Code from "types/Code"
 
 interface Props {
+  label: string
   name: string
   values?: string
   codes: Code[]
 }
 
-const MultiSelectCheckbox = ({ name, values, codes }: Props) => {
+const MultiSelectCheckbox = ({ label, name, values, codes }: Props) => {
   const codeCheckboxes = []
 
   for (let i = 0; i < codes.length; i++) {
@@ -27,6 +28,7 @@ const MultiSelectCheckbox = ({ name, values, codes }: Props) => {
             id={`${name}-${codes[i].id}`}
             name={`${name}-${codes[i].id}`}
             type="checkbox"
+            value="false"
           />
         )}
 
@@ -38,9 +40,12 @@ const MultiSelectCheckbox = ({ name, values, codes }: Props) => {
   }
 
   return (
-    <div className="govuk-checkboxes" data-module="govuk-checkboxes">
-      {codeCheckboxes}
-    </div>
+    <>
+      <h3 className="govuk-heading-m govuk-!-margin-top-5">{label}</h3>
+      <div className="govuk-checkboxes" data-module="govuk-checkboxes">
+        {codeCheckboxes}
+      </div>
+    </>
   )
 }
 
