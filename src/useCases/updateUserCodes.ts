@@ -1,19 +1,11 @@
 import QueryString from "qs"
 
 const updateUserCodes = (
-  oldCodes: string | undefined,
   listOfCodes: { id: string; name: string }[],
   typeOfCodes: string,
   formData: QueryString.ParsedQs
 ) => {
-  let result = oldCodes || ""
-  const codes = result.split(",")
-  for (let i = 0; i < codes.length; i += 1) {
-    const code = `${typeOfCodes}${codes[i]}`
-    if (!(code in formData) && code !== typeOfCodes) {
-      result = result.replace(`${codes[i]},`, "")
-    }
-  }
+  let result = ""
 
   for (let i = 0; i < listOfCodes.length; i += 1) {
     const code = `${typeOfCodes}${listOfCodes[i].id}`

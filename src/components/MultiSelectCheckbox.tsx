@@ -16,8 +16,8 @@ const MultiSelectCheckbox = ({ label, name, values, codes }: Props) => {
         {values?.includes(codes[i].id) ? (
           <input
             className="govuk-checkboxes__input"
-            id={`${name}-${codes[i].id}`}
-            name={`${name}-${codes[i].id}`}
+            id={`${name}${codes[i].id}`}
+            name={`${name}${codes[i].id}`}
             type="checkbox"
             value="true"
             defaultChecked
@@ -25,8 +25,8 @@ const MultiSelectCheckbox = ({ label, name, values, codes }: Props) => {
         ) : (
           <input
             className="govuk-checkboxes__input"
-            id={`${name}-${codes[i].id}`}
-            name={`${name}-${codes[i].id}`}
+            id={`${name}${codes[i].id}`}
+            name={`${name}${codes[i].id}`}
             type="checkbox"
             value="false"
           />
