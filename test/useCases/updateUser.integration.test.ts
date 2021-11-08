@@ -97,7 +97,7 @@ describe("updatePassword", () => {
     expect(initialUser02.org_serves).toBe("orgServes 04")
     expect(initialUser02.visible_forces).toBe("004,007,")
     expect(initialUser02.visible_courts).toBe("B02,")
-    expect(initialUser02.excluded_Triggers).toBe("TPR0002,")
+    expect(initialUser02.excluded_triggers).toBe("TRPR0002,")
   })
 
   it("should not update emailAddress if provided in user object", async () => {

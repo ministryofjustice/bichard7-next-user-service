@@ -118,9 +118,9 @@ describe("DeleteUserUseCase", () => {
       surname: user.surname,
       orgServes: user.org_serves,
       groupId: selectedGroup.id,
-      visibleForces: "001,004,",
-      visibleCourts: "B01,B41ME00",
-      excludedTriggers: "TRPR0001,"
+      visibleForces: user.visible_forces,
+      visibleCourts: user.visible_courts,
+      excludedTriggers: user.excluded_triggers
     }
 
     const createResult = await createUser(connection, currentUserId, createUserDetails)
