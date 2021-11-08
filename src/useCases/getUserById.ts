@@ -15,7 +15,7 @@ const getUserById = async (connection: Database, id: number): PromiseResult<Part
         surname,
         endorsed_by,
         org_serves,
-        email,
+        email
       FROM br7own.users AS u
       WHERE id = $\{id\} AND deleted_at IS NULL
     `

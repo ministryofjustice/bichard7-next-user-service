@@ -5,7 +5,8 @@ import SuccessBanner from "components/SuccessBanner"
 import getConnection from "lib/getConnection"
 import userFormIsValid from "lib/userFormIsValid"
 import UserForm from "components/users/UserForm"
-import { updateUser, getUserById, getUserByUsername, getUserGroups } from "useCases"
+import getUserById from "useCases/getUserById"
+import { updateUser, getUserByUsername, getUserGroups } from "useCases"
 import { isError } from "types/Result"
 import User from "types/User"
 import CsrfServerSidePropsContext from "types/CsrfServerSidePropsContext"
@@ -44,7 +45,11 @@ export const getServerSideProps = withMultipleServerSideProps(
     }
 
     if (isPost(req)) {
+      const groupsChecked = groups.filter((group) => formData[group.name] === "yes")
+
       const userDetails: Partial<User> = formData
+      userDetails.groups = groupsChecked
+
       const user = await getUserById(connection, userDetails.id as number)
 
       if (isError(user)) {

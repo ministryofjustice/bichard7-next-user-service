@@ -3,6 +3,7 @@ import Database from "types/Database"
 import { ITask } from "pg-promise"
 import { isError } from "types/Result"
 import User from "types/User"
+import { UserGroupResult } from "types/UserGroup"
 import isUsernameUnique from "./isUsernameUnique"
 import isEmailUnique from "./IsEmailUnique"
 
@@ -39,8 +40,10 @@ const insertUserIntoGroup = async (
   task: ITask<unknown>,
   newUserId: number,
   currentUserId: number,
-  groupIds: number[]
+  groups: UserGroupResult[]
 ): PromiseResult<void> => {
+  const groupIds = groups.map((group: UserGroupResult) => group.id)
+
   const insertGroupQuery = `
     INSERT INTO br7own.users_groups(
       user_id,
@@ -86,10 +89,8 @@ export default async (connection: Database, currentUserId: number, userDetails: 
         return Error("Could not insert record into users table")
       }
 
-      if (userDetails.groupId) {
-        const userGroupResult = await insertUserIntoGroup(task, insertUserResult.id, currentUserId, [
-          userDetails.groupId
-        ])
+      if (userDetails.groups) {
+        const userGroupResult = await insertUserIntoGroup(task, insertUserResult.id, currentUserId, userDetails.groups)
         return userGroupResult
       }
 

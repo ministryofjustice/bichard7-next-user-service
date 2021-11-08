@@ -1,4 +1,4 @@
-import { UserGroupResult } from "./UserGroup";
+import { UserGroupResult } from "./UserGroup"
 
 interface User {
   id: number
