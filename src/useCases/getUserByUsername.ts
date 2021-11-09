@@ -17,12 +17,20 @@ export default async (connection: Database, username: string): PromiseResult<Use
         org_serves,
         forenames,
         surname
+        surname,
+        visible_courts,
+        visible_forces,
+        excluded_triggers
       FROM br7own.users AS u
       WHERE username = $\{username\} AND deleted_at IS NULL
     `
 
   try {
     user = await connection.oneOrNone<User>(getUserQuery, { username }).catch((error) => error)
+
+    if (user === null) {
+      return null
+    }
   } catch (error) {
     return error as Error
   }
@@ -46,6 +54,9 @@ export default async (connection: Database, username: string): PromiseResult<Use
     orgServes: user.org_serves,
     forenames: user.forenames,
     surname: user.surname,
-    groups
+    groups,
+    visibleCourts: user.visible_courts,
+    visibleForces: user.visible_forces,
+    excludedTriggers: user.excluded_triggers
   }
 }

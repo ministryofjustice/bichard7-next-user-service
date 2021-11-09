@@ -20,7 +20,10 @@ const insertIntoUsersTable = async (data) => {
         last_login_attempt,
         deleted_at,
         password_reset_code,
-        migrated_password
+        migrated_password,
+        visible_forces,
+        visible_courts,
+        excluded_triggers
       ) VALUES (
         $\{username\},
         $\{exclusion_list\},
@@ -34,9 +37,12 @@ const insertIntoUsersTable = async (data) => {
         $\{email\},
         $\{password\},
         $\{last_login_attempt\},
-        $\{deleted_at},
+        $\{deleted_at\},
         $\{password_reset_code\},
-        $\{migrated_password\}
+        $\{migrated_password\},
+        $\{visible_forces\},
+        $\{visible_courts\},
+        $\{excluded_triggers\}
   )
   `
 

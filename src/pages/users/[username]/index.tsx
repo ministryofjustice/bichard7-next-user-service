@@ -58,6 +58,9 @@ const Users = ({ user, currentUser }: Props) => (
         <SummaryItem label="Email address" value={user.emailAddress} />
         <SummaryItem label="Endorsed by" value={user.endorsedBy} />
         <SummaryItem label="Organisation" value={user.orgServes} />
+        <SummaryItem label="Visible Forces" value={user.visibleForces} />
+        <SummaryItem label="Visible Courts" value={user.visibleCourts} />
+        <SummaryItem label="Excluded Triggers" value={user.excludedTriggers} />
       </Summary>
       <ButtonGroup>
         <Link data-test="edit-user-view" href={`${user.username}/edit`}>

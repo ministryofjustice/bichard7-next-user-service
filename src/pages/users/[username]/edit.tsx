@@ -4,9 +4,9 @@ import Head from "next/head"
 import SuccessBanner from "components/SuccessBanner"
 import getConnection from "lib/getConnection"
 import userFormIsValid from "lib/userFormIsValid"
-import UserForm from "components/users/UserForm"
 import getUserById from "useCases/getUserById"
 import { updateUser, getUserByUsername, getUserGroups } from "useCases"
+import UserForm, { listOfForces, listOfTriggers } from "components/users/UserForm"
 import { isError } from "types/Result"
 import User from "types/User"
 import CsrfServerSidePropsContext from "types/CsrfServerSidePropsContext"
@@ -22,6 +22,7 @@ import config from "lib/config"
 import BackLink from "components/BackLink"
 import { ErrorSummary, ErrorSummaryList } from "components/ErrorSummary"
 import createRedirectResponse from "utils/createRedirectResponse"
+import updateUserCodes from "useCases/updateUserCodes"
 
 export const getServerSideProps = withMultipleServerSideProps(
   withAuthentication,
@@ -65,6 +66,9 @@ export const getServerSideProps = withMultipleServerSideProps(
           }
         }
       }
+
+      userDetails.visibleForces = updateUserCodes(listOfForces, "visibleForces", formData)
+      userDetails.excludedTriggers = updateUserCodes(listOfTriggers, "excludedTriggers", formData)
 
       const formValidationResult = userFormIsValid(userDetails, true)
 

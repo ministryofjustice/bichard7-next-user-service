@@ -11,6 +11,9 @@ interface User {
   surname: string
   emailAddress: string
   groups: UserGroupResult[]
+  visibleCourts: string
+  visibleForces: string
+  excludedTriggers: string
 }
 
 export default User

@@ -19,7 +19,10 @@ const insertUser = (task: ITask<unknown>, userDetails: Partial<User>): InsertUse
         exclusion_list,
         inclusion_list,
         endorsed_by,
-        org_serves
+        org_serves,
+        visible_courts,
+        visible_forces,
+        excluded_triggers
       )
       VALUES (
         $\{username\},
@@ -29,7 +32,10 @@ const insertUser = (task: ITask<unknown>, userDetails: Partial<User>): InsertUse
         '',
         '',
         $\{endorsedBy\},
-        $\{orgServes\}
+        $\{orgServes\},
+        $\{visibleCourts\},
+        $\{visibleForces\},
+        $\{excludedTriggers\}
       ) RETURNING id;
     `
 

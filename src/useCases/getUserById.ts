@@ -15,7 +15,10 @@ const getUserById = async (connection: Database, id: number): PromiseResult<Part
         surname,
         endorsed_by,
         org_serves,
-        email
+        email,
+        visible_courts,
+        visible_forces,
+        excluded_triggers
       FROM br7own.users AS u
       WHERE id = $\{id\} AND deleted_at IS NULL
     `
@@ -39,7 +42,10 @@ const getUserById = async (connection: Database, id: number): PromiseResult<Part
     endorsedBy: user.endorsed_by,
     orgServes: user.org_serves,
     emailAddress: user.email,
-    groups
+    groups,
+    visibleCourts: user.visible_courts,
+    visibleForces: user.visible_forces,
+    excludedTriggers: user.excluded_triggers
   }
 }
 

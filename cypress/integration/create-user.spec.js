@@ -27,6 +27,10 @@ describe("Creation of new user", () => {
     cy.get('input[id="emailAddress"]').type("bichardemail1@example.com")
     cy.get('input[id="endorsedBy"]').type("B Endorsed")
     cy.get('input[id="orgServes"]').type("B organisation")
+    cy.get('input[id="visibleForces001"]').check()
+    cy.get('input[id="visibleForces004"]').check()
+    cy.get('input[id="visibleCourts"]').type("B01,B41ME00")
+    cy.get('input[id="excludedTriggersTRPR0001"]').check()
 
     cy.get("button[name=saveAndAddAnother]").click()
     cy.get("h3").should("have.text", "User Buser has been successfully created.")
@@ -41,6 +45,10 @@ describe("Creation of new user", () => {
     cy.get('input[id="emailAddress"]').type("bichardemail2@example.com")
     cy.get('input[id="endorsedBy"]').type("B Endorsed")
     cy.get('input[id="orgServes"]').type("B organisation")
+    cy.get('input[id="visibleForces001"]').check()
+    cy.get('input[id="visibleForces004"]').check()
+    cy.get('input[id="visibleCourts"]').type("B01,B41ME00")
+    cy.get('input[id="excludedTriggersTRPR0001"]').check()
 
     cy.get("button[name=save]").click()
     cy.url().should("contain", "/users")
@@ -197,6 +205,10 @@ describe("Creation of new user", () => {
     cy.get('input[id="emailAddress"]').type(emailAddress)
     cy.get('input[id="endorsedBy"]').type("B Endorsed zz")
     cy.get('input[id="orgServes"]').type("B organisation zz")
+    cy.get('input[id="visibleForces001"]').check()
+    cy.get('input[id="visibleForces004"]').check()
+    cy.get('input[id="visibleCourts"]').type("B01,B41ME00")
+    cy.get('input[id="excludedTriggersTRPR0001"]').check()
     cy.get("select").select("B7UserManager_grp")
     cy.get("button[name=save]").click()
 
