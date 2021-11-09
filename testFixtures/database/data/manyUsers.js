@@ -15,7 +15,10 @@ const manyUsers = [
     last_login_attempt: "2021-08-01 00:00:00-00",
     deleted_at: null,
     password_reset_code: null,
-    migrated_password: null
+    migrated_password: null,
+    visible_forces: "001,004,",
+    visible_courts: "B01,B41ME00",
+    excluded_triggers: "TRPR0001,"
   },
   {
     username: "Bichard02",
@@ -33,7 +36,10 @@ const manyUsers = [
     last_login_attempt: "2021-08-01 00:00:00-00",
     deleted_at: null,
     password_reset_code: null,
-    migrated_password: null
+    migrated_password: null,
+    visible_forces: "001,004,",
+    visible_courts: "B01,B41ME00",
+    excluded_triggers: "TRPR0001,"
   },
   {
     username: "Bichard03",
@@ -51,7 +57,10 @@ const manyUsers = [
     last_login_attempt: "2021-08-01 00:00:00-00",
     deleted_at: null,
     password_reset_code: null,
-    migrated_password: null
+    migrated_password: null,
+    visible_forces: "001,004,",
+    visible_courts: "B01,B41ME00",
+    excluded_triggers: "TRPR0001,"
   },
   {
     username: "Bichard04",
@@ -69,7 +78,10 @@ const manyUsers = [
     last_login_attempt: "2021-08-01 00:00:00-00",
     deleted_at: null,
     password_reset_code: null,
-    migrated_password: null
+    migrated_password: null,
+    visible_forces: "001,004,",
+    visible_courts: "B01,B41ME00",
+    excluded_triggers: "TRPR0001,"
   },
   {
     username: "Bichard05",
@@ -87,7 +99,10 @@ const manyUsers = [
     last_login_attempt: "2021-08-01 00:00:00-00",
     deleted_at: null,
     password_reset_code: null,
-    migrated_password: null
+    migrated_password: null,
+    visible_forces: "001,004,",
+    visible_courts: "B01,B41ME00",
+    excluded_triggers: "TRPR0001,"
   },
   {
     username: "Bichard06",
@@ -105,7 +120,10 @@ const manyUsers = [
     last_login_attempt: "2021-08-01 00:00:00-00",
     deleted_at: null,
     password_reset_code: null,
-    migrated_password: null
+    migrated_password: null,
+    visible_forces: "001,004,",
+    visible_courts: "B01,B41ME00",
+    excluded_triggers: "TRPR0001,"
   },
   {
     username: "Bichard07",
@@ -123,7 +141,10 @@ const manyUsers = [
     last_login_attempt: "2021-08-01 00:00:00-00",
     deleted_at: null,
     password_reset_code: null,
-    migrated_password: null
+    migrated_password: null,
+    visible_forces: "001,004,",
+    visible_courts: "B01,B41ME00",
+    excluded_triggers: "TRPR0001,"
   },
   {
     username: "Bichard08",
@@ -141,7 +162,10 @@ const manyUsers = [
     last_login_attempt: "2021-08-01 00:00:00-00",
     deleted_at: null,
     password_reset_code: null,
-    migrated_password: null
+    migrated_password: null,
+    visible_forces: "001,004,",
+    visible_courts: "B01,B41ME00",
+    excluded_triggers: "TRPR0001,"
   },
   {
     username: "Bichard09",
@@ -159,7 +183,10 @@ const manyUsers = [
     last_login_attempt: "2021-08-01 00:00:00-00",
     deleted_at: null,
     password_reset_code: null,
-    migrated_password: null
+    migrated_password: null,
+    visible_forces: "001,004,",
+    visible_courts: "B01,B41ME00",
+    excluded_triggers: "TRPR0001,"
   },
   {
     username: "Bichard10",
@@ -177,7 +204,10 @@ const manyUsers = [
     last_login_attempt: "2021-08-01 00:00:00-00",
     deleted_at: null,
     password_reset_code: null,
-    migrated_password: null
+    migrated_password: null,
+    visible_forces: "001,004,",
+    visible_courts: "B01,B41ME00",
+    excluded_triggers: "TRPR0001,"
   },
   {
     username: "Bichard11",
@@ -195,7 +225,10 @@ const manyUsers = [
     last_login_attempt: "2021-08-01 00:00:00-00",
     deleted_at: null,
     password_reset_code: null,
-    migrated_password: null
+    migrated_password: null,
+    visible_forces: "001,004,",
+    visible_courts: "B01,B41ME00",
+    excluded_triggers: "TRPR0001,"
   },
   {
     username: "Bichard12",
@@ -213,7 +246,10 @@ const manyUsers = [
     last_login_attempt: "2021-08-01 00:00:00-00",
     deleted_at: null,
     password_reset_code: null,
-    migrated_password: null
+    migrated_password: null,
+    visible_forces: "001,004,",
+    visible_courts: "B01,B41ME00",
+    excluded_triggers: "TRPR0001,"
   }
 ]
 

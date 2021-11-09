@@ -14,7 +14,10 @@ export default async (db: Database, username: string): PromiseResult<User | null
         org_serves,
         forenames,
         surname,
-        (SELECT group_id FROM br7own.users_groups as ug WHERE ug.user_id = u.id LIMIT 1) as group_id
+        (SELECT group_id FROM br7own.users_groups as ug WHERE ug.user_id = u.id LIMIT 1) as group_id,
+        visible_courts,
+        visible_forces,
+        excluded_triggers
       FROM br7own.users AS u
       WHERE username = $\{username\} AND deleted_at IS NULL
     `
@@ -36,7 +39,10 @@ export default async (db: Database, username: string): PromiseResult<User | null
       orgServes: user.org_serves,
       forenames: user.forenames,
       surname: user.surname,
-      groupId: user.group_id
+      groupId: user.group_id,
+      visibleCourts: user.visible_courts,
+      visibleForces: user.visible_forces,
+      excludedTriggers: user.excluded_triggers
     }
   } catch (error) {
     return error as Error

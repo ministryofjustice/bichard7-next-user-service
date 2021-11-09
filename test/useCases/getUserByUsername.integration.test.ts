@@ -32,7 +32,10 @@ describe("getUserByUsername", () => {
       endorsedBy: user.endorsed_by,
       surname: user.surname,
       orgServes: user.org_serves,
-      groupId: selectedGroupId
+      groupId: selectedGroupId,
+      visibleForces: "001,004,",
+      visibleCourts: "B01,B41ME00",
+      excludedTriggers: "TRPR0001,"
     }
 
     await createUser(connection, currentUserId, createUserDetails)
@@ -75,6 +78,9 @@ describe("getUserByUsername", () => {
     expect(actualUser.endorsedBy).toBe(expectedUser.endorsed_by)
     expect(actualUser.orgServes).toBe(expectedUser.org_serves)
     expect(actualUser.forenames).toBe(expectedUser.forenames)
+    expect(actualUser.visibleForces).toBe(expectedUser.visible_forces)
+    expect(actualUser.visibleCourts).toBe(expectedUser.visible_courts)
+    expect(actualUser.excludedTriggers).toBe(expectedUser.excluded_triggers)
   })
 
   it("should return null when user does not exist in the database", async () => {

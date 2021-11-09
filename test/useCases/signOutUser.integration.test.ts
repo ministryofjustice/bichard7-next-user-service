@@ -48,7 +48,10 @@ describe("SignoutUser", () => {
       endorsedBy: "dummyE",
       surname: "dummyS",
       orgServes: "dummyO",
-      groupId: selectedGroups[0].id
+      groupId: selectedGroups[0].id,
+      visibleForces: "001,004,",
+      visibleCourts: "B01,B41ME00",
+      excludedTriggers: "TRPR0001,"
     } as User
 
     const userCreateResult = await createUser(connection, currentUserId, user)

@@ -44,7 +44,10 @@ const updateUserTable = async (task: ITask<unknown>, userDetails: Partial<User>)
         forenames=$\{forenames\},
         surname=$\{surname\},
         endorsed_by=$\{endorsedBy\},
-        org_serves=$\{orgServes\}
+        org_serves=$\{orgServes\},
+        visible_courts=$\{visibleCourts\},
+        visible_forces=$\{visibleForces\},
+        excluded_triggers=$\{excludedTriggers\}
 	    WHERE id = $\{id\}
     `
 

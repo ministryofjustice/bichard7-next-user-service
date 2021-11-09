@@ -43,7 +43,10 @@ describe("updatePassword", () => {
       endorsedBy: user.endorsed_by,
       orgServes: user.org_serves,
       emailAddress: user.email,
-      groupId: initialGroupId
+      groupId: initialGroupId,
+      visibleForces: "001,004,",
+      visibleCourts: "B01,B41ME00",
+      excludedTriggers: "TRPR0001,"
     }
 
     await createUser(connection, currentUserId, createUserDetails)
@@ -74,7 +77,10 @@ describe("updatePassword", () => {
       surname: "surname04",
       endorsedBy: "endorsed by 04",
       orgServes: "orgServes 04",
-      groupId: initialGroupId
+      groupId: initialGroupId,
+      visibleForces: "004,007,",
+      visibleCourts: "B02,",
+      excludedTriggers: "TRPR0002,"
     }
 
     const result = await updateUser(connection, fakeAuditLogger, currentUserId, user)
@@ -89,6 +95,9 @@ describe("updatePassword", () => {
     expect(initialUser02.surname).toBe("surname04")
     expect(initialUser02.endorsed_by).toBe("endorsed by 04")
     expect(initialUser02.org_serves).toBe("orgServes 04")
+    expect(initialUser02.visible_forces).toBe("004,007,")
+    expect(initialUser02.visible_courts).toBe("B02,")
+    expect(initialUser02.excluded_triggers).toBe("TRPR0002,")
   })
 
   it("should not update emailAddress if provided in user object", async () => {
@@ -116,7 +125,10 @@ describe("updatePassword", () => {
       endorsedBy: "endorsed by 04",
       orgServes: "orgAServes 04",
       emailAddress: "bichard04@example.com",
-      groupId: initialGroupId
+      groupId: initialGroupId,
+      visibleForces: "004,007,",
+      visibleCourts: "B02,",
+      excludedTriggers: "TRPR0002,"
     }
 
     const result = await updateUser(connection, fakeAuditLogger, currentUserId, user)
@@ -148,7 +160,10 @@ describe("updatePassword", () => {
       surname: "surname04A",
       endorsedBy: "endorsed by 04",
       orgServes: "orgAServes 04",
-      groupId: initialGroupId
+      groupId: initialGroupId,
+      visibleForces: "004,007,",
+      visibleCourts: "B02,",
+      excludedTriggers: "TRPR0002,"
     }
 
     const result = await updateUser(connection, fakeAuditLogger, currentUserId, user)
@@ -180,7 +195,10 @@ describe("updatePassword", () => {
       endorsedBy: user.endorsed_by,
       orgServes: user.org_serves,
       emailAddress: user.email,
-      groupId: initialGroupId
+      groupId: initialGroupId,
+      visibleForces: user.visible_forces,
+      visibleCourts: user.visible_courts,
+      excludedTriggers: user.excluded_triggers
     }
 
     await createUser(connection, currentUserId, createUserDetails)
@@ -195,7 +213,10 @@ describe("updatePassword", () => {
       surname: "new-surname-01",
       endorsedBy: "new endoresed by 01",
       orgServes: "new org serves",
-      groupId: updatedGroupId
+      groupId: updatedGroupId,
+      visibleForces: "004,007,",
+      visibleCourts: "B02,",
+      excludedTriggers: "TRPR0002,"
     }
 
     const updateResult = await updateUser(connection, fakeAuditLogger, currentUserId, updateUserDetails)
@@ -236,7 +257,10 @@ describe("updatePassword", () => {
       endorsedBy: user.endorsed_by,
       orgServes: user.org_serves,
       emailAddress: user.email,
-      groupId: initialGroupId
+      groupId: initialGroupId,
+      visibleForces: user.visible_forces,
+      visibleCourts: user.visible_courts,
+      excludedTriggers: user.excluded_triggers
     }
 
     await createUser(connection, currentUserId, createUserDetails)
@@ -251,7 +275,10 @@ describe("updatePassword", () => {
       surname: "new-surname-01",
       endorsedBy: "new endorsed by 01",
       orgServes: "new org serves",
-      groupId: greatestPossibleGroupIdPlusOne
+      groupId: greatestPossibleGroupIdPlusOne,
+      visibleForces: "004,007,",
+      visibleCourts: "B02,",
+      excludedTriggers: "TRPR0002,"
     }
 
     const updateResult = await updateUser(connection, fakeAuditLogger, currentUserId, updateUserDetails)
@@ -283,7 +310,10 @@ describe("updatePassword", () => {
       endorsedBy: user.endorsed_by,
       orgServes: user.org_serves,
       emailAddress: user.email,
-      groupId: initialGroupId
+      groupId: initialGroupId,
+      visibleForces: user.visible_forces,
+      visibleCourts: user.visible_courts,
+      excludedTriggers: user.excluded_triggers
     }
 
     await createUser(connection, currentUserId, createUserDetails)
@@ -298,7 +328,10 @@ describe("updatePassword", () => {
       surname: "new-surname-01",
       endorsedBy: "new endoresed by 01",
       orgServes: "new org serves",
-      groupId: updatedGroupId
+      groupId: updatedGroupId,
+      visibleForces: "004,007,",
+      visibleCourts: "B02,",
+      excludedTriggers: "TRPR0002,"
     }
 
     const updateResult = await updateUser(connection, fakeAuditLogger, currentUserId, updateUserDetails)
@@ -329,7 +362,10 @@ describe("updatePassword", () => {
       endorsedBy: user.endorsed_by,
       orgServes: user.org_serves,
       emailAddress: user.email,
-      groupId: selectedGroups[0].id
+      groupId: selectedGroups[0].id,
+      visibleForces: user.visible_forces,
+      visibleCourts: user.visible_courts,
+      excludedTriggers: user.excluded_triggers
     }
 
     await createUser(connection, currentUserId, createUserDetails)
@@ -344,7 +380,10 @@ describe("updatePassword", () => {
       surname: "new-surname-01",
       endorsedBy: "new endorsed by 01",
       orgServes: "new org serves",
-      groupId: selectedGroups[0].id
+      groupId: selectedGroups[0].id,
+      visibleForces: "004,007,",
+      visibleCourts: "B02,",
+      excludedTriggers: "TRPR0002,"
     }
 
     const updateResult = await updateUser(connection, fakeAuditLogger, currentUserId, updateUserDetails)

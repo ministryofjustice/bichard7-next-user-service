@@ -29,6 +29,10 @@ describe("Edit user", () => {
         cy.get('input[id="forenames"]').should("have.value", "Bichard User 01")
         cy.get('input[id="endorsedBy"]').should("have.value", "endorsed_by 01")
         cy.get('input[id="orgServes"]').should("have.value", "org_severs 01")
+        cy.get('input[id="visibleForces001"]').should("be.checked")
+        cy.get('input[id="visibleForces004"]').should("be.checked")
+        cy.get('input[id="visibleCourts"]').should("have.value", "B01,B41ME00")
+        cy.get('input[id="excludedTriggersTRPR0001"]').should("be.checked")
         cy.get(`select option[value=${currentUserGroups[0].id}]`).contains(currentUserGroups[0].name)
       })
     })
@@ -46,6 +50,12 @@ describe("Edit user", () => {
     cy.get('input[id="orgServes"]').type("org change 02")
     cy.get("select").select("B7ExceptionHandler_grp")
     cy.get('button[type="submit"]').click()
+    cy.get('input[id="visibleForces001"]').uncheck()
+    cy.get('input[id="visibleForces002"]').check()
+    cy.get('input[id="visibleCourts"]').clear()
+    cy.get('input[id="visibleCourts"]').type("B02,B42MD00")
+    cy.get('input[id="excludedTriggersTRPR0001"]').check()
+    cy.get('input[id="excludedTriggersTRPR0004"]').check()
 
     cy.task("selectFromUsersTable", "bichard01@example.com").then((user) => {
       cy.task("selectFromGroupsTable", "user_id", user.id).then((groups) => {

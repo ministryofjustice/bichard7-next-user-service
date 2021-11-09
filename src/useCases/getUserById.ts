@@ -14,7 +14,10 @@ const getUserById = async (connection: Database, id: number): PromiseResult<Part
         endorsed_by,
         org_serves,
         email,
-        (SELECT group_id FROM br7own.users_groups as ug WHERE ug.user_id = u.id LIMIT 1) as group_id
+        (SELECT group_id FROM br7own.users_groups as ug WHERE ug.user_id = u.id LIMIT 1) as group_id,
+        visible_courts,
+        visible_forces,
+        excluded_triggers
       FROM br7own.users AS u
       WHERE id = $\{id\} AND deleted_at IS NULL
     `
@@ -33,7 +36,10 @@ const getUserById = async (connection: Database, id: number): PromiseResult<Part
     endorsedBy: user.endorsed_by,
     orgServes: user.org_serves,
     emailAddress: user.email,
-    groupId: user.group_id
+    groupId: user.group_id,
+    visibleCourts: user.visible_courts,
+    visibleForces: user.visible_forces,
+    excludedTriggers: user.excluded_triggers
   }
 }
 

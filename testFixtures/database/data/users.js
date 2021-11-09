@@ -15,7 +15,10 @@ const users = [
     last_login_attempt: "2021-08-01 00:00:00-00",
     deleted_at: null,
     password_reset_code: null,
-    migrated_password: null
+    migrated_password: null,
+    visible_forces: "001,004,",
+    visible_courts: "B01,B41ME00",
+    excluded_triggers: "TRPR0001,"
   },
   {
     username: "Bichard02",
@@ -33,7 +36,10 @@ const users = [
     last_login_attempt: "2021-08-01 00:00:00-00",
     deleted_at: null,
     password_reset_code: null,
-    migrated_password: null
+    migrated_password: null,
+    visible_forces: "004,",
+    visible_courts: "B41ME00",
+    excluded_triggers: "TRPR0004,"
   },
   {
     username: "Bichard03",
@@ -51,7 +57,10 @@ const users = [
     last_login_attempt: "2021-08-01 00:00:00-00",
     deleted_at: null,
     password_reset_code: null,
-    migrated_password: null
+    migrated_password: null,
+    visible_forces: "014,",
+    visible_courts: "",
+    excluded_triggers: ""
   }
 ]
 
