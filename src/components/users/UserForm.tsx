@@ -4,6 +4,8 @@ import { Fieldset } from "components/Fieldset"
 import MultiSelectCheckbox from "components/MultiSelectCheckbox"
 import forceInclusions from "codes/forceInclusions.json"
 import triggersList from "codes/triggersList.json"
+import React from "react"
+import CheckboxMultiSelect from "components/ChecboxMultiSelect"
 
 interface Props {
   username?: string
@@ -80,32 +82,10 @@ const UserForm = ({
       <TextInput value={endorsedBy} name="endorsedBy" label="Endorsed by" width="20" />
       <TextInput value={orgServes} name="orgServes" label="Organisation" width="20" />
 
-      <Fieldset>
-        <legend>
-          <h5 className="govuk-label">{"Group assignments"}</h5>
-        </legend>
-        <div className="govuk-checkboxes" data-module="govuk-checkboxes">
-          {allGroups?.map((group: UserGroupResult) => (
-            <div key={group.id} className="govuk-checkboxes__item">
-              <input
-                className="govuk-checkboxes__input"
-                id={group.id}
-                name={group.name}
-                type="checkbox"
-                value={userGroups && userGroups.length ? "yes" : "no"}
-                defaultChecked={userGroups?.find((userGroup) => userGroup.id === group.id) !== undefined}
-              />
-
-              <label className="govuk-label govuk-checkboxes__label" htmlFor={group.id}>
-                {group.name}
-              </label>
-            </div>
-          ))}
-        </div>
-      </Fieldset>
-
       <TextInput value={endorsedBy} name="endorsedBy" label="Endorsed by" width="20" />
       <TextInput value={orgServes} name="orgServes" label="Organisation" width="20" />
+
+      <CheckboxMultiSelect allOptions={allGroups} label="select/view groups that user belongs to" selectedOptions={userGroups}></CheckboxMultiSelect>
 
       <MultiSelectCheckbox
         label="Show records from force"
