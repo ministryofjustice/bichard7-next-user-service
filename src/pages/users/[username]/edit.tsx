@@ -44,7 +44,6 @@ export const getServerSideProps = withMultipleServerSideProps(
       console.error(groups)
       return createRedirectResponse("/500")
     }
-    console.log(formData)
 
     if (isPost(req)) {
       const userDetails: Partial<User> = formData
@@ -129,7 +128,7 @@ export const getServerSideProps = withMultipleServerSideProps(
     }
 
     const user = await getUserByUsername(connection, username)
-    console.log(user)
+
     if (isError(user)) {
       console.error(user)
 

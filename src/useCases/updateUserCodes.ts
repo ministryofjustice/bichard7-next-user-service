@@ -10,7 +10,7 @@ const updateUserCodes = (
   for (let i = 0; i < listOfCodes.length; i += 1) {
     const code = `${typeOfCodes}${listOfCodes[i].id}`
     if (code in formData && !result.includes(code)) {
-      result = `${result + listOfCodes[i].id},`
+      result = `${result}${listOfCodes[i].id},`
     }
   }
 
