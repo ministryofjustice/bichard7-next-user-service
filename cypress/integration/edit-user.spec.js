@@ -35,6 +35,7 @@ describe("Edit user", () => {
   })
 
   it("should update user correctly when updating user details", () => {
+    cy.login("bichard02@example.com", "password")
     cy.visit("users/Bichard01")
     cy.get('a[data-test="edit-user-view"]').click()
     cy.get('input[id="forenames"]').clear()
@@ -60,6 +61,7 @@ describe("Edit user", () => {
   })
 
   it("should invalidate form correctly when form in not valid", () => {
+    cy.login("bichard02@example.com", "password")
     cy.visit("users/Bichard01")
     cy.get('a[data-test="edit-user-view"]').click()
     cy.get('input[id="forenames"]').clear()
@@ -74,12 +76,14 @@ describe("Edit user", () => {
   })
 
   it("should have the email and username text input fields readonly", () => {
+    cy.login("bichard02@example.com", "password")
     cy.visit("users/Bichard02/edit")
     cy.get('input[value="bichard02@example.com"]').invoke("attr", "readonly").should("eq", "readonly")
     cy.get('input[value="Bichard02"]').invoke("attr", "readonly").should("eq", "readonly")
   })
 
   it("should show the correct values for groups select input when on the edit user page", () => {
+    cy.login("bichard02@example.com", "password")
     cy.task("selectFromGroupsTable").then((groups) => {
       const currentUserGroups = getCurrentUserGroups(groups)
 

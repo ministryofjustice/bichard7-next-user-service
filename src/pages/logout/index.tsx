@@ -1,5 +1,6 @@
 import GridRow from "components/GridRow"
 import Layout from "components/Layout"
+import Link from "components/Link"
 import getConnection from "lib/getConnection"
 import { withAuthentication, withMultipleServerSideProps } from "middleware"
 import { GetServerSidePropsContext, GetServerSidePropsResult } from "next"
@@ -25,15 +26,16 @@ const Index = () => (
     </Head>
     <Layout>
       <GridRow>
-        <h1 data-test="check-email" className="govuk-heading-xl">
-          {"Signed out of Bichard 7"}
-        </h1>
+        <h1 className="govuk-heading-xl">{"Signed out of Bichard 7"}</h1>
 
         <p className="govuk-body">
           <p>{"You have been signed out of your account."}</p>
           <p>
-            {"In order to log back in, please click "}
-            <a href="/login">{"here"}</a>
+            {"In order to sign back in, please click "}
+            <Link href="/login" data-test="log-back-in">
+              {"here"}
+            </Link>
+            {"."}
           </p>
         </p>
       </GridRow>

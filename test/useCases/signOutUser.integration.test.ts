@@ -62,7 +62,7 @@ describe("SignoutUser", () => {
     expect(authenticationToken).toMatch(/.+\..+\..+/)
     let cookieValues = response.getHeader("Set-Cookie") as string[]
     expect(cookieValues).toHaveLength(1)
-    const regex = new RegExp(`${config.authenticationCookieName}=.+; HttpOnly`)
+    const regex = new RegExp(`^${config.authenticationCookieName}=[^;]+;`)
     expect(cookieValues[0]).toMatch(regex)
 
     const checkDbQuery = `
@@ -75,9 +75,8 @@ describe("SignoutUser", () => {
     let queryResult = await connection.oneOrNone(checkDbQuery, { username: user.username })
     expect(queryResult).not.toBe(null)
 
-    const cookieResults = { [config.authenticationCookieName]: cookieValues[0].split("=")[1] }
     const request = <IncomingMessage & { cookies: NextApiRequestCookies }>{ method: "GET" }
-    request.cookies = cookieResults
+    request.cookies = { [config.authenticationCookieName]: authenticationToken as string }
 
     const signoutUserResult = await signOutUser(connection, response, request)
     expect(isError(signoutUserResult)).toBe(false)
@@ -85,7 +84,7 @@ describe("SignoutUser", () => {
     cookieValues = response.getHeader("Set-Cookie") as string[]
     expect(cookieValues).toHaveLength(1)
 
-    queryResult = await connection.none(checkDbQuery, { username: user.username })
+    queryResult = await connection.oneOrNone(checkDbQuery, { username: user.username })
     expect(queryResult).toBe(null)
   })
 })

@@ -1,8 +1,9 @@
 /* eslint-disable import/first */
 jest.mock("middleware/withAuthentication/getAuthenticationPayloadFromCookie")
 jest.mock("useCases/getUserByEmailAddress")
+jest.mock("lib/token/authenticationToken")
 
-import { AuthenticationTokenPayload } from "lib/token/authenticationToken"
+import { AuthenticationTokenPayload, isTokenIdValid } from "lib/token/authenticationToken"
 import { withAuthentication } from "middleware"
 import getAuthenticationPayloadFromCookie from "middleware/withAuthentication/getAuthenticationPayloadFromCookie"
 import { GetServerSidePropsContext } from "next"
@@ -16,16 +17,20 @@ it("should include current user in the context when successfully get the user", 
     username: "dummy",
     emailAddress: "dummy@dummy.com"
   } as AuthenticationTokenPayload
-  const expectedUser = {
-    username: "dummy",
-    emailAddress: "dummy@dummy.com"
-  } as User
   const mockedGetAuthenticationPayloadFromCookie = getAuthenticationPayloadFromCookie as jest.MockedFunction<
     typeof getAuthenticationPayloadFromCookie
   >
   mockedGetAuthenticationPayloadFromCookie.mockReturnValue(expectedAuthenticationToken)
+
+  const expectedUser = {
+    username: "dummy",
+    emailAddress: "dummy@dummy.com"
+  } as User
   const mockedGetUserByEmailAddress = getUserByEmailAddress as jest.MockedFunction<typeof getUserByEmailAddress>
   mockedGetUserByEmailAddress.mockResolvedValue(expectedUser)
+
+  const mockedIsTokenIdValid = isTokenIdValid as jest.MockedFunction<typeof isTokenIdValid>
+  mockedIsTokenIdValid.mockResolvedValue(true)
 
   const dummyContext = { req: {} } as GetServerSidePropsContext<ParsedUrlQuery>
 
