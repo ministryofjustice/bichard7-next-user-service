@@ -154,6 +154,65 @@ describe("Authenticator", () => {
     expect(actualError.message).toBe(expectedError.message)
   })
 
+  it("should not allow user to authenticate after failing password 3 times", async () => {
+    await insertUsers()
+    const emailAddress = "bichard01@example.com"
+    const verificationCode = "CoDeRs"
+    const expectedError = new Error("Invalid credentials or invalid verification")
+    await storeVerificationCode(connection, emailAddress, verificationCode)
+
+    // first password attempt
+    let isAuth = await authenticate(connection, fakeAuditLogger, emailAddress, invalidPassword, verificationCode)
+    expect(isError(isAuth)).toBe(true)
+    let actualError = <Error>isAuth
+    expect(actualError.message).toBe(expectedError.message)
+
+    // wait until config.incorrectDelay seconds have passed
+    await connection.none(
+      `
+      UPDATE br7own.users
+      SET last_login_attempt = NOW() - INTERVAL '$\{interval\} seconds'
+      WHERE email = $\{email\}`,
+      { interval: config.incorrectDelay, email: emailAddress }
+    )
+
+    // second password attempt
+    isAuth = await authenticate(connection, fakeAuditLogger, emailAddress, invalidPassword, verificationCode)
+    expect(isError(isAuth)).toBe(true)
+    actualError = <Error>isAuth
+    expect(actualError.message).toBe(expectedError.message)
+
+    // wait until config.incorrectDelay seconds have passed
+    await connection.none(
+      `
+      UPDATE br7own.users
+      SET last_login_attempt = NOW() - INTERVAL '$\{interval\} seconds'
+      WHERE email = $\{email\}`,
+      { interval: config.incorrectDelay, email: emailAddress }
+    )
+
+    // third password attempt
+    isAuth = await authenticate(connection, fakeAuditLogger, emailAddress, invalidPassword, verificationCode)
+    expect(isError(isAuth)).toBe(true)
+    actualError = <Error>isAuth
+    expect(actualError.message).toBe(expectedError.message)
+
+    // wait until config.incorrectDelay seconds have passed
+    await connection.none(
+      `
+      UPDATE br7own.users
+      SET last_login_attempt = NOW() - INTERVAL '$\{interval\} seconds'
+      WHERE email = $\{email\}`,
+      { interval: config.incorrectDelay, email: emailAddress }
+    )
+
+    // attempt to use correct password
+    isAuth = await authenticate(connection, fakeAuditLogger, emailAddress, correctPassword, verificationCode)
+    expect(isError(isAuth)).toBe(true)
+    actualError = <Error>isAuth
+    expect(actualError.message).toBe(expectedError.message)
+  })
+
   it("should not allow the user to authenticate if their account is soft deleted", async () => {
     await insertUsers()
     const emailAddress = "bichard03@example.com"

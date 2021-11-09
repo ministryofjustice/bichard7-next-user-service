@@ -7,8 +7,11 @@ import { verifySsha } from "lib/ssha"
 import { verifyPassword } from "lib/argon2"
 import UserFullDetails from "types/UserFullDetails"
 import PromiseResult from "types/PromiseResult"
+import { isError } from "types/Result"
 import resetUserVerificationCode from "./resetUserVerificationCode"
 import updatePassword from "./updatePassword"
+import getFailedPasswordAttempts from "./getFailedPasswordAttempts"
+import setFailedPasswordAttempts from "./setFailedPasswordAttempts"
 
 const fetchGroups = async (task: ITask<unknown>, emailAddress: string): Promise<UserGroup[]> => {
   const fetchGroupsQuery = `
@@ -121,8 +124,21 @@ const authenticate = async (
 
     if (isAuthenticated && isVerified) {
       await resetUserVerificationCode(connection, emailAddress)
+      await setFailedPasswordAttempts(connection, emailAddress, 0)
       await auditLogger("User logged in", { user: { ...user, password: undefined } })
       return user
+    }
+
+    if (!isAuthenticated) {
+      const attemptsSoFar = await getFailedPasswordAttempts(connection, emailAddress)
+      if (isError(attemptsSoFar)) {
+        throw attemptsSoFar
+      }
+
+      if (attemptsSoFar + 1 >= config.maxPasswordFailedAttempts) {
+        await resetUserVerificationCode(connection, emailAddress)
+      }
+      await setFailedPasswordAttempts(connection, emailAddress, attemptsSoFar + 1)
     }
 
     return invalidCredentialsError

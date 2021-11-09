@@ -1,13 +1,23 @@
 import Database from "types/Database"
 import PromiseResult from "types/PromiseResult"
+import { isError } from "types/Result"
 
-export default (connection: Database, emailAddress: string): PromiseResult<void> => {
+export default async (connection: Database, emailAddress: string): PromiseResult<number> => {
   const query = `
         SELECT
-            failed_password_attempts
+            failed_password_attempts AS "failedPasswordAttempts"
         FROM br7own.users
         WHERE email = $1 AND deleted_at IS NULL
     `
 
-  return connection.oneOrNone(query, [emailAddress]).catch((error) => error)
+  const result = await connection.oneOrNone(query, [emailAddress]).catch((error) => error)
+  if (isError(result)) {
+    return result
+  }
+
+  if (!result) {
+    return Error("User not found")
+  }
+
+  return result.failedPasswordAttempts
 }

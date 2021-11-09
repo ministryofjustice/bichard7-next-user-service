@@ -5,6 +5,7 @@ import { addBasePath } from "next/dist/shared/lib/router/router"
 import Database from "types/Database"
 import PromiseResult from "types/PromiseResult"
 import { isError } from "types/Result"
+import setFailedPasswordAttempts from "./setFailedPasswordAttempts"
 import storeVerificationCode from "./storeVerificationCode"
 
 export default async (
@@ -24,6 +25,12 @@ export default async (
   // then don't generate a URL
   if (!storeVerificationCodeResult) {
     return undefined
+  }
+
+  const resetFailedPasswordAttemptsResult = await setFailedPasswordAttempts(connection, emailAddress, 0)
+
+  if (isError(resetFailedPasswordAttemptsResult)) {
+    return resetFailedPasswordAttemptsResult
   }
 
   const payload: EmailVerificationTokenPayload = {
