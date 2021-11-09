@@ -4,17 +4,11 @@ const updateUserCodes = (
   listOfCodes: { id: string; name: string }[],
   typeOfCodes: string,
   formData: QueryString.ParsedQs
-) => {
-  let result = ""
-
-  for (let i = 0; i < listOfCodes.length; i += 1) {
-    const code = `${typeOfCodes}${listOfCodes[i].id}`
-    if (code in formData && !result.includes(code)) {
-      result = `${result}${listOfCodes[i].id},`
-    }
-  }
-
-  return result
+): string => {
+  return listOfCodes
+    .filter((code) => `${typeOfCodes}${code.id}` in formData)
+    .map((code) => code.id)
+    .join(",")
 }
 
 export default updateUserCodes

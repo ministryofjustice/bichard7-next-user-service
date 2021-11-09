@@ -9,7 +9,7 @@ it("should return new codes if old codes are empty", () => {
   formData.prefix001 = "true"
 
   const result = updateUserCodes([singleCode], typeOfCodes, formData)
-  expect(result).toBe("001,")
+  expect(result).toBe("001")
 })
 
 it("should append extra codes if they need to be added", () => {
@@ -18,7 +18,7 @@ it("should append extra codes if they need to be added", () => {
   const formData = { prefix000: "true", prefix001: "true" }
 
   const result = updateUserCodes([firstCode, secondCode], typeOfCodes, formData)
-  expect(result).toBe("000,001,")
+  expect(result).toBe("000,001")
 })
 
 it("should leave codes empty if formdata empty", () => {

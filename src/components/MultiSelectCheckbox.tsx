@@ -8,36 +8,24 @@ interface Props {
 }
 
 const MultiSelectCheckbox = ({ label, name, values, codes }: Props) => {
-  const codeCheckboxes = []
+  const codeCheckboxes = codes.map((code) => {
+    return (
+      <div className="govuk-checkboxes__item" key={`${name}${code.id}`}>
+        <input
+          className="govuk-checkboxes__input"
+          id={`${name}${code.id}`}
+          name={`${name}${code.id}`}
+          type="checkbox"
+          value="true"
+          defaultChecked={values?.includes(code.id)}
+        />
 
-  for (let i = 0; i < codes.length; i++) {
-    codeCheckboxes.push(
-      <div className="govuk-checkboxes__item">
-        {values?.includes(codes[i].id) ? (
-          <input
-            className="govuk-checkboxes__input"
-            id={`${name}${codes[i].id}`}
-            name={`${name}${codes[i].id}`}
-            type="checkbox"
-            value="true"
-            defaultChecked
-          />
-        ) : (
-          <input
-            className="govuk-checkboxes__input"
-            id={`${name}${codes[i].id}`}
-            name={`${name}${codes[i].id}`}
-            type="checkbox"
-            value="false"
-          />
-        )}
-
-        <label className="govuk-label govuk-checkboxes__label" htmlFor={codes[i].id}>
-          {`${codes[i].id} - ${codes[i].name}`}
+        <label className="govuk-label govuk-checkboxes__label" htmlFor={code.id}>
+          {`${code.id} - ${code.name}`}
         </label>
       </div>
     )
-  }
+  })
 
   return (
     <>
