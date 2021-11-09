@@ -1,7 +1,6 @@
 import TextInput from "components/TextInput"
 import { UserGroupResult } from "types/UserGroup"
 import { Fieldset } from "components/Fieldset"
-import Select from "components/Select"
 import MultiSelectCheckbox from "components/MultiSelectCheckbox"
 import forceInclusions from "codes/forceInclusions.json"
 import triggersList from "codes/triggersList.json"
