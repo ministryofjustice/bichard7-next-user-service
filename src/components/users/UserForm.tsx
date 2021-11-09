@@ -57,11 +57,20 @@ const UserForm = ({
     />
 
     <Fieldset>
-      <legend><label className="govuk-label">{"Group assignments"}</label></legend>
+      <legend>
+        <h5 className="govuk-label">{"Group assignments"}</h5>
+      </legend>
       <div className="govuk-checkboxes" data-module="govuk-checkboxes">
         {allGroups?.map((group: UserGroupResult) => (
           <div key={group.id} className="govuk-checkboxes__item">
-            <input className="govuk-checkboxes__input" id={group.id} name={group.name} type="checkbox" value={userGroups && userGroups.length ? "yes" : "no"} defaultChecked={ userGroups?.find(userGroup => userGroup.id === group.id) !== undefined } />
+            <input
+              className="govuk-checkboxes__input"
+              id={group.id}
+              name={group.name}
+              type="checkbox"
+              value={userGroups && userGroups.length ? "yes" : "no"}
+              defaultChecked={userGroups?.find((userGroup) => userGroup.id === group.id) !== undefined}
+            />
 
             <label className="govuk-label govuk-checkboxes__label" htmlFor={group.id}>
               {group.name}
