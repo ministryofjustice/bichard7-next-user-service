@@ -123,7 +123,7 @@ describe("Logging In", () => {
 
         cy.get("input[type=password][name=password]").type("incorrect password")
         cy.get("button[type=submit]").click()
-        cy.get(".govuk-error-summary").should("be.visible").contains("h2", "Invalid credentials")
+        cy.get(".govuk-error-summary").should("be.visible").contains("h2", "Your details do not match")
 
         // Note: Although we avoid waits in cypress test as the logic implemented is temporal in nature we can consider this OK
         // Need to wait 10 seconds after inputting an incorrect password
@@ -261,7 +261,7 @@ describe("Logging In", () => {
       })
 
       // Note: Although we avoid waits in cypress test as the logic implemented is temporal in nature we can consider this OK
-      // Need to wait 10 seconds after inputting an correct password
+      // Need to wait 10 seconds after inputting an incorrect password
       /* eslint-disable-next-line cypress/no-unnecessary-waiting */
       cy.wait(10000)
 
@@ -297,6 +297,44 @@ describe("Logging In", () => {
       })
 
       cy.url().should("match", /\/users$/)
+    })
+
+    it("doesn't allow user to login after incorrectly inserting password 3 times", () => {
+      const emailAddress = "bichard01@example.com"
+      const incorrectPassword = "fakePassword"
+
+      cy.visit("/login")
+      cy.get("input[type=email]").type(emailAddress)
+      cy.get("button[type=submit]").click()
+      cy.get('h1[data-test="check-email"]').should("exist")
+
+      cy.task("getVerificationCode", emailAddress).then((verificationCode) => {
+        const token = validToken(emailAddress, verificationCode)
+        cy.visit(`/login/verify?token=${token}`)
+
+        // first incorrect login attempt
+        cy.get("input[type=password][name=password]").type(incorrectPassword)
+        cy.get("button[type=submit]").click()
+        cy.get(".govuk-error-summary").should("be.visible").contains("h2", "Your details do not match")
+        // Note: Although we avoid waits in cypress test as the logic implemented is temporal in nature we can consider this OK
+        // Need to wait 10 seconds after inputting an incorrect password
+        /* eslint-disable-next-line cypress/no-unnecessary-waiting */
+        cy.wait(10000)
+
+        // second incorrect login attempt
+        cy.get("input[type=password][name=password]").type(incorrectPassword)
+        cy.get("button[type=submit]").click()
+        cy.get(".govuk-error-summary").should("be.visible").contains("h2", "Your details do not match")
+        // Note: Although we avoid waits in cypress test as the logic implemented is temporal in nature we can consider this OK
+        // Need to wait 10 seconds after inputting an incorrect password
+        /* eslint-disable-next-line cypress/no-unnecessary-waiting */
+        cy.wait(10000)
+
+        // third incorrect login attempt
+        cy.get("input[type=password][name=password]").type(incorrectPassword)
+        cy.get("button[type=submit]").click()
+        cy.get(".govuk-error-summary").should("be.visible").contains("h2", "Unable to verify email address")
+      })
     })
   })
 })
