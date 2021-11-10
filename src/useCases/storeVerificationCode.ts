@@ -6,7 +6,8 @@ export default async (connection: Database, emailAddress: string, verificationCo
   const storeVerificationQuery = `
     UPDATE br7own.users
     SET email_verification_code = $1,
-      email_verification_generated = NOW()
+      email_verification_generated = NOW(),
+      failed_password_attempts = 0
     WHERE email = $2 AND deleted_at IS NULL
   `
   const result = await connection

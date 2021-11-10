@@ -124,7 +124,6 @@ const authenticate = async (
 
     if (isAuthenticated && isVerified) {
       await resetUserVerificationCode(connection, emailAddress)
-      await setFailedPasswordAttempts(connection, emailAddress, 0)
       await auditLogger("User logged in", { user: { ...user, password: undefined } })
       return user
     }
