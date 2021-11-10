@@ -4,9 +4,9 @@ import PromiseResult from "types/PromiseResult"
 export default (connection: Database, emailAddress: string, failedPasswordAttempts: number): PromiseResult<void> => {
   const query = `
         UPDATE br7own.users
-        SET failed_password_attempts = $1
-        WHERE email = $2 AND deleted_at IS NULL
+        SET failed_password_attempts = $\{failedPasswordAttempts\}
+        WHERE email = $\{emailAddress\} AND deleted_at IS NULL
     `
 
-  return connection.none(query, [failedPasswordAttempts, emailAddress]).catch((error) => error)
+  return connection.none(query, { failedPasswordAttempts, emailAddress }).catch((error) => error)
 }
