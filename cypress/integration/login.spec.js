@@ -261,7 +261,7 @@ describe("Logging In", () => {
       })
 
       // Note: Although we avoid waits in cypress test as the logic implemented is temporal in nature we can consider this OK
-      // Need to wait 10 seconds after inputting an incorrect password
+      // Need to wait 10 seconds after inputting a correct password
       /* eslint-disable-next-line cypress/no-unnecessary-waiting */
       cy.wait(10000)
 
