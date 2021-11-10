@@ -302,6 +302,7 @@ describe("Logging In", () => {
     it("doesn't allow user to login after incorrectly inserting password 3 times", () => {
       const emailAddress = "bichard01@example.com"
       const incorrectPassword = "fakePassword"
+      const password = "password"
 
       cy.visit("/login")
       cy.get("input[type=email]").type(emailAddress)
@@ -335,6 +336,26 @@ describe("Logging In", () => {
         cy.get("button[type=submit]").click()
         cy.get(".govuk-error-summary").should("be.visible").contains("h2", "Unable to verify email address")
       })
+      // Note: Although we avoid waits in cypress test as the logic implemented is temporal in nature we can consider this OK
+      // Need to wait 10 seconds after inputting an incorrect password
+      /* eslint-disable-next-line cypress/no-unnecessary-waiting */
+      cy.wait(10000)
+
+      cy.visit("/login")
+      cy.get("input[type=email]").type(emailAddress)
+      cy.get("button[type=submit]").click()
+      cy.get('h1[data-test="check-email"]').should("exist")
+
+      cy.task("getVerificationCode", emailAddress).then((verificationCode) => {
+        const token = validToken(emailAddress, verificationCode)
+        cy.visit(`/login/verify?token=${token}`)
+
+        // first incorrect login attempt
+        cy.get("input[type=password][name=password]").type(password)
+        cy.get("button[type=submit]").click()
+      })
+
+      cy.url().should("match", /\/users$/)
     })
   })
 })
