@@ -1,11 +1,9 @@
 import TextInput from "components/TextInput"
 import { UserGroupResult } from "types/UserGroup"
-import { Fieldset } from "components/Fieldset"
-import MultiSelectCheckbox from "components/MultiSelectCheckbox"
 import forceInclusions from "codes/forceInclusions.json"
 import triggersList from "codes/triggersList.json"
 import React from "react"
-import CheckboxMultiSelect from "components/ChecboxMultiSelect"
+import CheckboxMultiSelect from "components/CheckboxMultiSelect"
 
 interface Props {
   username?: string
@@ -82,31 +80,42 @@ const UserForm = ({
       <TextInput value={endorsedBy} name="endorsedBy" label="Endorsed by" width="20" />
       <TextInput value={orgServes} name="orgServes" label="Organisation" width="20" />
 
-      <TextInput value={endorsedBy} name="endorsedBy" label="Endorsed by" width="20" />
-      <TextInput value={orgServes} name="orgServes" label="Organisation" width="20" />
-
-      <CheckboxMultiSelect allOptions={allGroups} label="select/view groups that user belongs to" selectedOptions={userGroups}></CheckboxMultiSelect>
-
-      <MultiSelectCheckbox
-        label="Show records from force"
-        name="visibleForces"
-        values={visibleForces}
-        codes={listOfForces}
-      />
       <TextInput
         value={visibleCourts}
         name="visibleCourts"
         label="Also, show records from specific Courts"
         width="20"
       />
-
-      <MultiSelectCheckbox
-        label="Exclude Triggers"
-        name="excludedTriggers"
-        values={excludedTriggers}
-        codes={listOfTriggers}
+      <CheckboxMultiSelect
+        idMappingFn={(item) => `visibleForces${item?.id}`}
+        nameMappingFn={(item) => `visibleForces${item?.id}`}
+        keymappingFn={(item) => `visibleForces${item?.id}`}
+        displayValueMappingFn={(item) => `${item.id} - ${item.name}`}
+        hintLabel="Show records from force"
+        selectedOptions={visibleForces}
+        allOptions={listOfForces}
       />
-      <br />
+      <div className="govuk-checkboxes__divider" />
+      <CheckboxMultiSelect
+        idMappingFn={(item) => `excludedTriggers${item?.id}`}
+        nameMappingFn={(item) => `excludedTriggers${item?.id}`}
+        keymappingFn={(item) => `excludedTriggers${item?.id}`}
+        displayValueMappingFn={(item) => `${item.id} - ${item.name}`}
+        hintLabel="Exclude Triggers"
+        selectedOptions={excludedTriggers}
+        allOptions={listOfTriggers}
+      />
+      <div className="govuk-checkboxes__divider" />
+      <CheckboxMultiSelect
+        displayValueMappingFn={(item) => item.name}
+        nameMappingFn={(item) => `${item?.name}`}
+        idMappingFn={(item) => `${item?.id}`}
+        keymappingFn={(item) => `${item?.id}`}
+        allOptions={allGroups}
+        hintLabel="Select groups that user belongs to"
+        selectedOptions={userGroups}
+      />
+      <br/>
     </>
   )
 }
