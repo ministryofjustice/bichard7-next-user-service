@@ -7,7 +7,9 @@ import Head from "next/head"
 
 export const getServerSideProps = ({ res }: GetServerSidePropsContext) => {
   res.statusCode = 403
-  return {}
+  return {
+    props: {}
+  }
 }
 
 const AccessDenied = () => (
