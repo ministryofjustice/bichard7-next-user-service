@@ -13,7 +13,10 @@ export default (db: Database, emailAddress: string): PromiseResult<User | null> 
         endorsed_by AS "endorsedBy",
         org_serves AS "orgServes",
         forenames,
-        surname
+        surname,
+        visible_courts AS "visibleCourts",
+        visible_forces AS "visibleForces",
+        excluded_triggers AS "excludedTriggers"
       FROM br7own.users
       WHERE email = $1 AND deleted_at IS NULL
     `
