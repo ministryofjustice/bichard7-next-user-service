@@ -68,7 +68,7 @@ const CheckboxMultiSelect = ({
               id={idMappingFn(group)}
               name={nameMappingFn(group)}
               type="checkbox"
-              value={selectedOptions && selectedOptions.length ? "yes" : "no"}
+              value={"yes"}
               defaultChecked={isSelectedOption(selectedOptions, group)}
             />
 

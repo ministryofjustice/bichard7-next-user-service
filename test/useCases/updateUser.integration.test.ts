@@ -288,7 +288,7 @@ describe("updatePassword", () => {
     expect(expectedUsersGroups).toHaveLength(0)
   })
 
-  fit("should delete all previous records in the users_groups table", async () => {
+  it("should delete all previous records in the users_groups table", async () => {
     await insertIntoUsersTable(users)
     await insertIntoGroupsTable(groups)
     await insertIntoUserGroupsTable(

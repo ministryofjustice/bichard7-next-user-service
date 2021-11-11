@@ -13,7 +13,9 @@ const selectFromTable = async (tableName, whereColumn, whereValue, orderByColumn
   const table = getTableName(tableName)
   const whereClause = isWhereClause ? { value: whereValue } : {}
 
-  return connection.any(selectQuery, { table, ...whereClause })
+  const result = await connection.any(selectQuery, { table, ...whereClause })
+  console.log(result)
+  return connection.any(selectQuery, { table, ...whereClause });
 }
 
 export default selectFromTable
