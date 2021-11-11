@@ -2,28 +2,28 @@ import React from "react"
 import { Fieldset } from "./Fieldset"
 
 interface Props {
-   /** All available options, these will be rendered as a checkbox. */
+  /** All available options, these will be rendered as a checkbox. */
   allOptions: CheckBoxObject[] | undefined
-   /** The options that are currently selected, this will drive what checkboxes are ticked. */
+  /** The options that are currently selected, this will drive what checkboxes are ticked. */
   selectedOptions: CheckBoxObject[] | string | undefined
-   /** Provides a hint to the user on what the checkboxes show. */
+  /** Provides a hint to the user on what the checkboxes show. */
   hintLabel: string
   controlLabel?: string
-   /** Provide a function to output the required displayed value for each checkbox, this function has access to 
-    *  the object being iterated over
-    */
+  /** Provide a function to output the required displayed value for each checkbox, this function has access to
+   *  the object being iterated over
+   */
   displayValueMappingFn: (item: CheckBoxObject) => string
-    /** Provide a function to output the required name for each checkbox, this function has access to 
-    *  the object being iterated over
-    */
+  /** Provide a function to output the required name for each checkbox, this function has access to
+   *  the object being iterated over
+   */
   nameMappingFn: (item?: CheckBoxObject) => string
-     /** Provide a function to output the required id for each checkbox, this function has access to 
-    *  the object being iterated over
-    */
+  /** Provide a function to output the required id for each checkbox, this function has access to
+   *  the object being iterated over
+   */
   idMappingFn: (item?: CheckBoxObject) => string
-     /** Provide a function to output the required key for each checkbox, this function has access to 
-    *  the object being iterated over
-    */
+  /** Provide a function to output the required key for each checkbox, this function has access to
+   *  the object being iterated over
+   */
   keymappingFn: (item?: CheckBoxObject) => string
 }
 
@@ -32,7 +32,7 @@ export interface CheckBoxObject {
   name: string
 }
 
-function isSelectedOption(selectedItems: CheckBoxObject[] | string | undefined, item: any): boolean {
+function isSelectedOption(selectedItems: CheckBoxObject[] | string | undefined, item: CheckBoxObject): boolean {
   if (Array.isArray(selectedItems)) {
     return selectedItems?.find((selectedItem) => selectedItem.id === item.id) !== undefined
   }
