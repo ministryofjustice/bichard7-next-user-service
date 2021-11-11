@@ -8,6 +8,7 @@ import config from "lib/config"
 import { createSsha } from "lib/ssha"
 import { hashPassword } from "lib/argon2"
 import Database from "types/Database"
+import getFailedPasswordAttempts from "useCases/getFailedPasswordAttempts"
 import getTestConnection from "../../testFixtures/getTestConnection"
 import deleteFromTable from "../../testFixtures/database/deleteFromTable"
 import users from "../../testFixtures/database/data/users"
@@ -89,9 +90,13 @@ describe("Authenticator", () => {
     const verificationCode = "CoDeRs"
     const expectedError = new Error("Invalid credentials or invalid verification")
     await storeVerificationCode(connection, emailAddress, verificationCode)
+    let attemptsSoFar = await getFailedPasswordAttempts(connection, emailAddress)
+    expect(attemptsSoFar).toBe(0)
 
     const result = await authenticate(connection, fakeAuditLogger, emailAddress, invalidPassword, verificationCode)
     expect(isError(result)).toBe(true)
+    attemptsSoFar = await getFailedPasswordAttempts(connection, emailAddress)
+    expect(attemptsSoFar).toBe(1)
 
     const actualError = <Error>result
     expect(actualError.message).toBe(expectedError.message)
@@ -99,6 +104,8 @@ describe("Authenticator", () => {
     // 2 second wait between checks
     let isAuth = await authenticate(connection, fakeAuditLogger, emailAddress, correctPassword, verificationCode)
     expect(isError(isAuth)).toBe(true)
+    attemptsSoFar = await getFailedPasswordAttempts(connection, emailAddress)
+    expect(attemptsSoFar).toBe(1)
 
     // wait until config.incorrectDelay seconds have passed
     await connection.none(
@@ -111,6 +118,8 @@ describe("Authenticator", () => {
 
     isAuth = await authenticate(connection, fakeAuditLogger, emailAddress, correctPassword, verificationCode)
     expect(isError(isAuth)).toBe(false)
+    attemptsSoFar = await getFailedPasswordAttempts(connection, emailAddress)
+    expect(attemptsSoFar).toBe(0)
   })
 
   it("should not allow the user to authenticate with incorrect code and correct password", async () => {
@@ -161,11 +170,16 @@ describe("Authenticator", () => {
     const expectedError = new Error("Invalid credentials or invalid verification")
     await storeVerificationCode(connection, emailAddress, verificationCode)
 
+    let attemptsSoFar = await getFailedPasswordAttempts(connection, emailAddress)
+    expect(attemptsSoFar).toBe(0)
+
     // first password attempt
     let isAuth = await authenticate(connection, fakeAuditLogger, emailAddress, invalidPassword, verificationCode)
     expect(isError(isAuth)).toBe(true)
     let actualError = <Error>isAuth
     expect(actualError.message).toBe(expectedError.message)
+    attemptsSoFar = await getFailedPasswordAttempts(connection, emailAddress)
+    expect(attemptsSoFar).toBe(1)
 
     // wait until config.incorrectDelay seconds have passed
     await connection.none(
@@ -181,6 +195,8 @@ describe("Authenticator", () => {
     expect(isError(isAuth)).toBe(true)
     actualError = <Error>isAuth
     expect(actualError.message).toBe(expectedError.message)
+    attemptsSoFar = await getFailedPasswordAttempts(connection, emailAddress)
+    expect(attemptsSoFar).toBe(2)
 
     // wait until config.incorrectDelay seconds have passed
     await connection.none(
@@ -196,6 +212,8 @@ describe("Authenticator", () => {
     expect(isError(isAuth)).toBe(true)
     actualError = <Error>isAuth
     expect(actualError.message).toBe(expectedError.message)
+    attemptsSoFar = await getFailedPasswordAttempts(connection, emailAddress)
+    expect(attemptsSoFar).toBe(3)
 
     // wait until config.incorrectDelay seconds have passed
     await connection.none(
@@ -211,6 +229,8 @@ describe("Authenticator", () => {
     expect(isError(isAuth)).toBe(true)
     actualError = <Error>isAuth
     expect(actualError.message).toBe(expectedError.message)
+    attemptsSoFar = await getFailedPasswordAttempts(connection, emailAddress)
+    expect(attemptsSoFar).toBe(3)
   })
 
   it("should not allow the user to authenticate if their account is soft deleted", async () => {
