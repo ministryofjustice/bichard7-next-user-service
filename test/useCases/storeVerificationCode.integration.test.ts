@@ -3,11 +3,15 @@ import { isError } from "types/Result"
 import getFailedPasswordAttempts from "useCases/getFailedPasswordAttempts"
 import storeVerificationCode from "useCases/storeVerificationCode"
 import deleteFromTable from "../../testFixtures/database/deleteFromTable"
-
-const database = <Database>(<unknown>{ result: () => {} })
+import getTestConnection from "../../testFixtures/getTestConnection"
 
 describe("StoreVerificationCode", () => {
   let connection: Database
+
+  beforeAll(() => {
+    connection = getTestConnection()
+  })
+
   beforeEach(async () => {
     await deleteFromTable("users_groups")
     await deleteFromTable("users")
@@ -20,6 +24,7 @@ describe("StoreVerificationCode", () => {
 
   it("should return error when database returns error", async () => {
     const expectedError = new Error("Error message")
+    const database = <Database>(<unknown>{ result: () => {} })
 
     jest.spyOn(database, "result").mockResolvedValue(expectedError)
 
