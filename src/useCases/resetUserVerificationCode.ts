@@ -4,7 +4,8 @@ import PromiseResult from "types/PromiseResult"
 const resetUserVerificationCode = async (connection: Database, emailAddress: string): PromiseResult<void> => {
   const updateUserQuery = `
         UPDATE br7own.users
-        SET email_verification_code = NULL
+        SET email_verification_code = NULL,
+          failed_password_attempts = 0
         WHERE email = $1
           AND deleted_at IS NULL
       `
