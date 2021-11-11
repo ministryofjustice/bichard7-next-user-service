@@ -54,13 +54,13 @@ const CheckboxMultiSelect = ({
 }: Props) => {
   return (
     <Fieldset>
-      <legend className="govuk-fieldset__legend govuk-fieldset__legend--l">
+      <legend data-test="checkbox-multiselect-legend" className="govuk-fieldset__legend govuk-fieldset__legend--l">
         <h5 className="govuk-fieldset__heading">{controlLabel}</h5>
       </legend>
-      <div id="checkbox-group-hint" className="govuk-hint">
+      <div id="checkbox-group-hint" data-test="checkbox-multiselect-hint" className="govuk-hint">
         {hintLabel}
       </div>
-      <div className="govuk-checkboxes" data-module="govuk-checkboxes">
+      <div data-test="checkbox-multiselect-checkboxes" className="govuk-checkboxes" data-module="govuk-checkboxes">
         {allOptions?.map((group: CheckBoxObject) => (
           <div key={keymappingFn(group)} className="govuk-checkboxes__item">
             <input
@@ -72,7 +72,7 @@ const CheckboxMultiSelect = ({
               defaultChecked={isSelectedOption(selectedOptions, group)}
             />
 
-            <label className="govuk-label govuk-checkboxes__label" htmlFor={group.id}>
+            <label data-test={nameMappingFn(group)} className="govuk-label govuk-checkboxes__label" htmlFor={group.id}>
               {displayValueMappingFn(group)}
             </label>
           </div>

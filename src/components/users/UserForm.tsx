@@ -106,16 +106,18 @@ const UserForm = ({
         allOptions={listOfTriggers}
       />
       <div className="govuk-checkboxes__divider" />
-      <CheckboxMultiSelect
-        displayValueMappingFn={(item) => item.name}
-        nameMappingFn={(item) => `${item?.name}`}
-        idMappingFn={(item) => `${item?.id}`}
-        keymappingFn={(item) => `${item?.id}`}
-        allOptions={allGroups}
-        hintLabel="Select groups that user belongs to"
-        selectedOptions={userGroups}
-      />
-      <br/>
+      <div data-test="checkbox-user-groups">
+        <CheckboxMultiSelect
+          displayValueMappingFn={(item) => item.name}
+          nameMappingFn={(item) => `${item?.name}`}
+          idMappingFn={(item) => `${item?.id}`}
+          keymappingFn={(item) => `${item?.id}`}
+          allOptions={allGroups}
+          hintLabel="Select groups that user belongs to"
+          selectedOptions={userGroups}
+        />
+      </div>
+      <br />
     </>
   )
 }
