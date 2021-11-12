@@ -43,8 +43,8 @@ describe("StoreVerificationCode", () => {
 
   it("should return error when verification code is too long", async () => {
     const query = `INSERT INTO br7own.users(
-      id, username, email, exclusion_list, inclusion_list, created_at)
-      VALUES (4, 'tmp_user', 'tmp_email@address', '[]', '[]', NOW())`
+      id, username, email, created_at)
+      VALUES (4, 'tmp_user', 'tmp_email@address', NOW())`
     const insertResult = await connection.result(query).catch((error) => error)
     console.log(insertResult)
     expect(isError(insertResult)).toBe(false)
@@ -55,8 +55,8 @@ describe("StoreVerificationCode", () => {
 
   it("should update the failed password attempts", async () => {
     const query = `INSERT INTO br7own.users(
-      id, username, email, exclusion_list, inclusion_list, created_at)
-      VALUES (4, 'tmp_user', 'tmp_email@address', '[]', '[]', NOW())`
+      id, username, email, created_at)
+      VALUES (4, 'tmp_user', 'tmp_email@address', NOW())`
     const insertResult = await connection.result(query).catch((error) => error)
     console.log(insertResult)
     expect(isError(insertResult)).toBe(false)

@@ -8,8 +8,6 @@ export default (db: Database, emailAddress: string): PromiseResult<User | null> 
         id,
         username,
         email AS "emailAddress",
-        exclusion_list AS "exclusionList",
-        inclusion_list AS "inclusionList",
         endorsed_by AS "endorsedBy",
         org_serves AS "orgServes",
         forenames,
