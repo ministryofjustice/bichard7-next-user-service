@@ -47,7 +47,6 @@ export const getServerSideProps = withMultipleServerSideProps(
 
     if (isPost(req)) {
       const groupsChecked = groups.filter((group) => formData[group.name] === "yes")
-console.log(formData)
       const userDetails: Partial<User> = formData
       userDetails.groups = groupsChecked
 

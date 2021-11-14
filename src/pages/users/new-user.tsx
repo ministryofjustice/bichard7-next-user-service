@@ -101,7 +101,7 @@ export const getServerSideProps = withMultipleServerSideProps(
         }
 
         const auditLogger = getAuditLogger(context, config)
-        const result = await setupNewUser(connection, auditLogger, currentUser.id, userCreateDetails)
+        const result = await setupNewUser(connection, auditLogger, currentUser, userCreateDetails)
 
         if (isError(result)) {
           return {

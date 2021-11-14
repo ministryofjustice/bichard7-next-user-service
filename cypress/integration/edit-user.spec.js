@@ -108,15 +108,16 @@ describe("Edit user", () => {
 
       cy.visit("users/Bichard01/edit")
       cy.get('[data-test="checkbox-user-groups"]')
-        .find('[data-test="checkbox-multiselect-checkboxes"]')
-        .find("input")
-        .should("have.length", currentUserGroups.length)
       cy.get('[data-test="checkbox-user-groups"]')
         .find('[data-test="checkbox-multiselect-checkboxes"]')
-        .find("input")
+        .find("label")
+        .should("have.length", currentUserGroups.length)
+
+      cy.get('[data-test="checkbox-user-groups"]')
+        .find('[data-test="checkbox-multiselect-checkboxes"]')
         .each(($el, index) => {
-          cy.wrap($el.id).eq("have.value", currentUserGroups[index].id)
-          cy.wrap($el).contains(currentUserGroups[index].name)
+          cy.wrap($el).find(`input[id=${currentUserGroups[index].id}]`).should("exist")
+          cy.wrap($el).find("label").contains(currentUserGroups[index].name)
         })
     })
   })

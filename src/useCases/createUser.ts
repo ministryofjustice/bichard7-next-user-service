@@ -4,6 +4,7 @@ import { ITask } from "pg-promise"
 import { isError } from "types/Result"
 import User from "types/User"
 import { UserGroupResult } from "types/UserGroup"
+import { getUserGroups } from "useCases"
 import isUsernameUnique from "./isUsernameUnique"
 import isEmailUnique from "./IsEmailUnique"
 
@@ -75,7 +76,11 @@ const insertUserIntoGroup = async (
   return undefined
 }
 
-export default async (connection: Database, currentUserId: number, userDetails: Partial<User>): PromiseResult<void> => {
+export default async (
+  connection: Database,
+  currentUser: Partial<User>,
+  userDetails: Partial<User>
+): PromiseResult<void> => {
   const isUsernameUniqueResult = await isUsernameUnique(connection, userDetails.username as string)
   if (isError(isUsernameUniqueResult)) {
     return isUsernameUniqueResult
@@ -95,8 +100,20 @@ export default async (connection: Database, currentUserId: number, userDetails: 
         return Error("Could not insert record into users table")
       }
 
-      if (userDetails.groups) {
-        const userGroupResult = await insertUserIntoGroup(task, insertUserResult.id, currentUserId, userDetails.groups)
+      const groups = await getUserGroups(connection, [currentUser.username ?? ""])
+      if (isError(groups)) {
+        return groups
+      }
+      const filteredGroups = groups.filter((group) => userDetails[group.name] === "yes")
+      const userDetailsWithGroups = { ...userDetails, groups: filteredGroups }
+
+      if (userDetailsWithGroups.groups && userDetailsWithGroups.groups.length > 0) {
+        const userGroupResult = await insertUserIntoGroup(
+          task,
+          insertUserResult.id,
+          currentUser.id ?? -1,
+          userDetailsWithGroups.groups
+        )
         return userGroupResult
       }
 
