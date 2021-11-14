@@ -36,6 +36,7 @@ export interface UserServiceConfig {
   tokenExpiresIn: string
   tokenIssuer: string
   tokenSecret: string
+  maxPasswordFailedAttempts: number
   maxServiceMessagesPerPage: number
   maxUsersPerPage: number
   verificationCodeLength: number
@@ -70,6 +71,7 @@ const config: UserServiceConfig = {
   tokenExpiresIn: process.env.TOKEN_EXPIRES_IN ?? "10 minutes",
   tokenIssuer: process.env.TOKEN_ISSUER ?? "Bichard",
   tokenSecret: process.env.TOKEN_SECRET ?? "OliverTwist",
+  maxPasswordFailedAttempts: 3,
   maxServiceMessagesPerPage: 5,
   maxUsersPerPage: 10,
   verificationCodeLength: 6,

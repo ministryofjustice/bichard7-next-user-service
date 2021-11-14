@@ -26,6 +26,7 @@ import isPost from "utils/isPost"
 import getAuditLogger from "lib/getAuditLogger"
 import addQueryParams from "utils/addQueryParams"
 import { ErrorSummaryList } from "components/ErrorSummary"
+import getFailedPasswordAttempts from "useCases/getFailedPasswordAttempts"
 
 export const getServerSideProps = withCsrf(async (context): Promise<GetServerSidePropsResult<Props>> => {
   const { req, res, query, formData, csrfToken } = context as CsrfServerSidePropsContext
@@ -71,6 +72,11 @@ export const getServerSideProps = withCsrf(async (context): Promise<GetServerSid
 
       if (isError(user)) {
         console.error(user)
+        const attemptsSoFar = await getFailedPasswordAttempts(connection, emailAddress)
+        if (!isError(attemptsSoFar) && attemptsSoFar >= config.maxPasswordFailedAttempts) {
+          throw new Error("Error validating credentials")
+        }
+
         return {
           props: {
             invalidCredentials: true,
