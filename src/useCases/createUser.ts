@@ -99,12 +99,15 @@ export default async (
         console.error(insertUserResult)
         return Error("Could not insert record into users table")
       }
-
+console.log(currentUser)
       const groups = await getUserGroups(connection, [currentUser.username ?? ""])
       if (isError(groups)) {
         return groups
       }
+      console.log(groups)
+      console.log(userDetails)
       const filteredGroups = groups.filter((group) => userDetails[group.name] === "yes")
+      console.log(filteredGroups)
       const userDetailsWithGroups = { ...userDetails, groups: filteredGroups }
       if (userDetailsWithGroups.groups && userDetailsWithGroups.groups.length > 0) {
         const userGroupResult = await insertUserIntoGroup(
