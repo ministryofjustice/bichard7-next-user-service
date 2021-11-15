@@ -106,7 +106,6 @@ export default async (
       }
       const filteredGroups = groups.filter((group) => userDetails[group.name] === "yes")
       const userDetailsWithGroups = { ...userDetails, groups: filteredGroups }
-
       if (userDetailsWithGroups.groups && userDetailsWithGroups.groups.length > 0) {
         const userGroupResult = await insertUserIntoGroup(
           task,
