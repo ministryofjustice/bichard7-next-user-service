@@ -162,7 +162,7 @@ describe("DeleteUserUseCase", () => {
       endorsedBy: user.endorsed_by,
       surname: user.surname,
       orgServes: user.org_serves,
-      groupId: group.id,
+      groups: [group],
       visibleForces: "001,004,",
       visibleCourts: "B01,B41ME00",
       excludedTriggers: "TRPR0001,"
