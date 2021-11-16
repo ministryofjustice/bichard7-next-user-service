@@ -67,7 +67,7 @@ describe("updatePassword", () => {
     const initialUser = initialUserList[0]
 
     const selectedGroups = await selectFromTable("groups", undefined, undefined, "name")
-    const initialGroupId = selectedGroups[0].id
+    const initialGroup = selectedGroups[0]
 
     const user = {
       id: initialUser.id,
@@ -77,7 +77,7 @@ describe("updatePassword", () => {
       surname: "surname04",
       endorsedBy: "endorsed by 04",
       orgServes: "orgServes 04",
-      groupId: initialGroupId,
+      groups: [initialGroup],
       visibleForces: "004,007,",
       visibleCourts: "B02,",
       excludedTriggers: "TRPR0002,"
@@ -115,7 +115,7 @@ describe("updatePassword", () => {
     const initialUser = initialUserList[0]
 
     const selectedGroups = await selectFromTable("groups", undefined, undefined, "name")
-    const initialGroupId = selectedGroups[0].id
+    const initialGroup = selectedGroups[0]
 
     const user = {
       id: initialUser.id,
@@ -125,7 +125,7 @@ describe("updatePassword", () => {
       endorsedBy: "endorsed by 04",
       orgServes: "orgAServes 04",
       emailAddress: "bichard04@example.com",
-      groupId: initialGroupId,
+      groups: [initialGroup],
       visibleForces: "004,007,",
       visibleCourts: "B02,",
       excludedTriggers: "TRPR0002,"
@@ -151,7 +151,7 @@ describe("updatePassword", () => {
     await insertUserWithGroup()
     const expectedError = Error("Error updating user")
     const selectedGroups = await selectFromTable("groups", undefined, undefined, "name")
-    const initialGroupId = selectedGroups[0].id
+    const initialGroup = selectedGroups[0]
 
     const user = {
       id: 0,
@@ -160,7 +160,7 @@ describe("updatePassword", () => {
       surname: "surname04A",
       endorsedBy: "endorsed by 04",
       orgServes: "orgAServes 04",
-      groupId: initialGroupId,
+      groups: [initialGroup],
       visibleForces: "004,007,",
       visibleCourts: "B02,",
       excludedTriggers: "TRPR0002,"
@@ -183,7 +183,7 @@ describe("updatePassword", () => {
     const currentUserId = (await selectFromTable("users", "username", "Bichard01"))[0].id
 
     const selectedGroups = await selectFromTable("groups", undefined, undefined, "name")
-    const initialGroupId = selectedGroups[0].id
+    const initialGroup = selectedGroups[0]
     const updatedGroupId = selectedGroups[3].id
 
     const user = users.filter((u) => u.username === "Bichard02")[0]
@@ -195,7 +195,7 @@ describe("updatePassword", () => {
       endorsedBy: user.endorsed_by,
       orgServes: user.org_serves,
       emailAddress: user.email,
-      groupId: initialGroupId,
+      groups: [initialGroup],
       visibleForces: user.visible_forces,
       visibleCourts: user.visible_courts,
       excludedTriggers: user.excluded_triggers
@@ -206,18 +206,20 @@ describe("updatePassword", () => {
     const initialUserList = await selectFromTable("users", "email", user.email)
     const initialUser = initialUserList[0]
 
-    const updateUserDetails = {
+    const updateUserDetails: any = {
       id: initialUser.id,
       username: "new-username-01",
       forenames: "new-forenames-01",
       surname: "new-surname-01",
       endorsedBy: "new endoresed by 01",
       orgServes: "new org serves",
-      groupId: updatedGroupId,
+      groups: [initialGroup],
       visibleForces: "004,007,",
       visibleCourts: "B02,",
       excludedTriggers: "TRPR0002,"
     }
+
+    updateUserDetails[initialGroup.name] = 'yes';
 
     const updateResult = await updateUser(connection, fakeAuditLogger, currentUserId, updateUserDetails)
     expect(isError(updateResult)).toBe(false)
@@ -241,7 +243,7 @@ describe("updatePassword", () => {
     const currentUserId = (await selectFromTable("users", "username", "Bichard01"))[0].id
 
     const selectedGroups = await selectFromTable("groups", undefined, undefined, "name")
-    const initialGroupId = selectedGroups[0].id
+    const initialGroup = selectedGroups[0]
 
     const greatestPossibleGroupIdPlusOne =
       selectedGroups.reduce((a: any, c: any) => {
@@ -250,14 +252,14 @@ describe("updatePassword", () => {
 
     const user = users.filter((u) => u.username === "Bichard02")[0]
 
-    const createUserDetails = {
+    const createUserDetails: any = {
       username: user.username,
       forenames: user.forenames,
       surname: user.surname,
       endorsedBy: user.endorsed_by,
       orgServes: user.org_serves,
       emailAddress: user.email,
-      groupId: initialGroupId,
+      groups: [initialGroup],
       visibleForces: user.visible_forces,
       visibleCourts: user.visible_courts,
       excludedTriggers: user.excluded_triggers
@@ -268,14 +270,14 @@ describe("updatePassword", () => {
     const initialUserList = await selectFromTable("users", "email", "bichard01@example.com")
     const initialUser = initialUserList[0]
 
-    const updateUserDetails = {
+    const updateUserDetails: any = {
       id: initialUser.id,
       username: "new-username-01",
       forenames: "new-forenames-01",
       surname: "new-surname-01",
       endorsedBy: "new endorsed by 01",
       orgServes: "new org serves",
-      groupId: greatestPossibleGroupIdPlusOne,
+      groups: [{id: greatestPossibleGroupIdPlusOne, name: "GRP_DoesNotExist"}],
       visibleForces: "004,007,",
       visibleCourts: "B02,",
       excludedTriggers: "TRPR0002,"
@@ -298,8 +300,8 @@ describe("updatePassword", () => {
     const currentUserId = (await selectFromTable("users", "username", "Bichard01"))[0].id
 
     const selectedGroups = await selectFromTable("groups", undefined, undefined, "name")
-    const initialGroupId = selectedGroups[0].id
-    const updatedGroupId = selectedGroups[3].id
+    const initialGroup = selectedGroups[0]
+    const updatedGroup = selectedGroups[3]
 
     const user = users.filter((u) => u.email === "bichard02@example.com")[0]
 
@@ -310,7 +312,7 @@ describe("updatePassword", () => {
       endorsedBy: user.endorsed_by,
       orgServes: user.org_serves,
       emailAddress: user.email,
-      groupId: initialGroupId,
+      groups: [initialGroup],
       visibleForces: user.visible_forces,
       visibleCourts: user.visible_courts,
       excludedTriggers: user.excluded_triggers
@@ -328,7 +330,7 @@ describe("updatePassword", () => {
       surname: "new-surname-01",
       endorsedBy: "new endoresed by 01",
       orgServes: "new org serves",
-      groupId: updatedGroupId,
+      groups: [updatedGroup],
       visibleForces: "004,007,",
       visibleCourts: "B02,",
       excludedTriggers: "TRPR0002,"
@@ -343,7 +345,7 @@ describe("updatePassword", () => {
 
     const expectedUserGroup = expectedUsersGroups[0]
     expect(expectedUser.id).toBe(expectedUserGroup.user_id)
-    expect(updatedGroupId).toBe(expectedUserGroup.group_id)
+    expect(updatedGroup.id).toBe(expectedUserGroup.group_id)
   })
 
   it("should not add the user to the group if current user does not have that group", async () => {
