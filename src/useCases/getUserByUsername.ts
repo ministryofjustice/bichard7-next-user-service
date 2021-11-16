@@ -35,10 +35,6 @@ export default async (connection: Database, username: string): PromiseResult<Use
     return error as Error
   }
 
-  if (user === null) {
-    return null
-  }
-
   const groups = await getUserGroups(connection, [user.username])
   if (isError(groups)) {
     return groups
