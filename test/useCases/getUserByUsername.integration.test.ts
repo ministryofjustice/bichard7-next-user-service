@@ -35,7 +35,9 @@ describe("getUserByUsername", () => {
       excludedTriggers: "TRPR0001,"
     }
 
-    selectedGroups.forEach((group: any) => createUserDetails[group.name] = 'yes');
+    selectedGroups.forEach((group: any) => {
+      createUserDetails[group.name] = "yes"
+    })
 
     await createUser(connection, currentUserId, createUserDetails)
   }

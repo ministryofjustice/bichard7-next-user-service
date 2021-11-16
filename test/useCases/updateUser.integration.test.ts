@@ -219,7 +219,7 @@ describe("updatePassword", () => {
       excludedTriggers: "TRPR0002,"
     }
 
-    updateUserDetails[initialGroup.name] = 'yes';
+    updateUserDetails[initialGroup.name] = "yes"
 
     const updateResult = await updateUser(connection, fakeAuditLogger, currentUserId, updateUserDetails)
     expect(isError(updateResult)).toBe(false)
@@ -277,7 +277,7 @@ describe("updatePassword", () => {
       surname: "new-surname-01",
       endorsedBy: "new endorsed by 01",
       orgServes: "new org serves",
-      groups: [{id: greatestPossibleGroupIdPlusOne, name: "GRP_DoesNotExist"}],
+      groups: [{ id: greatestPossibleGroupIdPlusOne, name: "GRP_DoesNotExist" }],
       visibleForces: "004,007,",
       visibleCourts: "B02,",
       excludedTriggers: "TRPR0002,"
@@ -352,15 +352,12 @@ describe("updatePassword", () => {
     // Given a user with a group assigned
     await insertIntoUsersTable(users)
     await insertIntoGroupsTable(groups)
-    await insertIntoUserGroupsTable(
-      "bichard01@example.com",
-       [groups[0].name]
-    )
+    await insertIntoUserGroupsTable("bichard01@example.com", [groups[0].name])
     const currentUser = (await selectFromTable("users", "username", "Bichard01"))[0]
 
     const initialUser = (await selectFromTable("users", "username", "Bichard02"))[0]
-    const groupToAdd = (await selectFromTable("groups", "name", groups[1].name))
-    
+    const groupToAdd = await selectFromTable("groups", "name", groups[1].name)
+
     const updateUserDetails: any = {
       id: initialUser.id,
       username: "new-username-01",
@@ -374,8 +371,8 @@ describe("updatePassword", () => {
       groups: groupToAdd
     }
 
-    updateUserDetails[groups[1].name] = 'yes';
-    // When the current user updates a user 
+    updateUserDetails[groups[1].name] = "yes"
+    // When the current user updates a user
     const updateResult = await updateUser(connection, fakeAuditLogger, currentUser.id, updateUserDetails)
 
     // Then the updated user is updates succesfully and only has the groups the current user can assign

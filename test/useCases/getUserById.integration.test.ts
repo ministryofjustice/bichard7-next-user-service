@@ -113,7 +113,7 @@ describe("getUserById", () => {
       visibleCourts: "B01,B41ME00",
       excludedTriggers: "TRPR0001,"
     }
-    createUserDetails[selectedGroup.name] = 'yes';
+    createUserDetails[selectedGroup.name] = "yes"
     await createUser(connection, currentUser, createUserDetails)
     const selectedUsers = await selectFromTable("users", "email", user.email)
     const selectedUserId = selectedUsers[0].id
@@ -122,9 +122,11 @@ describe("getUserById", () => {
     expect(isError(userResult)).toBe(false)
 
     const actualUser = userResult as Partial<User>
-    
-    actualUser.groups ? expect(actualUser.groups[0].id).toBe(selectedGroup.id) : fail()
 
-
+    if (actualUser.groups) {
+      expect(actualUser.groups[0].id).toBe(selectedGroup.id)
+    } else {
+      fail()
+    }
   })
 })

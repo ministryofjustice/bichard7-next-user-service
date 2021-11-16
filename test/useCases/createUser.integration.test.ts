@@ -163,9 +163,9 @@ describe("DeleteUserUseCase", () => {
       orgServes: user.org_serves,
       visibleForces: "001,004,",
       visibleCourts: "B01,B41ME00",
-      excludedTriggers: "TRPR0001,",
+      excludedTriggers: "TRPR0001,"
     }
-    createUserDetails[selectedGroup.name] = 'yes';
+    createUserDetails[selectedGroup.name] = "yes"
     const createResult = await createUser(connection, currentUser, createUserDetails)
     expect(isError(createResult)).toBe(false)
 
