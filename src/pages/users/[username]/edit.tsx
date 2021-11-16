@@ -46,13 +46,12 @@ export const getServerSideProps = withMultipleServerSideProps(
     }
 
     if (isPost(req)) {
-      const groupsChecked = groups.filter((group) => formData[group.name] === "yes")
       const userDetails: Partial<User> = formData
-      userDetails.groups = groupsChecked
-
       const user = await getUserById(connection, userDetails.id as number)
 
       if (isError(user)) {
+      const groupsChecked = groups.filter((group) => formData[group.name] === "yes")
+      userDetails.groups = groupsChecked
         console.error(user)
         return {
           props: {
