@@ -16,7 +16,6 @@ export default async (connection: Database, username: string): PromiseResult<Use
         endorsed_by,
         org_serves,
         forenames,
-        surname
         surname,
         visible_courts,
         visible_forces,
