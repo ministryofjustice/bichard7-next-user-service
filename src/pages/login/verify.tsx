@@ -221,7 +221,11 @@ const VerifyEmail = ({
                 type="password"
                 error={invalidCredentials && "Password is not valid"}
               />
-
+              <p>
+                <Link href="/login/forgot-password" data-test="forgot-password">
+                  {"I forgot my password"}
+                </Link>
+              </p>
               <div className="govuk-form-group">
                 <fieldset className="govuk-fieldset" aria-describedby="waste-hint">
                   <legend className="govuk-fieldset__legend">
