@@ -126,7 +126,7 @@ describe("getUserById", () => {
     if (actualUser.groups) {
       expect(actualUser.groups[0].id).toBe(selectedGroup.id)
     } else {
-      fail()
+      expect(actualUser.groups).not.toBeUndefined()
     }
   })
 })
