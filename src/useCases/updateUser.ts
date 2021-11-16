@@ -78,7 +78,6 @@ const updateUser = async (
     if (isError(updateUserResult)) {
       return Error("Could not update user")
     }
-
     const deleteUserGroupsResult = await deleteFromUsersGroups(task, userId, selectedGroups)
 
     if (isError(deleteUserGroupsResult)) {

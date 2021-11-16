@@ -32,7 +32,7 @@ describe("updatePassword", () => {
   const insertUserWithGroup = async () => {
     const currentUserId = (await selectFromTable("users", "username", "Bichard01"))[0].id
     const selectedGroups = await selectFromTable("groups", undefined, undefined, "name")
-    const initialGroupId = selectedGroups[0].id
+    const initialGroup = selectedGroups[0]
 
     const user = users.filter((u) => u.username === "Bichard02")[0]
 
@@ -43,7 +43,7 @@ describe("updatePassword", () => {
       endorsedBy: user.endorsed_by,
       orgServes: user.org_serves,
       emailAddress: user.email,
-      groupId: initialGroupId,
+      groups: [initialGroup],
       visibleForces: "001,004,",
       visibleCourts: "B01,B41ME00",
       excludedTriggers: "TRPR0001,"
@@ -347,46 +347,36 @@ describe("updatePassword", () => {
   })
 
   it("should not add the user to the group if current user does not have that group", async () => {
+    // Given a user with a group assigned
     await insertIntoUsersTable(users)
     await insertIntoGroupsTable(groups)
-    const currentUserId = (await selectFromTable("users", "username", "Bichard01"))[0].id
+    await insertIntoUserGroupsTable(
+      "bichard01@example.com",
+       [groups[0].name]
+    )
+    const currentUser = (await selectFromTable("users", "username", "Bichard01"))[0]
 
-    const selectedGroups = await selectFromTable("groups", undefined, undefined, "name")
-
-    const user = users.filter((u) => u.username === "Bichard02")[0]
-
-    const createUserDetails = {
-      username: user.username,
-      forenames: user.forenames,
-      surname: user.surname,
-      endorsedBy: user.endorsed_by,
-      orgServes: user.org_serves,
-      emailAddress: user.email,
-      groupId: selectedGroups[0].id,
-      visibleForces: user.visible_forces,
-      visibleCourts: user.visible_courts,
-      excludedTriggers: user.excluded_triggers
-    }
-
-    await createUser(connection, currentUserId, createUserDetails)
-
-    const initialUserList = await selectFromTable("users", "email", "bichard01@example.com")
-    const initialUser = initialUserList[0]
-
-    const updateUserDetails = {
+    const initialUser = (await selectFromTable("users", "username", "Bichard02"))[0]
+    const groupToAdd = (await selectFromTable("groups", "name", groups[1].name))
+    
+    const updateUserDetails: any = {
       id: initialUser.id,
       username: "new-username-01",
       forenames: "new-forenames-01",
       surname: "new-surname-01",
       endorsedBy: "new endorsed by 01",
       orgServes: "new org serves",
-      groupId: selectedGroups[0].id,
       visibleForces: "004,007,",
       visibleCourts: "B02,",
-      excludedTriggers: "TRPR0002,"
+      excludedTriggers: "TRPR0002,",
+      groups: groupToAdd
     }
 
-    const updateResult = await updateUser(connection, fakeAuditLogger, currentUserId, updateUserDetails)
+    updateUserDetails[groups[1].name] = 'yes';
+    // When the current user updates a user 
+    const updateResult = await updateUser(connection, fakeAuditLogger, currentUser.id, updateUserDetails)
+
+    // Then the updated user is updates succesfully and only has the groups the current user can assign
     expect(isError(updateResult)).toBe(false)
 
     const expectedUsersGroups = await selectFromTable("users_groups", "user_id", initialUser.id)
