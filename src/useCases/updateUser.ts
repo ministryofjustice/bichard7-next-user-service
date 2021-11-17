@@ -4,6 +4,7 @@ import PromiseResult from "types/PromiseResult"
 import User from "types/User"
 import { ITask } from "pg-promise"
 import { isError } from "types/Result"
+import { UserGroupResult } from "types/UserGroup"
 
 const deleteFromUsersGroups = (task: ITask<unknown>, userId: number, newGroupIds: number[]): PromiseResult<null> => {
   const deleteFromUsersGroupsQuery = `
@@ -68,14 +69,15 @@ const updateUser = async (
   userDetails: Partial<User>
 ): PromiseResult<void | Error> => {
   const result = await connection.tx(async (task: ITask<unknown>): PromiseResult<void> => {
-    const selectedGroups = [userDetails.groupId as number]
+    const selectedGroups: number[] = userDetails.groups
+      ? userDetails.groups.map((group: UserGroupResult) => parseInt(group.id, 10))
+      : []
     const userId = userDetails.id as number
     const updateUserResult = await updateUserTable(task, userDetails)
 
     if (isError(updateUserResult)) {
       return Error("Could not update user")
     }
-
     const deleteUserGroupsResult = await deleteFromUsersGroups(task, userId, selectedGroups)
 
     if (isError(deleteUserGroupsResult)) {

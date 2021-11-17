@@ -49,8 +49,9 @@ describe("SigninUser", () => {
       groupId: selectedGroup.id,
       visibleForces: "001,004,",
       visibleCourts: "B01,B41ME00",
+      groups: [],
       excludedTriggers: "TRPR0001,"
-    } as User
+    } as Partial<User>
 
     const userCreateResult = await createUser(connection, currentUserId, user)
     expect(isError(userCreateResult)).toBe(false)

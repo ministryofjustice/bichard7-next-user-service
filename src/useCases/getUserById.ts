@@ -1,6 +1,8 @@
 import Database from "types/Database"
 import User from "types/User"
+import { isError } from "types/Result"
 import PromiseResult from "types/PromiseResult"
+import { getUserGroups } from "useCases"
 
 const getUserById = async (connection: Database, id: number): PromiseResult<Partial<User>> => {
   let user
@@ -14,7 +16,6 @@ const getUserById = async (connection: Database, id: number): PromiseResult<Part
         endorsed_by,
         org_serves,
         email,
-        (SELECT group_id FROM br7own.users_groups as ug WHERE ug.user_id = u.id LIMIT 1) as group_id,
         visible_courts,
         visible_forces,
         excluded_triggers
@@ -28,6 +29,11 @@ const getUserById = async (connection: Database, id: number): PromiseResult<Part
     return error as Error
   }
 
+  const groups = await getUserGroups(connection, [user.username])
+  if (isError(groups)) {
+    return groups
+  }
+
   return {
     id: user.id,
     username: user.username,
@@ -36,7 +42,7 @@ const getUserById = async (connection: Database, id: number): PromiseResult<Part
     endorsedBy: user.endorsed_by,
     orgServes: user.org_serves,
     emailAddress: user.email,
-    groupId: user.group_id,
+    groups,
     visibleCourts: user.visible_courts,
     visibleForces: user.visible_forces,
     excludedTriggers: user.excluded_triggers

@@ -148,36 +148,33 @@ describe("DeleteUserUseCase", () => {
       "bichard01@example.com",
       groups.map((g) => g.name)
     )
-    const currentUserId = (await selectFromTable("users", "username", "Bichard01"))[0].id
-
+    const currentUser = (await selectFromTable("users", "username", "Bichard01"))[0]
     const user = users.filter((u) => u.username === "Bichard02")[0]
 
     const selectedGroups = await selectFromTable("groups", "name", "B7Supervisor_grp")
-    const group = selectedGroups[0]
+    const selectedGroup = selectedGroups[0]
 
-    const createUserDetails = {
+    const createUserDetails: any = {
       username: user.username,
       forenames: user.forenames,
       emailAddress: user.email,
       endorsedBy: user.endorsed_by,
       surname: user.surname,
       orgServes: user.org_serves,
-      groupId: group.id,
       visibleForces: "001,004,",
       visibleCourts: "B01,B41ME00",
       excludedTriggers: "TRPR0001,"
     }
-
-    const createResult = await createUser(connection, currentUserId, createUserDetails)
+    createUserDetails[selectedGroup.name] = "yes"
+    const createResult = await createUser(connection, currentUser, createUserDetails)
     expect(isError(createResult)).toBe(false)
 
     const expectedUsers = await selectFromTable("users", "email", user.email)
     const expectedUser = expectedUsers[0]
     const expectedUsersGroups = await selectFromTable("users_groups", "user_id", expectedUser.id)
     const expectedUserGroup = expectedUsersGroups[0]
-
     expect(expectedUser.id).toBe(expectedUserGroup.user_id)
-    expect(group.id).toBe(expectedUserGroup.group_id)
+    expect(selectedGroup.id).toBe(expectedUserGroup.group_id)
   })
 
   it("should not add a group that doesn't exist", async () => {

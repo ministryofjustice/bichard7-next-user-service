@@ -1,8 +1,9 @@
 import TextInput from "components/TextInput"
-import Select, { Option } from "components/Select"
-import MultiSelectCheckbox from "components/MultiSelectCheckbox"
+import { UserGroupResult } from "types/UserGroup"
 import forceInclusions from "codes/forceInclusions.json"
 import triggersList from "codes/triggersList.json"
+import React from "react"
+import CheckboxMultiSelect from "components/CheckboxMultiSelect"
 
 interface Props {
   username?: string
@@ -11,8 +12,8 @@ interface Props {
   emailAddress?: string
   endorsedBy?: string
   orgServes?: string
-  groupId?: number
-  userGroups?: Option[]
+  userGroups?: UserGroupResult[]
+  allGroups?: UserGroupResult[]
   visibleForces?: string
   visibleCourts?: string
   excludedTriggers?: string
@@ -21,7 +22,7 @@ interface Props {
   surnameError?: string | false
   emailError?: string | false
   isEdit?: boolean
-  currentUserVisibleForces?: string
+  currentUserVisibleForces: string
 }
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -35,6 +36,7 @@ export const listOfTriggers = triggersList.map((x: { Code: string; Description: 
   return { id: x.Code, name: x.Description }
 })
 
+/* eslint-disable @typescript-eslint/no-unused-vars */
 const UserForm = ({
   username,
   forenames,
@@ -42,8 +44,8 @@ const UserForm = ({
   emailAddress,
   endorsedBy,
   orgServes,
-  groupId,
   userGroups,
+  allGroups,
   visibleForces,
   visibleCourts,
   excludedTriggers,
@@ -78,31 +80,47 @@ const UserForm = ({
         mandatory
       />
 
-      <Select options={userGroups} label={"User role *"} id="groupId" defaultValue={groupId} />
       <TextInput value={endorsedBy} name="endorsedBy" label="Endorsed by" width="20" />
       <TextInput value={orgServes} name="orgServes" label="Organisation" width="20" />
 
-      {currentUserVisibleForces && (
-        <MultiSelectCheckbox
-          label="Show records from force"
-          name="visibleForces"
-          values={visibleForces}
-          codes={listOfForces.filter((x) => currentUserVisibleForces.includes(x.id))}
-        />
-      )}
+      <CheckboxMultiSelect
+        idMappingFn={(item) => `visibleForces${item?.id}`}
+        nameMappingFn={(item) => `visibleForces${item?.id}`}
+        keymappingFn={(item) => `visibleForces${item?.id}`}
+        displayValueMappingFn={(item) => `${item.id} - ${item.name}`}
+        hintLabel="Show records from force"
+        selectedOptions={visibleForces}
+        allOptions={listOfForces.filter((x) => currentUserVisibleForces.includes(x.id))}
+      />
+      <div className="govuk-checkboxes__divider" />
       <TextInput
         value={visibleCourts}
         name="visibleCourts"
         label="Also, show records from specific Courts"
         width="20"
       />
-
-      <MultiSelectCheckbox
-        label="Exclude Triggers"
-        name="excludedTriggers"
-        values={excludedTriggers}
-        codes={listOfTriggers}
+      <div className="govuk-checkboxes__divider" />
+      <CheckboxMultiSelect
+        idMappingFn={(item) => `excludedTriggers${item?.id}`}
+        nameMappingFn={(item) => `excludedTriggers${item?.id}`}
+        keymappingFn={(item) => `excludedTriggers${item?.id}`}
+        displayValueMappingFn={(item) => `${item.id} - ${item.name}`}
+        hintLabel="Exclude Triggers"
+        selectedOptions={excludedTriggers}
+        allOptions={listOfTriggers}
       />
+      <div className="govuk-checkboxes__divider" />
+      <div data-test="checkbox-user-groups">
+        <CheckboxMultiSelect
+          displayValueMappingFn={(item) => item.name}
+          nameMappingFn={(item) => `${item?.name}`}
+          idMappingFn={(item) => `${item?.id}`}
+          keymappingFn={(item) => `${item?.id}`}
+          allOptions={allGroups}
+          hintLabel="Select groups that user belongs to"
+          selectedOptions={userGroups}
+        />
+      </div>
       <br />
     </>
   )

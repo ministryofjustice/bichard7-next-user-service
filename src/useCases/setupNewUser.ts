@@ -6,6 +6,7 @@ import AuditLogger from "types/AuditLogger"
 import Database from "types/Database"
 import PromiseResult from "types/PromiseResult"
 import { isError } from "types/Result"
+import User from "types/User"
 import createNewUserEmail from "./createNewUserEmail"
 import createUser from "./createUser"
 import storePasswordResetCode from "./storePasswordResetCode"
@@ -18,10 +19,10 @@ export interface newUserSetupResult {
 export default async (
   connection: Database,
   auditLogger: AuditLogger,
-  currentUserId: number,
+  currentUser: Partial<User>,
   userCreateDetails: any
 ): PromiseResult<newUserSetupResult> => {
-  const result = await createUser(connection, currentUserId, userCreateDetails)
+  const result = await createUser(connection, currentUser, userCreateDetails)
 
   if (isError(result)) {
     return result

@@ -3,6 +3,8 @@ import Database from "types/Database"
 import { ITask } from "pg-promise"
 import { isError } from "types/Result"
 import User from "types/User"
+import { UserGroupResult } from "types/UserGroup"
+import { getUserGroups } from "useCases"
 import isUsernameUnique from "./isUsernameUnique"
 import isEmailUnique from "./IsEmailUnique"
 
@@ -41,8 +43,10 @@ const insertUserIntoGroup = async (
   task: ITask<unknown>,
   newUserId: number,
   currentUserId: number,
-  groupIds: number[]
+  groups: UserGroupResult[]
 ): PromiseResult<void> => {
+  const groupIds = groups.map((group: UserGroupResult) => group.id)
+
   const insertGroupQuery = `
     INSERT INTO br7own.users_groups(
       user_id,
@@ -68,7 +72,11 @@ const insertUserIntoGroup = async (
   return undefined
 }
 
-export default async (connection: Database, currentUserId: number, userDetails: Partial<User>): PromiseResult<void> => {
+export default async (
+  connection: Database,
+  currentUser: Partial<User>,
+  userDetails: Partial<User>
+): PromiseResult<void> => {
   const isUsernameUniqueResult = await isUsernameUnique(connection, userDetails.username as string)
   if (isError(isUsernameUniqueResult)) {
     return isUsernameUniqueResult
@@ -87,11 +95,19 @@ export default async (connection: Database, currentUserId: number, userDetails: 
         console.error(insertUserResult)
         return Error("Could not insert record into users table")
       }
-
-      if (userDetails.groupId) {
-        const userGroupResult = await insertUserIntoGroup(task, insertUserResult.id, currentUserId, [
-          userDetails.groupId
-        ])
+      const groups = await getUserGroups(connection, [currentUser.username ?? ""])
+      if (isError(groups)) {
+        return groups
+      }
+      const filteredGroups = groups.filter((group) => userDetails[group.name] === "yes")
+      const userDetailsWithGroups = { ...userDetails, groups: filteredGroups }
+      if (currentUser.id && userDetailsWithGroups.groups && userDetailsWithGroups.groups.length > 0) {
+        const userGroupResult = await insertUserIntoGroup(
+          task,
+          insertUserResult.id,
+          currentUser.id,
+          userDetailsWithGroups.groups
+        )
         return userGroupResult
       }
 
