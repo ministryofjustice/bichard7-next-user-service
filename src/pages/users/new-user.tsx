@@ -101,7 +101,7 @@ export const getServerSideProps = withMultipleServerSideProps(
         }
 
         const auditLogger = getAuditLogger(context, config)
-        const result = await setupNewUser(connection, auditLogger, currentUser.id, userCreateDetails)
+        const result = await setupNewUser(connection, auditLogger, currentUser, userCreateDetails)
 
         if (isError(result)) {
           return {
@@ -178,7 +178,7 @@ const NewUser = ({
   csrfToken,
   currentUser,
   userGroups,
-  userDetails,
+  userDetails = {},
   isFormValid
 }: Props) => (
   <>
@@ -205,12 +205,13 @@ const NewUser = ({
       <Form method="post" csrfToken={csrfToken}>
         <UserForm
           // eslint-disable-next-line react/jsx-props-no-spreading
-          {...(userDetails || {})}
+          {...userDetails}
           usernameError={usernameError}
           forenamesError={forenamesError}
           emailError={emailError}
           surnameError={surnameError}
-          userGroups={userGroups}
+          allGroups={userGroups}
+          userGroups={userDetails.groups}
         />
         <ButtonGroup>
           <Button name="save" value="save" noDoubleClick>

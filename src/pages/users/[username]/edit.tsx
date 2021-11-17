@@ -4,8 +4,9 @@ import Head from "next/head"
 import SuccessBanner from "components/SuccessBanner"
 import getConnection from "lib/getConnection"
 import userFormIsValid from "lib/userFormIsValid"
+import getUserById from "useCases/getUserById"
+import { updateUser, getUserByUsername, getUserGroups } from "useCases"
 import UserForm, { listOfForces, listOfTriggers } from "components/users/UserForm"
-import { updateUser, getUserById, getUserByUsername, getUserGroups } from "useCases"
 import { isError } from "types/Result"
 import User from "types/User"
 import CsrfServerSidePropsContext from "types/CsrfServerSidePropsContext"
@@ -16,7 +17,6 @@ import { ParsedUrlQuery } from "querystring"
 import AuthenticationServerSidePropsContext from "types/AuthenticationServerSidePropsContext"
 import isPost from "utils/isPost"
 import { UserGroupResult } from "types/UserGroup"
-import { Option as UserGroupOption } from "components/Select"
 import getAuditLogger from "lib/getAuditLogger"
 import config from "lib/config"
 import BackLink from "components/BackLink"
@@ -50,6 +50,8 @@ export const getServerSideProps = withMultipleServerSideProps(
       const user = await getUserById(connection, userDetails.id as number)
 
       if (isError(user)) {
+        const groupsChecked = groups.filter((group) => formData[group.name] === "yes")
+        userDetails.groups = groupsChecked
         console.error(user)
         return {
           props: {
@@ -221,7 +223,8 @@ const editUser = ({
             forenamesError={forenamesError}
             surnameError={surnameError}
             emailError={emailError}
-            userGroups={groups as UserGroupOption[]}
+            allGroups={groups}
+            userGroups={user.groups}
             isEdit
           />
           <input type="hidden" name="id" value={user.id} />

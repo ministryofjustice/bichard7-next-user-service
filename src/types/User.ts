@@ -1,3 +1,5 @@
+import { UserGroupResult } from "./UserGroup"
+
 interface User {
   id: number
   username: string
@@ -8,10 +10,12 @@ interface User {
   forenames: string
   surname: string
   emailAddress: string
-  groupId: number
+  groups: UserGroupResult[]
   visibleCourts: string
   visibleForces: string
   excludedTriggers: string
+  // We add dynamic properties to this type for form data so we need this to avoid use of unknown
+  [key: string]: unknown
 }
 
 export default User

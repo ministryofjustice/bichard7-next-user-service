@@ -97,25 +97,24 @@ describe("getUserById", () => {
       "bichard01@example.com",
       groups.map((g) => g.name)
     )
-    const currentUserId = (await selectFromTable("users", "username", "Bichard01"))[0].id
+    const currentUser = (await selectFromTable("users", "username", "Bichard01"))[0]
     const selectedGroups = await selectFromTable("groups", undefined, undefined, "name")
     const selectedGroup = selectedGroups[0]
     const user = users.filter((u) => u.username === "Bichard02")[0]
 
-    const createUserDetails = {
+    const createUserDetails: any = {
       username: user.username,
       forenames: user.forenames,
       emailAddress: user.email,
       endorsedBy: user.endorsed_by,
       surname: user.surname,
       orgServes: user.org_serves,
-      groupId: selectedGroup.id,
       visibleForces: "001,004,",
       visibleCourts: "B01,B41ME00",
       excludedTriggers: "TRPR0001,"
     }
-
-    await createUser(connection, currentUserId, createUserDetails)
+    createUserDetails[selectedGroup.name] = "yes"
+    await createUser(connection, currentUser, createUserDetails)
     const selectedUsers = await selectFromTable("users", "email", user.email)
     const selectedUserId = selectedUsers[0].id
     const userResult = await getUserById(connection, selectedUserId)
@@ -123,6 +122,11 @@ describe("getUserById", () => {
     expect(isError(userResult)).toBe(false)
 
     const actualUser = userResult as Partial<User>
-    expect(actualUser.groupId).toBe(selectedGroup.id)
+
+    if (actualUser.groups) {
+      expect(actualUser.groups[0].id).toBe(selectedGroup.id)
+    } else {
+      expect(actualUser.groups).not.toBeUndefined()
+    }
   })
 })

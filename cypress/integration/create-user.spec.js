@@ -187,10 +187,12 @@ describe("Creation of new user", () => {
     cy.task("selectFromGroupsTable").then((groups) => {
       const userGroups = groups.filter((g) => g.name === "B7Supervisor_grp" || g.name === "B7UserManager_grp")
       cy.visit("users/new-user")
-      cy.get('select[id="groupId"] option').each(($el, index) => {
-        cy.wrap($el).should("have.value", userGroups[index].id)
-        cy.wrap($el).contains(userGroups[index].name)
-      })
+      cy.get('[data-test="checkbox-user-groups"]')
+        .find('[data-test="checkbox-multiselect-checkboxes"]')
+        .each(($el, index) => {
+          cy.wrap($el).find(`input[id=${userGroups[index].id}]`).should("exist")
+          cy.wrap($el).find("label").contains(userGroups[index].name)
+        })
     })
   })
 
@@ -209,7 +211,10 @@ describe("Creation of new user", () => {
     cy.get('input[id="visibleForces004"]').check()
     cy.get('input[id="visibleCourts"]').type("B01,B41ME00")
     cy.get('input[id="excludedTriggersTRPR0001"]').check()
-    cy.get("select").select("B7UserManager_grp")
+    cy.get('[data-test="checkbox-user-groups"]')
+      .find('[data-test="checkbox-multiselect-checkboxes"]')
+      .find(`input[name="B7UserManager_grp"]`)
+      .check()
     cy.get("button[name=save]").click()
 
     cy.task("selectFromUsersGroupsTable").then((usersGroups) => {
