@@ -36,7 +36,6 @@ export const listOfTriggers = triggersList.map((x: { Code: string; Description: 
   return { id: x.Code, name: x.Description }
 })
 
-/* eslint-disable @typescript-eslint/no-unused-vars */
 const UserForm = ({
   username,
   forenames,
