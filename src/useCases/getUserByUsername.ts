@@ -41,8 +41,6 @@ export default async (connection: Database, username: string): PromiseResult<Use
     id: user.id,
     username: user.username,
     emailAddress: user.email,
-    exclusionList: user.exclusion_list,
-    inclusionList: user.inclusion_list,
     endorsedBy: user.endorsed_by,
     orgServes: user.org_serves,
     forenames: user.forenames,
