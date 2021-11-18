@@ -66,7 +66,7 @@ export const getServerSideProps = withMultipleServerSideProps(
       userDetails.groups = groupsChecked
 
       userDetails.visibleForces = updateUserCodes(listOfForces, "visibleForces", formData)
-      userDetails.excludedTriggers = updateUserCodes(listOfTriggers, "excludedTriggers", formData, true)
+      userDetails.excludedTriggers = updateUserCodes(listOfTriggers, "excludedTriggers", formData, false)
 
       const formValidationResult = userFormIsValid(userDetails, true)
 

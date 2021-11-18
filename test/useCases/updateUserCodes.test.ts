@@ -43,7 +43,7 @@ it("should append extra codes if they need to be added", () => {
   const secondCode = { id: "001", name: "London Met2" }
   const formData = { prefix000: "true", prefix001: "true" }
 
-  const result = updateUserCodes([firstCode, secondCode], typeOfCodes, formData, true)
+  const result = updateUserCodes([firstCode, secondCode], typeOfCodes, formData, false)
   expect(result).toBe("")
 })
 
@@ -52,6 +52,6 @@ it("should append extra codes if they need to be added", () => {
   const secondCode = { id: "001", name: "London Met2" }
   const formData = { prefix000: "true" }
 
-  const result = updateUserCodes([firstCode, secondCode], typeOfCodes, formData, true)
+  const result = updateUserCodes([firstCode, secondCode], typeOfCodes, formData, false)
   expect(result).toBe("001")
 })

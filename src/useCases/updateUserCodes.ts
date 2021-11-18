@@ -4,11 +4,11 @@ const updateUserCodes = (
   listOfCodes: { id: string; name: string }[],
   typeOfCodes: string,
   formData: QueryString.ParsedQs,
-  flipResult = false
+  include = true
 ): string => {
   return listOfCodes
     .filter((code) => {
-      if (!flipResult) {
+      if (include) {
         return `${typeOfCodes}${code.id}` in formData
       }
       return !(`${typeOfCodes}${code.id}` in formData)
