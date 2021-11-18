@@ -7,6 +7,15 @@ import { isError } from "types/Result"
 import { UserGroupResult } from "types/UserGroup"
 
 const deleteFromUsersGroups = (task: ITask<unknown>, userId: number, newGroupIds: number[]): PromiseResult<null> => {
+  if (newGroupIds.length === 0) {
+    const deleteAllFromUsersGroupsQuery = `
+      DELETE FROM br7own.users_groups
+      WHERE user_id = $\{userId\}
+    `
+
+    return task.none(deleteAllFromUsersGroupsQuery, { userId }).catch((error) => error as Error)
+  }
+
   const deleteFromUsersGroupsQuery = `
     DELETE FROM br7own.users_groups
     WHERE user_id = $\{userId\} AND group_id NOT IN ($\{newGroupIds:csv\})
@@ -85,11 +94,13 @@ const updateUser = async (
       return Error("Could not delete groups")
     }
 
-    const updateUserGroupsResult = await updateUsersGroup(task, userId, currentUserId, selectedGroups)
+    if (selectedGroups.length !== 0) {
+      const updateUserGroupsResult = await updateUsersGroup(task, userId, currentUserId, selectedGroups)
 
-    if (isError(updateUserGroupsResult)) {
-      console.error(updateUserGroupsResult)
-      return Error("Could not insert groups")
+      if (isError(updateUserGroupsResult)) {
+        console.error(updateUserGroupsResult)
+        return Error("Could not insert groups")
+      }
     }
 
     return undefined

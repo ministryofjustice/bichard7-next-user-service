@@ -37,3 +37,21 @@ it("should leave codes empty if no matching data", () => {
   const result = updateUserCodes([singleCode], typeOfCodes, formData)
   expect(result).toBe("")
 })
+
+it("should append extra codes if they need to be added", () => {
+  const firstCode = { id: "000", name: "London Met" }
+  const secondCode = { id: "001", name: "London Met2" }
+  const formData = { prefix000: "true", prefix001: "true" }
+
+  const result = updateUserCodes([firstCode, secondCode], typeOfCodes, formData, true)
+  expect(result).toBe("")
+})
+
+it("should append extra codes if they need to be added", () => {
+  const firstCode = { id: "000", name: "London Met" }
+  const secondCode = { id: "001", name: "London Met2" }
+  const formData = { prefix000: "true" }
+
+  const result = updateUserCodes([firstCode, secondCode], typeOfCodes, formData, true)
+  expect(result).toBe("001")
+})
