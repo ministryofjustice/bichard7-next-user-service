@@ -191,7 +191,7 @@ describe("Creation of new user", () => {
         .find('[data-test="checkbox-multiselect-checkboxes"]')
         .each(($el, index) => {
           cy.wrap($el).find(`input[id=${userGroups[index].id}]`).should("exist")
-          cy.wrap($el).find("label").contains(userGroups[index].name)
+          cy.wrap($el).find("label").contains(userGroups[index].friendly_name)
         })
     })
   })

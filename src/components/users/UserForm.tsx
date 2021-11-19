@@ -108,7 +108,7 @@ const UserForm = ({
       <div className="govuk-checkboxes__divider" />
       <div data-test="checkbox-user-groups">
         <CheckboxMultiSelect
-          displayValueMappingFn={(item) => item.name}
+          displayValueMappingFn={(item) => (item.friendly_name ? item.friendly_name : item.name)}
           nameMappingFn={(item) => `${item?.name}`}
           idMappingFn={(item) => `${item?.id}`}
           keymappingFn={(item) => `${item?.id}`}
