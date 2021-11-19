@@ -35,7 +35,6 @@ export const getServerSideProps = withMultipleServerSideProps(
       AuthenticationServerSidePropsContext
     let message = ""
     let isSuccess = true
-    console.log(currentUser)
 
     if (!currentUser?.username || !currentUser?.id) {
       return createRedirectResponse("/login")
@@ -48,6 +47,7 @@ export const getServerSideProps = withMultipleServerSideProps(
       console.error(userGroups)
       return createRedirectResponse("/500")
     }
+    const currentUserVisibleForces = currentUser.visibleForces ?? ""
 
     if (isPost(req)) {
       const userCreateDetails = formData as {
@@ -81,7 +81,7 @@ export const getServerSideProps = withMultipleServerSideProps(
               csrfToken,
               currentUser,
               userGroups,
-              currentUserVisibleForces: currentUser.visibleForces ?? ""
+              currentUserVisibleForces
             }
           }
         }
@@ -98,7 +98,7 @@ export const getServerSideProps = withMultipleServerSideProps(
               csrfToken,
               currentUser,
               userGroups,
-              currentUserVisibleForces: currentUser.visibleForces ?? ""
+              currentUserVisibleForces
             }
           }
         }
@@ -116,7 +116,7 @@ export const getServerSideProps = withMultipleServerSideProps(
               csrfToken,
               currentUser,
               userGroups,
-              currentUserVisibleForces: currentUser.visibleForces ?? ""
+              currentUserVisibleForces
             }
           }
         }
@@ -134,7 +134,7 @@ export const getServerSideProps = withMultipleServerSideProps(
             csrfToken,
             currentUser,
             userGroups,
-            currentUserVisibleForces: currentUser.visibleForces ?? ""
+            currentUserVisibleForces
           }
         }
       }
@@ -149,7 +149,7 @@ export const getServerSideProps = withMultipleServerSideProps(
           csrfToken,
           currentUser,
           userGroups,
-          currentUserVisibleForces: currentUser.visibleForces ?? ""
+          currentUserVisibleForces
         }
       }
     }
@@ -162,7 +162,7 @@ export const getServerSideProps = withMultipleServerSideProps(
         csrfToken,
         currentUser,
         userGroups,
-        currentUserVisibleForces: currentUser.visibleForces ?? ""
+        currentUserVisibleForces
       }
     }
   }
