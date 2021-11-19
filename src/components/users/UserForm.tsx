@@ -101,8 +101,8 @@ const UserForm = ({
         nameMappingFn={(item) => `excludedTriggers${item?.id}`}
         keymappingFn={(item) => `excludedTriggers${item?.id}`}
         displayValueMappingFn={(item) => `${item.id} - ${item.name}`}
-        hintLabel="Exclude Triggers"
-        selectedOptions={excludedTriggers}
+        hintLabel="Included Triggers"
+        selectedOptions={listOfTriggers.filter((x) => !excludedTriggers?.includes(x.id))}
         allOptions={listOfTriggers}
       />
       <div className="govuk-checkboxes__divider" />
