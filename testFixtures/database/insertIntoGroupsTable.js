@@ -6,9 +6,11 @@ const insertIntoGroupTable = async (data) => {
   const insertQuery = `
     INSERT INTO
       br7own.groups(
-        name
+        name,
+        friendly_name
       ) VALUES (
-        $\{name\}
+        $\{name\},
+        $\{friendly_name\}
       )
   `
 
