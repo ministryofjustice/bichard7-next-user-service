@@ -58,7 +58,8 @@ export const getServerSideProps = withMultipleServerSideProps(
             currentUser,
             groups,
             user: { ...user, ...userDetails },
-            isFormValid: true
+            isFormValid: true,
+            currentUserVisibleForces: currentUser.visibleForces ?? ""
           }
         }
       }
@@ -84,7 +85,8 @@ export const getServerSideProps = withMultipleServerSideProps(
               groups,
               ...formValidationResult,
               user: { ...user, ...userDetails },
-              errorMessage: userUpdated.message
+              errorMessage: userUpdated.message,
+              currentUserVisibleForces: currentUser.visibleForces ?? ""
             }
           }
         }
@@ -101,7 +103,8 @@ export const getServerSideProps = withMultipleServerSideProps(
               currentUser,
               groups,
               user: { ...user, ...userDetails },
-              ...formValidationResult
+              ...formValidationResult,
+              currentUserVisibleForces: currentUser.visibleForces ?? ""
             }
           }
         }
@@ -113,7 +116,8 @@ export const getServerSideProps = withMultipleServerSideProps(
             csrfToken,
             currentUser,
             groups,
-            ...formValidationResult
+            ...formValidationResult,
+            currentUserVisibleForces: currentUser.visibleForces ?? ""
           }
         }
       }
@@ -124,7 +128,8 @@ export const getServerSideProps = withMultipleServerSideProps(
           csrfToken,
           currentUser,
           groups,
-          ...formValidationResult
+          ...formValidationResult,
+          currentUserVisibleForces: currentUser.visibleForces ?? ""
         }
       }
     }
@@ -141,7 +146,8 @@ export const getServerSideProps = withMultipleServerSideProps(
           csrfToken,
           currentUser,
           groups,
-          isFormValid: true
+          isFormValid: true,
+          currentUserVisibleForces: currentUser.visibleForces ?? ""
         }
       }
     }
@@ -153,7 +159,8 @@ export const getServerSideProps = withMultipleServerSideProps(
         csrfToken,
         currentUser,
         groups,
-        isFormValid: true
+        isFormValid: true,
+        currentUserVisibleForces: currentUser.visibleForces ?? ""
       }
     }
   }
@@ -172,6 +179,7 @@ interface Props {
   surnameError?: string | false
   emailError?: string | false
   isFormValid: boolean
+  currentUserVisibleForces: string
 }
 
 const editUser = ({
@@ -185,7 +193,8 @@ const editUser = ({
   csrfToken,
   currentUser,
   groups,
-  isFormValid
+  isFormValid,
+  currentUserVisibleForces
 }: Props) => (
   <>
     <Head>
@@ -225,6 +234,7 @@ const editUser = ({
             emailError={emailError}
             allGroups={groups}
             userGroups={user.groups}
+            currentUserVisibleForces={currentUserVisibleForces}
             isEdit
           />
           <input type="hidden" name="id" value={user.id} />

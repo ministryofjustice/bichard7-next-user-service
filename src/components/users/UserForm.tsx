@@ -22,6 +22,7 @@ interface Props {
   surnameError?: string | false
   emailError?: string | false
   isEdit?: boolean
+  currentUserVisibleForces: string
 }
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -51,6 +52,7 @@ const UserForm = ({
   forenamesError,
   surnameError,
   emailError,
+  currentUserVisibleForces,
   isEdit = false
 }: Props) => {
   return (
@@ -80,12 +82,6 @@ const UserForm = ({
       <TextInput value={endorsedBy} name="endorsedBy" label="Endorsed by" width="20" />
       <TextInput value={orgServes} name="orgServes" label="Organisation" width="20" />
 
-      <TextInput
-        value={visibleCourts}
-        name="visibleCourts"
-        label="Also, show records from specific Courts"
-        width="20"
-      />
       <CheckboxMultiSelect
         idMappingFn={(item) => `visibleForces${item?.id}`}
         nameMappingFn={(item) => `visibleForces${item?.id}`}
@@ -93,7 +89,14 @@ const UserForm = ({
         displayValueMappingFn={(item) => `${item.id} - ${item.name}`}
         hintLabel="Show records from force"
         selectedOptions={visibleForces}
-        allOptions={listOfForces}
+        allOptions={listOfForces.filter((x) => currentUserVisibleForces.includes(x.id))}
+      />
+      <div className="govuk-checkboxes__divider" />
+      <TextInput
+        value={visibleCourts}
+        name="visibleCourts"
+        label="Also, show records from specific Courts"
+        width="20"
       />
       <div className="govuk-checkboxes__divider" />
       <CheckboxMultiSelect

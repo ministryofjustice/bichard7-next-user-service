@@ -35,6 +35,7 @@ export const getServerSideProps = withMultipleServerSideProps(
       AuthenticationServerSidePropsContext
     let message = ""
     let isSuccess = true
+    console.log(currentUser)
 
     if (!currentUser?.username || !currentUser?.id) {
       return createRedirectResponse("/login")
@@ -79,7 +80,8 @@ export const getServerSideProps = withMultipleServerSideProps(
               userDetails: userCreateDetails,
               csrfToken,
               currentUser,
-              userGroups
+              userGroups,
+              currentUserVisibleForces: currentUser.visibleForces ?? ""
             }
           }
         }
@@ -95,7 +97,8 @@ export const getServerSideProps = withMultipleServerSideProps(
               userDetails: userCreateDetails,
               csrfToken,
               currentUser,
-              userGroups
+              userGroups,
+              currentUserVisibleForces: currentUser.visibleForces ?? ""
             }
           }
         }
@@ -112,7 +115,8 @@ export const getServerSideProps = withMultipleServerSideProps(
               userDetails: userCreateDetails,
               csrfToken,
               currentUser,
-              userGroups
+              userGroups,
+              currentUserVisibleForces: currentUser.visibleForces ?? ""
             }
           }
         }
@@ -129,7 +133,8 @@ export const getServerSideProps = withMultipleServerSideProps(
             ...formValidationResult,
             csrfToken,
             currentUser,
-            userGroups
+            userGroups,
+            currentUserVisibleForces: currentUser.visibleForces ?? ""
           }
         }
       }
@@ -143,13 +148,22 @@ export const getServerSideProps = withMultipleServerSideProps(
           isSuccess,
           csrfToken,
           currentUser,
-          userGroups
+          userGroups,
+          currentUserVisibleForces: currentUser.visibleForces ?? ""
         }
       }
     }
 
     return {
-      props: { message, isFormValid: true, isSuccess, csrfToken, currentUser, userGroups }
+      props: {
+        message,
+        isFormValid: true,
+        isSuccess,
+        csrfToken,
+        currentUser,
+        userGroups,
+        currentUserVisibleForces: currentUser.visibleForces ?? ""
+      }
     }
   }
 )
@@ -166,6 +180,7 @@ interface Props {
   currentUser?: Partial<User>
   userGroups?: UserGroupResult[]
   userDetails?: Partial<User>
+  currentUserVisibleForces: string
 }
 
 const NewUser = ({
@@ -179,7 +194,8 @@ const NewUser = ({
   currentUser,
   userGroups,
   userDetails = {},
-  isFormValid
+  isFormValid,
+  currentUserVisibleForces
 }: Props) => (
   <>
     <Head>
@@ -212,6 +228,7 @@ const NewUser = ({
           surnameError={surnameError}
           allGroups={userGroups}
           userGroups={userDetails.groups}
+          currentUserVisibleForces={currentUserVisibleForces}
         />
         <ButtonGroup>
           <Button name="save" value="save" noDoubleClick>
