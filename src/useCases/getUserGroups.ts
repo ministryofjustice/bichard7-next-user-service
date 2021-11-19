@@ -6,7 +6,8 @@ const getUserGroups = (connection: Database, usernames: string[]): PromiseResult
   const getUserGroupsQuery = `
       SELECT DISTINCT
         g.id,
-        g.name
+        g.name,
+        g.friendly_name
       FROM br7own.groups AS g
       INNER JOIN br7own.users_groups AS ug ON ug.group_id = g.id
       INNER JOIN br7own.users AS u ON u.id = ug.user_id

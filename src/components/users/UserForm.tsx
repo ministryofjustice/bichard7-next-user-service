@@ -104,14 +104,14 @@ const UserForm = ({
         nameMappingFn={(item) => `excludedTriggers${item?.id}`}
         keymappingFn={(item) => `excludedTriggers${item?.id}`}
         displayValueMappingFn={(item) => `${item.id} - ${item.name}`}
-        hintLabel="Exclude Triggers"
-        selectedOptions={excludedTriggers}
+        hintLabel="Included Triggers"
+        selectedOptions={listOfTriggers.filter((x) => !excludedTriggers?.includes(x.id))}
         allOptions={listOfTriggers}
       />
       <div className="govuk-checkboxes__divider" />
       <div data-test="checkbox-user-groups">
         <CheckboxMultiSelect
-          displayValueMappingFn={(item) => item.name}
+          displayValueMappingFn={(item) => (item.friendly_name ? item.friendly_name : item.name)}
           nameMappingFn={(item) => `${item?.name}`}
           idMappingFn={(item) => `${item?.id}`}
           keymappingFn={(item) => `${item?.id}`}

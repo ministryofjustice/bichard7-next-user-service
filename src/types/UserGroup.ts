@@ -11,6 +11,7 @@ type UserGroup =
 export type UserGroupResult = {
   id: string
   name: UserGroup
+  friendly_name: string
 }
 
 export default UserGroup

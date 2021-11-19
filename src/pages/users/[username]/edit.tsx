@@ -50,8 +50,6 @@ export const getServerSideProps = withMultipleServerSideProps(
       const user = await getUserById(connection, userDetails.id as number)
 
       if (isError(user)) {
-        const groupsChecked = groups.filter((group) => formData[group.name] === "yes")
-        userDetails.groups = groupsChecked
         console.error(user)
         return {
           props: {
@@ -65,9 +63,11 @@ export const getServerSideProps = withMultipleServerSideProps(
           }
         }
       }
+      const groupsChecked = groups.filter((group) => formData[group.name] === "yes")
+      userDetails.groups = groupsChecked
 
       userDetails.visibleForces = updateUserCodes(listOfForces, "visibleForces", formData)
-      userDetails.excludedTriggers = updateUserCodes(listOfTriggers, "excludedTriggers", formData)
+      userDetails.excludedTriggers = updateUserCodes(listOfTriggers, "excludedTriggers", formData, false)
 
       const formValidationResult = userFormIsValid(userDetails, true)
 

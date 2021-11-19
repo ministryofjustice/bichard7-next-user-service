@@ -1,27 +1,35 @@
 const groups = [
   {
-    name: "B7Allocator_grp"
+    name: "B7Allocator_grp",
+    friendly_name: "Allocator"
   },
   {
-    name: "B7Audit_grp"
+    name: "B7Audit_grp",
+    friendly_name: "Audit"
   },
   {
-    name: "B7ExceptionHandler_grp"
+    name: "B7ExceptionHandler_grp",
+    friendly_name: "Exception Handler"
   },
   {
-    name: "B7GeneralHandler_grp"
+    name: "B7GeneralHandler_grp",
+    friendly_name: "General Handler"
   },
   {
-    name: "B7Supervisor_grp"
+    name: "B7Supervisor_grp",
+    friendly_name: "Supervisor"
   },
   {
-    name: "B7TriggerHandler_grp"
+    name: "B7TriggerHandler_grp",
+    friendly_name: "Trigger Handler"
   },
   {
-    name: "B7UserManager_grp"
+    name: "B7UserManager_grp",
+    friendly_name: "User Manager"
   },
   {
-    name: "B7AuditLoggingManager_grp"
+    name: "B7AuditLoggingManager_grp",
+    friendly_name: ""
   }
 ]
 
