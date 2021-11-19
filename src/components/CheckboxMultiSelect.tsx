@@ -30,6 +30,7 @@ interface Props {
 export interface CheckBoxObject {
   id: string
   name: string
+  friendly_name?: string
 }
 
 function isSelectedOption(selectedItems: CheckBoxObject[] | string | undefined, item: CheckBoxObject): boolean {
