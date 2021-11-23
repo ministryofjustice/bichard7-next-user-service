@@ -42,28 +42,28 @@ describe("Logging In", () => {
 
     it("should show an error message if visiting verification page with no token", () => {
       cy.visit("/login/verify")
-      cy.get(".govuk-error-summary").should("be.visible").contains("h2", "Unable to verify email address")
+      cy.get('[data-test="error-summary"]').should("be.visible").contains("h2", "Unable to verify email address")
     })
 
     it("should show an error message if visiting verification page with an invalid token", () => {
       cy.visit("/login/verify?token=foobar")
-      cy.get(".govuk-error-summary").should("be.visible").contains("h2", "Unable to verify email address")
+      cy.get('[data-test="error-summary"]').should("be.visible").contains("h2", "Unable to verify email address")
 
       cy.visit(`/login/verify?token=${invalidToken()}`)
-      cy.get(".govuk-error-summary").should("be.visible").contains("h2", "Unable to verify email address")
+      cy.get('[data-test="error-summary"]').should("be.visible").contains("h2", "Unable to verify email address")
     })
 
     it("should display the user's email address when they visit the verification link", () => {
       const token = validToken("bichard01@example.com", "foobar")
       cy.visit(`/login/verify?token=${token}`)
-      cy.get(".govuk-error-summary").should("not.exist")
+      cy.get('[data-test="error-summary"]').should("not.exist")
       cy.get("body").contains(/bichard01@example.com/i)
     })
 
     it("should display a password input when visiting the verification link", () => {
       const token = validToken("bichard01@example.com", "foobar")
       cy.visit(`/login/verify?token=${token}`)
-      cy.get(".govuk-error-summary").should("not.exist")
+      cy.get('[data-test="error-summary"]').should("not.exist")
       cy.get("input[type=password]").should("be.visible")
     })
 
@@ -72,7 +72,7 @@ describe("Logging In", () => {
       cy.visit(`/login/verify?token=${token}`)
       cy.get("input[type=password]").type("foobar")
       cy.get("button[type=submit]").click()
-      cy.get(".govuk-error-summary").should("be.visible").contains("h2", "Your details do not match")
+      cy.get('[data-test="error-summary"]').should("be.visible").contains("h2", "Your details do not match")
     })
 
     it("should display an error if password is correct but token contains wrong verification code", () => {
@@ -80,7 +80,7 @@ describe("Logging In", () => {
       cy.visit(`/login/verify?token=${token}`)
       cy.get("input[type=password]").type("password")
       cy.get("button[type=submit]").click()
-      cy.get(".govuk-error-summary").should("be.visible").contains("h2", "Your details do not match")
+      cy.get('[data-test="error-summary"]').should("be.visible").contains("h2", "Your details do not match")
     })
 
     it("should redirect to Bichard with a token when password and verification code are correct", (done) => {
@@ -123,7 +123,7 @@ describe("Logging In", () => {
 
         cy.get("input[type=password][name=password]").type("incorrect password")
         cy.get("button[type=submit]").click()
-        cy.get(".govuk-error-summary").should("be.visible").contains("h2", "Your details do not match")
+        cy.get('[data-test="error-summary"]').should("be.visible").contains("h2", "Your details do not match")
 
         // Note: Although we avoid waits in cypress test as the logic implemented is temporal in nature we can consider this OK
         // Need to wait 10 seconds after inputting an incorrect password
@@ -316,7 +316,7 @@ describe("Logging In", () => {
         // first incorrect login attempt
         cy.get("input[type=password][name=password]").type(incorrectPassword)
         cy.get("button[type=submit]").click()
-        cy.get(".govuk-error-summary").should("be.visible").contains("h2", "Your details do not match")
+        cy.get('[data-test="error-summary"]').should("be.visible").contains("h2", "Your details do not match")
         // Note: Although we avoid waits in cypress test as the logic implemented is temporal in nature we can consider this OK
         // Need to wait 10 seconds after inputting an incorrect password
         /* eslint-disable-next-line cypress/no-unnecessary-waiting */
@@ -325,7 +325,7 @@ describe("Logging In", () => {
         // second incorrect login attempt
         cy.get("input[type=password][name=password]").type(incorrectPassword)
         cy.get("button[type=submit]").click()
-        cy.get(".govuk-error-summary").should("be.visible").contains("h2", "Your details do not match")
+        cy.get('[data-test="error-summary"]').should("be.visible").contains("h2", "Your details do not match")
         // Note: Although we avoid waits in cypress test as the logic implemented is temporal in nature we can consider this OK
         // Need to wait 10 seconds after inputting an incorrect password
         /* eslint-disable-next-line cypress/no-unnecessary-waiting */
@@ -334,7 +334,7 @@ describe("Logging In", () => {
         // third incorrect login attempt
         cy.get("input[type=password][name=password]").type(incorrectPassword)
         cy.get("button[type=submit]").click()
-        cy.get(".govuk-error-summary").should("be.visible").contains("h2", "Unable to verify email address")
+        cy.get('[data-test="error-summary"]').should("be.visible").contains("h2", "Unable to verify email address")
       })
       // Note: Although we avoid waits in cypress test as the logic implemented is temporal in nature we can consider this OK
       // Need to wait 10 seconds after inputting an incorrect password
