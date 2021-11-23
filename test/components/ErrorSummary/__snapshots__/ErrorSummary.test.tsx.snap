@@ -6,6 +6,7 @@ exports[`should render error summary component 1`] = `
     aria-labelledby="error-summary-title"
     class="govuk-error-summary"
     data-module="govuk-error-summary"
+    data-test="error-summary"
     role="alert"
     tabindex="-1"
   >
