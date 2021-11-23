@@ -46,6 +46,7 @@ describe("Edit user", () => {
   })
 
   it("should update user correctly when updating user details", () => {
+    // Given
     cy.login("bichard02@example.com", "password")
     cy.visit("users/Bichard01")
     cy.get('a[data-test="edit-user-view"]').click()
@@ -55,7 +56,6 @@ describe("Edit user", () => {
     cy.get('input[id="endorsedBy"]').type("change endorsed_by")
     cy.get('input[id="orgServes"]').clear()
     cy.get('input[id="orgServes"]').type("org change 02")
-    cy.get('button[type="submit"]').click()
     cy.get('input[id="visibleForces001"]').uncheck()
     cy.get('input[id="visibleForces002"]').check()
     cy.get('input[id="visibleCourts"]').clear()
@@ -66,7 +66,10 @@ describe("Edit user", () => {
       .find('[data-test="checkbox-multiselect-checkboxes"]')
       .find(`input[name="B7ExceptionHandler_grp"]`)
       .check()
-
+    // When
+    cy.get('button[type="submit"]').click()
+    // Then
+    cy.get('[data-test="error-summary"]').should("not.exist")
     cy.task("selectFromUsersTable", "bichard01@example.com").then((user) => {
       cy.task("selectFromGroupsTable", "user_id", user.id).then((groups) => {
         const currentUserGroups = getCurrentUserGroups(groups)
@@ -92,8 +95,9 @@ describe("Edit user", () => {
     cy.get('input[id="forenames"]').clear()
     cy.get('input[id="surname"]').clear()
     cy.get('button[type="submit"]').click()
-    cy.get("div.govuk-error-summary").contains("Enter the user's forename(s)")
-    cy.get("div.govuk-error-summary").contains("Enter the user's surname")
+    cy.get('[data-test="error-summary"').should("be.visible")
+    cy.get('[data-test="error-summary"]').contains("Enter the user's forename(s)")
+    cy.get('[data-test="error-summary"]').contains("Enter the user's surname")
   })
 
   it("should respond with forbidden response code when CSRF tokens are invalid in edit page", (done) => {
