@@ -74,8 +74,6 @@ describe("getUserByUsername", () => {
     expect(actualUser.id).toBe(expectedUser.id)
     expect(actualUser.emailAddress).toBe(expectedUser.email)
     expect(actualUser.username).toBe(expectedUser.username)
-    expect(actualUser.exclusionList).toBe(expectedUser.exclusion_list)
-    expect(actualUser.inclusionList).toBe(expectedUser.inclusion_list)
     expect(actualUser.endorsedBy).toBe(expectedUser.endorsed_by)
     expect(actualUser.orgServes).toBe(expectedUser.org_serves)
     expect(actualUser.forenames).toBe(expectedUser.forenames)

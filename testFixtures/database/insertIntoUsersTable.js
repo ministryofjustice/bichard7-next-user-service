@@ -7,8 +7,6 @@ const insertIntoUsersTable = async (data) => {
     INSERT INTO
       br7own.users(
         username,
-        exclusion_list,
-        inclusion_list,
         created_at,
         endorsed_by,
         last_logged_in,
@@ -26,8 +24,6 @@ const insertIntoUsersTable = async (data) => {
         excluded_triggers
       ) VALUES (
         $\{username\},
-        $\{exclusion_list\},
-        $\{inclusion_list\},
         $\{created_at\},
         $\{endorsed_by\},
         $\{last_logged_in\},

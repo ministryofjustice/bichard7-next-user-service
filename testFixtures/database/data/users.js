@@ -1,8 +1,6 @@
 const users = [
   {
     username: "Bichard01",
-    exclusion_list: "1, 2, 3, 4",
-    inclusion_list: "5, 6, 7, 8",
     created_at: "2021-08-01 00:00:00-00",
     endorsed_by: "endorsed_by 01",
     last_logged_in: "2021-08-01 00:00:00-00",
@@ -16,14 +14,12 @@ const users = [
     deleted_at: null,
     password_reset_code: null,
     migrated_password: null,
-    visible_forces: "001,004,",
+    visible_forces: "001,002,004,014",
     visible_courts: "B01,B41ME00",
-    excluded_triggers: "TRPR0001,"
+    excluded_triggers: "TRPR0001"
   },
   {
     username: "Bichard02",
-    exclusion_list: "1, 2, 3, 4",
-    inclusion_list: "5, 6, 7, 8",
     created_at: "2021-08-01 00:00:00-00",
     endorsed_by: "endorsed_by 02",
     last_logged_in: "2021-08-01 00:00:00-00",
@@ -37,14 +33,12 @@ const users = [
     deleted_at: null,
     password_reset_code: null,
     migrated_password: null,
-    visible_forces: "004,",
+    visible_forces: "001,002,004",
     visible_courts: "B41ME00",
-    excluded_triggers: "TRPR0004,"
+    excluded_triggers: "TRPR0004"
   },
   {
     username: "Bichard03",
-    exclusion_list: "1, 2, 3, 4",
-    inclusion_list: "5, 6, 7, 8",
     created_at: "2021-08-01 00:00:00-00",
     endorsed_by: "endorsed_by 03",
     last_logged_in: "2021-08-01 00:00:00-00",
@@ -58,7 +52,7 @@ const users = [
     deleted_at: null,
     password_reset_code: null,
     migrated_password: null,
-    visible_forces: "014,",
+    visible_forces: "014",
     visible_courts: "",
     excluded_triggers: ""
   }

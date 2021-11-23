@@ -33,8 +33,6 @@ const getUserWithInterval = async (task: ITask<unknown>, params: unknown[]): Pro
   SELECT
     id,
     username,
-    exclusion_list,
-    inclusion_list,
     visible_courts,
     visible_forces,
     excluded_triggers,

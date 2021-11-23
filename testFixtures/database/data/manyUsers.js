@@ -1,8 +1,6 @@
 const manyUsers = [
   {
     username: "Bichard01",
-    exclusion_list: "1, 2, 3, 4",
-    inclusion_list: "5, 6, 7, 8",
     created_at: "2021-08-01 00:00:00-00",
     endorsed_by: "endorsed_by 01",
     last_logged_in: "2021-08-01 00:00:00-00",
@@ -22,8 +20,6 @@ const manyUsers = [
   },
   {
     username: "Bichard02",
-    exclusion_list: "1, 2, 3, 4",
-    inclusion_list: "5, 6, 7, 8",
     created_at: "2021-08-01 00:00:00-00",
     endorsed_by: "endorsed_by 02",
     last_logged_in: "2021-08-01 00:00:00-00",
@@ -43,8 +39,6 @@ const manyUsers = [
   },
   {
     username: "Bichard03",
-    exclusion_list: "1, 2, 3, 4",
-    inclusion_list: "5, 6, 7, 8",
     created_at: "2021-08-01 00:00:00-00",
     endorsed_by: "endorsed_by 03",
     last_logged_in: "2021-08-01 00:00:00-00",
@@ -64,8 +58,6 @@ const manyUsers = [
   },
   {
     username: "Bichard04",
-    exclusion_list: "1, 2, 3, 4",
-    inclusion_list: "5, 6, 7, 8",
     created_at: "2021-08-01 00:00:00-00",
     endorsed_by: "endorsed_by 04",
     last_logged_in: "2021-08-01 00:00:00-00",
@@ -85,8 +77,6 @@ const manyUsers = [
   },
   {
     username: "Bichard05",
-    exclusion_list: "1, 2, 3, 4",
-    inclusion_list: "5, 6, 7, 8",
     created_at: "2021-08-01 00:00:00-00",
     endorsed_by: "endorsed_by 02",
     last_logged_in: "2021-08-01 00:00:00-00",
@@ -106,8 +96,6 @@ const manyUsers = [
   },
   {
     username: "Bichard06",
-    exclusion_list: "1, 2, 3, 4",
-    inclusion_list: "5, 6, 7, 8",
     created_at: "2021-08-01 00:00:00-00",
     endorsed_by: "endorsed_by 03",
     last_logged_in: "2021-08-01 00:00:00-00",
@@ -127,8 +115,6 @@ const manyUsers = [
   },
   {
     username: "Bichard07",
-    exclusion_list: "1, 2, 3, 4",
-    inclusion_list: "5, 6, 7, 8",
     created_at: "2021-08-01 00:00:00-00",
     endorsed_by: "endorsed_by 07",
     last_logged_in: "2021-08-01 00:00:00-00",
@@ -148,8 +134,6 @@ const manyUsers = [
   },
   {
     username: "Bichard08",
-    exclusion_list: "1, 2, 3, 4",
-    inclusion_list: "5, 6, 7, 8",
     created_at: "2021-08-01 00:00:00-00",
     endorsed_by: "endorsed_by 02",
     last_logged_in: "2021-08-01 00:00:00-00",
@@ -169,8 +153,6 @@ const manyUsers = [
   },
   {
     username: "Bichard09",
-    exclusion_list: "1, 2, 3, 4",
-    inclusion_list: "5, 6, 7, 8",
     created_at: "2021-08-01 00:00:00-00",
     endorsed_by: "endorsed_by 09",
     last_logged_in: "2021-08-01 00:00:00-00",
@@ -190,8 +172,6 @@ const manyUsers = [
   },
   {
     username: "Bichard10",
-    exclusion_list: "1, 2, 3, 4",
-    inclusion_list: "5, 6, 7, 8",
     created_at: "2021-08-01 00:00:00-00",
     endorsed_by: "endorsed_by 01",
     last_logged_in: "2021-08-01 00:00:00-00",
@@ -211,8 +191,6 @@ const manyUsers = [
   },
   {
     username: "Bichard11",
-    exclusion_list: "1, 2, 3, 4",
-    inclusion_list: "5, 6, 7, 8",
     created_at: "2021-08-01 00:00:00-00",
     endorsed_by: "endorsed_by 11",
     last_logged_in: "2021-08-01 00:00:00-00",
@@ -232,8 +210,6 @@ const manyUsers = [
   },
   {
     username: "Bichard12",
-    exclusion_list: "1, 2, 3, 4",
-    inclusion_list: "5, 6, 7, 8",
     created_at: "2021-08-01 00:00:00-00",
     endorsed_by: "endorsed_by 03",
     last_logged_in: "2021-08-01 00:00:00-00",

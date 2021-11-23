@@ -32,8 +32,6 @@ describe("DeleteUserUseCase", () => {
     expect(user.id).toBeGreaterThan(0)
     expect(user.emailAddress).toBe(emailAddress)
     expect(user.username).toBe("Bichard01")
-    expect(user.exclusionList).toBe("1, 2, 3, 4")
-    expect(user.inclusionList).toBe("5, 6, 7, 8")
     expect(user.endorsedBy).toBe("endorsed_by 01")
     expect(user.orgServes).toBe("org_severs 01")
     expect(user.forenames).toBe("Bichard User 01")
