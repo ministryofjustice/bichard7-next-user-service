@@ -18,6 +18,7 @@ const ErrorSummary = ({ title, show = true, children }: Props) => {
       role="alert"
       tabIndex={-1}
       data-module="govuk-error-summary"
+      data-test="error-summary"
     >
       <h2 className="govuk-error-summary__title" id="error-summary-title">
         {title}
