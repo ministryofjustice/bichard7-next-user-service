@@ -20,8 +20,8 @@ describe("Delete user", () => {
     cy.get("h1").contains("Are you sure you want to delete Bichard User 02 Surname 02?")
     cy.get("input[id=delete-account-confirmation]").type("Invalid input")
     cy.get("button[type=submit]").click()
-    cy.get(".govuk-error-summary").contains("Username mismatch")
-    cy.get(".govuk-error-summary").contains("Enter the account username")
+    cy.get('[data-test="error-summary"]').contains("Username mismatch")
+    cy.get('[data-test="error-summary"]').contains("Enter the account username")
     cy.url().should("contains", "/users/Bichard02/delete")
   })
 
@@ -30,8 +30,8 @@ describe("Delete user", () => {
     cy.get('a[data-test="delete-user-view"]').click()
     cy.get("h1").contains("Are you sure you want to delete Bichard User 02 Surname 02?")
     cy.get("button[type=submit]").click()
-    cy.get(".govuk-error-summary").contains("Username mismatch")
-    cy.get(".govuk-error-summary").contains("Enter the account username")
+    cy.get('[data-test="error-summary"]').contains("Username mismatch")
+    cy.get('[data-test="error-summary"]').contains("Enter the account username")
     cy.url().should("contains", "/users/Bichard02/delete")
   })
 

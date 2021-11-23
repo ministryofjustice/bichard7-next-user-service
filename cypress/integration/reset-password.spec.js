@@ -30,7 +30,7 @@ describe("Reset password", () => {
       cy.get("input[type=password][name=newPassword]").type("shorty")
       cy.get("input[type=password][name=confirmPassword]").type("shorty")
       cy.get("button[type=submit]").click()
-      cy.get(".govuk-error-summary").contains("Password is too short.")
+      cy.get('[data-test="error-summary"]').contains("Password is too short.")
     })
 
     it("should not allow submission when passwords contain sensitive information", () => {
@@ -41,7 +41,7 @@ describe("Reset password", () => {
         cy.get("input[type=password][name=newPassword]").type("bichard01")
         cy.get("input[type=password][name=confirmPassword]").type("bichard01")
         cy.get("button[type=submit]").click()
-        cy.get(".govuk-error-summary").contains("Password contains personal information.")
+        cy.get('[data-test="error-summary"]').contains("Password contains personal information.")
       })
     })
 
@@ -53,7 +53,7 @@ describe("Reset password", () => {
       cy.get("input[type=password][name=newPassword]").type("123456789")
       cy.get("input[type=password][name=confirmPassword]").type("123456789")
       cy.get("button[type=submit]").click()
-      cy.get(".govuk-error-summary").contains("Password is too easy to guess.")
+      cy.get('[data-test="error-summary"]').contains("Password is too easy to guess.")
     })
 
     it("should prompt the user that password reset was successful when provided password is valid", (done) => {
@@ -79,7 +79,7 @@ describe("Reset password", () => {
         cy.visit(`/login/reset-password?token=${token}`)
         cy.get("body").contains(/reset password/i)
         cy.get("button[type=submit]").click()
-        cy.get(".govuk-error-summary").contains("Enter a new password")
+        cy.get('[data-test="error-summary"]').contains("Enter a new password")
       })
     })
 
@@ -91,13 +91,13 @@ describe("Reset password", () => {
         cy.get("input[type=password][name=newPassword]").type("Test@123456")
         cy.get("input[type=password][name=confirmPassword]").type("DifferentPassword")
         cy.get("button[type=submit]").click()
-        cy.get(".govuk-error-summary").contains("Enter the same password twice")
+        cy.get('[data-test="error-summary"]').contains("Enter the same password twice")
       })
     })
 
     it("should show an error message if visiting reset password page with an invalid token", () => {
       cy.visit("/login/reset-password?token=foobar")
-      cy.get(".govuk-error-summary").should("be.visible").contains("h2", "Unable to verify")
+      cy.get('[data-test="error-summary"]').should("be.visible").contains("h2", "Unable to verify")
       cy.get("input[type=text]").should("not.exist")
     })
 
@@ -148,7 +148,7 @@ describe("Reset password", () => {
         cy.get("input[type=password][name=newPassword]").type(newPassword)
         cy.get("input[type=password][name=confirmPassword]").type(newPassword)
         cy.get("button[type=submit]").click()
-        cy.get(".govuk-error-summary").contains("Cannot use previously used password.")
+        cy.get('[data-test="error-summary"]').contains("Cannot use previously used password.")
       })
     })
   })

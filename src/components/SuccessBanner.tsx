@@ -18,7 +18,9 @@ const SuccessBanner = ({ children }: Props) => {
         </h2>
       </div>
       <div className="govuk-notification-banner__content">
-        <h3 className="govuk-notification-banner__heading">{children}</h3>
+        <h3 data-test="success-banner_heading" className="govuk-notification-banner__heading">
+          {children}
+        </h3>
       </div>
     </div>
   )

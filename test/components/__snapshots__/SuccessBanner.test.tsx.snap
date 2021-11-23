@@ -23,6 +23,7 @@ exports[`should render component when attributes are correctly set 1`] = `
     >
       <h3
         class="govuk-notification-banner__heading"
+        data-test="success-banner_heading"
       >
         This is a success message
       </h3>

@@ -33,7 +33,7 @@ describe("Creation of new user", () => {
     cy.get('input[id="excludedTriggersTRPR0001"]').uncheck()
 
     cy.get("button[name=saveAndAddAnother]").click()
-    cy.get("h3").should("have.text", "User Buser has been successfully created.")
+    cy.get('[data-test="success-banner_heading"]').should("have.text", "User Buser has been successfully created.")
   })
 
   it("should be successful and navigate to users page if all of the inputs are populated", () => {
@@ -77,7 +77,7 @@ describe("Creation of new user", () => {
       cy.get("input[type=password][name=newPassword]").type(newPassword)
       cy.get("input[type=password][name=confirmPassword]").type(newPassword)
       cy.get("button[type=submit]").click()
-      cy.get("div.govuk-error-summary").contains("Password contains personal information.")
+      cy.get('[data-test="error-summary"]').contains("Password contains personal information.")
     })
   })
 
@@ -90,11 +90,11 @@ describe("Creation of new user", () => {
       cy.get("input[type=password][name=newPassword]").type(newPassword)
       cy.get("input[type=password][name=confirmPassword]").type(newPassword)
       cy.get("button[type=submit]").click()
-      cy.get("h3").should("have.text", "You can now sign in with your new password.")
+      cy.get('[data-test="success-banner_heading"]').should("have.text", "You can now sign in with your new password.")
     })
   })
 
-  it("should not possible for the new user to set their password if it is too short", () => {
+  it("should fail to set password and provide new user with feedback when password is too short", () => {
     const emailAddress = "bichardemail1@example.com"
     const newPassword = "shorty"
     cy.task("getPasswordResetCode", emailAddress).then((passwordResetCode) => {
@@ -103,11 +103,11 @@ describe("Creation of new user", () => {
       cy.get("input[type=password][name=newPassword]").type(newPassword)
       cy.get("input[type=password][name=confirmPassword]").type(newPassword)
       cy.get("button[type=submit]").click()
-      cy.get("div.govuk-error-summary").contains("Password is too short.")
+      cy.get('[data-test="error-summary"]').contains("Password is too short.")
     })
   })
 
-  it("should not possible for the new user to set their password if it is banned", () => {
+  it("should fail to set password and provide new user with feedback when password is banned", () => {
     const emailAddress = "bichardemail1@example.com"
     const newPassword = "password"
     cy.task("getPasswordResetCode", emailAddress).then((passwordResetCode) => {
@@ -116,7 +116,7 @@ describe("Creation of new user", () => {
       cy.get("input[type=password][name=newPassword]").type(newPassword)
       cy.get("input[type=password][name=confirmPassword]").type(newPassword)
       cy.get("button[type=submit]").click()
-      cy.get("div.govuk-error-summary").contains("Password is too easy to guess.")
+      cy.get('[data-test="error-summary"]').contains("Password is too easy to guess.")
     })
   })
 
@@ -128,7 +128,7 @@ describe("Creation of new user", () => {
     })
   })
 
-  it("should not possible for the new user to set their password a second time using the same link", () => {
+  it("should fail to set password and provide feedback when new user tries to set password a second time using the same link", () => {
     const emailAddress = "bichardemail1@example.com"
     const newPassword = "Test@123456"
     cy.task("getPasswordResetCode", emailAddress).then((passwordResetCode) => {
@@ -137,7 +137,7 @@ describe("Creation of new user", () => {
       cy.get("input[type=password][name=newPassword]").type(newPassword)
       cy.get("input[type=password][name=confirmPassword]").type(newPassword)
       cy.get("button[type=submit]").click()
-      cy.get("div.govuk-error-summary").contains("Invalid or expired verification code.")
+      cy.get('[data-test="error-summary"]').contains("Invalid or expired verification code.")
     })
   })
 
@@ -180,7 +180,7 @@ describe("Creation of new user", () => {
     cy.get('input[id="orgServes"]').type("B organisation")
 
     cy.get("button[name=saveAndAddAnother]").click()
-    cy.get("div.govuk-error-summary").contains("Username Bichard01 already exists.")
+    cy.get('[data-test="error-summary"]').contains("Username Bichard01 already exists.")
   })
 
   it("should show the correct values for groups select input when on the create new user page", () => {
