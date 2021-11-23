@@ -62,8 +62,6 @@ export const getServerSideProps = withMultipleServerSideProps(
           }
         }
       }
-      const groupsChecked = groups.filter((group) => formData[group.name] === "yes")
-      userDetails.groups = groupsChecked
 
       userDetails.visibleForces = updateUserCodes(listOfForces, "visibleForces", formData)
       userDetails.excludedTriggers = updateUserCodes(listOfTriggers, "excludedTriggers", formData, false)
@@ -71,6 +69,8 @@ export const getServerSideProps = withMultipleServerSideProps(
       const formValidationResult = userFormIsValid(userDetails, true)
 
       if (formValidationResult.isFormValid) {
+        const groupsChecked = groups.filter((group) => formData[group.name] === "yes")
+        userDetails.groups = groupsChecked
         const auditLogger = getAuditLogger(context, config)
         const userUpdated = await updateUser(connection, auditLogger, currentUser.id, userDetails)
 
@@ -90,7 +90,6 @@ export const getServerSideProps = withMultipleServerSideProps(
         }
 
         const updatedUser = await getUserById(connection, userDetails.id as number)
-
         if (isError(updatedUser)) {
           console.error(updateUser)
 
@@ -105,7 +104,6 @@ export const getServerSideProps = withMultipleServerSideProps(
             }
           }
         }
-
         return {
           props: {
             successMessage: "User details updated successfully.",
