@@ -8,7 +8,7 @@ interface Props {
   user: UserDetails
 }
 
-const NewUserEmail = ({ url, user }: Props) => (
+const NewUserEmail = ({ url, user }: Props): JSX.Element => (
   <EmailLayout
     actionUrl={url}
     buttonLabel={"Create password"}
@@ -20,7 +20,7 @@ const NewUserEmail = ({ url, user }: Props) => (
   />
 )
 
-const NewUserEmailText = ({ url, user }: Props) =>
+const NewUserEmailText = ({ url, user }: Props): string =>
   `Hi ${user.forenames} ${user.surname},
 
 In order to finish setting up your Bichard account, you need to verify your email address and create a password. You can do this by clicking the link below.

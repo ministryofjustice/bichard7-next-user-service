@@ -8,7 +8,7 @@ interface Props {
   user: User
 }
 
-const PasswordResetEmail = ({ url, user }: Props) => (
+const PasswordResetEmail = ({ url, user }: Props): JSX.Element => (
   <EmailLayout
     actionUrl={url}
     buttonLabel={"Reset password"}
@@ -21,7 +21,7 @@ const PasswordResetEmail = ({ url, user }: Props) => (
   />
 )
 
-const PasswordResetEmailText = ({ url, user }: Props) =>
+const PasswordResetEmailText = ({ url, user }: Props): string =>
   `Hi ${user.forenames} ${user.surname},
 
 A request has been received to change the password for your Bichard account.

@@ -6,7 +6,7 @@ interface Props {
   url: string
 }
 
-const LoginEmail = ({ url }: Props) => (
+const LoginEmail = ({ url }: Props): JSX.Element => (
   <EmailLayout
     actionUrl={url}
     buttonLabel={"Sign in"}
@@ -18,7 +18,7 @@ const LoginEmail = ({ url }: Props) => (
   />
 )
 
-const LoginEmailText = ({ url }: Props) =>
+const LoginEmailText = ({ url }: Props): string =>
   `Sign in to Bichard
 
 In order to sign in to Bichard, you need to confirm your email address. Please confirm your email address by clicking the link below.
