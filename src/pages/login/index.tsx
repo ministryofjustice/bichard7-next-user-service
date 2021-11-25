@@ -138,7 +138,7 @@ const Index = ({ emailAddress, emailError, csrfToken, sendingError }: Props) => 
         </Form>
         <p>
           <Link href="/login/forgot-password" data-test="forgot-password">
-            {"I forgot my password"}
+            {"I have forgotten my password"}
           </Link>
         </p>
       </GridRow>
