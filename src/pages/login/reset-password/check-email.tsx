@@ -19,7 +19,7 @@ const CheckEmail = () => (
 
           <p className="govuk-body">
             <p>{"If an account was found we will have sent you an email."}</p>
-            <p>{"Instructions on how to reset your password is sent to your email address."}</p>
+            <p>{"Instructions on how to reset your password have been sent to your email address."}</p>
             <NotReceivedEmail sendAgainUrl="/login/forgot-password" />
           </p>
         </div>

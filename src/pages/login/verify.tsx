@@ -223,7 +223,7 @@ const VerifyEmail = ({
               />
               <p>
                 <Link href="/login/forgot-password" data-test="forgot-password">
-                  {"I forgot my password"}
+                  {"I have forgotten my password"}
                 </Link>
               </p>
               <div className="govuk-form-group">

@@ -121,9 +121,9 @@ const NewPassword = ({
           {invalidToken && (
             <ErrorSummary title="Unable to verify email address">
               <p>
-                {"This link is either incorrect or may have expired. Please "}
-                <Link href="/login">{"use forgot password form"}</Link>
-                {" to set your password."}
+                {"This link is either incorrect or may have expired. Please try again by "}
+                <Link href="/login">{"resetting your password"}</Link>
+                {"."}
               </p>
               <p>
                 {"If you still have an issue with setting up your account you will need to "}

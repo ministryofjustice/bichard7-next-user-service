@@ -116,7 +116,7 @@ const UserForm = ({
           idMappingFn={(item) => `${item?.id}`}
           keymappingFn={(item) => `${item?.id}`}
           allOptions={allGroups}
-          hintLabel="Select groups that user belongs to"
+          hintLabel="Select the groups the user belongs to"
           selectedOptions={userGroups}
         />
       </div>

@@ -185,8 +185,8 @@ const ResetPassword = ({
               <ErrorSummary title="Unable to verify email address">
                 <p>
                   {"This link is either incorrect or may have expired. Please "}
-                  <Link href="/login/forgot-password">{"try submitting forgot password form again"}</Link>
-                  {" with your email address to receive another link."}
+                  <Link href="/login/forgot-password">{"try resetting your password again"}</Link>
+                  {" to receive another link."}
                 </p>
                 <p>
                   {"If you still have an issue with resetting your password you will need to "}
