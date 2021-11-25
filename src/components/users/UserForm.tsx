@@ -82,34 +82,7 @@ const UserForm = ({
       <TextInput value={endorsedBy} name="endorsedBy" label="Endorsed by" width="20" />
       <TextInput value={orgServes} name="orgServes" label="Organisation" width="20" />
 
-      <CheckboxMultiSelect
-        idMappingFn={(item) => `visibleForces${item?.id}`}
-        nameMappingFn={(item) => `visibleForces${item?.id}`}
-        keymappingFn={(item) => `visibleForces${item?.id}`}
-        displayValueMappingFn={(item) => `${item.id} - ${item.name}`}
-        hintLabel="Show records from force"
-        selectedOptions={visibleForces}
-        allOptions={listOfForces.filter((x) => currentUserVisibleForces.includes(x.id))}
-      />
-      <div className="govuk-checkboxes__divider" />
-      <TextInput
-        value={visibleCourts}
-        name="visibleCourts"
-        label="Also, show records from specific Courts"
-        width="20"
-      />
-      <div className="govuk-checkboxes__divider" />
-      <CheckboxMultiSelect
-        idMappingFn={(item) => `excludedTriggers${item?.id}`}
-        nameMappingFn={(item) => `excludedTriggers${item?.id}`}
-        keymappingFn={(item) => `excludedTriggers${item?.id}`}
-        displayValueMappingFn={(item) => `${item.id} - ${item.name}`}
-        hintLabel="Included Triggers"
-        selectedOptions={listOfTriggers.filter((x) => !excludedTriggers?.includes(x.id))}
-        allOptions={listOfTriggers}
-      />
-      <div className="govuk-checkboxes__divider" />
-      <div data-test="checkbox-user-groups">
+      <div className="govuk-form-group" data-test="checkbox-user-groups">
         <CheckboxMultiSelect
           displayValueMappingFn={(item) => (item.friendly_name ? item.friendly_name : item.name)}
           nameMappingFn={(item) => `${item?.name}`}
@@ -120,7 +93,48 @@ const UserForm = ({
           selectedOptions={userGroups}
         />
       </div>
-      <br />
+
+      <div className="govuk-form-group">
+        <CheckboxMultiSelect
+          idMappingFn={(item) => `visibleForces${item?.id}`}
+          nameMappingFn={(item) => `visibleForces${item?.id}`}
+          keymappingFn={(item) => `visibleForces${item?.id}`}
+          displayValueMappingFn={(item) => `${item.id} - ${item.name}`}
+          hintLabel="Show records from the following forces"
+          selectedOptions={visibleForces}
+          allOptions={listOfForces.filter((x) => currentUserVisibleForces.includes(x.id))}
+        />
+      </div>
+
+      <div className="govuk-form-group">
+        <TextInput
+          value={visibleCourts}
+          name="visibleCourts"
+          label="Also, show records from these specific Courts"
+          width="20"
+        />
+      </div>
+
+      <div className="govuk-form-group">
+        <details className="govuk-details" data-module="govuk-details">
+          <summary className="govuk-details__summary">
+            <span className="govuk-details__summary-text" data-test="included-triggers">
+              {"Included Triggers"}
+            </span>
+          </summary>
+          <div className="govuk-details__text">
+            <CheckboxMultiSelect
+              idMappingFn={(item) => `excludedTriggers${item?.id}`}
+              nameMappingFn={(item) => `excludedTriggers${item?.id}`}
+              keymappingFn={(item) => `excludedTriggers${item?.id}`}
+              displayValueMappingFn={(item) => `${item.id} - ${item.name}`}
+              hintLabel="All triggers that are visible to the user"
+              selectedOptions={listOfTriggers.filter((x) => !excludedTriggers?.includes(x.id))}
+              allOptions={listOfTriggers}
+            />
+          </div>
+        </details>
+      </div>
     </>
   )
 }
