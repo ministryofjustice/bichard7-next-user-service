@@ -2,7 +2,6 @@ import Layout from "components/Layout"
 import Head from "next/head"
 import BackLink from "components/BackLink"
 import NotReceivedEmail from "components/NotReceivedEmail"
-import Link from "components/Link"
 
 const CheckEmail = () => (
   <>
@@ -19,11 +18,7 @@ const CheckEmail = () => (
           </h1>
 
           <p className="govuk-body">
-            <p>
-              {"If an account was found we will have sent you an email via "}
-              <Link href="https://www.cjsm.net/">{"CJSM"}</Link>
-              {"."}
-            </p>
+            <p>{"If an account was found we will have sent you an email."}</p>
             <p>{"Instructions on how to reset your password is sent to your email address."}</p>
             <NotReceivedEmail sendAgainUrl="/login/forgot-password" />
           </p>
