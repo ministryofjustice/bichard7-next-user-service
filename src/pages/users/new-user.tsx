@@ -65,6 +65,21 @@ export const getServerSideProps = withMultipleServerSideProps(
       }
 
       userCreateDetails.visibleForces = updateUserCodes(listOfForces, "visibleForces", formData)
+      if (!userCreateDetails.visibleForces || userCreateDetails.visibleForces === "") {
+        return {
+          props: {
+            isSuccess: false,
+            isFormValid: false,
+            userDetails: userCreateDetails,
+            message: "Please ensure that user is assigned to least one force.",
+            forcesError: "Please ensure that user is assigned to least one force.",
+            csrfToken,
+            currentUser,
+            userGroups,
+            currentUserVisibleForces
+          }
+        }
+      }
       userCreateDetails.excludedTriggers = updateUserCodes(listOfTriggers, "excludedTriggers", formData, false)
       const formValidationResult = userFormIsValid(userCreateDetails, false)
 
@@ -175,6 +190,7 @@ interface Props {
   forenamesError?: string | false
   surnameError?: string | false
   emailError?: string | false
+  forcesError?: string | false
   isFormValid: boolean
   csrfToken: string
   currentUser?: Partial<User>
@@ -190,6 +206,7 @@ const NewUser = ({
   forenamesError,
   surnameError,
   emailError,
+  forcesError,
   csrfToken,
   currentUser,
   userGroups,
@@ -226,6 +243,7 @@ const NewUser = ({
           forenamesError={forenamesError}
           emailError={emailError}
           surnameError={surnameError}
+          forcesError={forcesError}
           allGroups={userGroups}
           userGroups={userDetails.groups}
           currentUserVisibleForces={currentUserVisibleForces}
