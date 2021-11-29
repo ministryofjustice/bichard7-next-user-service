@@ -96,7 +96,7 @@ if [[ -n "${CODEBUILD_RESOLVED_SOURCE_VERSION}" && -n "${CODEBUILD_START_TIME}" 
         "image-hash": "${IMAGE_SHA_HASH}"
       }
 EOF
-      aws s3 cp /tmp/user-service.json s3://${ARTIFACT_BUCKET}/semaphores/user-service.json
+#      aws s3 cp /tmp/user-service.json s3://${ARTIFACT_BUCKET}/semaphores/user-service.json
       export USER_SERVICE_HASH="${IMAGE_SHA_HASH}"
     fi
 fi
