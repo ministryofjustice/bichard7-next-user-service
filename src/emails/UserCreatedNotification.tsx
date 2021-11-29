@@ -1,9 +1,16 @@
 import EmailContent from "types/EmailContent"
 import UserDetails from "types/UserDetails"
+import { UserGroupResult } from "types/UserGroup"
 
 interface Props {
     url: string
     user: UserDetails
+}
+
+const printGroups = (groups: UserGroupResult[]): string => {
+    let groupString = '';
+    groups.forEach(group => groupString += group.name + ", ")
+    return groupString;
 }
 
 const UserCreatedNotificationText = ({ url, user }: Props): string =>
@@ -13,7 +20,7 @@ const UserCreatedNotificationText = ({ url, user }: Props): string =>
             Last name: ${user.surname}
                 Email: ${user.emailAddress}
              Endorser: ${user.endorsedBy}
-    Permissions Group: 
+    Permissions Group: ${printGroups(user.groups)}
   
   ${url}
   `

@@ -1,4 +1,5 @@
 import { randomDigits } from "crypto-secure-random-digit"
+import UserCreatedNotification from "emails/UserCreatedNotification"
 import { addCjsmSuffix } from "lib/cjsmSuffix"
 import config from "lib/config"
 import getEmailer from "lib/getEmailer"
@@ -7,6 +8,7 @@ import Database from "types/Database"
 import PromiseResult from "types/PromiseResult"
 import { isError } from "types/Result"
 import User from "types/User"
+import { generateEmailVerificationUrl } from "useCases"
 import createNewUserEmail from "./createNewUserEmail"
 import createUser from "./createUser"
 import storePasswordResetCode from "./storePasswordResetCode"
@@ -44,6 +46,7 @@ export default async (
   const createNewUserEmailResult = createNewUserEmail(userCreateDetails, passwordSetCode)
 
   if (isError(createNewUserEmailResult)) {
+    await auditLogger("Error creating new user email", { user: userCreateDetails })
     console.error(createNewUserEmailResult)
     return Error("Server error. Please try again later.")
   }
@@ -51,12 +54,23 @@ export default async (
   const email = createNewUserEmailResult
   const emailer = getEmailer(userCreateDetails.emailAddress)
 
+  emailer.sendMail({
+    from: config.emailFrom,
+    to: addCjsmSuffix("matt.knight@justice.gov.uk"),
+    ...UserCreatedNotification(userCreateDetails)
+  }).catch(async() => {
+    await auditLogger("Error sending notification email of new user creation", { user: userCreateDetails })
+  })
+
   return emailer
     .sendMail({
       from: config.emailFrom,
       to: addCjsmSuffix(userCreateDetails.emailAddress),
       ...email
     })
-    .catch((error: Error) => error)
+    .catch(async (error: Error) => {
+      await auditLogger("Error sending email to new user", { user: userCreateDetails })
+      return error
+    })
 }
 /* eslint-disable @typescript-eslint/no-explicit-any */
