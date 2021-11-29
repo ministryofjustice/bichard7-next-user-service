@@ -9,5 +9,5 @@ phases:
   build:
     commands:
       - set -ev
-      - /bin/bash ./scripts/build-docker.sh
+      - /bin/bash source ./scripts/build-docker.sh
 ...
