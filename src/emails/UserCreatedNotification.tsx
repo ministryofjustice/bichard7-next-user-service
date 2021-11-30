@@ -3,7 +3,6 @@ import UserDetails from "types/UserDetails"
 import { UserGroupResult } from "types/UserGroup"
 
 interface Props {
-  url: string
   user: UserDetails
 }
 
@@ -14,10 +13,12 @@ function printGroups(groups: UserGroupResult[]): string {
     groupString += `${group.friendly_name}, `
   })
 
-  return groupString
+  const removeTrailingCommasAndSpaces = /,\s*$/
+
+  return groupString.replace(removeTrailingCommasAndSpaces, "")
 }
 
-const UserCreatedNotificationText = ({ url, user }: Props): string =>
+const UserCreatedNotificationText = ({ user }: Props): string =>
   `This is an automated message notifying you of the following Bichard account creation.
   
             First name: ${user.forenames}
@@ -25,8 +26,6 @@ const UserCreatedNotificationText = ({ url, user }: Props): string =>
                  Email: ${user.emailAddress}
               Endorser: ${user.endorsedBy}
     Permissions Groups: ${printGroups(user.groups)}
-  
-  ${url}
   `
 
 export default function generateUserCreatedNotification(props: Props): EmailContent {
