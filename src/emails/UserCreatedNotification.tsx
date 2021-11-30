@@ -7,7 +7,10 @@ interface Props {
 }
 
 function printGroups(groups: UserGroupResult[]): string {
-  return groups.map((group: UserGroupResult) => group.friendly_name).join(", ").trimEnd();
+  return groups
+    .map((group: UserGroupResult) => group.friendly_name)
+    .join(", ")
+    .trimEnd()
 }
 
 const UserCreatedNotificationText = ({ user }: Props): string =>
