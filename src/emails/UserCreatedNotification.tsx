@@ -7,15 +7,7 @@ interface Props {
 }
 
 function printGroups(groups: UserGroupResult[]): string {
-  let groupString = ""
-
-  groups.forEach((group) => {
-    groupString += `${group.friendly_name}, `
-  })
-
-  const removeTrailingCommasAndSpaces = /,\s*$/
-
-  return groupString.replace(removeTrailingCommasAndSpaces, "")
+  return groups.map((group: UserGroupResult) => group.friendly_name).join(", ").trimEnd();
 }
 
 const UserCreatedNotificationText = ({ user }: Props): string =>
