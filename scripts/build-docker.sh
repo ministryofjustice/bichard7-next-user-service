@@ -49,7 +49,7 @@ if [[ -n "${CODEBUILD_RESOLVED_SOURCE_VERSION}" && -n "${CODEBUILD_START_TIME}" 
     install_trivy() {
       echo "Pulling trivy binary from s3"
       aws s3 cp \
-        s3://"${S3_BUCKET}"/trivy/binary/trivy_latest_Linux-64bit.rpm \
+        s3://"${ARTIFACT_BUCKET}"/trivy/binary/trivy_latest_Linux-64bit.rpm \
         .
 
       echo "Installing trivy binary"
@@ -59,7 +59,7 @@ if [[ -n "${CODEBUILD_RESOLVED_SOURCE_VERSION}" && -n "${CODEBUILD_START_TIME}" 
     pull_trivy_db() {
       echo "Pulling trivy db from s3..."
       aws s3 cp \
-        s3://"${S3_BUCKET}"/trivy/db/trivy-offline.db.tgz \
+        s3://"${ARTIFACT_BUCKET}"/trivy/db/trivy-offline.db.tgz \
         trivy/db/
 
       echo "Extracting trivy db to `pwd`/trivy/db/"
