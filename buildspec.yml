@@ -1,6 +1,10 @@
 ---
 version: 0.2
 
+env:
+  exported-variables:
+    - USER_SERVICE_HASH
+
 phases:
   build:
     commands:
