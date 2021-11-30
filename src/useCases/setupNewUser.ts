@@ -65,7 +65,7 @@ export default async (
     .sendMail({
       from: config.emailFrom,
       to: addCjsmSuffix("matt.knight@justice.gov.uk"),
-      ...UserCreatedNotification({ user: { ...userCreateDetails, ...{ groups: groupsForNewUser } }, url: "" })
+      ...UserCreatedNotification({ user: { ...userCreateDetails, ...{ groups: groupsForNewUser } }})
     })
     .catch(async () => {
       await auditLogger("Error sending notification email of new user creation", { user: userCreateDetails })
