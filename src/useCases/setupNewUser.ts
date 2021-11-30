@@ -8,7 +8,6 @@ import Database from "types/Database"
 import PromiseResult from "types/PromiseResult"
 import { isError } from "types/Result"
 import User from "types/User"
-import { generateEmailVerificationUrl } from "useCases"
 import createNewUserEmail from "./createNewUserEmail"
 import createUser from "./createUser"
 import storePasswordResetCode from "./storePasswordResetCode"
@@ -54,13 +53,15 @@ export default async (
   const email = createNewUserEmailResult
   const emailer = getEmailer(userCreateDetails.emailAddress)
 
-  emailer.sendMail({
-    from: config.emailFrom,
-    to: addCjsmSuffix("matt.knight@justice.gov.uk"),
-    ...UserCreatedNotification(userCreateDetails)
-  }).catch(async() => {
-    await auditLogger("Error sending notification email of new user creation", { user: userCreateDetails })
-  })
+  emailer
+    .sendMail({
+      from: config.emailFrom,
+      to: addCjsmSuffix("matt.knight@justice.gov.uk"),
+      ...UserCreatedNotification(userCreateDetails)
+    })
+    .catch(async () => {
+      await auditLogger("Error sending notification email of new user creation", { user: userCreateDetails })
+    })
 
   return emailer
     .sendMail({

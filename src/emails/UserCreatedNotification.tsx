@@ -3,18 +3,22 @@ import UserDetails from "types/UserDetails"
 import { UserGroupResult } from "types/UserGroup"
 
 interface Props {
-    url: string
-    user: UserDetails
+  url: string
+  user: UserDetails
 }
 
-const printGroups = (groups: UserGroupResult[]): string => {
-    let groupString = '';
-    groups.forEach(group => groupString += group.name + ", ")
-    return groupString;
+function printGroups(groups: UserGroupResult[]): string {
+  let groupString = ""
+
+  groups.forEach((group) => {
+    groupString += `${group.name}, `
+  })
+
+  return groupString
 }
 
 const UserCreatedNotificationText = ({ url, user }: Props): string =>
-    `This is an automated message notifying you of the following Bichard account creation.
+  `This is an automated message notifying you of the following Bichard account creation.
   
            First name: ${user.forenames}
             Last name: ${user.surname}
@@ -26,10 +30,9 @@ const UserCreatedNotificationText = ({ url, user }: Props): string =>
   `
 
 export default function generateUserCreatedNotification(props: Props): EmailContent {
-
-    return {
-        subject: "Bichard: new user account created",
-        html: '',
-        text: UserCreatedNotificationText(props)
-    }
+  return {
+    subject: "Bichard: new user account created",
+    html: "",
+    text: UserCreatedNotificationText(props)
+  }
 }
