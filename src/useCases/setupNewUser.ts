@@ -8,6 +8,7 @@ import Database from "types/Database"
 import PromiseResult from "types/PromiseResult"
 import { isError } from "types/Result"
 import User from "types/User"
+import { getUserGroups } from "useCases"
 import createNewUserEmail from "./createNewUserEmail"
 import createUser from "./createUser"
 import storePasswordResetCode from "./storePasswordResetCode"
@@ -24,7 +25,15 @@ export default async (
   userCreateDetails: any
 ): PromiseResult<newUserSetupResult> => {
   const result = await createUser(connection, currentUser, userCreateDetails)
+  const groupsForCurrentUser = await getUserGroups(connection, [currentUser.username, userCreateDetails.username])
 
+  if (isError(groupsForCurrentUser)) {
+    console.error(groupsForCurrentUser)
+    return groupsForCurrentUser;
+  }
+
+  const groupsForNewUser = groupsForCurrentUser.filter((group: any) => userCreateDetails[group.name] === "yes")
+  userCreateDetails.groups = groupsForNewUser;
   if (isError(result)) {
     return result
   }
@@ -57,7 +66,7 @@ export default async (
     .sendMail({
       from: config.emailFrom,
       to: addCjsmSuffix("matt.knight@justice.gov.uk"),
-      ...UserCreatedNotification(userCreateDetails)
+      ...UserCreatedNotification({ user: userCreateDetails, url: '' })
     })
     .catch(async () => {
       await auditLogger("Error sending notification email of new user creation", { user: userCreateDetails })

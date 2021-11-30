@@ -11,7 +11,7 @@ function printGroups(groups: UserGroupResult[]): string {
   let groupString = ""
 
   groups.forEach((group) => {
-    groupString += `${group.name}, `
+    groupString += `${group.friendly_name}, `
   })
 
   return groupString
@@ -20,11 +20,11 @@ function printGroups(groups: UserGroupResult[]): string {
 const UserCreatedNotificationText = ({ url, user }: Props): string =>
   `This is an automated message notifying you of the following Bichard account creation.
   
-           First name: ${user.forenames}
-            Last name: ${user.surname}
-                Email: ${user.emailAddress}
-             Endorser: ${user.endorsedBy}
-    Permissions Group: ${printGroups(user.groups)}
+            First name: ${user.forenames}
+             Last name: ${user.surname}
+                 Email: ${user.emailAddress}
+              Endorser: ${user.endorsedBy}
+    Permissions Groups: ${printGroups(user.groups)}
   
   ${url}
   `
