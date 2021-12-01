@@ -25,12 +25,6 @@ export default async (
   userCreateDetails: any
 ): PromiseResult<newUserSetupResult> => {
   const result = await createUser(connection, currentUser, userCreateDetails)
-  const groupsForCurrentUser = await getUserGroups(connection, [currentUser.username, userCreateDetails.username])
-
-  if (isError(groupsForCurrentUser)) {
-    console.error(groupsForCurrentUser)
-    return groupsForCurrentUser
-  }
 
   await auditLogger("Create user", { user: userCreateDetails })
 
@@ -56,6 +50,12 @@ export default async (
   const email = createNewUserEmailResult
   const emailer = getEmailer(userCreateDetails.emailAddress)
 
+  const groupsForCurrentUser = await getUserGroups(connection, [currentUser.username, userCreateDetails.username])
+
+  if (isError(groupsForCurrentUser)) {
+    console.error(groupsForCurrentUser)
+    return groupsForCurrentUser
+  }
   const groupsForNewUser = groupsForCurrentUser.filter((group: any) => userCreateDetails[group.name] === "yes")
   if (isError(result)) {
     return result
