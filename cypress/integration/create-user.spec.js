@@ -182,9 +182,28 @@ describe("Creation of new user", () => {
     cy.get('input[id="emailAddress"]').type("bemail2@example.com")
     cy.get('input[id="endorsedBy"]').type("B Endorsed")
     cy.get('input[id="orgServes"]').type("B organisation")
+    cy.get('input[id="visibleForces001"]').check()
 
     cy.get("button[name=saveAndAddAnother]").click()
     cy.get('[data-test="error-summary"]').contains("Username Bichard01 already exists.")
+  })
+
+  it("should fail if no force is selected for user", () => {
+    // Given
+    cy.visit("users/new-user")
+
+    cy.get('input[id="username"]').type("Bichard01")
+    cy.get('input[id="forenames"]').type("B forename")
+    cy.get('input[id="surname"]').type("B surname")
+    cy.get('input[id="emailAddress"]').type("bemail2@example.com")
+    cy.get('input[id="endorsedBy"]').type("B Endorsed")
+    cy.get('input[id="orgServes"]').type("B organisation")
+
+    // When
+    cy.get("button[name=saveAndAddAnother]").click()
+
+    // Then
+    cy.get('[data-test="error-summary"]').contains("Please ensure that user is assigned to least one force.")
   })
 
   it("should show the correct values for groups select input when on the create new user page", () => {

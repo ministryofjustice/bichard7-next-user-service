@@ -46,6 +46,20 @@ describe("Edit user", () => {
     })
   })
 
+  it("should not be able to update user such that they are left without a force", () => {
+    // Given
+    cy.login("bichard02@example.com", "password")
+    cy.visit("users/Bichard01")
+    cy.get('a[data-test="edit-user-view"]').click()
+    cy.get('input[id="visibleForces001"]').uncheck()
+    cy.get('input[id="visibleForces002"]').uncheck()
+    cy.get('input[id="visibleForces004"]').uncheck()
+    // When
+    cy.get('button[type="submit"]').click()
+    // Then
+    cy.get('[data-test="error-summary"]').contains("Please ensure that user is assigned to least one force.")
+  })
+
   it("should update user correctly when updating user details", () => {
     // Given
     cy.login("bichard02@example.com", "password")

@@ -9,6 +9,7 @@ interface Props {
   /** Provides a hint to the user on what the checkboxes show. */
   hintLabel: string
   controlLabel?: string
+  isError?: string | false
   /** Provide a function to output the required displayed value for each checkbox, this function has access to
    *  the object being iterated over
    */
@@ -48,6 +49,7 @@ const CheckboxMultiSelect = ({
   selectedOptions,
   controlLabel,
   hintLabel,
+  isError = false,
   displayValueMappingFn,
   nameMappingFn,
   idMappingFn,
@@ -55,6 +57,11 @@ const CheckboxMultiSelect = ({
 }: Props) => {
   return (
     <Fieldset>
+      {!isError || (
+        <span id="forces-error" className="govuk-error-message">
+          <span className="govuk-visually-hidden">{"Error:"}</span> {isError}
+        </span>
+      )}
       <legend data-test="checkbox-multiselect-legend" className="govuk-fieldset__legend govuk-fieldset__legend--l">
         <h5 className="govuk-fieldset__heading">{controlLabel}</h5>
       </legend>

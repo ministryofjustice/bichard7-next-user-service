@@ -21,6 +21,7 @@ interface Props {
   forenamesError?: string | false
   surnameError?: string | false
   emailError?: string | false
+  forcesError?: string | false
   isEdit?: boolean
   currentUserVisibleForces: string
 }
@@ -52,9 +53,14 @@ const UserForm = ({
   forenamesError,
   surnameError,
   emailError,
+  forcesError,
   currentUserVisibleForces,
   isEdit = false
 }: Props) => {
+  let forcesCheckboxClassName = "govuk-form-group"
+  if (forcesError) {
+    forcesCheckboxClassName += " govuk-form-group--error"
+  }
   return (
     <>
       <TextInput
@@ -94,13 +100,14 @@ const UserForm = ({
         />
       </div>
 
-      <div className="govuk-form-group">
+      <div className={forcesCheckboxClassName}>
         <CheckboxMultiSelect
           idMappingFn={(item) => `visibleForces${item?.id}`}
           nameMappingFn={(item) => `visibleForces${item?.id}`}
           keymappingFn={(item) => `visibleForces${item?.id}`}
           displayValueMappingFn={(item) => `${item.id} - ${item.name}`}
           hintLabel="Show records from the following forces"
+          isError={forcesError}
           selectedOptions={visibleForces}
           allOptions={listOfForces.filter((x) => currentUserVisibleForces.includes(x.id))}
         />
