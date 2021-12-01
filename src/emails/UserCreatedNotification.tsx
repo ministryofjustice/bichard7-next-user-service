@@ -26,7 +26,6 @@ const UserCreatedNotificationText = ({ user }: Props): string =>
 export default function generateUserCreatedNotification(props: Props): EmailContent {
   return {
     subject: "Bichard: new user account created",
-    html: "",
     text: UserCreatedNotificationText(props)
   }
 }
