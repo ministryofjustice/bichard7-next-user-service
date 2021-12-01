@@ -22,6 +22,7 @@ import isPost from "utils/isPost"
 import getAuditLogger from "lib/getAuditLogger"
 import config from "lib/config"
 import { ErrorSummaryList } from "components/ErrorSummary"
+import usersHaveSameForce from "lib/usersHaveSameForce"
 
 export const getServerSideProps = withMultipleServerSideProps(
   withAuthentication,
@@ -30,18 +31,24 @@ export const getServerSideProps = withMultipleServerSideProps(
     const { query, req, formData, csrfToken, currentUser } = context as CsrfServerSidePropsContext &
       AuthenticationServerSidePropsContext
     const { username } = query
+
+    if (!currentUser) {
+      console.error("Unable to determine current user")
+      return createRedirectResponse("/500")
+    }
+
     const connection = getConnection()
     const user = await getUserByUsername(connection, username as string)
-
-    if (!user) {
-      return {
-        notFound: true
-      }
-    }
 
     if (isError(user)) {
       console.error(user)
       return createRedirectResponse("/500")
+    }
+
+    if (!user || !usersHaveSameForce(currentUser, user)) {
+      return {
+        notFound: true
+      }
     }
 
     if (isPost(req)) {
