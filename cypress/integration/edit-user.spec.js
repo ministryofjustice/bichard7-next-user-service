@@ -62,6 +62,21 @@ describe("Edit user", () => {
     cy.get("body").should("contain.text", "Page not found")
   })
 
+  it("should not allow a user to edit another user outside of their force", () => {
+    // Given
+    cy.login("bichard02@example.com", "password")
+
+    // When
+    cy.visit("/users/Bichard03/edit", { failOnStatusCode: false })
+
+    // Then
+    cy.get("body").should("not.contain.text", "Edit Bichard03's details")
+    cy.get("body").should("not.contain.text", "Bichard03")
+    cy.get("body").should("not.contain.text", "bichard03@example.com")
+    cy.get('input[id="username"]').should("not.exist")
+    cy.get("body").should("contain.text", "Page not found")
+  })
+
   it("should not be able to update user such that they are left without a force", () => {
     // Given
     cy.login("bichard02@example.com", "password")
