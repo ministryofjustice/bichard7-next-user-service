@@ -23,6 +23,7 @@ import BackLink from "components/BackLink"
 import { ErrorSummary, ErrorSummaryList } from "components/ErrorSummary"
 import createRedirectResponse from "utils/createRedirectResponse"
 import updateUserCodes from "useCases/updateUserCodes"
+import usersHaveSameForce from "lib/usersHaveSameForce"
 
 export const getServerSideProps = withMultipleServerSideProps(
   withAuthentication,
@@ -32,11 +33,24 @@ export const getServerSideProps = withMultipleServerSideProps(
       AuthenticationServerSidePropsContext
     const { username } = query as { username: string }
 
-    if (!currentUser?.username || !currentUser?.id) {
-      return createRedirectResponse("/login")
+    if (!currentUser || !currentUser.id || !currentUser.username) {
+      console.error("Unable to determine current user")
+      return createRedirectResponse("/500")
     }
 
     const connection = getConnection()
+    const user = await getUserByUsername(connection, username)
+
+    if (isError(user)) {
+      console.error(user)
+      return createRedirectResponse("/500")
+    }
+
+    if (!user || !usersHaveSameForce(currentUser, user)) {
+      return {
+        notFound: true
+      }
+    }
 
     const groups = await getUserGroups(connection, [currentUser.username, username])
 
@@ -47,23 +61,6 @@ export const getServerSideProps = withMultipleServerSideProps(
 
     if (isPost(req)) {
       const userDetails: Partial<User> = formData
-      const user = await getUserById(connection, userDetails.id as number)
-
-      if (isError(user)) {
-        console.error(user)
-        return {
-          props: {
-            errorMessage: "There was an error retrieving the user details.",
-            csrfToken,
-            currentUser,
-            groups,
-            user: { ...user, ...userDetails },
-            isFormValid: true,
-            currentUserVisibleForces: currentUser.visibleForces ?? ""
-          }
-        }
-      }
-
       userDetails.visibleForces = updateUserCodes(listOfForces, "visibleForces", formData)
 
       if (!userDetails.visibleForces || userDetails.visibleForces === "") {
@@ -123,6 +120,7 @@ export const getServerSideProps = withMultipleServerSideProps(
             }
           }
         }
+
         return {
           props: {
             successMessage: "User details updated successfully.",
@@ -135,6 +133,7 @@ export const getServerSideProps = withMultipleServerSideProps(
           }
         }
       }
+
       return {
         props: {
           missingMandatory: true,
@@ -143,24 +142,6 @@ export const getServerSideProps = withMultipleServerSideProps(
           currentUser,
           groups,
           ...formValidationResult,
-          currentUserVisibleForces: currentUser.visibleForces ?? ""
-        }
-      }
-    }
-
-    const user = await getUserByUsername(connection, username)
-
-    if (isError(user)) {
-      console.error(user)
-
-      return {
-        props: {
-          errorMessage: "User not found.",
-          missingMandatory: false,
-          csrfToken,
-          currentUser,
-          groups,
-          isFormValid: true,
           currentUserVisibleForces: currentUser.visibleForces ?? ""
         }
       }

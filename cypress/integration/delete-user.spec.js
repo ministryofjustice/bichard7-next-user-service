@@ -5,6 +5,7 @@ describe("Delete user", () => {
   })
 
   it("should delete the user when confirmation text is valid", () => {
+    cy.login("bichard01@example.com", "password")
     cy.visit("/users/Bichard02")
     cy.get('a[data-test="delete-user-view"]').click()
     cy.get("h1").contains("Are you sure you want to delete Bichard User 02 Surname 02?")
@@ -15,6 +16,7 @@ describe("Delete user", () => {
   })
 
   it("should not allow deleting the user when confirmation text is invalid", () => {
+    cy.login("bichard01@example.com", "password")
     cy.visit("/users/Bichard02")
     cy.get('a[data-test="delete-user-view"]').click()
     cy.get("h1").contains("Are you sure you want to delete Bichard User 02 Surname 02?")
@@ -26,6 +28,7 @@ describe("Delete user", () => {
   })
 
   it("should not allow deleting the user when confirmation text is empty", () => {
+    cy.login("bichard01@example.com", "password")
     cy.visit("/users/Bichard02")
     cy.get('a[data-test="delete-user-view"]').click()
     cy.get("h1").contains("Are you sure you want to delete Bichard User 02 Surname 02?")
@@ -33,6 +36,21 @@ describe("Delete user", () => {
     cy.get('[data-test="error-summary"]').contains("Username mismatch")
     cy.get('[data-test="error-summary"]').contains("Enter the account username")
     cy.url().should("contains", "/users/Bichard02/delete")
+  })
+
+  it("should not allow deleting a user outside of the current user's force", () => {
+    // Given
+    cy.login("bichard02@example.com", "password")
+
+    // When
+    cy.visit("/users/Bichard03", { failOnStatusCode: false })
+
+    // Then
+    cy.get("body").should("not.contain.text", "Are you sure you want to delete")
+    cy.get("body").should("not.contain.text", "Bichard03")
+    cy.get("body").should("not.contain.text", "Bichard User 03")
+    cy.get("body").should("not.contain.text", "Surname 03")
+    cy.get("body").should("contain.text", "Page not found")
   })
 
   it("should respond with forbidden response code when CSRF tokens are invalid in delete page", (done) => {

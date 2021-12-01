@@ -13,21 +13,28 @@ import { ParsedUrlQuery } from "querystring"
 import { isError } from "types/Result"
 import createRedirectResponse from "utils/createRedirectResponse"
 import AuthenticationServerSidePropsContext from "types/AuthenticationServerSidePropsContext"
+import usersHaveSameForce from "lib/usersHaveSameForce"
 
 export const getServerSideProps = withMultipleServerSideProps(
   withAuthentication,
   async (context: GetServerSidePropsContext<ParsedUrlQuery>): Promise<GetServerSidePropsResult<Props>> => {
     const { query, currentUser } = context as AuthenticationServerSidePropsContext
-    const { username } = query
+    const { username } = query as { username: string }
+
+    if (!currentUser) {
+      console.error("Unable to determine current user")
+      return createRedirectResponse("/500")
+    }
+
     const connection = getConnection()
-    const user = await getUserByUsername(connection, username as string)
+    const user = await getUserByUsername(connection, username)
 
     if (isError(user)) {
       console.error(user)
       return createRedirectResponse("/500")
     }
 
-    if (!user) {
+    if (!user || !usersHaveSameForce(currentUser, user)) {
       return {
         notFound: true
       }
