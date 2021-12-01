@@ -28,7 +28,7 @@ export default async (
   if (isError(result)) {
     return result
   }
-  
+
   await auditLogger("Create user", { user: userCreateDetails })
 
   const passwordSetCode = randomDigits(config.verificationCodeLength).join("")
@@ -60,7 +60,6 @@ export default async (
     return groupsForCurrentUser
   }
   const groupsForNewUser = groupsForCurrentUser.filter((group: any) => userCreateDetails[group.name] === "yes")
-
 
   emailer
     .sendMail({
