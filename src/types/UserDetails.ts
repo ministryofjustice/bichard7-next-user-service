@@ -1,3 +1,5 @@
+import { UserGroupResult } from "./UserGroup"
+
 interface UserDetails {
   username: string
   forenames: string
@@ -5,7 +7,7 @@ interface UserDetails {
   emailAddress: string
   endorsedBy: string
   orgServes: string
-  groupId: string
+  groups: UserGroupResult[]
 }
 
 export default UserDetails

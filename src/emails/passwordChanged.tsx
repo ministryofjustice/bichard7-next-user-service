@@ -8,7 +8,7 @@ interface Props {
   url: string
 }
 
-const PasswordChangedEmail = ({ url, user }: Props) => {
+const PasswordChangedEmail = ({ url, user }: Props): JSX.Element => {
   const { forenames, surname } = user
 
   return (
@@ -24,7 +24,7 @@ const PasswordChangedEmail = ({ url, user }: Props) => {
   )
 }
 
-const PasswordResetEmailText = ({ url, user }: Props) =>
+const PasswordResetEmailText = ({ url, user }: Props): string =>
   `Hi ${user.forenames} ${user.surname},
 
 Your password has been changed successfully. You can now login to your Bichard account with your new password.
