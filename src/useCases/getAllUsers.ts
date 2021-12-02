@@ -6,9 +6,18 @@ import UserFullDetails from "types/UserFullDetails"
 
 const getAllUsers = async (
   connection: Database,
-  page: number
+  visibleForces: string,
+  page: number = 0
 ): PromiseResult<PaginatedResult<Pick<UserFullDetails, "username" | "forenames" | "surname" | "emailAddress">[]>> => {
-  let users
+  const forces = visibleForces.split(",")
+
+  // Confusing escaping here... We're generating the following for each force:
+  //   visible_forces ~ concat('\y', $1, '\y')
+  // Where:
+  //   - concat() is the postgres function for concatenating strings
+  //   - \y is the postgres regex for "word boundary"; and
+  //   - $1 is the placeholder for the variable substitution, and increments for each force
+  const forceWhere = forces.map((_, i) => `visible_forces ~ concat('\\y', \$${i + 1}, '\\y')`).join(" OR ")
 
   const getAllUsersQuery = `
       SELECT
@@ -19,14 +28,20 @@ const getAllUsers = async (
         COUNT(*) OVER() as all_users
       FROM br7own.users
       WHERE deleted_at IS NULL
+        AND ( ${forceWhere} )
       ORDER BY username
         OFFSET ${page * config.maxUsersPerPage} ROWS
         FETCH NEXT ${config.maxUsersPerPage} ROWS ONLY
     `
+
+  console.log(getAllUsersQuery)
+  // console.log(forces)
+
+  let users
   try {
-    users = await connection.any(getAllUsersQuery)
+    users = await connection.any(getAllUsersQuery, forces)
   } catch (error) {
-    return error
+    return error as Error
   }
 
   return {

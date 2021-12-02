@@ -7,7 +7,8 @@ import UserDetails from "types/UserDetails"
 const getFilteredUsers = async (
   connection: Database,
   filter: string,
-  page = 0
+  // visibleForces: string[],
+  page: number = 0
 ): PromiseResult<PaginatedResult<Partial<UserDetails>[]>> => {
   let users
   const getFilteredUsersQuery = `
@@ -31,7 +32,7 @@ const getFilteredUsers = async (
   try {
     users = await connection.any(getFilteredUsersQuery, [`%${filter}%`])
   } catch (error) {
-    return error
+    return error as Error
   }
 
   return {

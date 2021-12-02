@@ -30,8 +30,6 @@ export const getServerSideProps = withMultipleServerSideProps(
     const { req, query, formData, csrfToken, currentUser } = context as CsrfServerSidePropsContext &
       AuthenticationServerSidePropsContext
     const connection = getConnection()
-    let allUsers = null
-    let totalUsers = 0
     let pageNumber = 0
     let previousFilter = ""
     let bannerMessage = ""
@@ -70,7 +68,7 @@ export const getServerSideProps = withMultipleServerSideProps(
     if (previousFilter) {
       queryResult = await getFilteredUsers(connection, previousFilter, pageNumber)
     } else {
-      queryResult = await getAllUsers(connection, pageNumber)
+      queryResult = await getAllUsers(connection, currentUser?.visibleForces ?? "", pageNumber)
     }
 
     if (isError(queryResult)) {
@@ -82,14 +80,15 @@ export const getServerSideProps = withMultipleServerSideProps(
           currentUser,
           previousFilter,
           pageNumber,
-          totalUsers,
+          totalUsers: 0,
           bannerMessage
         }
       }
     }
+
     const { result, totalElements } = queryResult
-    allUsers = result
-    totalUsers = totalElements
+    const allUsers = result
+    const totalUsers = totalElements
 
     return {
       props: {
