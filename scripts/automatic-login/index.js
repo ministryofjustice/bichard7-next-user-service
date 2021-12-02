@@ -36,7 +36,7 @@ const pgp = require("pg-promise")();
   console.log(`Will log in ${total} users...`);
 
   for (const user of users) {
-    console.log(`${++current}/${total}`);
+    console.log(`${++current}/${total} - ${user.email}`);
 
     await page.goto(process.env.LOGIN_URL);
     await page.waitForSelector("#email");
