@@ -27,13 +27,13 @@ describe("getFilteredUsers", () => {
 
   it("should return correct users from the database", async () => {
     await insertIntoTable(users)
-    const result01 = await getFilteredUsers(connection, "")
+    const result01 = await getFilteredUsers(connection, "", "")
     expect(isError(result01)).toBe(false)
 
     const user01List = await selectFromTable("users", "email", "bichard01@example.com")
     const user01 = user01List[0]
 
-    const result02 = await getFilteredUsers(connection, "Bichard01")
+    const result02 = await getFilteredUsers(connection, "Bichard01", "001")
     expect(isError(result02)).toBe(false)
     expect(result02.result.length).toBe(1)
     const actualUser01 = <User>result02.result[0]
@@ -43,7 +43,7 @@ describe("getFilteredUsers", () => {
     const user02List = await selectFromTable("users", "email", "bichard02@example.com")
     const user02 = user02List[0]
 
-    const result03 = await getFilteredUsers(connection, "bichard02@example.com")
+    const result03 = await getFilteredUsers(connection, "bichard02@example.com", "001")
     expect(isError(result03)).toBe(false)
     expect(result03.result.length).toBe(1)
     const actualUser02 = <User>result03.result[0]
@@ -52,7 +52,7 @@ describe("getFilteredUsers", () => {
     const user03List = await selectFromTable("users", "email", "bichard03@example.com")
     const user03 = user03List[0]
 
-    const result04 = await getFilteredUsers(connection, "Surname 03")
+    const result04 = await getFilteredUsers(connection, "Surname 03", "001")
     expect(isError(result04)).toBe(false)
     expect(result04.result.length).toBe(1)
     const actualUser03 = <User>result04.result[0]
@@ -60,7 +60,7 @@ describe("getFilteredUsers", () => {
   })
 
   it("should not return items that were previously deleted", async () => {
-    const filterResult = await getFilteredUsers(connection, "Filter2Surname")
+    const filterResult = await getFilteredUsers(connection, "Filter2Surname", "")
     expect(isError(filterResult)).toBe(false)
     expect(filterResult.result.length).toBe(0)
   })
@@ -68,17 +68,17 @@ describe("getFilteredUsers", () => {
   it("should return a paginated style result", async () => {
     await deleteFromTable("users")
     await insertIntoTable(manyUsers)
-    const fullListResult = await getFilteredUsers(connection, "")
+    const fullListResult = await getFilteredUsers(connection, "", "001")
     expect(isError(fullListResult)).toBe(false)
     expect(fullListResult.totalElements).toBe("12") // total number of users that match the filter
     expect(fullListResult.result.length).toBe(config.maxUsersPerPage) // total number of users returned for paginated view
 
-    const getSecondPageResult = await getFilteredUsers(connection, "", 1)
+    const getSecondPageResult = await getFilteredUsers(connection, "", "001", 1)
     expect(isError(getSecondPageResult)).toBe(false)
     expect(getSecondPageResult.totalElements).toBe("12") // total number of users that match the filter
     expect(getSecondPageResult.result.length).toBe(12 - config.maxUsersPerPage) // total number of users returned for paginated view
 
-    const getFilteredResult = await getFilteredUsers(connection, "bichard0")
+    const getFilteredResult = await getFilteredUsers(connection, "bichard0", "001")
     expect(isError(getFilteredResult)).toBe(false)
     expect(getFilteredResult.totalElements).toBe("9") // total number of users that match the filter
     expect(getFilteredResult.result.length).toBe(9) // total number of users returned for paginated view

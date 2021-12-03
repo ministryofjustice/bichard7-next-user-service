@@ -7,19 +7,14 @@ import UserFullDetails from "types/UserFullDetails"
 const getAllUsers = async (
   connection: Database,
   visibleForces: string,
-  page: number = 0
+  page = 0
 ): PromiseResult<PaginatedResult<Pick<UserFullDetails, "username" | "forenames" | "surname" | "emailAddress">[]>> => {
-  const forces = visibleForces.split(",")
-
-  // Confusing escaping here... We're generating the following for each force:
-  //   visible_forces ~ concat('\y', $1, '\y')
-  // Where:
-  //   - concat() is the postgres function for concatenating strings
-  //   - \y is the postgres regex for "word boundary"; and
-  //   - $1 is the placeholder for the variable substitution, and increments for each force
-  const forceWhere = forces.map((_, i) => `visible_forces ~ concat('\\y', \$${i + 1}, '\\y')`).join(" OR ")
-
-  const getAllUsersQuery = `
+  let users = []
+  if (visibleForces !== "") {
+    const forces = visibleForces.split(",")
+    /* eslint-disable @typescript-eslint/naming-convention */
+    const forceWhere = forces.map((_, i) => `visible_forces like '%${i}%'`).join(" OR ")
+    const getAllUsersQuery = `
       SELECT
         username,
         forenames,
@@ -34,14 +29,13 @@ const getAllUsers = async (
         FETCH NEXT ${config.maxUsersPerPage} ROWS ONLY
     `
 
-  console.log(getAllUsersQuery)
-  // console.log(forces)
+    console.log(getAllUsersQuery)
 
-  let users
-  try {
-    users = await connection.any(getAllUsersQuery, forces)
-  } catch (error) {
-    return error as Error
+    try {
+      users = await connection.any(getAllUsersQuery, forces)
+    } catch (error) {
+      return error as Error
+    }
   }
 
   return {

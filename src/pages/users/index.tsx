@@ -66,7 +66,7 @@ export const getServerSideProps = withMultipleServerSideProps(
 
     let queryResult
     if (previousFilter) {
-      queryResult = await getFilteredUsers(connection, previousFilter, pageNumber)
+      queryResult = await getFilteredUsers(connection, previousFilter, currentUser?.visibleForces ?? "", pageNumber)
     } else {
       queryResult = await getAllUsers(connection, currentUser?.visibleForces ?? "", pageNumber)
     }

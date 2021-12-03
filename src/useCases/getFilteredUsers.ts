@@ -7,11 +7,15 @@ import UserDetails from "types/UserDetails"
 const getFilteredUsers = async (
   connection: Database,
   filter: string,
-  // visibleForces: string[],
-  page: number = 0
+  visibleForces: string,
+  page = 0
 ): PromiseResult<PaginatedResult<Partial<UserDetails>[]>> => {
-  let users
-  const getFilteredUsersQuery = `
+  let users = []
+  if (visibleForces !== "") {
+    const forces = visibleForces.split(",")
+    /* eslint-disable @typescript-eslint/naming-convention */
+    const forceWhere = forces.map((_, i) => `visible_forces like '%${i}%'`).join(" OR ")
+    const getFilteredUsersQuery = `
       SELECT
         id,
         username,
@@ -25,14 +29,16 @@ const getFilteredUsers = async (
         LOWER(email) LIKE LOWER($1) OR
         LOWER(forenames) LIKE LOWER($1) OR
         LOWER(surname) LIKE LOWER($1) )
+        AND ( ${forceWhere} )
       ORDER BY username
         OFFSET ${page * config.maxUsersPerPage} ROWS
         FETCH NEXT ${config.maxUsersPerPage} ROWS ONLY
     `
-  try {
-    users = await connection.any(getFilteredUsersQuery, [`%${filter}%`])
-  } catch (error) {
-    return error as Error
+    try {
+      users = await connection.any(getFilteredUsersQuery, [`%${filter}%`])
+    } catch (error) {
+      return error as Error
+    }
   }
 
   return {
