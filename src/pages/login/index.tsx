@@ -81,7 +81,8 @@ export const getServerSideProps = withMultipleServerSideProps(
         )
 
         if (!isError(verificationUrl) && typeof verificationUrl !== "undefined") {
-          return createRedirectResponse(verificationUrl.href)
+          const redirect = `${verificationUrl.pathname}${verificationUrl.search}`
+          return createRedirectResponse(redirect, { basePath: false })
         }
       }
     }
