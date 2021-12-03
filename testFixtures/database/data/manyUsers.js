@@ -90,7 +90,7 @@ const manyUsers = [
     deleted_at: null,
     password_reset_code: null,
     migrated_password: null,
-    visible_forces: "001,004,",
+    visible_forces: "001,004,007",
     visible_courts: "B01,B41ME00",
     excluded_triggers: "TRPR0001,"
   },
@@ -109,7 +109,7 @@ const manyUsers = [
     deleted_at: null,
     password_reset_code: null,
     migrated_password: null,
-    visible_forces: "001,004,",
+    visible_forces: "001,003,004,007",
     visible_courts: "B01,B41ME00",
     excluded_triggers: "TRPR0001,"
   },
@@ -128,7 +128,7 @@ const manyUsers = [
     deleted_at: null,
     password_reset_code: null,
     migrated_password: null,
-    visible_forces: "001,004,",
+    visible_forces: "001,007,",
     visible_courts: "B01,B41ME00",
     excluded_triggers: "TRPR0001,"
   },
@@ -147,7 +147,7 @@ const manyUsers = [
     deleted_at: null,
     password_reset_code: null,
     migrated_password: null,
-    visible_forces: "001,004,",
+    visible_forces: "001,003,",
     visible_courts: "B01,B41ME00",
     excluded_triggers: "TRPR0001,"
   },
@@ -166,7 +166,7 @@ const manyUsers = [
     deleted_at: null,
     password_reset_code: null,
     migrated_password: null,
-    visible_forces: "001,004,",
+    visible_forces: "001,004,007",
     visible_courts: "B01,B41ME00",
     excluded_triggers: "TRPR0001,"
   },
@@ -204,7 +204,7 @@ const manyUsers = [
     deleted_at: null,
     password_reset_code: null,
     migrated_password: null,
-    visible_forces: "001,004,",
+    visible_forces: "001,004,003",
     visible_courts: "B01,B41ME00",
     excluded_triggers: "TRPR0001,"
   },
@@ -223,7 +223,7 @@ const manyUsers = [
     deleted_at: null,
     password_reset_code: null,
     migrated_password: null,
-    visible_forces: "001,004,",
+    visible_forces: "001,004,007",
     visible_courts: "B01,B41ME00",
     excluded_triggers: "TRPR0001,"
   }

@@ -13,7 +13,7 @@ const getAllUsers = async (
   if (visibleForces !== "") {
     const forces = visibleForces.split(",")
     /* eslint-disable @typescript-eslint/naming-convention */
-    const forceWhere = forces.map((_, i) => `visible_forces like '%${i}%'`).join(" OR ")
+    const forceWhere = forces.map((code) => `visible_forces like '%${code}%'`).join(" OR ")
     const getAllUsersQuery = `
       SELECT
         username,
