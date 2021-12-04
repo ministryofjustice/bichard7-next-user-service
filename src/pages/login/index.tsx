@@ -38,6 +38,7 @@ export const getServerSideProps = withMultipleServerSideProps(
     }
 
     if (isPost(req)) {
+      const baseUrl = req.headers.origin ? req.headers.origin : config.baseUrl
       const { emailAddress } = formData as { emailAddress: string }
 
       if (!emailAddress.match(/\S+@\S+\.\S+/)) {
@@ -51,7 +52,7 @@ export const getServerSideProps = withMultipleServerSideProps(
       }
 
       const normalisedEmail = removeCjsmSuffix(emailAddress)
-      const sent = await sendVerificationEmail(getConnection(), normalisedEmail, getRedirectPath(query))
+      const sent = await sendVerificationEmail(getConnection(), normalisedEmail, baseUrl, getRedirectPath(query))
 
       if (isError(sent)) {
         console.error(sent)
@@ -77,6 +78,7 @@ export const getServerSideProps = withMultipleServerSideProps(
           connection,
           config,
           emailAddressFromCookie,
+          req.headers.origin || config.baseUrl,
           redirectPath
         )
 
