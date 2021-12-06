@@ -29,8 +29,6 @@ const getAllUsers = async (
         FETCH NEXT ${config.maxUsersPerPage} ROWS ONLY
     `
 
-    console.log(getAllUsersQuery)
-
     try {
       users = await connection.any(getAllUsersQuery, forces)
     } catch (error) {
