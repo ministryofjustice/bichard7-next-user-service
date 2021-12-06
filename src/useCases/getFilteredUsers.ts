@@ -14,7 +14,7 @@ const getFilteredUsers = async (
   if (visibleForces !== "") {
     const forces = visibleForces.split(",")
     /* eslint-disable @typescript-eslint/naming-convention */
-    const forceWhere = forces.map((code) => `visible_forces ~ '(\\y|,)${code}(\\y|,)'`).join(" OR ")
+    const forceWhere = forces.map((code) => `visible_forces ~ '\\y${code}\\y'`).join(" OR ")
     const getFilteredUsersQuery = `
       SELECT
         id,
