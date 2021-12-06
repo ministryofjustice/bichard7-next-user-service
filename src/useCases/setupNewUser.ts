@@ -25,6 +25,7 @@ export default async (
   userCreateDetails: any
 ): PromiseResult<newUserSetupResult> => {
   const result = await createUser(connection, currentUser, userCreateDetails)
+
   if (isError(result)) {
     return result
   }
