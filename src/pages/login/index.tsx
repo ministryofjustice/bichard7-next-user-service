@@ -25,6 +25,7 @@ import { ParsedUrlQuery } from "querystring"
 import { ErrorSummaryList } from "components/ErrorSummary"
 import { removeCjsmSuffix } from "lib/cjsmSuffix"
 import AuthenticationServerSidePropsContext from "types/AuthenticationServerSidePropsContext"
+import getBaseUrl from "lib/getBaseUrl"
 
 export const getServerSideProps = withMultipleServerSideProps(
   withAuthentication,
@@ -36,9 +37,9 @@ export const getServerSideProps = withMultipleServerSideProps(
     if (currentUser) {
       return createRedirectResponse("/")
     }
+    const baseUrl = req.headers.origin || getBaseUrl(req.headers.referer) || config.baseUrl
 
     if (isPost(req)) {
-      const baseUrl = req.headers.origin ? req.headers.origin : config.baseUrl
       const { emailAddress } = formData as { emailAddress: string }
 
       if (!emailAddress.match(/\S+@\S+\.\S+/)) {
@@ -78,7 +79,7 @@ export const getServerSideProps = withMultipleServerSideProps(
           connection,
           config,
           emailAddressFromCookie,
-          req.headers.origin || config.baseUrl,
+          baseUrl,
           redirectPath
         )
 
