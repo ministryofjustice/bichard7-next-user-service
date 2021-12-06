@@ -26,6 +26,7 @@ import { ErrorSummary, ErrorSummaryList } from "components/ErrorSummary"
 import IsEmailUnique from "useCases/IsEmailUnique"
 import isUsernameUnique from "useCases/isUsernameUnique"
 import updateUserCodes from "useCases/updateUserCodes"
+import isValidUsername from "utils/isValidUsername"
 
 export const getServerSideProps = withMultipleServerSideProps(
   withAuthentication,
@@ -62,6 +63,24 @@ export const getServerSideProps = withMultipleServerSideProps(
         visibleForces: string
         visibleCourts: string
         excludedTriggers: string
+      }
+
+      const userNameValidityResult = isValidUsername(userCreateDetails.username)
+      if (userNameValidityResult === false) {
+        return {
+          props: {
+            isSuccess: false,
+            isFormValid: false,
+            userDetails: userCreateDetails,
+            message: "Username is invalid.",
+            usernameError:
+              "Your username may only contain letters, numbers, dots (.), hyphens(-) and/or underscores (_), your username must also begin and end with a letter or a number",
+            csrfToken,
+            currentUser,
+            userGroups,
+            currentUserVisibleForces
+          }
+        }
       }
 
       userCreateDetails.visibleForces = updateUserCodes(listOfForces, "visibleForces", formData)
@@ -249,7 +268,7 @@ const NewUser = ({
           currentUserVisibleForces={currentUserVisibleForces}
         />
         <ButtonGroup>
-          <Button name="save" value="save" noDoubleClick>
+          <Button data-test="new-user_save" name="save" value="save" noDoubleClick>
             {"Save"}
           </Button>
           <Button variant="secondary" name="saveAndAddAnother" value="saveAndAddAnother" noDoubleClick>
