@@ -1,4 +1,4 @@
-import isValidUsername  from "utils/isValidUsername"
+import isValidUsername from "utils/isValidUsername"
 
 describe("WHEN validating a users username", () => {
   describe("AND a valid username is entered", () => {
