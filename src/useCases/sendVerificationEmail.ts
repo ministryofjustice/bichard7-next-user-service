@@ -7,8 +7,13 @@ import { isError } from "types/Result"
 import createVerificationEmail from "./createVerificationEmail"
 import generateEmailVerificationUrl from "./generateEmailVerificationUrl"
 
-export default async (connection: Database, emailAddress: string, redirectPath?: string): PromiseResult<void> => {
-  const verificationUrl = await generateEmailVerificationUrl(connection, config, emailAddress, redirectPath)
+export default async (
+  connection: Database,
+  emailAddress: string,
+  baseUrl: string,
+  redirectPath?: string
+): PromiseResult<void> => {
+  const verificationUrl = await generateEmailVerificationUrl(connection, config, emailAddress, baseUrl, redirectPath)
 
   if (isError(verificationUrl) || typeof verificationUrl === "undefined") {
     return verificationUrl

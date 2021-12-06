@@ -25,6 +25,7 @@ import { ParsedUrlQuery } from "querystring"
 import { ErrorSummaryList } from "components/ErrorSummary"
 import { removeCjsmSuffix } from "lib/cjsmSuffix"
 import AuthenticationServerSidePropsContext from "types/AuthenticationServerSidePropsContext"
+import getBaseUrl from "lib/getBaseUrl"
 
 export const getServerSideProps = withMultipleServerSideProps(
   withAuthentication,
@@ -36,6 +37,7 @@ export const getServerSideProps = withMultipleServerSideProps(
     if (currentUser) {
       return createRedirectResponse("/")
     }
+    const baseUrl = req.headers.origin || getBaseUrl(req.headers.referer) || config.baseUrl
 
     if (isPost(req)) {
       const { emailAddress } = formData as { emailAddress: string }
@@ -51,7 +53,7 @@ export const getServerSideProps = withMultipleServerSideProps(
       }
 
       const normalisedEmail = removeCjsmSuffix(emailAddress)
-      const sent = await sendVerificationEmail(getConnection(), normalisedEmail, getRedirectPath(query))
+      const sent = await sendVerificationEmail(getConnection(), normalisedEmail, baseUrl, getRedirectPath(query))
 
       if (isError(sent)) {
         console.error(sent)
@@ -77,11 +79,13 @@ export const getServerSideProps = withMultipleServerSideProps(
           connection,
           config,
           emailAddressFromCookie,
+          baseUrl,
           redirectPath
         )
 
         if (!isError(verificationUrl) && typeof verificationUrl !== "undefined") {
-          return createRedirectResponse(verificationUrl.href)
+          const redirect = `${verificationUrl.pathname}${verificationUrl.search}`
+          return createRedirectResponse(redirect, { basePath: false })
         }
       }
     }
