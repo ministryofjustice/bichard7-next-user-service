@@ -27,5 +27,9 @@ export default async (connection: Database, emailAddress: string): PromiseResult
       to: addCjsmSuffix(emailAddress),
       ...emailContent
     })
-    .catch((error: Error) => error)
+    .then(() => console.log(`Email successfully sent to ${emailAddress}`))
+    .catch((error: Error) => {
+      console.error(`Error sending email to ${emailAddress}`, error.message)
+      return error
+    })
 }
