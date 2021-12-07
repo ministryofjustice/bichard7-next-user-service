@@ -58,7 +58,7 @@ describe("WHEN validating a users username", () => {
   describe("AND a space is at the end of the proposed username", () => {
     it("SHOULD return false", () => {
       // Given
-      const proposedUsername = " user name"
+      const proposedUsername = "user name "
       // When
       const result = isValidUsername(proposedUsername)
       // Then
