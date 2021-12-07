@@ -16,5 +16,9 @@
 // Import commands.js using ES2015 syntax:
 import "./commands"
 
-// Alternatively you can use CommonJS syntax:
-// require('./commands')
+// Send in an x-origin header with each request to simulate production
+beforeEach(() => {
+  cy.intercept("*", (req) => {
+    req.headers["x-origin"] = Cypress.config("baseUrl")
+  })
+})

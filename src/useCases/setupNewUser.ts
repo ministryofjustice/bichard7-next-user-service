@@ -68,6 +68,7 @@ export default async (
       to: addCjsmSuffix("matt.knight@justice.gov.uk"),
       ...UserCreatedNotification({ user: { ...userCreateDetails, ...{ groups: groupsForNewUser } } })
     })
+    .then(() => console.log(`Email successfully sent to ${userCreateDetails.emailAddress}`))
     .catch(async () => {
       await auditLogger("Error sending notification email of new user creation", { user: userCreateDetails })
     })
@@ -78,6 +79,7 @@ export default async (
       to: addCjsmSuffix(userCreateDetails.emailAddress),
       ...email
     })
+    .then(() => console.log(`Email successfully sent to ${userCreateDetails.emailAddress}`))
     .catch(async (error: Error) => {
       await auditLogger("Error sending email to new user", { user: userCreateDetails })
       return error

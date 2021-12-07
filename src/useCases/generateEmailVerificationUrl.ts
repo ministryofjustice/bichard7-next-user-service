@@ -24,6 +24,7 @@ export default async (
   // If we successfully didn't store the verification code (i.e. the user doesn't exist)
   // then don't generate a URL
   if (!storeVerificationCodeResult) {
+    console.error("Email address not found: ", emailAddress)
     return undefined
   }
 

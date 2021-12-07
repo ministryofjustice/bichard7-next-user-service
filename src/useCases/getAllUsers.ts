@@ -6,11 +6,15 @@ import UserFullDetails from "types/UserFullDetails"
 
 const getAllUsers = async (
   connection: Database,
-  page: number
+  visibleForces: string,
+  page = 0
 ): PromiseResult<PaginatedResult<Pick<UserFullDetails, "username" | "forenames" | "surname" | "emailAddress">[]>> => {
-  let users
-
-  const getAllUsersQuery = `
+  let users = []
+  if (visibleForces !== "") {
+    const forces = visibleForces.split(",")
+    /* eslint-disable @typescript-eslint/naming-convention */
+    const forceWhere = forces.map((code) => `visible_forces ~ '\\y${code}\\y'`).join(" OR ")
+    const getAllUsersQuery = `
       SELECT
         username,
         forenames,
@@ -19,14 +23,17 @@ const getAllUsers = async (
         COUNT(*) OVER() as all_users
       FROM br7own.users
       WHERE deleted_at IS NULL
+        AND ( ${forceWhere} )
       ORDER BY username
         OFFSET ${page * config.maxUsersPerPage} ROWS
         FETCH NEXT ${config.maxUsersPerPage} ROWS ONLY
     `
-  try {
-    users = await connection.any(getAllUsersQuery)
-  } catch (error) {
-    return error
+
+    try {
+      users = await connection.any(getAllUsersQuery, forces)
+    } catch (error) {
+      return error as Error
+    }
   }
 
   return {
