@@ -55,7 +55,8 @@ export const getServerSideProps = withCsrf(async (context): Promise<GetServerSid
       const translatedToken = decodeEmailVerificationToken(token)
 
       if (isError(translatedToken)) {
-        console.error(translatedToken)
+        console.error("Error validating email token: ", translatedToken.message)
+        console.error("Invalid token: ", token)
         return {
           props: {
             invalidVerification: true,
@@ -115,6 +116,8 @@ export const getServerSideProps = withCsrf(async (context): Promise<GetServerSid
     const { token } = query as { token: EmailVerificationToken }
     const translatedToken = decodeEmailVerificationToken(token)
     if (isError(translatedToken)) {
+      console.error("Error validating email token: ", translatedToken.message)
+      console.error("Invalid token: ", token)
       return {
         props: {
           invalidVerification: true,
