@@ -15,7 +15,7 @@ export interface UserServiceConfig {
   auditLoggerType: string
   auditLoggingURL: string
   authenticationCookieName: string
-  baseUrl: string
+  baseUrl?: string
   bichardRedirectURL: string
   contactUrl: string
   cookieSecret: string
@@ -53,7 +53,7 @@ const config: UserServiceConfig = {
   auditLoggerType: "console",
   auditLoggingURL: process.env.AUDIT_LOGGING_URL ?? "/audit-logging",
   authenticationCookieName: ".AUTH",
-  baseUrl: process.env.BASE_URL ?? "http://localhost:3000/users",
+  baseUrl: process.env.BASE_URL,
   bichardRedirectURL: process.env.BICHARD_REDIRECT_URL ?? "/bichard-ui/InitialRefreshList",
   contactUrl: process.env.CONTACT_URL ?? "/contact-us",
   cookieSecret: process.env.COOKIE_SECRET ?? "OliverTwist",

@@ -17,7 +17,8 @@ export default async (
   auditLogger: AuditLogger,
   emailAddress: string,
   currentPassword: string,
-  newPassword: string
+  newPassword: string,
+  baseUrl: string
 ): PromiseResult<void> => {
   const passwordCheckResult = passwordSecurityCheck(newPassword)
 
@@ -76,7 +77,7 @@ export default async (
 
       await auditLogger("Change password")
 
-      const sendPasswordChangedEmailResult = await sendPasswordChangedEmail(connection, emailAddress)
+      const sendPasswordChangedEmailResult = await sendPasswordChangedEmail(connection, emailAddress, baseUrl)
 
       if (isError(sendPasswordChangedEmailResult)) {
         console.error(sendPasswordChangedEmailResult)

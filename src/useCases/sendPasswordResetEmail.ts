@@ -9,7 +9,7 @@ import createPasswordResetEmail from "./createPasswordResetEmail"
 import getUserByEmailAddress from "./getUserByEmailAddress"
 import storePasswordResetCode from "./storePasswordResetCode"
 
-export default async (connection: Database, emailAddress: string): PromiseResult<void> => {
+export default async (connection: Database, emailAddress: string, baseUrl: string): PromiseResult<void> => {
   const user = await getUserByEmailAddress(connection, emailAddress)
 
   if (isError(user)) {
@@ -27,7 +27,7 @@ export default async (connection: Database, emailAddress: string): PromiseResult
     return updateUserResult
   }
 
-  const createPasswordResetEmailResult = createPasswordResetEmail(user, passwordResetCode)
+  const createPasswordResetEmailResult = createPasswordResetEmail(user, passwordResetCode, baseUrl)
 
   if (isError(createPasswordResetEmailResult)) {
     return createPasswordResetEmailResult

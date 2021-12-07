@@ -22,7 +22,8 @@ export default async (
   connection: Database,
   auditLogger: AuditLogger,
   currentUser: Partial<User>,
-  userCreateDetails: any
+  userCreateDetails: any,
+  baseUrl: string
 ): PromiseResult<newUserSetupResult> => {
   const result = await createUser(connection, currentUser, userCreateDetails)
   if (isError(result)) {
@@ -42,7 +43,7 @@ export default async (
     return passwordSetCodeResult
   }
 
-  const createNewUserEmailResult = createNewUserEmail(userCreateDetails, passwordSetCode)
+  const createNewUserEmailResult = createNewUserEmail(userCreateDetails, passwordSetCode, baseUrl)
 
   if (isError(createNewUserEmailResult)) {
     await auditLogger("Error creating new user email", { user: userCreateDetails })
