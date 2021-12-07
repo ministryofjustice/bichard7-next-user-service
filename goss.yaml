@@ -58,18 +58,18 @@ port:
   tcp:80:
     listening: true
     ip:
-    - 0.0.0.0
+      - 0.0.0.0
   tcp:443:
     listening: true
     ip:
-    - 0.0.0.0
+      - 0.0.0.0
 user:
   dbus:
     exists: true
     uid: 81
     gid: 81
     groups:
-    - dbus
+      - dbus
     home: /
     shell: /sbin/nologin
   nginx:
@@ -77,7 +77,7 @@ user:
     uid: 999
     gid: 999
     groups:
-    - nginx
+      - nginx
     home: /var/lib/nginx
     shell: /sbin/nologin
   nobody:
@@ -85,7 +85,7 @@ user:
     uid: 99
     gid: 99
     groups:
-    - nobody
+      - nobody
     home: /
     shell: /sbin/nologin
   node:
@@ -93,7 +93,7 @@ user:
     uid: 1000
     gid: 1000
     groups:
-    - node
+      - node
     home: /home/node
     shell: /bin/bash
   systemd-network:
@@ -101,7 +101,7 @@ user:
     uid: 192
     gid: 192
     groups:
-    - systemd-network
+      - systemd-network
     home: /
     shell: /sbin/nologin
 process:
@@ -113,5 +113,7 @@ process:
     running: true
 http:
   https://localhost/users/login:
+    request-headers:
+      - "X-Origin: http://localhost:3000"
     status: 200
     allow-insecure: true
