@@ -19,7 +19,7 @@ it("should generate the email subject and body", () => {
     surname: "Dummy surname"
   } as User
 
-  const result = createPasswordResetEmail(user, "123456")
+  const result = createPasswordResetEmail(user, "123456", "http://localhost:3000")
 
   expect(isError(result)).toBe(false)
 

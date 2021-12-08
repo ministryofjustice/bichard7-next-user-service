@@ -138,7 +138,15 @@ export const getServerSideProps = withMultipleServerSideProps(
         }
 
         const auditLogger = getAuditLogger(context, config)
-        const result = await setupNewUser(connection, auditLogger, currentUser, userCreateDetails)
+
+        const baseUrl = req.headers["x-origin"] || req.headers.origin || config.baseUrl
+
+        if (!baseUrl || Array.isArray(baseUrl)) {
+          console.error("baseUrl is invalid", baseUrl)
+          return createRedirectResponse("/500")
+        }
+
+        const result = await setupNewUser(connection, auditLogger, currentUser, userCreateDetails, baseUrl)
 
         if (isError(result)) {
           return {
