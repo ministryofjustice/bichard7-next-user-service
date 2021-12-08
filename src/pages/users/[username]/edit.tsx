@@ -24,6 +24,7 @@ import { ErrorSummary, ErrorSummaryList } from "components/ErrorSummary"
 import createRedirectResponse from "utils/createRedirectResponse"
 import updateUserCodes from "useCases/updateUserCodes"
 import usersHaveSameForce from "lib/usersHaveSameForce"
+import getUserByEmailAddress from "useCases/getUserByEmailAddress"
 
 export const getServerSideProps = withMultipleServerSideProps(
   withAuthentication,
@@ -85,6 +86,29 @@ export const getServerSideProps = withMultipleServerSideProps(
       if (formValidationResult.isFormValid) {
         const groupsChecked = groups.filter((group) => formData[group.name] === "yes")
         userDetails.groups = groupsChecked
+
+        // If the user has changed their email address
+        if (user.emailAddress !== userDetails.emailAddress) {
+          const newEmail = userDetails.emailAddress as string
+
+          // Check that the new email address isn't in use
+          const existingUser = await getUserByEmailAddress(connection, newEmail)
+          if (existingUser) {
+            return {
+              props: {
+                emailIsTaken: true,
+                csrfToken,
+                currentUser,
+                groups,
+                user: { ...user, ...userDetails },
+                isFormValid: false,
+                emailError: "Please enter a unique email address",
+                currentUserVisibleForces: currentUser.visibleForces ?? ""
+              }
+            }
+          }
+        }
+
         const auditLogger = getAuditLogger(context, config)
         const userUpdated = await updateUser(connection, auditLogger, currentUser.id, userDetails)
 
@@ -110,7 +134,7 @@ export const getServerSideProps = withMultipleServerSideProps(
 
           return {
             props: {
-              errorMessage: "There was an error retrieving the user details.",
+              errorMessage: "There was an error retrieving the user details",
               csrfToken,
               currentUser,
               groups,
@@ -123,7 +147,7 @@ export const getServerSideProps = withMultipleServerSideProps(
 
         return {
           props: {
-            successMessage: "User details updated successfully.",
+            successMessage: "User details updated successfully",
             user: updatedUser,
             csrfToken,
             currentUser,
@@ -163,6 +187,7 @@ export const getServerSideProps = withMultipleServerSideProps(
 
 interface Props {
   errorMessage?: string
+  emailIsTaken?: boolean
   successMessage?: string
   missingMandatory?: boolean
   user?: Partial<User> | null
@@ -180,6 +205,7 @@ interface Props {
 
 const editUser = ({
   errorMessage,
+  emailIsTaken,
   successMessage,
   usernameError,
   forenamesError,
@@ -203,11 +229,19 @@ const editUser = ({
         {(user && user.username) || "user"}
         {"'s details"}
       </h1>
-      <ErrorSummary title="Error" show={!!errorMessage}>
+
+      <ErrorSummary title="There is a problem" show={!!errorMessage}>
         {errorMessage}
       </ErrorSummary>
 
       <ErrorSummary title="There is a problem" show={!isFormValid}>
+        {!!emailIsTaken && (
+          <p>
+            {"The email address "}
+            <b>{user?.emailAddress}</b>
+            {" already belongs to another user."}
+          </p>
+        )}
         <ErrorSummaryList
           items={[
             { id: "username", error: usernameError },
