@@ -25,6 +25,7 @@ import createRedirectResponse from "utils/createRedirectResponse"
 import updateUserCodes from "useCases/updateUserCodes"
 import usersHaveSameForce from "lib/usersHaveSameForce"
 import getUserByEmailAddress from "useCases/getUserByEmailAddress"
+import sendEmailChangedEmails from "useCases/sendEmailChangedEmails"
 
 export const getServerSideProps = withMultipleServerSideProps(
   withAuthentication,
@@ -87,11 +88,10 @@ export const getServerSideProps = withMultipleServerSideProps(
         const groupsChecked = groups.filter((group) => formData[group.name] === "yes")
         userDetails.groups = groupsChecked
 
-        // If the user has changed their email address
-        if (user.emailAddress !== userDetails.emailAddress) {
-          const newEmail = userDetails.emailAddress as string
+        const oldEmail = user.emailAddress
+        const newEmail = userDetails.emailAddress as string
 
-          // Check that the new email address isn't in use
+        if (oldEmail !== newEmail) {
           const existingUser = await getUserByEmailAddress(connection, newEmail)
           if (existingUser) {
             return {
@@ -126,6 +126,10 @@ export const getServerSideProps = withMultipleServerSideProps(
               currentUserVisibleForces: currentUser.visibleForces ?? ""
             }
           }
+        }
+
+        if (oldEmail !== newEmail) {
+          sendEmailChangedEmails(oldEmail, newEmail)
         }
 
         const updatedUser = await getUserById(connection, userDetails.id as number)
