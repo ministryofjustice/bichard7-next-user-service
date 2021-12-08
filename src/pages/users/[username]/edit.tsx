@@ -129,7 +129,7 @@ export const getServerSideProps = withMultipleServerSideProps(
         }
 
         if (oldEmail !== newEmail) {
-          sendEmailChangedEmails(oldEmail, newEmail)
+          sendEmailChangedEmails(userDetails as { forenames: string; surname: string }, oldEmail, newEmail)
         }
 
         const updatedUser = await getUserById(connection, userDetails.id as number)

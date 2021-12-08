@@ -3,10 +3,15 @@ import { addCjsmSuffix } from "lib/cjsmSuffix"
 import config from "lib/config"
 import getEmailer from "lib/getEmailer"
 import PromiseResult from "types/PromiseResult"
+import User from "types/User"
 
-export default async (oldEmail: string, newEmail: string): PromiseResult<void> => {
-  const oldEmailContent = generateEmailChangedEmail({ status: "old" })
-  const newEmailContent = generateEmailChangedEmail({ status: "new" })
+export default async (
+  user: Pick<User, "forenames" | "surname">,
+  oldEmail: string,
+  newEmail: string
+): PromiseResult<void> => {
+  const oldEmailContent = generateEmailChangedEmail({ status: "old", user })
+  const newEmailContent = generateEmailChangedEmail({ status: "new", user })
 
   let sendingError: Error | undefined
 
