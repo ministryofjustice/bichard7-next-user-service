@@ -47,6 +47,7 @@ const getUserWithInterval = async (task: ITask<unknown>, params: unknown[]): Pro
   FROM br7own.users
   WHERE email = $1
     AND last_login_attempt < NOW() - INTERVAL '$2 seconds'
+    AND email_verification_generated > NOW() - INTERVAL '$3 minutes'
     AND deleted_at IS NULL`
 
   const user = await task.one(getUserQuery, params)
@@ -101,7 +102,11 @@ const authenticate = async (
 
   try {
     const user = await connection.tx(async (task: ITask<unknown>) => {
-      const u = await getUserWithInterval(task, [emailAddress, config.incorrectDelay])
+      const u = await getUserWithInterval(task, [
+        emailAddress,
+        config.incorrectDelay,
+        config.emailVerificationExpiresIn
+      ])
       await updateUserLoginTimestamp(task, emailAddress)
       return u
     })
