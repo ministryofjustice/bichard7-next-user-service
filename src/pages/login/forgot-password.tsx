@@ -16,10 +16,18 @@ import { withCsrf } from "middleware"
 import isPost from "utils/isPost"
 import { ParsedUrlQuery } from "querystring"
 import { ErrorSummaryList } from "components/ErrorSummary"
+import config from "lib/config"
 
 export const getServerSideProps = withCsrf(
   async (context: GetServerSidePropsContext<ParsedUrlQuery>): Promise<GetServerSidePropsResult<Props>> => {
     const { req, formData, csrfToken } = context as CsrfServerSidePropsContext
+
+    const baseUrl = req.headers["x-origin"] || req.headers.origin || config.baseUrl
+
+    if (!baseUrl || Array.isArray(baseUrl)) {
+      console.error("baseUrl is invalid", baseUrl)
+      return createRedirectResponse("/500")
+    }
 
     if (isPost(req)) {
       const { emailAddress } = formData as { emailAddress: string }
@@ -34,7 +42,7 @@ export const getServerSideProps = withCsrf(
       }
 
       const connection = getConnection()
-      const result = await sendPasswordResetEmail(connection, emailAddress)
+      const result = await sendPasswordResetEmail(connection, emailAddress, baseUrl)
 
       if (isError(result)) {
         console.error(result)

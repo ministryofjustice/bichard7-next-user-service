@@ -36,24 +36,11 @@ export const getServerSideProps = withMultipleServerSideProps(
     if (currentUser) {
       return createRedirectResponse("/")
     }
-    const baseUrl = req.headers["x-origin"] || req.headers.origin
 
-    // Temporarily log out the baseUrl config so we can see which url is being used
-    console.log(
-      JSON.stringify({
-        baseUrl: baseUrl || null,
-        origin: req.headers.origin || null,
-        "x-origin": req.headers["x-origin"] || null
-      })
-    )
+    const baseUrl = req.headers["x-origin"] || req.headers.origin || config.baseUrl
 
-    if (Array.isArray(baseUrl)) {
-      console.error("baseUrl is an array")
-      return createRedirectResponse("/500")
-    }
-
-    if (!baseUrl) {
-      console.error("baseUrl is undefined")
+    if (!baseUrl || Array.isArray(baseUrl)) {
+      console.error("baseUrl is invalid", baseUrl)
       return createRedirectResponse("/500")
     }
 

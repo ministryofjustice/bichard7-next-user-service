@@ -31,7 +31,7 @@ describe("sendPasswordChangedEmail", () => {
     const mockedSendMail = jest.fn().mockResolvedValue(null)
     mockedGetEmailer.mockReturnValue({ sendMail: mockedSendMail })
 
-    const result = await sendPasswordChangedEmail(connection, "bichard01@example.com")
+    const result = await sendPasswordChangedEmail(connection, "bichard01@example.com", "http://localhost:3000")
 
     expect(isError(result)).toBe(false)
     expect(mockedSendMail).toHaveBeenCalledTimes(1)
@@ -78,7 +78,7 @@ describe("sendPasswordChangedEmail", () => {
     })
     mockedGetEmailer.mockReturnValue({ sendMail: mockedSendMail })
 
-    const result = await sendPasswordChangedEmail(connection, "bichard01@example.com")
+    const result = await sendPasswordChangedEmail(connection, "bichard01@example.com", "http://localhost:3000")
 
     expect(isError(result)).toBe(true)
 

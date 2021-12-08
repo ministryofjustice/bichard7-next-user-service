@@ -9,7 +9,7 @@ it("should generate the email content", () => {
     surname: "Dummy surname"
   } as User
 
-  const { subject, text, html } = createPasswordChangedEmail(user)
+  const { subject, text, html } = createPasswordChangedEmail(user, "http://localhost:3000")
 
   expect(subject).toMatchSnapshot()
   expect(text).toMatchSnapshot()

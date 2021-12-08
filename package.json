@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "COOKIES_SECURE=false next dev",
+    "dev": "COOKIES_SECURE=false BASE_URL=http://localhost:3000 next dev",
     "build": "next build",
     "install:assets": "./scripts/copy-govuk-frontend-assets.sh",
     "install:hooks": "./scripts/install-git-hooks.sh",

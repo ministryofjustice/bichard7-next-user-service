@@ -45,7 +45,7 @@ const TextInput = ({
         </div>
       )}
       {!!hasError && error !== true && (
-        <span id={errorElementId} className="govuk-error-message">
+        <span data-test={`text-input_${name}-error`} id={errorElementId} className="govuk-error-message">
           <span className="govuk-visually-hidden">{"Error:"}</span> {error}
         </span>
       )}

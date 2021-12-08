@@ -22,9 +22,11 @@ export default async (
   connection: Database,
   auditLogger: AuditLogger,
   currentUser: Partial<User>,
-  userCreateDetails: any
+  userCreateDetails: any,
+  baseUrl: string
 ): PromiseResult<newUserSetupResult> => {
   const result = await createUser(connection, currentUser, userCreateDetails)
+
   if (isError(result)) {
     return result
   }
@@ -42,7 +44,7 @@ export default async (
     return passwordSetCodeResult
   }
 
-  const createNewUserEmailResult = createNewUserEmail(userCreateDetails, passwordSetCode)
+  const createNewUserEmailResult = createNewUserEmail(userCreateDetails, passwordSetCode, baseUrl)
 
   if (isError(createNewUserEmailResult)) {
     await auditLogger("Error creating new user email", { user: userCreateDetails })
@@ -67,6 +69,7 @@ export default async (
       to: addCjsmSuffix("matt.knight@justice.gov.uk"),
       ...UserCreatedNotification({ user: { ...userCreateDetails, ...{ groups: groupsForNewUser } } })
     })
+    .then(() => console.log(`Email successfully sent to ${userCreateDetails.emailAddress}`))
     .catch(async () => {
       await auditLogger("Error sending notification email of new user creation", { user: userCreateDetails })
     })
@@ -77,6 +80,7 @@ export default async (
       to: addCjsmSuffix(userCreateDetails.emailAddress),
       ...email
     })
+    .then(() => console.log(`Email successfully sent to ${userCreateDetails.emailAddress}`))
     .catch(async (error: Error) => {
       await auditLogger("Error sending email to new user", { user: userCreateDetails })
       return error

@@ -83,7 +83,7 @@ describe("AccountSetup", () => {
     const passwordSetCodeResult = await storePasswordResetCode(connection, "bichard01@example.com", verificationCode)
     expect(isError(passwordSetCodeResult)).toBe(false)
 
-    const newUserEmailResult = createNewUserEmail(user, verificationCode)
+    const newUserEmailResult = createNewUserEmail(user, verificationCode, "http://localhost:3000")
     expect(isError(newUserEmailResult)).toBe(false)
 
     const email = newUserEmailResult as EmailContent

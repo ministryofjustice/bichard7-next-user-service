@@ -64,13 +64,21 @@ export const getServerSideProps = withMultipleServerSideProps(
         }
       }
 
+      const baseUrl = req.headers["x-origin"] || req.headers.origin || config.baseUrl
+
+      if (!baseUrl || Array.isArray(baseUrl)) {
+        console.error("baseUrl is invalid", baseUrl)
+        return createRedirectResponse("/500")
+      }
+
       const auditLogger = getAuditLogger(context, config)
       const changePasswordResult = await changePassword(
         connection,
         auditLogger,
         currentUser.emailAddress,
         currentPassword,
-        newPassword
+        newPassword,
+        baseUrl
       )
 
       if (isError(changePasswordResult)) {
