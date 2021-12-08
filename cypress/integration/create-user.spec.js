@@ -72,7 +72,7 @@ describe("Creation of new user", () => {
     })
   })
 
-  it("should not possible for the new user to set their password if it contains sensitive information", () => {
+  it("should not allow the new user to set their password if it contains sensitive information", () => {
     const emailAddress = "bichardemail1@example.com"
     const newPassword = "bichardemail1"
     cy.task("getPasswordResetCode", emailAddress).then((passwordResetCode) => {
@@ -254,6 +254,65 @@ describe("Creation of new user", () => {
         })
       })
     })
+  })
+
+  it("should show a user-friendly validation error message when username contains a forbidden character", () => {
+    // Given
+    cy.visit("users/new-user")
+    cy.get('input[id="username"]').type("B%user2")
+    cy.get('input[id="forenames"]').type("B forename")
+    cy.get('input[id="surname"]').type("B surname")
+    cy.get('input[id="emailAddress"]').type("bichardemail2@example.com")
+    cy.get('input[id="endorsedBy"]').type("B Endorsed")
+    cy.get('input[id="orgServes"]').type("B organisation")
+    cy.get('input[id="visibleForces001"]').check()
+    cy.get('input[id="visibleForces004"]').check()
+    cy.get('input[id="visibleCourts"]').type("B01,B41ME00")
+
+    cy.get('span[data-test="included-triggers"]').click()
+    cy.get('input[id="excludedTriggersTRPR0001"]').uncheck()
+
+    // When
+    cy.get("button[name=save]").click()
+
+    // Then
+    const errorMessage =
+      "Your username may only contain letters, numbers, dots (.), hyphens(-) and/or underscores (_), your username must also begin and end with a letter or a number"
+
+    // The summary should contain the validation error
+    cy.get('[data-test="error-summary"]').should("be.visible").contains(errorMessage)
+
+    // The validation error should be inline with the text input
+    cy.get('[data-test="text-input_username-error"]').should("be.visible").contains(errorMessage)
+  })
+
+  it("should show a user-friendly validation error message when email contains the cjsm domain", () => {
+    // Given
+    cy.visit("users/new-user")
+    cy.get('input[id="username"]').type("Buser2")
+    cy.get('input[id="forenames"]').type("B forename")
+    cy.get('input[id="surname"]').type("B surname")
+    cy.get('input[id="emailAddress"]').type("bichardemail2@example.cjsm.net")
+    cy.get('input[id="endorsedBy"]').type("B Endorsed")
+    cy.get('input[id="orgServes"]').type("B organisation")
+    cy.get('input[id="visibleForces001"]').check()
+    cy.get('input[id="visibleForces004"]').check()
+    cy.get('input[id="visibleCourts"]').type("B01,B41ME00")
+
+    cy.get('span[data-test="included-triggers"]').click()
+    cy.get('input[id="excludedTriggersTRPR0001"]').uncheck()
+
+    // When
+    cy.get("button[name=save]").click()
+
+    // Then
+    const errorMessage = "The user's email address should not end with .cjsm.net"
+
+    // The summary should contain the validation error
+    cy.get('[data-test="error-summary"]').should("be.visible").contains(errorMessage)
+
+    // The validation error should be inline with the text input
+    cy.get('[data-test="text-input_emailAddress-error"]').should("be.visible").contains(errorMessage)
   })
 
   it("should respond with forbidden response code when CSRF tokens are invalid in new user page", (done) => {
