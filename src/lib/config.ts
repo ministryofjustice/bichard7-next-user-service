@@ -55,7 +55,7 @@ const config: UserServiceConfig = {
   authenticationCookieName: ".AUTH",
   baseUrl: process.env.BASE_URL,
   bichardRedirectURL: process.env.BICHARD_REDIRECT_URL ?? "/bichard-ui/InitialRefreshList",
-  contactUrl: process.env.CONTACT_URL ?? "/contact-us",
+  contactUrl: "https://mojprod.service-now.com/",
   cookieSecret: process.env.COOKIE_SECRET ?? "OliverTwist",
   cookiesSecureOption: (process.env.COOKIES_SECURE ?? "true") === "true",
   debugMode: "false",
