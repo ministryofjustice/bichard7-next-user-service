@@ -15,7 +15,7 @@ import { withAuthentication, withCsrf, withMultipleServerSideProps } from "middl
 import { ParsedUrlQuery } from "querystring"
 import AuthenticationServerSidePropsContext from "types/AuthenticationServerSidePropsContext"
 import User from "types/User"
-import isPost from "utils/isPost"
+import { isPost } from "utils/http"
 import { getUserGroups } from "useCases"
 import { UserGroupResult } from "types/UserGroup"
 import getAuditLogger from "lib/getAuditLogger"
