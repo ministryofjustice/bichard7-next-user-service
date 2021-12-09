@@ -8,6 +8,7 @@ const getFilteredUsers = async (
   connection: Database,
   filter: string,
   visibleForces: string,
+  isSuperUser = false,
   page = 0
 ): PromiseResult<PaginatedResult<Partial<UserDetails>[]>> => {
   let users = []
@@ -29,7 +30,7 @@ const getFilteredUsers = async (
         LOWER(email) LIKE LOWER($1) OR
         LOWER(forenames) LIKE LOWER($1) OR
         LOWER(surname) LIKE LOWER($1) )
-        AND ( ${forceWhere} )
+        AND (( ${forceWhere} ) OR ( ${isSuperUser} ) )
       ORDER BY username
         OFFSET ${page * config.maxUsersPerPage} ROWS
         FETCH NEXT ${config.maxUsersPerPage} ROWS ONLY

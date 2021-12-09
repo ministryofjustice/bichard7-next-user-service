@@ -30,6 +30,10 @@ const groups = [
   {
     name: "B7AuditLoggingManager_grp",
     friendly_name: ""
+  },
+  {
+    name: "B7SuperUserManager_grp",
+    friendly_name: "Super User Manager"
   }
 ]
 

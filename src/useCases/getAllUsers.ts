@@ -7,6 +7,7 @@ import UserFullDetails from "types/UserFullDetails"
 const getAllUsers = async (
   connection: Database,
   visibleForces: string,
+  isSuperUser = false,
   page = 0
 ): PromiseResult<PaginatedResult<Pick<UserFullDetails, "username" | "forenames" | "surname" | "emailAddress">[]>> => {
   let users = []
@@ -23,7 +24,7 @@ const getAllUsers = async (
         COUNT(*) OVER() as all_users
       FROM br7own.users
       WHERE deleted_at IS NULL
-        AND ( ${forceWhere} )
+        AND (( ${forceWhere} ) OR ( ${isSuperUser} ) )
       ORDER BY username
         OFFSET ${page * config.maxUsersPerPage} ROWS
         FETCH NEXT ${config.maxUsersPerPage} ROWS ONLY
