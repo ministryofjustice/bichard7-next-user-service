@@ -12,6 +12,12 @@ module.exports = {
         destination: "/users",
         permanent: true,
         basePath: false
+      },
+      {
+        source: "/users/login/v2",
+        destination: "/users/login",
+        permanent: true,
+        basePath: false
       }
     ]
   }
