@@ -272,7 +272,9 @@ const NewUser = ({
           surnameError={surnameError}
           forcesError={forcesError}
           allGroups={userGroups}
+          endorsedBy={currentUser?.username}
           userGroups={userDetails.groups}
+          
           currentUserVisibleForces={currentUserVisibleForces}
         />
         <ButtonGroup>
