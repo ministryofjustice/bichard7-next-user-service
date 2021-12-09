@@ -6,7 +6,8 @@ import PromiseResult from "types/PromiseResult"
 export default async (connection: Database | Task, userName: string): PromiseResult<void> => {
   const updateUserQuery = `
     UPDATE br7own.users
-    SET last_logged_in = NOW()
+    SET last_logged_in = NOW(),
+    last_login_attempt = DEFAULT
     WHERE username = \${userName}
       AND deleted_at IS NULL
   `
