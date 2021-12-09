@@ -88,8 +88,8 @@ export const getServerSideProps = withMultipleServerSideProps(
         const groupsChecked = groups.filter((group) => formData[group.name] === "yes")
         userDetails.groups = groupsChecked
 
-        const oldEmail = user.emailAddress
-        const newEmail = userDetails.emailAddress as string
+        const oldEmail = user.emailAddress.toLowerCase()
+        const newEmail = (userDetails.emailAddress as string).toLowerCase()
 
         if (oldEmail !== newEmail) {
           const existingUser = await getUserByEmailAddress(connection, newEmail)
