@@ -1,5 +1,3 @@
-import { validToken } from "../helpers/tokens"
-
 describe("Redirection log in", () => {
   before(() => {
     cy.task("deleteFromUsersTable")
@@ -12,18 +10,13 @@ describe("Redirection log in", () => {
     const redirectPath = "/bichard-ui/customurl"
 
     cy.visit(`/login?redirect=${redirectPath}`)
-
     cy.get("input[type=email]").type(emailAddress)
     cy.get("button[type=submit]").click()
-    cy.get('h1[data-test="check-email"]').should("exist")
-
+    cy.get("input#validationCode").should("exist")
     cy.task("getVerificationCode", emailAddress).then((verificationCode) => {
-      const token = validToken(emailAddress, verificationCode)
-      cy.visit(`/login/verify?token=${token}&redirect=${redirectPath}`)
-
-      cy.get("input[type=password][name=password]").type(password)
+      cy.get("input#validationCode").type(verificationCode)
+      cy.get("input#password").type(password)
       cy.get("button[type=submit]").click()
-
       cy.url().should("match", /^http:\/\/localhost:3000\/bichard-ui\/customurl/)
     })
   })
