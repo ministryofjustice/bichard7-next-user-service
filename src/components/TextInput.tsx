@@ -55,6 +55,7 @@ const TextInput = ({
         className={`govuk-input${widthClassName}${hasError ? " govuk-input--error" : ""}`}
         id={id || name}
         name={name}
+        data-test={`text-input_${name}`}
         type={type}
         defaultValue={value}
         readOnly={readOnly}
