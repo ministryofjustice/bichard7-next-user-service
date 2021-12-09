@@ -35,6 +35,11 @@ const testData: TestData[] = [
     expectedResult: false
   },
   {
+    group: "B7SuperUserManager",
+    url: "/users/users",
+    expectedResult: false
+  },
+  {
     group: null,
     url: "/users/",
     expectedResult: true
@@ -67,10 +72,7 @@ const bichardUsers = [
   "B7ExceptionHandler",
   "B7GeneralHandler",
   "B7Supervisor",
-  "B7TriggerHandler",
-  "B7UserManager",
-  "B7AuditLoggingManager",
-  "B7SuperUserManager"
+  "B7TriggerHandler"
 ]
 
 const nonBichardUsers = ["B7UserManager", "B7AuditLoggingManager"]
