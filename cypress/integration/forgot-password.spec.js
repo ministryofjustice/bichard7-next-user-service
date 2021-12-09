@@ -1,5 +1,3 @@
-import { generateLoginVerificationToken } from "../helpers/tokens"
-
 describe("Forgot password", () => {
   context("720p resolution", () => {
     beforeEach(() => {

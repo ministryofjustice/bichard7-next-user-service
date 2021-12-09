@@ -1,5 +1,3 @@
-import { validToken } from "../../helpers/tokens"
-
 describe("Authentication API endpoint", () => {
   beforeEach(() => {
     cy.task("deleteFromGroupsTable")

@@ -1,5 +1,3 @@
-import { validToken } from "../helpers/tokens"
-
 describe("Redirection log in", () => {
   before(() => {
     cy.task("deleteFromUsersTable")
