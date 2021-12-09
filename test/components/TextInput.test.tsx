@@ -7,6 +7,7 @@ it("should render text input component", () => {
       id="inputId"
       name="inputName"
       readOnly
+      disabled
       value="Input Value"
       error="Error message"
       label="Input label"
