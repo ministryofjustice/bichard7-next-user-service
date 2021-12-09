@@ -21,11 +21,11 @@ exports[`should render text input component 1`] = `
     <input
       aria-describedby="inputName-hint "
       class="govuk-input govuk-input--width-5"
+      data-test="text-input_inputName"
       disabled=""
       id="inputId"
       name="inputName"
       readonly=""
-      disabled=""
       type="email"
       value="Input Value"
     />
