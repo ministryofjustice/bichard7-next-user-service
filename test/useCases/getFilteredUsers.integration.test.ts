@@ -81,6 +81,22 @@ describe("getFilteredUsers", () => {
     expect(userListResult.totalElements).toBe("5") // total number of users that match the filter
   })
 
+  it("should return all users when flag is set", async () => {
+    await deleteFromTable("users")
+    await insertIntoTable(manyUsers)
+    let userListResult = await getFilteredUsers(connection, "", "003", true)
+    expect(isError(userListResult)).toBe(false)
+    expect(userListResult.totalElements).toBe("13") // total number of users that match the filter
+
+    userListResult = await getFilteredUsers(connection, "", "003,007", true)
+    expect(isError(userListResult)).toBe(false)
+    expect(userListResult.totalElements).toBe("13") // total number of users that match the filter
+
+    userListResult = await getFilteredUsers(connection, "", "007", true)
+    expect(isError(userListResult)).toBe(false)
+    expect(userListResult.totalElements).toBe("13") // total number of users that match the filter
+  })
+
   it("should return a paginated style result", async () => {
     await deleteFromTable("users")
     await insertIntoTable(manyUsers)
@@ -89,7 +105,7 @@ describe("getFilteredUsers", () => {
     expect(fullListResult.totalElements).toBe("12") // total number of users that match the filter
     expect(fullListResult.result.length).toBe(config.maxUsersPerPage) // total number of users returned for paginated view
 
-    const getSecondPageResult = await getFilteredUsers(connection, "", "001", 1)
+    const getSecondPageResult = await getFilteredUsers(connection, "", "001", false, 1)
     expect(isError(getSecondPageResult)).toBe(false)
     expect(getSecondPageResult.totalElements).toBe("12") // total number of users that match the filter
     expect(getSecondPageResult.result.length).toBe(12 - config.maxUsersPerPage) // total number of users returned for paginated view
