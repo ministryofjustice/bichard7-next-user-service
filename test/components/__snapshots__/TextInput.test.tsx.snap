@@ -25,6 +25,7 @@ exports[`should render text input component 1`] = `
       id="inputId"
       name="inputName"
       readonly=""
+      disabled=""
       type="email"
       value="Input Value"
     />
