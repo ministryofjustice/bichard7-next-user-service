@@ -67,7 +67,10 @@ const bichardUsers = [
   "B7ExceptionHandler",
   "B7GeneralHandler",
   "B7Supervisor",
-  "B7TriggerHandler"
+  "B7TriggerHandler",
+  "B7UserManager",
+  "B7AuditLoggingManager",
+  "B7SuperUserManager"
 ]
 
 const nonBichardUsers = ["B7UserManager", "B7AuditLoggingManager"]

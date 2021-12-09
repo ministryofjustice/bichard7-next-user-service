@@ -14,7 +14,10 @@ const bichardGroups = [
   "B7ExceptionHandler",
   "B7GeneralHandler",
   "B7Supervisor",
-  "B7TriggerHandler"
+  "B7TriggerHandler",
+  "B7UserManager",
+  "B7AuditLoggingManager",
+  "B7SuperUserManager"
 ]
 
 export default ({ groups }: AuthenticationTokenPayload): GetUserServiceAccessResult => {
