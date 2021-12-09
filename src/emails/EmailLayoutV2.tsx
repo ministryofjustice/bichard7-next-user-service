@@ -3,12 +3,8 @@ import { ReactNode } from "react"
 const outerBackgroundColour = "#f3f2f1"
 const innerBackgroundColour = "#ffffff"
 const borderColor = "#b1b4b6"
-const buttonColor = "#00703c"
 const color = "#0b0c0c"
-const dimColor = "#505a5f"
 const fontFamily = "Arial, sans-serif"
-
-const dimStyles = { color: dimColor, fontFamily, fontSize: "14px", lineHeight: "16px", marginBottom: "16px" }
 
 interface ChildProps {
   children: ReactNode
@@ -22,29 +18,10 @@ const Paragraph = ({ children }: ChildProps) => (
   <p style={{ color, fontFamily, fontSize: "19px", lineHeight: "25px", marginBottom: "20px" }}>{children}</p>
 )
 
-interface ButtonProps {
-  href: string
-  label: string
-}
-
-const Button = ({ href, label }: ButtonProps) => (
-  <a
-    href={href}
-    style={{
-      backgroundColor: buttonColor,
-      color: "#ffffff",
-      cursor: "pointer",
-      display: "inline-block",
-      fontFamily,
-      fontSize: "19px",
-      lineHeight: "19px",
-      padding: "8px 10px 7px 10px",
-      textAlign: "center",
-      textDecoration: "none"
-    }}
-  >
-    {label}
-  </a>
+const CodeBox = ({ children }: ChildProps) => (
+  <p style={{ color, fontFamily, fontSize: "30px", lineHeight: "25px", margin: "20px", border: "2px solid black" }}>
+    {children}
+  </p>
 )
 
 interface EmailBaseProps {
@@ -87,13 +64,12 @@ const EmailBase = ({ children, title }: EmailBaseProps) => (
 )
 
 interface EmailLayoutProps {
-  actionUrl?: string
-  buttonLabel?: string
   paragraphs: string[]
   title: string
+  code: string
 }
 
-const EmailLayout = ({ actionUrl, buttonLabel, paragraphs, title }: EmailLayoutProps) => (
+const EmailLayout = ({ paragraphs, title, code }: EmailLayoutProps) => (
   <EmailBase title={title}>
     <Title>{title}</Title>
 
@@ -101,21 +77,8 @@ const EmailLayout = ({ actionUrl, buttonLabel, paragraphs, title }: EmailLayoutP
       // eslint-disable-next-line react/no-array-index-key
       <Paragraph key={i}>{paragraph}</Paragraph>
     ))}
-
-    {!!actionUrl && !!buttonLabel && (
-      <>
-        <Button href={actionUrl} label={buttonLabel} />
-
-        <p style={{ ...dimStyles, marginTop: "50px" }}>
-          {"If you’re having trouble clicking the button, copy and paste the URL below into your web browser:"}
-        </p>
-        <p style={{ ...dimStyles, margin: "0" }}>
-          <a href={actionUrl} style={dimStyles}>
-            {actionUrl}
-          </a>
-        </p>
-      </>
-    )}
+    <CodeBox>{code}</CodeBox>
+    <Paragraph key="ignore">{"If you didn't request this email, you can safely ignore it."}</Paragraph>
   </EmailBase>
 )
 

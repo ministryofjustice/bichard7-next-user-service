@@ -80,7 +80,6 @@ const UserForm = ({
         type="email"
         value={emailAddress}
         error={emailError}
-        readOnly={isEdit}
         width="20"
         mandatory
       />

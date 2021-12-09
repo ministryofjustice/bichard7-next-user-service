@@ -72,7 +72,7 @@ describe("updatePassword", () => {
     const user = {
       id: initialUser.id,
       username: "Bichard04",
-      email: "bichard04@example.com",
+      emailAddress: initialUser.email,
       forenames: "forename04",
       surname: "surname04",
       endorsedBy: "endorsed by 04",
@@ -100,13 +100,14 @@ describe("updatePassword", () => {
     expect(initialUser02.excluded_triggers).toBe("TRPR0002,")
   })
 
-  it("should not update emailAddress if provided in user object", async () => {
+  it("should update emailAddress if provided in user object", async () => {
     await insertIntoUsersTable(users)
     await insertIntoGroupsTable(groups)
     await insertIntoUserGroupsTable(
       "bichard01@example.com",
       groups.map((g) => g.name)
     )
+    const updatedEmail = "bichard04@example.com"
     const currentUserId = (await selectFromTable("users", "username", "Bichard01"))[0].id
 
     await insertUserWithGroup()
@@ -124,7 +125,7 @@ describe("updatePassword", () => {
       surname: "surname04A",
       endorsedBy: "endorsed by 04",
       orgServes: "orgAServes 04",
-      emailAddress: "bichard04@example.com",
+      emailAddress: updatedEmail,
       groups: [initialGroup],
       visibleForces: "004,007,",
       visibleCourts: "B02,",
@@ -133,10 +134,10 @@ describe("updatePassword", () => {
 
     const result = await updateUser(connection, fakeAuditLogger, currentUserId, user)
     expect(result).toBeUndefined()
-    const initialUserList02 = await selectFromTable("users", "email", emailAddress)
+    const initialUserList02 = await selectFromTable("users", "email", updatedEmail)
     const initialUser02 = initialUserList02[0]
 
-    expect(initialUser02.email).toBe(emailAddress)
+    expect(initialUser02.email).toBe(updatedEmail)
   })
 
   it("should throw the correct error if user is not found", async () => {
@@ -155,6 +156,7 @@ describe("updatePassword", () => {
 
     const user = {
       id: 0,
+      emailAddress: "bichard01@example.com",
       username: "Bichard04",
       forenames: "forename04",
       surname: "surname04A",
@@ -208,6 +210,7 @@ describe("updatePassword", () => {
 
     const updateUserDetails: any = {
       id: initialUser.id,
+      emailAddress: user.email,
       username: "new-username-01",
       forenames: "new-forenames-01",
       surname: "new-surname-01",
@@ -272,6 +275,7 @@ describe("updatePassword", () => {
 
     const updateUserDetails: any = {
       id: initialUser.id,
+      emailAddress: initialUser.email,
       username: "new-username-01",
       forenames: "new-forenames-01",
       surname: "new-surname-01",
@@ -325,6 +329,7 @@ describe("updatePassword", () => {
 
     const updateUserDetails = {
       id: initialUser.id,
+      emailAddress: user.email,
       username: "new-username-01",
       forenames: "new-forenames-01",
       surname: "new-surname-01",
@@ -360,6 +365,7 @@ describe("updatePassword", () => {
 
     const updateUserDetails: any = {
       id: initialUser.id,
+      emailAddress: "bichard1@example.com",
       username: "new-username-01",
       forenames: "new-forenames-01",
       surname: "new-surname-01",

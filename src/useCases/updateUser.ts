@@ -53,6 +53,7 @@ const updateUserTable = async (task: ITask<unknown>, userDetails: Partial<User>)
 	    SET
         forenames=$\{forenames\},
         surname=$\{surname\},
+        email=$\{emailAddress\},
         endorsed_by=$\{endorsedBy\},
         org_serves=$\{orgServes\},
         visible_courts=$\{visibleCourts\},
