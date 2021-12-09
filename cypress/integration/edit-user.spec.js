@@ -155,7 +155,6 @@ describe("Edit user", () => {
   it("should have the email and username text input fields readonly", () => {
     cy.login("bichard02@example.com", "password")
     cy.visit("users/Bichard02/edit")
-    cy.get('input[value="bichard02@example.com"]').invoke("attr", "readonly").should("eq", "readonly")
     cy.get('input[value="Bichard02"]').invoke("attr", "readonly").should("eq", "readonly")
   })
 

@@ -16,14 +16,14 @@ const userFormIsValid = (
 ): ValidationResult => {
   const validationResult = {
     forenamesError: !forenames?.trim() && "Enter the user's forename(s)",
-    surnameError: !surname?.trim() && "Enter the user's surname"
+    surnameError: !surname?.trim() && "Enter the user's surname",
+    emailError:
+      (!emailAddress?.trim() && "Enter the user's email address") ||
+      (!!emailAddress?.match(/\.cjsm\.net$/i) && "The user's email address should not end with .cjsm.net")
   } as ValidationResult
 
   if (!isEdit) {
     validationResult.usernameError = !username?.trim() && "Enter a username for the new user"
-    validationResult.emailError =
-      (!emailAddress?.trim() && "Enter the user's email address") ||
-      (!!emailAddress?.match(/\.cjsm\.net$/i) && "The user's email address should not end with .cjsm.net")
   }
 
   validationResult.isFormValid =
