@@ -69,6 +69,7 @@ const UserForm = ({
         error={usernameError}
         value={username}
         readOnly={isEdit}
+        disabled={isEdit}
         width="20"
         mandatory
       />
@@ -81,11 +82,15 @@ const UserForm = ({
         value={emailAddress}
         error={emailError}
         readOnly={isEdit}
+        disabled={isEdit}
         width="20"
         mandatory
       />
 
-      <TextInput value={endorsedBy} name="endorsedBy" label="Endorsed by" width="20" />
+      {!isEdit &&
+        <TextInput value={endorsedBy} name="endorsedBy" label="Endorsed by" width="20" readOnly disabled={isEdit} />
+      }
+
       <TextInput value={orgServes} name="orgServes" label="Organisation" width="20" />
 
       <div className="govuk-form-group" data-test="checkbox-user-groups">
