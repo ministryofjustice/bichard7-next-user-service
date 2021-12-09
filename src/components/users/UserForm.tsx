@@ -87,9 +87,9 @@ const UserForm = ({
         mandatory
       />
 
-      {!isEdit &&
+      {!isEdit && (
         <TextInput value={endorsedBy} name="endorsedBy" label="Endorsed by" width="20" readOnly disabled={isEdit} />
-      }
+      )}
 
       <TextInput value={orgServes} name="orgServes" label="Organisation" width="20" />
 

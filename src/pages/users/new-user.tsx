@@ -274,7 +274,6 @@ const NewUser = ({
           allGroups={userGroups}
           endorsedBy={currentUser?.username}
           userGroups={userDetails.groups}
-          
           currentUserVisibleForces={currentUserVisibleForces}
         />
         <ButtonGroup>
