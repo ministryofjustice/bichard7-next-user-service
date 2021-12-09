@@ -11,6 +11,7 @@ interface UserFullDetails {
   surname: string
   emailAddress: string
   emailVerificationCode: string
+  emailVerificationCurrent: string
   password: string
   migratedPassword: string
   groups: UserGroup[]

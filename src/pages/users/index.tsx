@@ -19,7 +19,7 @@ import { ParsedUrlQuery } from "querystring"
 import KeyValuePair from "types/KeyValuePair"
 import Link from "components/Link"
 import config from "lib/config"
-import isPost from "utils/isPost"
+import { isPost } from "utils/http"
 import addQueryParams from "utils/addQueryParams"
 import SuccessBanner from "components/SuccessBanner"
 
