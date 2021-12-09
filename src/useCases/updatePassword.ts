@@ -9,7 +9,7 @@ export default async (connection: Database | Task, emailAddress: string, newPass
 
   const updateUserQuery = `
     UPDATE br7own.users
-    SET password_reset_code = NULL,
+    SET email_verification_code = NULL,
     password = \${passwordHash}
     WHERE email = \${emailAddress}
       AND deleted_at IS NULL

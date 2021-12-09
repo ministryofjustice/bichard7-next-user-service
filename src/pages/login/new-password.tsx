@@ -67,7 +67,7 @@ export const getServerSideProps = withCsrf(async (context): Promise<GetServerSid
     const result = await initialiseUserPassword(connection, auditLogger, emailAddress, verificationCode, newPassword)
 
     if (!isError(result)) {
-      return createRedirectResponse("/login/reset-password/success")
+      return createRedirectResponse("/login/new-password/success")
     }
 
     return {

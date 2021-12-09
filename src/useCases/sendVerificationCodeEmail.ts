@@ -6,15 +6,29 @@ import Database from "types/Database"
 import PromiseResult from "types/PromiseResult"
 import { isError } from "types/Result"
 import storeVerificationCode from "./storeVerificationCode"
-import generateLoginV2Email from "../emails/loginV2"
+import loginEmail from "../emails/login"
+import resetPasswordEmail from "../emails/resetPassword"
 
-export default async (connection: Database, emailAddress: string): PromiseResult<void> => {
+export default async (connection: Database, emailAddress: string, type: string): PromiseResult<void> => {
   const normalisedEmail = removeCjsmSuffix(emailAddress)
 
   const code = randomDigits(config.verificationCodeLength).join("")
-  await storeVerificationCode(connection, emailAddress, code)
+  const storeResult = await storeVerificationCode(connection, emailAddress, code)
 
-  const createVerificationEmailResult = generateLoginV2Email({ code })
+  if (isError(storeResult)) {
+    return storeResult
+  }
+
+  if (!storeResult) {
+    return undefined
+  }
+
+  let createVerificationEmailResult
+  if (type === "login") {
+    createVerificationEmailResult = loginEmail({ code })
+  } else {
+    createVerificationEmailResult = resetPasswordEmail({ code })
+  }
 
   if (isError(createVerificationEmailResult)) {
     return createVerificationEmailResult

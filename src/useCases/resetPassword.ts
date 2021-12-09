@@ -5,7 +5,7 @@ import { isError } from "types/Result"
 import addPasswordHistory from "./addPasswordHistory"
 import checkPasswordIsBanned from "./checkPasswordIsBanned"
 import checkPasswordIsNew from "./checkPasswordIsNew"
-import getPasswordResetCode from "./getPasswordResetCode"
+import getEmailVerificationCode from "./getEmailVerificationCode"
 import getUserLoginDetailsByEmailAddress from "./getUserLoginDetailsByEmailAddress"
 import passwordDoesNotContainSensitive from "./passwordDoesNotContainSensitive"
 import updatePassword from "./updatePassword"
@@ -28,7 +28,7 @@ export default async (
     return passwordIsBanned.message
   }
 
-  const userPasswordResetCode = await getPasswordResetCode(connection, emailAddress)
+  const userPasswordResetCode = await getEmailVerificationCode(connection, emailAddress)
   if (isError(userPasswordResetCode)) {
     return userPasswordResetCode
   }
