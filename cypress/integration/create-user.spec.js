@@ -308,6 +308,15 @@ describe("Creation of new user", () => {
     cy.get('[data-test="text-input_emailAddress-error"]').should("be.visible").contains(errorMessage)
   })
 
+  it("should automatically have the endorsedBy field populated and be read only", () => {
+    // When
+    cy.visit("users/new-user")
+    // Then
+    cy.get('[data-test="text-input_endorsedBy"]')
+    .should("contain.value", "Bichard01")
+    .should('have.attr', 'readonly', 'readonly')
+  })
+
   it("should respond with forbidden response code when CSRF tokens are invalid in new user page", (done) => {
     cy.checkCsrf("/users/new-user", "POST").then(() => done())
   })
