@@ -175,4 +175,11 @@ describe("Edit user", () => {
         })
     })
   })
+
+  it("should remove 'endorsed by' field when in edit", () => {
+    // When
+    cy.visit("users/new-user")
+    // Then
+    cy.get('[data-test="text-input_endorsedBy"]').should("not.exist")
+  })
 })
