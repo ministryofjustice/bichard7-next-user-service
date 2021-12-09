@@ -9,7 +9,7 @@ describe("Creation of new user", () => {
     cy.task("insertIntoUsersTable")
     cy.task("insertIntoUserGroupsTable", {
       email: "bichard01@example.com",
-      groups: ["B7UserManager_grp", "B7Supervisor_grp"]
+      groups: ["B7UserManager_grp", "B7Supervisor_grp", "B7SuperUser_grp"]
     })
   })
 

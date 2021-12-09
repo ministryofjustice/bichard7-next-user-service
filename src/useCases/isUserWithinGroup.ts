@@ -12,7 +12,7 @@ export default async (connection: Database, userId: number, groupName: UserGroup
 
   const result = await connection.any(query, [userId, `${groupName}_grp`])
 
-  if (result.length !== 1 && result[0].count !== "1") {
+  if (result.length !== 1 || result[0].count !== "1") {
     return false
   }
 
