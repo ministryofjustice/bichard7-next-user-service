@@ -28,6 +28,7 @@ import generateRandomPassword from "useCases/generateRandomPassword"
 import passwordSecurityCheck from "useCases/passwordSecurityCheck"
 import resetPassword, { ResetPasswordOptions } from "useCases/resetPassword"
 import SuccessBanner from "components/SuccessBanner"
+import NotReceivedEmail from "components/NotReceivedEmail"
 
 const handleEmailStage = async (
   context: GetServerSidePropsContext<ParsedUrlQuery>,
@@ -325,6 +326,7 @@ const ForgotPassword = ({
                 <p className="govuk-body">{"If an account was found we will have sent you an email."}</p>
                 <input id="email" name="emailAddress" type="hidden" value={emailAddress} />
                 <input type="hidden" name="resetStage" value="validateCode" />
+                <NotReceivedEmail sendAgainUrl="/login/reset-password" />
                 <TextInput
                   id="validationCode"
                   name="validationCode"
