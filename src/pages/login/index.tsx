@@ -32,6 +32,7 @@ import Database from "types/Database"
 import addQueryParams from "utils/addQueryParams"
 import UserFullDetails from "types/UserFullDetails"
 import { removeCjsmSuffix } from "lib/cjsmSuffix"
+import NotReceivedEmail from "components/NotReceivedEmail"
 
 const authenticationErrorMessage = "Error authenticating the reqest"
 
@@ -402,6 +403,7 @@ const Index = ({
             <p className="govuk-body">
               <p>{"If an account was found we will have sent you an email."}</p>
             </p>
+            <NotReceivedEmail sendAgainUrl="/login" />
             <input id="email" name="emailAddress" type="hidden" value={emailAddress} />
             <input type="hidden" name="loginStage" value="validateCode" />
             <TextInput

@@ -109,9 +109,9 @@ describe("Reset password", () => {
       cy.get("button[type=submit]").click()
       cy.get("body").contains(/sent you an email/i)
 
-      cy.get(".govuk-inset-text").should("not.exist")
-      cy.get("a[class=govuk-link]").click()
-      cy.get(".govuk-inset-text").should("not.be.empty")
+      cy.get("div[data-test='generated-password']").should("not.exist")
+      cy.get("a[data-test='generate-password']").click()
+      cy.get("div[data-test='generated-password']").should("not.be.empty")
     })
 
     it("should respond with forbidden response code when CSRF tokens are invalid in reset password page", (done) => {
