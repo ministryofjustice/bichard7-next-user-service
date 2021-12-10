@@ -8,6 +8,7 @@ interface Props {
   id?: string
   type?: string
   readOnly?: boolean
+  disabled?: boolean
   mandatory?: boolean
   value?: string
 }
@@ -21,6 +22,7 @@ const TextInput = ({
   width,
   id,
   readOnly = false,
+  disabled = false,
   type = "text",
   value,
   mandatory = false
@@ -53,10 +55,11 @@ const TextInput = ({
         className={`govuk-input${widthClassName}${hasError ? " govuk-input--error" : ""}`}
         id={id || name}
         name={name}
+        data-test={`text-input_${name}`}
         type={type}
         defaultValue={value}
         readOnly={readOnly}
-        disabled={readOnly}
+        disabled={disabled}
         aria-describedby={`${hint ? hintElementId : ""} ${hasError ? errorElementId : ""}`}
       />
     </div>

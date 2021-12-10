@@ -21,15 +21,14 @@ describe("Creation of new user", () => {
     cy.login("bichard01@example.com", "password")
     cy.visit("users/new-user")
 
-    cy.get('input[id="username"]').type("Buser")
-    cy.get('input[id="forenames"]').type("B forename")
-    cy.get('input[id="surname"]').type("B surname")
-    cy.get('input[id="emailAddress"]').type("bichardemail1@example.com")
-    cy.get('input[id="endorsedBy"]').type("B Endorsed")
-    cy.get('input[id="orgServes"]').type("B organisation")
+    cy.get('[data-test="text-input_username"]').type("Buser")
+    cy.get('[data-test="text-input_forenames"]').type("B forename")
+    cy.get('[data-test="text-input_surname"]').type("B surname")
+    cy.get('[data-test="text-input_emailAddress"]').type("bichardemail1@example.com")
+    cy.get('[data-test="text-input_orgServes"]').type("B organisation")
     cy.get('input[id="visibleForces001"]').check()
     cy.get('input[id="visibleForces004"]').check()
-    cy.get('input[id="visibleCourts"]').type("B01,B41ME00")
+    cy.get('[data-test="text-input_visibleCourts"]').type("B01,B41ME00")
 
     cy.get('span[data-test="included-triggers"]').click()
     cy.get('input[id="excludedTriggersTRPR0001"]').uncheck()
@@ -41,15 +40,14 @@ describe("Creation of new user", () => {
   it("should be successful and navigate to users page if all of the inputs are populated", () => {
     cy.visit("users/new-user")
 
-    cy.get('input[id="username"]').type("Buser2")
-    cy.get('input[id="forenames"]').type("B forename")
-    cy.get('input[id="surname"]').type("B surname")
-    cy.get('input[id="emailAddress"]').type("bichardemail2@example.com")
-    cy.get('input[id="endorsedBy"]').type("B Endorsed")
-    cy.get('input[id="orgServes"]').type("B organisation")
+    cy.get('[data-test="text-input_username"]').type("Buser2")
+    cy.get('[data-test="text-input_forenames"]').type("B forename")
+    cy.get('[data-test="text-input_surname"]').type("B surname")
+    cy.get('[data-test="text-input_emailAddress"]').type("bichardemail2@example.com")
+    cy.get('[data-test="text-input_orgServes"]').type("B organisation")
     cy.get('input[id="visibleForces001"]').check()
     cy.get('input[id="visibleForces004"]').check()
-    cy.get('input[id="visibleCourts"]').type("B01,B41ME00")
+    cy.get('[data-test="text-input_visibleCourts"]').type("B01,B41ME00")
 
     cy.get('span[data-test="included-triggers"]').click()
     cy.get('input[id="excludedTriggersTRPR0001"]').uncheck()
@@ -176,12 +174,11 @@ describe("Creation of new user", () => {
   it("should fail if previously used username is given", () => {
     cy.visit("users/new-user")
 
-    cy.get('input[id="username"]').type("Bichard01")
-    cy.get('input[id="forenames"]').type("B forename")
-    cy.get('input[id="surname"]').type("B surname")
-    cy.get('input[id="emailAddress"]').type("bemail2@example.com")
-    cy.get('input[id="endorsedBy"]').type("B Endorsed")
-    cy.get('input[id="orgServes"]').type("B organisation")
+    cy.get('[data-test="text-input_username"]').type("Bichard01")
+    cy.get('[data-test="text-input_forenames"]').type("B forename")
+    cy.get('[data-test="text-input_surname"]').type("B surname")
+    cy.get('[data-test="text-input_emailAddress"]').type("bemail2@example.com")
+    cy.get('[data-test="text-input_orgServes"]').type("B organisation")
     cy.get('input[id="visibleForces001"]').check()
 
     cy.get("button[name=saveAndAddAnother]").click()
@@ -192,12 +189,11 @@ describe("Creation of new user", () => {
     // Given
     cy.visit("users/new-user")
 
-    cy.get('input[id="username"]').type("Bichard01")
-    cy.get('input[id="forenames"]').type("B forename")
-    cy.get('input[id="surname"]').type("B surname")
-    cy.get('input[id="emailAddress"]').type("bemail2@example.com")
-    cy.get('input[id="endorsedBy"]').type("B Endorsed")
-    cy.get('input[id="orgServes"]').type("B organisation")
+    cy.get('[data-test="text-input_username"]').type("Bichard01")
+    cy.get('[data-test="text-input_forenames"]').type("B forename")
+    cy.get('[data-test="text-input_surname"]').type("B surname")
+    cy.get('[data-test="text-input_emailAddress"]').type("bemail2@example.com")
+    cy.get('[data-test="text-input_orgServes"]').type("B organisation")
 
     // When
     cy.get("button[name=saveAndAddAnother]").click()
@@ -224,15 +220,14 @@ describe("Creation of new user", () => {
 
     cy.visit("users/new-user")
 
-    cy.get('input[id="username"]').type("Buserzz")
-    cy.get('input[id="forenames"]').type("B forename zz")
-    cy.get('input[id="surname"]').type("B surname zzz")
-    cy.get('input[id="emailAddress"]').type(emailAddress)
-    cy.get('input[id="endorsedBy"]').type("B Endorsed zz")
-    cy.get('input[id="orgServes"]').type("B organisation zz")
+    cy.get('[data-test="text-input_username"]').type("Buserzz")
+    cy.get('[data-test="text-input_forenames"]').type("B forename zz")
+    cy.get('[data-test="text-input_surname"]').type("B surname zzz")
+    cy.get('[data-test="text-input_emailAddress"]').type(emailAddress)
+    cy.get('[data-test="text-input_orgServes"]').type("B organisation zz")
     cy.get('input[id="visibleForces001"]').check()
     cy.get('input[id="visibleForces004"]').check()
-    cy.get('input[id="visibleCourts"]').type("B01,B41ME00")
+    cy.get('[data-test="text-input_visibleCourts"]').type("B01,B41ME00")
     cy.get('span[data-test="included-triggers"]').click()
     cy.get('input[id="excludedTriggersTRPR0001"]').uncheck()
     cy.get('[data-test="checkbox-user-groups"]')
@@ -259,15 +254,14 @@ describe("Creation of new user", () => {
   it("should show a user-friendly validation error message when username contains a forbidden character", () => {
     // Given
     cy.visit("users/new-user")
-    cy.get('input[id="username"]').type("B%user2")
-    cy.get('input[id="forenames"]').type("B forename")
-    cy.get('input[id="surname"]').type("B surname")
-    cy.get('input[id="emailAddress"]').type("bichardemail2@example.com")
-    cy.get('input[id="endorsedBy"]').type("B Endorsed")
-    cy.get('input[id="orgServes"]').type("B organisation")
+    cy.get('[data-test="text-input_username"]').type("B%user2")
+    cy.get('[data-test="text-input_forenames"]').type("B forename")
+    cy.get('[data-test="text-input_surname"]').type("B surname")
+    cy.get('[data-test="text-input_emailAddress"]').type("bichardemail2@example.com")
+    cy.get('[data-test="text-input_orgServes"]').type("B organisation")
     cy.get('input[id="visibleForces001"]').check()
     cy.get('input[id="visibleForces004"]').check()
-    cy.get('input[id="visibleCourts"]').type("B01,B41ME00")
+    cy.get('[data-test="text-input_visibleCourts"]').type("B01,B41ME00")
 
     cy.get('span[data-test="included-triggers"]').click()
     cy.get('input[id="excludedTriggersTRPR0001"]').uncheck()
@@ -289,15 +283,14 @@ describe("Creation of new user", () => {
   it("should show a user-friendly validation error message when email contains the cjsm domain", () => {
     // Given
     cy.visit("users/new-user")
-    cy.get('input[id="username"]').type("Buser2")
-    cy.get('input[id="forenames"]').type("B forename")
-    cy.get('input[id="surname"]').type("B surname")
-    cy.get('input[id="emailAddress"]').type("bichardemail2@example.cjsm.net")
-    cy.get('input[id="endorsedBy"]').type("B Endorsed")
-    cy.get('input[id="orgServes"]').type("B organisation")
+    cy.get('[data-test="text-input_username"]').type("Buser2")
+    cy.get('[data-test="text-input_forenames"]').type("B forename")
+    cy.get('[data-test="text-input_surname"]').type("B surname")
+    cy.get('[data-test="text-input_emailAddress"]').type("bichardemail2@example.cjsm.net")
+    cy.get('[data-test="text-input_orgServes"]').type("B organisation")
     cy.get('input[id="visibleForces001"]').check()
     cy.get('input[id="visibleForces004"]').check()
-    cy.get('input[id="visibleCourts"]').type("B01,B41ME00")
+    cy.get('[data-test="text-input_visibleCourts"]').type("B01,B41ME00")
 
     cy.get('span[data-test="included-triggers"]').click()
     cy.get('input[id="excludedTriggersTRPR0001"]').uncheck()
@@ -313,6 +306,15 @@ describe("Creation of new user", () => {
 
     // The validation error should be inline with the text input
     cy.get('[data-test="text-input_emailAddress-error"]').should("be.visible").contains(errorMessage)
+  })
+
+  it("should automatically have the endorsedBy field populated and be read only", () => {
+    // When
+    cy.visit("users/new-user")
+    // Then
+    cy.get('[data-test="text-input_endorsedBy"]')
+      .should("contain.value", "Bichard01")
+      .should("have.attr", "readonly", "readonly")
   })
 
   it("should respond with forbidden response code when CSRF tokens are invalid in new user page", (done) => {

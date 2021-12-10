@@ -75,7 +75,6 @@ describe("updatePassword", () => {
       emailAddress: initialUser.email,
       forenames: "forename04",
       surname: "surname04",
-      endorsedBy: "endorsed by 04",
       orgServes: "orgServes 04",
       groups: [initialGroup],
       visibleForces: "004,007,",
@@ -93,7 +92,7 @@ describe("updatePassword", () => {
     expect(initialUser02.email).toBe("bichard02@example.com")
     expect(initialUser02.forenames).toBe("forename04")
     expect(initialUser02.surname).toBe("surname04")
-    expect(initialUser02.endorsed_by).toBe("endorsed by 04")
+    expect(initialUser02.endorsed_by).toBe("endorsed_by 02")
     expect(initialUser02.org_serves).toBe("orgServes 04")
     expect(initialUser02.visible_forces).toBe("004,007,")
     expect(initialUser02.visible_courts).toBe("B02,")
