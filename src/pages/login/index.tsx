@@ -67,7 +67,7 @@ const handleEmailStage = async (
   }
 
   const normalisedEmail = removeCjsmSuffix(emailAddress)
-  const sent = await sendVerificationCodeEmail(connection, normalisedEmail)
+  const sent = await sendVerificationCodeEmail(connection, normalisedEmail, "login")
 
   if (isError(sent)) {
     console.error(sent)
@@ -440,7 +440,7 @@ const Index = ({
           </Form>
         )}
         <p>
-          <Link href="/login/forgot-password" data-test="forgot-password">
+          <Link href="/login/reset-password" data-test="reset-password">
             {"I have forgotten my password"}
           </Link>
         </p>

@@ -6,9 +6,6 @@ export const invalidToken = () => jwt.sign({ foo: "bar" }, tokenSecret, { issuer
 export const validToken = (emailAddress, verificationCode) =>
   jwt.sign({ emailAddress, verificationCode }, tokenSecret, { issuer: "Bichard" })
 
-export const generatePasswordResetToken = (emailAddress, passwordResetCode) =>
-  jwt.sign({ emailAddress, passwordResetCode }, tokenSecret, { issuer: "Bichard" })
-
 export const generateNewPasswordToken = (emailAddress, verificationCode) =>
   jwt.sign({ emailAddress, verificationCode }, tokenSecret, { issuer: "Bichard" })
 

@@ -1,9 +1,9 @@
 import { isError } from "types/Result"
 import { resetPassword } from "useCases"
 import { ResetPasswordOptions } from "useCases/resetPassword"
-import storePasswordResetCode from "useCases/storePasswordResetCode"
 import { hashPassword, verifyPassword } from "lib/argon2"
 import Database from "types/Database"
+import storeVerificationCode from "useCases/storeVerificationCode"
 import getTestConnection from "../../testFixtures/getTestConnection"
 import deleteFromTable from "../../testFixtures/database/deleteFromTable"
 import insertIntoTable from "../../testFixtures/database/insertIntoUsersTable"
@@ -27,12 +27,12 @@ describe("resetPassword", () => {
     connection.$pool.end()
   })
 
-  it("should reset password when password reset code is valid", async () => {
+  it("should reset password when email validation code is valid", async () => {
     const emailAddress = "bichard01@example.com"
     await insertIntoTable(users)
 
     const passwordResetCode = "664422"
-    await storePasswordResetCode(connection, emailAddress, passwordResetCode)
+    await storeVerificationCode(connection, emailAddress, passwordResetCode)
 
     const expectedPassword = "ExpectedPassword"
     const expectedPasswordHash = "Dummy password hash"
@@ -70,7 +70,7 @@ describe("resetPassword", () => {
     await insertIntoTable(users)
 
     const passwordResetCode = "664422"
-    await storePasswordResetCode(connection, emailAddress, passwordResetCode)
+    await storeVerificationCode(connection, emailAddress, passwordResetCode)
 
     const expectedPasswordHash = "SecondTester"
     const mockedHashPassword = hashPassword as jest.MockedFunction<typeof hashPassword>
@@ -96,7 +96,7 @@ describe("resetPassword", () => {
     await insertIntoTable(users)
 
     const passwordResetCode = "664422"
-    await storePasswordResetCode(connection, emailAddress, passwordResetCode)
+    await storeVerificationCode(connection, emailAddress, passwordResetCode)
 
     const mockedVerifyPassword = verifyPassword as jest.MockedFunction<typeof verifyPassword>
     mockedVerifyPassword.mockResolvedValue(true)
@@ -117,7 +117,7 @@ describe("resetPassword", () => {
     const emailAddress = "bichard01@example.com"
     await insertIntoTable(users)
 
-    await storePasswordResetCode(connection, emailAddress, "664422")
+    await storeVerificationCode(connection, emailAddress, "664422")
 
     const resetPasswordOptions: ResetPasswordOptions = {
       emailAddress,

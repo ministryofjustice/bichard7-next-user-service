@@ -19,7 +19,7 @@ const Paragraph = ({ children }: ChildProps) => (
 )
 
 const CodeBox = ({ children }: ChildProps) => (
-  <p style={{ color, fontFamily, fontSize: "30px", lineHeight: "25px", margin: "20px", border: "2px solid black" }}>
+  <p style={{ color, fontFamily, fontSize: "40px", lineHeight: "25px", margin: "20px", fontWeight: "bold" }}>
     {children}
   </p>
 )

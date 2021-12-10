@@ -1,26 +1,26 @@
 import ReactDOMServer from "react-dom/server"
 import EmailContent from "types/EmailContent"
-import EmailLayoutV2 from "./EmailLayoutV2"
+import EmailValidationLayout from "./EmailValidationLayout"
 
 interface Props {
   code: string
 }
 
 const LoginEmail = ({ code }: Props): JSX.Element => (
-  <EmailLayoutV2
+  <EmailValidationLayout
     paragraphs={[
-      "In order to sign in to Bichard, you need to confirm your email address.",
-      "Please enter the code below into the login page in Bichard."
+      "In order to reset your password for Bichard, you need to confirm your email address.",
+      "Please enter the code below into the reset password page in Bichard."
     ]}
-    title={"Sign in to Bichard"}
+    title={"Reset your Bichard password"}
     code={code}
   />
 )
 
 const LoginEmailText = ({ code }: Props): string =>
-  `Sign in to Bichard
+  `Reset your Bichard password
 
-In order to sign in to Bichard, you need to confirm your email address. Please enter the code below into the login page in Bichard.
+In order to reset your password for Bichard, you need to confirm your email address. Please enter the code below into the reset password page in Bichard.
 
 ${code}
 
@@ -32,7 +32,7 @@ export default function generateLoginEmail(props: Props): EmailContent {
   const htmlEmail = <LoginEmail {...props} />
 
   return {
-    subject: "Sign in to Bichard",
+    subject: "Reset your Bichard password",
     html: ReactDOMServer.renderToStaticMarkup(htmlEmail),
     text: LoginEmailText(props)
   }
