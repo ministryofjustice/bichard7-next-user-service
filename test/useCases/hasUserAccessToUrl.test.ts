@@ -35,6 +35,11 @@ const testData: TestData[] = [
     expectedResult: false
   },
   {
+    group: "B7SuperUserManager",
+    url: "/users/users",
+    expectedResult: false
+  },
+  {
     group: null,
     url: "/users/",
     expectedResult: true

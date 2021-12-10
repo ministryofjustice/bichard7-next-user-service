@@ -20,7 +20,7 @@ import generateRandomPassword from "useCases/generateRandomPassword"
 import initialiseUserPassword from "useCases/initialiseUserPassword"
 import addQueryParams from "utils/addQueryParams"
 import createRedirectResponse from "utils/createRedirectResponse"
-import isPost from "utils/isPost"
+import { isPost } from "utils/http"
 
 export const getServerSideProps = withCsrf(async (context): Promise<GetServerSidePropsResult<Props>> => {
   const { req, query, formData, csrfToken } = context as CsrfServerSidePropsContext

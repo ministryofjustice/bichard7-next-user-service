@@ -15,7 +15,7 @@ import { GetServerSidePropsContext, GetServerSidePropsResult } from "next"
 import { withAuthentication, withCsrf, withMultipleServerSideProps } from "middleware"
 import { ParsedUrlQuery } from "querystring"
 import AuthenticationServerSidePropsContext from "types/AuthenticationServerSidePropsContext"
-import isPost from "utils/isPost"
+import { isPost } from "utils/http"
 import { UserGroupResult } from "types/UserGroup"
 import getAuditLogger from "lib/getAuditLogger"
 import config from "lib/config"
@@ -24,6 +24,8 @@ import { ErrorSummary, ErrorSummaryList } from "components/ErrorSummary"
 import createRedirectResponse from "utils/createRedirectResponse"
 import updateUserCodes from "useCases/updateUserCodes"
 import usersHaveSameForce from "lib/usersHaveSameForce"
+import getUserByEmailAddress from "useCases/getUserByEmailAddress"
+import sendEmailChangedEmails from "useCases/sendEmailChangedEmails"
 
 export const getServerSideProps = withMultipleServerSideProps(
   withAuthentication,
@@ -85,6 +87,28 @@ export const getServerSideProps = withMultipleServerSideProps(
       if (formValidationResult.isFormValid) {
         const groupsChecked = groups.filter((group) => formData[group.name] === "yes")
         userDetails.groups = groupsChecked
+
+        const oldEmail = user.emailAddress
+        const newEmail = userDetails.emailAddress as string
+
+        if (oldEmail !== newEmail) {
+          const existingUser = await getUserByEmailAddress(connection, newEmail)
+          if (existingUser) {
+            return {
+              props: {
+                emailIsTaken: true,
+                csrfToken,
+                currentUser,
+                groups,
+                user: { ...user, ...userDetails },
+                isFormValid: false,
+                emailError: "Please enter a unique email address",
+                currentUserVisibleForces: currentUser.visibleForces ?? ""
+              }
+            }
+          }
+        }
+
         const auditLogger = getAuditLogger(context, config)
         const userUpdated = await updateUser(connection, auditLogger, currentUser.id, userDetails)
 
@@ -104,13 +128,17 @@ export const getServerSideProps = withMultipleServerSideProps(
           }
         }
 
+        if (oldEmail !== newEmail) {
+          sendEmailChangedEmails(userDetails as { forenames: string; surname: string }, oldEmail, newEmail)
+        }
+
         const updatedUser = await getUserById(connection, userDetails.id as number)
         if (isError(updatedUser)) {
           console.error(updateUser)
 
           return {
             props: {
-              errorMessage: "There was an error retrieving the user details.",
+              errorMessage: "There was an error retrieving the user details",
               csrfToken,
               currentUser,
               groups,
@@ -123,7 +151,7 @@ export const getServerSideProps = withMultipleServerSideProps(
 
         return {
           props: {
-            successMessage: "User details updated successfully.",
+            successMessage: "User details updated successfully",
             user: updatedUser,
             csrfToken,
             currentUser,
@@ -163,6 +191,7 @@ export const getServerSideProps = withMultipleServerSideProps(
 
 interface Props {
   errorMessage?: string
+  emailIsTaken?: boolean
   successMessage?: string
   missingMandatory?: boolean
   user?: Partial<User> | null
@@ -180,6 +209,7 @@ interface Props {
 
 const editUser = ({
   errorMessage,
+  emailIsTaken,
   successMessage,
   usernameError,
   forenamesError,
@@ -203,11 +233,19 @@ const editUser = ({
         {(user && user.username) || "user"}
         {"'s details"}
       </h1>
-      <ErrorSummary title="Error" show={!!errorMessage}>
+
+      <ErrorSummary title="There is a problem" show={!!errorMessage}>
         {errorMessage}
       </ErrorSummary>
 
       <ErrorSummary title="There is a problem" show={!isFormValid}>
+        {!!emailIsTaken && (
+          <p>
+            {"The email address "}
+            <b>{user?.emailAddress}</b>
+            {" already belongs to another user."}
+          </p>
+        )}
         <ErrorSummaryList
           items={[
             { id: "username", error: usernameError },

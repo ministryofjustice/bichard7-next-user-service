@@ -43,11 +43,11 @@ const getUserWithInterval = async (task: ITask<unknown>, params: unknown[]): Pro
     email,
     password,
     email_verification_code,
+    email_verification_generated > NOW() - INTERVAL '$3 minutes' as email_verification_current,
     migrated_password
   FROM br7own.users
   WHERE email = $1
     AND last_login_attempt < NOW() - INTERVAL '$2 seconds'
-    AND email_verification_generated > NOW() - INTERVAL '$3 minutes'
     AND deleted_at IS NULL`
 
   const user = await task.one(getUserQuery, params)
@@ -72,6 +72,7 @@ const getUserWithInterval = async (task: ITask<unknown>, params: unknown[]): Pro
     emailAddress: user.email,
     password: user.password,
     emailVerificationCode: user.email_verification_code,
+    emailVerificationCurrent: user.email_verification_current,
     migratedPassword: user.migrated_password,
     groups: await fetchGroups(task, user.email)
   }
@@ -92,11 +93,11 @@ const authenticate = async (
   auditLogger: AuditLogger,
   emailAddress: string,
   password: string,
-  verificationCode: string
+  verificationCode: string | null
 ): PromiseResult<UserFullDetails> => {
   const invalidCredentialsError = new Error("Invalid credentials or invalid verification")
 
-  if (!emailAddress || !password || !verificationCode || verificationCode.length !== config.verificationCodeLength) {
+  if (!emailAddress || !password || (verificationCode && verificationCode.length !== config.verificationCodeLength)) {
     return invalidCredentialsError
   }
 
@@ -113,6 +114,10 @@ const authenticate = async (
 
     let isAuthenticated = false
 
+    if (verificationCode && !user.emailVerificationCurrent) {
+      return new Error("Email verification code is not current")
+    }
+
     if (!user.password && user.migratedPassword) {
       isAuthenticated = verifySsha(password, user.migratedPassword)
 
@@ -125,7 +130,7 @@ const authenticate = async (
 
     const isVerified = verificationCode === user.emailVerificationCode
 
-    if (isAuthenticated && isVerified) {
+    if (isAuthenticated && (verificationCode === null || isVerified)) {
       await resetUserVerificationCode(connection, emailAddress)
       await auditLogger("User logged in", { user: { ...user, password: undefined } })
       return user
@@ -145,7 +150,7 @@ const authenticate = async (
 
     return invalidCredentialsError
   } catch (error) {
-    return error
+    return error as Error
   }
 }
 

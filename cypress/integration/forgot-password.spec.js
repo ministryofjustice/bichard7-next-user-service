@@ -1,5 +1,3 @@
-import { generateLoginVerificationToken } from "../helpers/tokens"
-
 describe("Forgot password", () => {
   context("720p resolution", () => {
     beforeEach(() => {
@@ -30,18 +28,6 @@ describe("Forgot password", () => {
 
     it("should respond with forbidden response code when CSRF tokens are invalid in forgot password page", (done) => {
       cy.checkCsrf("/login/forgot-password", "POST").then(() => done())
-    })
-
-    it("should be able to request password reset after requesting to login", () => {
-      cy.visit("/login")
-      cy.get("input[type=email]").type("bichard01@example.com")
-      cy.get("button[type=submit]").click()
-      cy.task("getVerificationCode", "bichard01@example.com").then((verificationCode) => {
-        const verificationToken = generateLoginVerificationToken("bichard01@example.com", verificationCode)
-        cy.visit(`/login/verify?token=${verificationToken}`)
-        cy.get("a[data-test='forgot-password']").click()
-        cy.get("body").contains(/forgot password/i)
-      })
     })
   })
 })

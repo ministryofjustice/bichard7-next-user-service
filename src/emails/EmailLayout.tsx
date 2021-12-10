@@ -87,8 +87,8 @@ const EmailBase = ({ children, title }: EmailBaseProps) => (
 )
 
 interface EmailLayoutProps {
-  actionUrl: string
-  buttonLabel: string
+  actionUrl?: string
+  buttonLabel?: string
   paragraphs: string[]
   title: string
 }
@@ -102,16 +102,20 @@ const EmailLayout = ({ actionUrl, buttonLabel, paragraphs, title }: EmailLayoutP
       <Paragraph key={i}>{paragraph}</Paragraph>
     ))}
 
-    <Button href={actionUrl} label={buttonLabel} />
+    {!!actionUrl && !!buttonLabel && (
+      <>
+        <Button href={actionUrl} label={buttonLabel} />
 
-    <p style={{ ...dimStyles, marginTop: "50px" }}>
-      {"If you’re having trouble clicking the button, copy and paste the URL below into your web browser:"}
-    </p>
-    <p style={{ ...dimStyles, margin: "0" }}>
-      <a href={actionUrl} style={dimStyles}>
-        {actionUrl}
-      </a>
-    </p>
+        <p style={{ ...dimStyles, marginTop: "50px" }}>
+          {"If you’re having trouble clicking the button, copy and paste the URL below into your web browser:"}
+        </p>
+        <p style={{ ...dimStyles, margin: "0" }}>
+          <a href={actionUrl} style={dimStyles}>
+            {actionUrl}
+          </a>
+        </p>
+      </>
+    )}
   </EmailBase>
 )
 

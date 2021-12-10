@@ -19,9 +19,10 @@ import { ParsedUrlQuery } from "querystring"
 import KeyValuePair from "types/KeyValuePair"
 import Link from "components/Link"
 import config from "lib/config"
-import isPost from "utils/isPost"
+import { isPost } from "utils/http"
 import addQueryParams from "utils/addQueryParams"
 import SuccessBanner from "components/SuccessBanner"
+import isUserWithinGroup from "useCases/isUserWithinGroup"
 
 export const getServerSideProps = withMultipleServerSideProps(
   withAuthentication,
@@ -64,11 +65,19 @@ export const getServerSideProps = withMultipleServerSideProps(
       }
     }
 
+    const isCurrentSuperUser = await isUserWithinGroup(connection, currentUser?.id || -1, "B7SuperUserManager")
+
     let queryResult
     if (previousFilter) {
-      queryResult = await getFilteredUsers(connection, previousFilter, currentUser?.visibleForces ?? "", pageNumber)
+      queryResult = await getFilteredUsers(
+        connection,
+        previousFilter,
+        currentUser?.visibleForces ?? "",
+        isCurrentSuperUser,
+        pageNumber
+      )
     } else {
-      queryResult = await getAllUsers(connection, currentUser?.visibleForces ?? "", pageNumber)
+      queryResult = await getAllUsers(connection, currentUser?.visibleForces ?? "", isCurrentSuperUser, pageNumber)
     }
 
     if (isError(queryResult)) {

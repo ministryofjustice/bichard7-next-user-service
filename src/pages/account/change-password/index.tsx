@@ -19,7 +19,7 @@ import { changePassword, signOutUser } from "useCases"
 import checkPassword from "useCases/checkPassword"
 import generateRandomPassword from "useCases/generateRandomPassword"
 import createRedirectResponse from "utils/createRedirectResponse"
-import isPost from "utils/isPost"
+import { isPost } from "utils/http"
 
 export const getServerSideProps = withMultipleServerSideProps(
   withAuthentication,
