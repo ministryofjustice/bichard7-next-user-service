@@ -33,6 +33,7 @@ import addQueryParams from "utils/addQueryParams"
 import UserFullDetails from "types/UserFullDetails"
 import { removeCjsmSuffix } from "lib/cjsmSuffix"
 import NotReceivedEmail from "components/NotReceivedEmail"
+import logger from "utils/logger"
 
 const authenticationErrorMessage = "Error authenticating the reqest"
 
@@ -71,7 +72,7 @@ const handleEmailStage = async (
   const sent = await sendVerificationCodeEmail(connection, normalisedEmail, "login")
 
   if (isError(sent)) {
-    console.error(sent)
+    logger.error(sent)
     return {
       props: { csrfToken, emailAddress: normalisedEmail, sendingError: true }
     }
@@ -98,7 +99,7 @@ const logInUser = async (
   const authToken = await signInUser(connection, res, user)
 
   if (isError(authToken)) {
-    console.error(authToken)
+    logger.error(authToken)
     throw new Error(authenticationErrorMessage)
   }
 
@@ -135,7 +136,7 @@ const handleValidateCodeStage = async (
   const user = await authenticate(connection, auditLogger, emailAddress, password, validationCode)
 
   if (isError(user)) {
-    console.error("Error logging in: ", user.message)
+    logger.error(`Error logging in: ${user.message}`)
     const attemptsSoFar = await getFailedPasswordAttempts(connection, emailAddress)
     if (!isError(attemptsSoFar) && attemptsSoFar >= config.maxPasswordFailedAttempts) {
       return {
@@ -182,7 +183,7 @@ const handleRememberedEmailStage = async (
   const user = await authenticate(connection, auditLogger, emailAddress, password, null)
 
   if (isError(user)) {
-    console.error("Error logging in: ", user.message)
+    logger.error(`Error logging in: ${user.message}`)
     const attemptsSoFar = await getFailedPasswordAttempts(connection, emailAddress)
     const notYourEmailAddressUrl = getNotYourEmailLink(query)
     if (!isError(attemptsSoFar) && attemptsSoFar >= config.maxPasswordFailedAttempts) {
@@ -242,7 +243,7 @@ const handleGet = (context: GetServerSidePropsContext<ParsedUrlQuery>): GetServe
     const notYourEmailAddressUrl = getNotYourEmailLink(query)
 
     if (emailAddress) {
-      console.log(emailAddress)
+      logger.info(emailAddress)
 
       return {
         props: {

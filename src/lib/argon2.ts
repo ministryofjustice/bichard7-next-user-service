@@ -1,4 +1,5 @@
 import { argon2id, hash, Options, verify } from "argon2"
+import logger from "utils/logger"
 import config from "./config"
 
 const hashPassword = (plainPassword: string, options: Options = {}): Promise<string | null> => {
@@ -18,14 +19,14 @@ const hashPassword = (plainPassword: string, options: Options = {}): Promise<str
   const hashOptions = { ...defaultOptions, ...options } as Options & { raw?: false }
 
   return hash(plainPassword, hashOptions).catch((error) => {
-    console.error(error)
+    logger.error(error)
     return null
   })
 }
 
 const verifyPassword = (plainPassword: string, passwordHash: string): Promise<boolean> => {
   return verify(passwordHash, plainPassword).catch((error) => {
-    console.error(error)
+    logger.error(error)
     return false
   })
 }

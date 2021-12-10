@@ -2,6 +2,7 @@ import nodemailer from "nodemailer"
 import config from "lib/config"
 import Email from "types/Email"
 import Emailer from "types/Emailer"
+import logger from "utils/logger"
 
 const getSmtpMailer = (): Emailer =>
   nodemailer.createTransport({
@@ -17,10 +18,12 @@ const getSmtpMailer = (): Emailer =>
 const getConsoleMailer = (): Emailer => ({
   // eslint-disable-next-line require-await
   sendMail: async (email: Email) => {
-    console.log(`From:    ${email.from}`)
-    console.log(`To:      ${email.to}`)
-    console.log(`Subject: ${email.subject}`)
-    console.log(`\n${email.text}`)
+    logger.info({
+      from: email.from,
+      to: email.to,
+      subject: email.subject,
+      body: email.text
+    })
   }
 })
 
@@ -28,7 +31,7 @@ let emailer: Emailer
 
 export default function getEmailer(emailAddress: string): Emailer {
   if (config.smtp.host !== "console" && emailAddress.match(/example\.com(\.cjsm\.net)?$/i)) {
-    console.error("Would have sent an actual email to an example.com email address! Printing to console instead.")
+    logger.error("Would have sent an actual email to an example.com email address! Printing to console instead.")
     return getConsoleMailer()
   }
 

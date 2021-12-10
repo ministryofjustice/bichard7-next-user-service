@@ -1,5 +1,6 @@
 /* eslint-disable */
 
+import logger from "utils/logger"
 const puppeteer = require("puppeteer");
 const pgp = require("pg-promise")();
 
@@ -33,10 +34,10 @@ const pgp = require("pg-promise")();
   const total = users.length;
   let current = 0;
 
-  console.log(`Will log in ${total} users...`);
+  logger.info(`Will log in ${total} users...`);
 
   for (const user of users) {
-    console.log(`${++current}/${total} - ${user.email}`);
+    logger.info(`${++current}/${total} - ${user.email}`);
 
     await page.goto(process.env.LOGIN_URL);
     await page.waitForSelector("#email");

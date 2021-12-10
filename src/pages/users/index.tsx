@@ -20,6 +20,7 @@ import KeyValuePair from "types/KeyValuePair"
 import Link from "components/Link"
 import config from "lib/config"
 import { isPost } from "utils/http"
+import logger from "utils/logger"
 import addQueryParams from "utils/addQueryParams"
 import SuccessBanner from "components/SuccessBanner"
 import isUserWithinGroup from "useCases/isUserWithinGroup"
@@ -81,7 +82,7 @@ export const getServerSideProps = withMultipleServerSideProps(
     }
 
     if (isError(queryResult)) {
-      console.error(queryResult)
+      logger.error(queryResult)
       return {
         props: {
           allUsers: null,

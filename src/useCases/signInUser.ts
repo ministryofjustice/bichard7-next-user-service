@@ -6,6 +6,7 @@ import { v4 as uuidv4 } from "uuid"
 import { isError } from "types/Result"
 import Database from "types/Database"
 import UserFullDetails from "types/UserFullDetails"
+import logger from "utils/logger"
 import updateUserLastLogin from "./updateUserLastLogin"
 
 export default async (
@@ -19,14 +20,14 @@ export default async (
   const storeTokenIdResult = await storeTokenId(connection, user.id, uniqueId)
 
   if (isError(storeTokenIdResult)) {
-    console.error(storeTokenIdResult)
+    logger.error(storeTokenIdResult)
     return storeTokenIdResult
   }
 
   const userLoggedInResult = await updateUserLastLogin(connection, user.username)
 
   if (isError(userLoggedInResult)) {
-    console.error(userLoggedInResult)
+    logger.error(userLoggedInResult)
     return userLoggedInResult
   }
 

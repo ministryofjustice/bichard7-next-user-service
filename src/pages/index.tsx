@@ -7,6 +7,7 @@ import { ParsedUrlQuery } from "querystring"
 import AuthenticationServerSidePropsContext from "types/AuthenticationServerSidePropsContext"
 import User from "types/User"
 import config from "lib/config"
+import logger from "utils/logger"
 import createRedirectResponse from "utils/createRedirectResponse"
 import getUserServiceAccess from "useCases/getUserServiceAccess"
 import getServiceMessages from "useCases/getServiceMessages"
@@ -34,7 +35,7 @@ export const getServerSideProps = withMultipleServerSideProps(
     let serviceMessagesResult = await getServiceMessages(connection, pageNumber)
 
     if (isError(serviceMessagesResult)) {
-      console.error(serviceMessagesResult)
+      logger.error(serviceMessagesResult)
       serviceMessagesResult = { result: [], totalElements: 0 }
     }
 

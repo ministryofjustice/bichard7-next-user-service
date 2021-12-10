@@ -2,6 +2,7 @@ import AuditLogger from "types/AuditLogger"
 import Database from "types/Database"
 import PromiseResult from "types/PromiseResult"
 import { isError } from "types/Result"
+import logger from "utils/logger"
 import addPasswordHistory from "./addPasswordHistory"
 import checkPassword from "./checkPassword"
 import checkPasswordIsBanned from "./checkPasswordIsBanned"
@@ -41,7 +42,7 @@ export default async (
   const passwordMatch = await checkPassword(connection, emailAddress, currentPassword)
 
   if (isError(passwordMatch)) {
-    console.error(passwordMatch)
+    logger.error(passwordMatch)
     return Error("Server error. Please try again later.")
   }
 
@@ -71,7 +72,7 @@ export default async (
       const updatePasswordResult = await updatePassword(taskConnection, emailAddress, newPassword)
 
       if (isError(updatePasswordResult)) {
-        console.error(updatePasswordResult)
+        logger.error(updatePasswordResult)
         return Error("Server error. Please try again later.")
       }
 
@@ -80,7 +81,7 @@ export default async (
       const sendPasswordChangedEmailResult = await sendPasswordChangedEmail(connection, emailAddress, baseUrl)
 
       if (isError(sendPasswordChangedEmailResult)) {
-        console.error(sendPasswordChangedEmailResult)
+        logger.error(sendPasswordChangedEmailResult)
       }
 
       return undefined

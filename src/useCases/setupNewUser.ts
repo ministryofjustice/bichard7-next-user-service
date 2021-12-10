@@ -9,6 +9,7 @@ import PromiseResult from "types/PromiseResult"
 import { isError } from "types/Result"
 import User from "types/User"
 import { getUserGroups } from "useCases"
+import logger from "utils/logger"
 import createNewUserEmail from "./createNewUserEmail"
 import createUser from "./createUser"
 import storePasswordResetCode from "./storePasswordResetCode"
@@ -48,7 +49,7 @@ export default async (
 
   if (isError(createNewUserEmailResult)) {
     await auditLogger("Error creating new user email", { user: userCreateDetails })
-    console.error(createNewUserEmailResult)
+    logger.error(createNewUserEmailResult)
     return Error("Server error. Please try again later.")
   }
 
@@ -58,7 +59,7 @@ export default async (
   const groupsForCurrentUser = await getUserGroups(connection, [currentUser.username, userCreateDetails.username])
 
   if (isError(groupsForCurrentUser)) {
-    console.error(groupsForCurrentUser)
+    logger.error(groupsForCurrentUser)
     return groupsForCurrentUser
   }
   const groupsForNewUser = groupsForCurrentUser.filter((group: any) => userCreateDetails[group.name] === "yes")
@@ -69,7 +70,7 @@ export default async (
       to: addCjsmSuffix("matt.knight@justice.gov.uk"),
       ...UserCreatedNotification({ user: { ...userCreateDetails, ...{ groups: groupsForNewUser } } })
     })
-    .then(() => console.log(`Email successfully sent to ${userCreateDetails.emailAddress}`))
+    .then(() => logger.info(`Email successfully sent to ${userCreateDetails.emailAddress}`))
     .catch(async () => {
       await auditLogger("Error sending notification email of new user creation", { user: userCreateDetails })
     })
@@ -80,7 +81,7 @@ export default async (
       to: addCjsmSuffix(userCreateDetails.emailAddress),
       ...email
     })
-    .then(() => console.log(`Email successfully sent to ${userCreateDetails.emailAddress}`))
+    .then(() => logger.info(`Email successfully sent to ${userCreateDetails.emailAddress}`))
     .catch(async (error: Error) => {
       await auditLogger("Error sending email to new user", { user: userCreateDetails })
       return error

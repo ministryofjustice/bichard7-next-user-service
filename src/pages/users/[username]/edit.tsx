@@ -16,6 +16,7 @@ import { withAuthentication, withCsrf, withMultipleServerSideProps } from "middl
 import { ParsedUrlQuery } from "querystring"
 import AuthenticationServerSidePropsContext from "types/AuthenticationServerSidePropsContext"
 import { isPost } from "utils/http"
+import logger from "utils/logger"
 import { UserGroupResult } from "types/UserGroup"
 import getAuditLogger from "lib/getAuditLogger"
 import config from "lib/config"
@@ -36,7 +37,7 @@ export const getServerSideProps = withMultipleServerSideProps(
     const { username } = query as { username: string }
 
     if (!currentUser || !currentUser.id || !currentUser.username) {
-      console.error("Unable to determine current user")
+      logger.error("Unable to determine current user")
       return createRedirectResponse("/500")
     }
 
@@ -44,7 +45,7 @@ export const getServerSideProps = withMultipleServerSideProps(
     const user = await getUserByUsername(connection, username)
 
     if (isError(user)) {
-      console.error(user)
+      logger.error(user)
       return createRedirectResponse("/500")
     }
 
@@ -57,7 +58,7 @@ export const getServerSideProps = withMultipleServerSideProps(
     const groups = await getUserGroups(connection, [currentUser.username, username])
 
     if (isError(groups)) {
-      console.error(groups)
+      logger.error(groups)
       return createRedirectResponse("/500")
     }
 
@@ -113,7 +114,7 @@ export const getServerSideProps = withMultipleServerSideProps(
         const userUpdated = await updateUser(connection, auditLogger, currentUser.id, userDetails)
 
         if (isError(userUpdated)) {
-          console.error(userUpdated)
+          logger.error(userUpdated)
 
           return {
             props: {
@@ -134,7 +135,7 @@ export const getServerSideProps = withMultipleServerSideProps(
 
         const updatedUser = await getUserById(connection, userDetails.id as number)
         if (isError(updatedUser)) {
-          console.error(updateUser)
+          logger.error(updateUser)
 
           return {
             props: {

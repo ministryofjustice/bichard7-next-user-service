@@ -5,6 +5,7 @@ import User from "types/User"
 import { ITask } from "pg-promise"
 import { isError } from "types/Result"
 import { UserGroupResult } from "types/UserGroup"
+import logger from "utils/logger"
 
 const deleteFromUsersGroups = (task: ITask<unknown>, userId: number, newGroupIds: number[]): PromiseResult<null> => {
   if (newGroupIds.length === 0) {
@@ -64,7 +65,7 @@ const updateUserTable = async (task: ITask<unknown>, userDetails: Partial<User>)
   const result = await task.result(updateUserQuery, { ...userDetails })
 
   if (isError(result) || result.rowCount === 0) {
-    console.error(result)
+    logger.error(result)
     return Error("Could not update user")
   }
 
@@ -90,7 +91,7 @@ const updateUser = async (
     const deleteUserGroupsResult = await deleteFromUsersGroups(task, userId, selectedGroups)
 
     if (isError(deleteUserGroupsResult)) {
-      console.error(deleteUserGroupsResult)
+      logger.error(deleteUserGroupsResult)
       return Error("Could not delete groups")
     }
 
@@ -98,7 +99,7 @@ const updateUser = async (
       const updateUserGroupsResult = await updateUsersGroup(task, userId, currentUserId, selectedGroups)
 
       if (isError(updateUserGroupsResult)) {
-        console.error(updateUserGroupsResult)
+        logger.error(updateUserGroupsResult)
         return Error("Could not insert groups")
       }
     }
@@ -107,7 +108,7 @@ const updateUser = async (
   })
 
   if (isError(result)) {
-    console.error(result)
+    logger.error(result)
     return new Error("There was an error while updating the user. Please try again.")
   }
 
