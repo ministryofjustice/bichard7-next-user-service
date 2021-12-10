@@ -28,20 +28,26 @@ const SuggestPassword = ({ suggestedPassword, suggestedPasswordUrl }: Props) => 
       {!suggestedPassword && (
         <p className="govuk-body">
           {"If you need help choosing a password, we can "}
-          <Link href={suggestedPasswordUrl ?? ""}>{"suggest a password"}</Link>
+          <Link href={suggestedPasswordUrl ?? ""} data-test="generate-password">
+            {"suggest a password"}
+          </Link>
           {" for you."}
         </p>
       )}
       {suggestedPassword && (
         <>
           <p className="govuk-body">{"Here is a password suggestion:"}</p>
-          <div className="govuk-inset-text">{suggestedPassword}</div>
+          <div className="govuk-inset-text" data-test="generated-password">
+            {suggestedPassword}
+          </div>
           <p className="govuk-body">
             {"If you want to use this password, you can type it or copy and paste it into the fields above."}
           </p>
           <p className="govuk-body">
             {"If you don't want to use this password, we can "}
-            <Link href={suggestedPasswordUrl ?? ""}>{"suggest another password"}</Link>
+            <Link href={suggestedPasswordUrl ?? ""} data-test="generate-password">
+              {"suggest another password"}
+            </Link>
             {"."}
           </p>
         </>
