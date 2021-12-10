@@ -12,6 +12,7 @@ import { withAuthentication, withMultipleServerSideProps } from "middleware"
 import { ParsedUrlQuery } from "querystring"
 import { isError } from "types/Result"
 import createRedirectResponse from "utils/createRedirectResponse"
+import logger from "utils/logger"
 import AuthenticationServerSidePropsContext from "types/AuthenticationServerSidePropsContext"
 import usersHaveSameForce from "lib/usersHaveSameForce"
 
@@ -22,7 +23,7 @@ export const getServerSideProps = withMultipleServerSideProps(
     const { username } = query as { username: string }
 
     if (!currentUser) {
-      console.error("Unable to determine current user")
+      logger.error("Unable to determine current user")
       return createRedirectResponse("/500")
     }
 
@@ -30,7 +31,7 @@ export const getServerSideProps = withMultipleServerSideProps(
     const user = await getUserByUsername(connection, username)
 
     if (isError(user)) {
-      console.error(user)
+      logger.error(user)
       return createRedirectResponse("/500")
     }
 

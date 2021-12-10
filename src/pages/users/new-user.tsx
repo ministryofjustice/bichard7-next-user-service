@@ -27,6 +27,7 @@ import IsEmailUnique from "useCases/IsEmailUnique"
 import isUsernameUnique from "useCases/isUsernameUnique"
 import updateUserCodes from "useCases/updateUserCodes"
 import isValidUsername from "utils/isValidUsername"
+import logger from "utils/logger"
 
 export const getServerSideProps = withMultipleServerSideProps(
   withAuthentication,
@@ -45,7 +46,7 @@ export const getServerSideProps = withMultipleServerSideProps(
     const userGroups = await getUserGroups(connection, [currentUser.username])
 
     if (isError(userGroups)) {
-      console.error(userGroups)
+      logger.error(userGroups)
       return createRedirectResponse("/500")
     }
     const currentUserVisibleForces = currentUser.visibleForces ?? ""
@@ -142,7 +143,7 @@ export const getServerSideProps = withMultipleServerSideProps(
         const baseUrl = req.headers["x-origin"] || req.headers.origin || config.baseUrl
 
         if (!baseUrl || Array.isArray(baseUrl)) {
-          console.error("baseUrl is invalid", baseUrl)
+          logger.error(`baseUrl is invalid: ${baseUrl}`)
           return createRedirectResponse("/500")
         }
 

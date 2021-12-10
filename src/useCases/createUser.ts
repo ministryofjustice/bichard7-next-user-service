@@ -4,6 +4,7 @@ import { ITask } from "pg-promise"
 import { isError } from "types/Result"
 import User from "types/User"
 import { UserGroupResult } from "types/UserGroup"
+import logger from "utils/logger"
 import { getUserGroups } from "useCases"
 import isUsernameUnique from "./isUsernameUnique"
 import isEmailUnique from "./IsEmailUnique"
@@ -66,7 +67,7 @@ const insertUserIntoGroup = async (
     .catch((error) => error as Error)
 
   if (isError(result)) {
-    console.error(result)
+    logger.error(result)
   }
 
   return undefined
@@ -92,7 +93,7 @@ export default async (
       const insertUserResult = await insertUser(task, userDetails)
 
       if (isError(insertUserResult)) {
-        console.error(insertUserResult)
+        logger.error(insertUserResult)
         return Error("Could not insert record into users table")
       }
       const groups = await getUserGroups(connection, [currentUser.username ?? ""])
@@ -116,7 +117,7 @@ export default async (
     .catch((error) => error)
 
   if (isError(createUserResult)) {
-    console.error(createUserResult)
+    logger.error(createUserResult)
     return Error("Could not create user")
   }
 

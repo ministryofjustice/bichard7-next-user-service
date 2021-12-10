@@ -2,6 +2,7 @@ import { verifyPassword } from "lib/argon2"
 import Database from "types/Database"
 import PromiseResult from "types/PromiseResult"
 import { isError } from "types/Result"
+import logger from "utils/logger"
 
 export default async (db: Database, emailAddress: string, password: string): PromiseResult<boolean> => {
   const query = `
@@ -12,7 +13,7 @@ export default async (db: Database, emailAddress: string, password: string): Pro
   const queryResult = await db.one(query, [emailAddress]).catch((error) => error)
 
   if (isError(queryResult)) {
-    console.error(queryResult)
+    logger.error(queryResult)
     return queryResult
   }
 

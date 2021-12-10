@@ -24,6 +24,7 @@ import Link from "components/Link"
 import getAuditLogger from "lib/getAuditLogger"
 import SuggestPassword from "components/SuggestPassword"
 import addQueryParams from "utils/addQueryParams"
+import logger from "utils/logger"
 import generateRandomPassword from "useCases/generateRandomPassword"
 import passwordSecurityCheck from "useCases/passwordSecurityCheck"
 import resetPassword, { ResetPasswordOptions } from "useCases/resetPassword"
@@ -52,7 +53,7 @@ const handleEmailStage = async (
   const sent = await sendVerificationCodeEmail(connection, normalisedEmail, "passwordReset")
 
   if (isError(sent)) {
-    console.error(sent)
+    logger.error(sent)
     return {
       props: { csrfToken, emailAddress: normalisedEmail }
     }
@@ -119,7 +120,7 @@ const handleValidateCodeStage = async (
 
   const passwordCheckResult = passwordSecurityCheck(newPassword)
   if (isError(passwordCheckResult)) {
-    console.error(passwordCheckResult.message)
+    logger.error(passwordCheckResult.message)
     return {
       props: {
         emailAddress,
@@ -142,7 +143,7 @@ const handleValidateCodeStage = async (
   }
   const resetPasswordResult = await resetPassword(connection, auditLogger, resetPasswordOptions)
   if (isError(resetPasswordResult)) {
-    console.error("Error resetting password", resetPasswordResult)
+    logger.error(`Error resetting password: ${resetPasswordResult}`)
     return createRedirectResponse("/500")
   }
 

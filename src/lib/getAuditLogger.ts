@@ -1,6 +1,7 @@
 import { GetServerSidePropsContext } from "next"
 import AuditLogger from "types/AuditLogger"
 import PromiseResult from "types/PromiseResult"
+import logger from "utils/logger"
 import { UserServiceConfig } from "./config"
 import generateAuditLog from "./generateAuditLog"
 
@@ -8,18 +9,28 @@ const getConsoleAuditLogger =
   (context: GetServerSidePropsContext): AuditLogger =>
   (action, attributes): PromiseResult<void> => {
     try {
-      const auditLog = generateAuditLog(context, action, attributes)
+      const {
+        auditLogId,
+        timestamp,
+        action: auditAction,
+        username,
+        userIp,
+        requestUri,
+        attributes: auditAttributes
+      } = generateAuditLog(context, action, attributes)
 
-      console.log("[Audit Logger]")
-      console.log(`Audit Log ID:  ${auditLog.auditLogId}`)
-      console.log(`Timestamp:     ${auditLog.timestamp.toISOString()}`)
-      console.log(`Action:        ${auditLog.action}`)
-      console.log(`Username:      ${auditLog.username}`)
-      console.log(`User IP:       ${auditLog.userIp}`)
-      console.log(`Request URI:   ${auditLog.requestUri}`)
-      console.log(`\n${JSON.stringify(auditLog.attributes)}`)
+      logger.info({
+        component: "[Audit Logger]",
+        auditLogId,
+        timestamp: `${timestamp.toISOString()}`,
+        action: auditAction,
+        username,
+        userIp,
+        requestUri,
+        attributes: auditAttributes // pino stringifies objects to a depth of 5
+      })
     } catch (error) {
-      console.error(error)
+      logger.error(error)
       return Promise.resolve(error)
     }
 

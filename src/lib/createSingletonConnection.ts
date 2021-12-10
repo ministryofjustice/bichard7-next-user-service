@@ -1,5 +1,6 @@
 import pgPromise from "pg-promise"
 import Database from "types/Database"
+import logger from "utils/logger"
 import DatabaseConfig from "./DatabaseConfig"
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -13,21 +14,21 @@ const createSingletonConnection = (name: string, config: DatabaseConfig, attachE
       attachEvents
         ? {
             query(e) {
-              console.log(`QUERY: ${e.query} PARAMS: ${e.params}`)
+              logger.info(`QUERY: ${e.query} PARAMS: ${e.params}`)
             },
             error(err, e) {
-              console.error(err)
+              logger.error(err)
 
               if (e.cn) {
-                console.error(`CONNECTION ERROR. QUERY: ${e.query}. PARAMS: ${e.params}`)
+                logger.error(`CONNECTION ERROR. QUERY: ${e.query}. PARAMS: ${e.params}`)
               }
 
               if (e.query) {
-                console.error(`QUERY ERROR: QUERY: ${e.query} PARAMS: ${e.params}`)
+                logger.error(`QUERY ERROR: QUERY: ${e.query} PARAMS: ${e.params}`)
               }
 
               if (e.ctx) {
-                console.error(`CONTEXT: ${e.ctx}`)
+                logger.error(`CONTEXT: ${e.ctx}`)
               }
             }
           }
