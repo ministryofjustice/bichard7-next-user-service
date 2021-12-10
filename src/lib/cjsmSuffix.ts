@@ -3,7 +3,10 @@ interface CjsmDomainException {
   cjsmDomain: string
 }
 
-const cjsmDomainExceptions: [CjsmDomainException] = [{ domain: "madetech.com", cjsmDomain: "madetech.cjsm.net" }]
+const cjsmDomainExceptions: CjsmDomainException[] = [
+  { domain: "madetech.com", cjsmDomain: "madetech.cjsm.net" },
+  { domain: "soprasteria.com", cjsmDomain: "soprasteria.cjsm.net" }
+]
 
 const addCjsmSuffix = (emailAddress: string): string => {
   if (emailAddress.match(/\.cjsm\.net$/i)) {
