@@ -115,4 +115,12 @@ describe("getFilteredUsers", () => {
     expect(getFilteredResult.totalElements).toBe("9") // total number of users that match the filter
     expect(getFilteredResult.result.length).toBe(9) // total number of users returned for paginated view
   })
+
+  it("should return correct results for user without visible_forces", async () => {
+    await deleteFromTable("users")
+    await insertIntoTable(users)
+    const fullListResult = await getFilteredUsers(connection, "", "", true)
+    expect(isError(fullListResult)).toBe(false)
+    expect(fullListResult.totalElements).toBe("4") // total number of users that match the filter
+  })
 })

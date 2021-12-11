@@ -55,6 +55,25 @@ const users = [
     visible_forces: "014",
     visible_courts: "",
     excluded_triggers: ""
+  },
+  {
+    username: "Bichard04",
+    created_at: "2021-08-01 00:00:00-00",
+    endorsed_by: "endorsed_by 04",
+    last_logged_in: "2021-08-01 00:00:00-00",
+    org_serves: "org_severs 04",
+    forenames: "Bichard User 04",
+    surname: "Surname 04",
+    email: "bichard04@example.com",
+    password:
+      "$argon2id$v=19$m=256,t=20,p=2$TTFCN3BRcldZVUtGejQ3WE45TGFqPT0$WOE+jDILDnVIAt1dytb+h65uegrMomp2xb0Q6TxbkLA",
+    last_login_attempt: "2021-08-01 00:00:00-00",
+    deleted_at: null,
+    password_reset_code: null,
+    migrated_password: null,
+    visible_forces: "",
+    visible_courts: "",
+    excluded_triggers: ""
   }
 ]
 
