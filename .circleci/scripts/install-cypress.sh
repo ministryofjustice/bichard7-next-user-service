@@ -6,3 +6,5 @@ sudo apt-get install libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libgconf-2-
 
 # Install Cypress
 npx cypress install
+
+touch cypressInstalled
