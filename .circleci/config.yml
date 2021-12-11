@@ -105,6 +105,7 @@ jobs:
       image: ubuntu-2004:202104-01
       docker_layer_caching: true
     working_directory: ~
+    parallelism: 2
     steps:
       - checkout_and_install
       - attach_workspace:
@@ -116,7 +117,7 @@ jobs:
       - run_postgres_database
       - run:
           name: Run UI tests
-          command: npm run test:ui
+          command: TOTAL_CHUNKS=$CIRCLE_NODE_TOTAL CHUNK_NUMBER=$CIRCLE_NODE_INDEX npm run test:ui
       - store_artifacts:
           path: ./cypress/videos
       - store_artifacts:
