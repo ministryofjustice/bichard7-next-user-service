@@ -4,8 +4,11 @@ set -e
 npm run build
 
 START_CMD="npm:start > /dev/null 2>&1"
-TOTAL_CHUNKS=${TOTAL_CHUNKS:-1}
-CHUNK_NUMBER=${CHUNK_NUMBER:-0}
+TOTAL_CHUNKS=${CIRCLE_NODE_TOTAL:-1}
+CHUNK_NUMBER=${CIRCLE_NODE_INDEX:-0}
+
+echo "TOTAL_CHUNKS: ${TOTAL_CHUNKS}"
+echo "CHUNK_NUMBER: ${CHUNK_NUMBER}"
 
 if [ $# -eq 0 ]; then
     CHUNKS=$(find cypress/integration/** -iname '*.spec.js' | sort | awk "(NR % $TOTAL_CHUNKS == $CHUNK_NUMBER)" | paste -d ' ' -s -)
