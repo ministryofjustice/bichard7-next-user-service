@@ -182,6 +182,8 @@ describe("Edit user", () => {
   it("should de able to edit any user when logged in as super user", () => {
     cy.task("deleteFromGroupsTable")
     cy.task("insertIntoGroupsTable")
+    cy.task("deleteFromUsersTable")
+    cy.task("insertIntoUsersTable")
     cy.task("insertIntoUserGroupsTable", {
       email: "bichard04@example.com",
       groups: ["B7UserManager_grp", "B7SuperUserManager_grp"]
@@ -198,29 +200,16 @@ describe("Edit user", () => {
     cy.get('span[data-test="included-triggers"]').click()
     cy.get('input[id="excludedTriggersTRPR0001"]').uncheck()
     cy.get('input[id="excludedTriggersTRPR0004"]').uncheck()
-    cy.get('[data-test="checkbox-user-groups"]')
-      .find('[data-test="checkbox-multiselect-checkboxes"]')
-      .find(`input[name="B7ExceptionHandler_grp"]`)
-      .check()
     // When
     cy.get('button[type="submit"]').click()
     // Then
     cy.get('[data-test="error-summary"]').should("not.exist")
-    cy.task("selectFromUsersTable", "bichard01@example.com").then((user) => {
-      cy.task("selectFromGroupsTable", "user_id", user.id).then((groups) => {
-        const currentUserGroups = getCurrentUserGroups(groups)
-        cy.get('[data-test="text-input_username"]').should("have.value", "Bichard01")
-        cy.get('[data-test="text-input_forenames"]').should("have.value", "forename change 01")
-        cy.get('[data-test="text-input_emailAddress"]').should("have.value", "bichard01@example.com")
-        cy.get('[data-test="text-input_orgServes"]').should("have.value", "org change 02")
-        cy.get('span[data-test="included-triggers"]').click()
-        cy.get('input[id="excludedTriggersTRPR0001"]').should("not.be.checked")
-        cy.get('input[id="excludedTriggersTRPR0004"]').should("not.be.checked")
-        cy.get('[data-test="checkbox-user-groups"]')
-          .find('[data-test="checkbox-multiselect-checkboxes"]')
-          .find(`[data-test="B7ExceptionHandler_grp"]`)
-          .contains(currentUserGroups[0].friendly_name)
-      })
-    })
+    cy.get('[data-test="text-input_username"]').should("have.value", "Bichard01")
+    cy.get('[data-test="text-input_forenames"]').should("have.value", "forename change 01")
+    cy.get('[data-test="text-input_emailAddress"]').should("have.value", "bichard01@example.com")
+    cy.get('[data-test="text-input_orgServes"]').should("have.value", "org change 02")
+    cy.get('span[data-test="included-triggers"]').click()
+    cy.get('input[id="excludedTriggersTRPR0001"]').should("not.be.checked")
+    cy.get('input[id="excludedTriggersTRPR0004"]').should("not.be.checked")
   })
 })

@@ -65,13 +65,12 @@ describe("Delete user", () => {
       groups: ["B7UserManager_grp", "B7SuperUserManager_grp"]
     })
     cy.login("bichard04@example.com", "password")
-    // When
-    cy.visit("/users/Bichard03", { failOnStatusCode: false })
-    // Then
-    cy.get("body").should("not.contain.text", "Are you sure you want to delete")
-    cy.get("body").should("not.contain.text", "Bichard03")
-    cy.get("body").should("not.contain.text", "Bichard User 03")
-    cy.get("body").should("not.contain.text", "Surname 03")
-    cy.get("body").should("contain.text", "Page not found")
+    cy.visit("/users/Bichard03")
+    cy.get('a[data-test="delete-user-view"]').click()
+    cy.get("h1").contains("Are you sure you want to delete Bichard User 03 Surname 03?")
+    cy.get("input[id=delete-account-confirmation]").type("Bichard03")
+    cy.get("button[type=submit]").click()
+    cy.url().should("contains", "/users")
+    cy.get("h3").should("have.text", "User deleted successfully.")
   })
 })
