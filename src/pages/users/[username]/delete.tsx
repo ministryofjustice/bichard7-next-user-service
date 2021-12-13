@@ -24,6 +24,7 @@ import logger from "utils/logger"
 import config from "lib/config"
 import { ErrorSummaryList } from "components/ErrorSummary"
 import usersHaveSameForce from "lib/usersHaveSameForce"
+import isUserWithinGroup from "useCases/isUserWithinGroup"
 
 export const getServerSideProps = withMultipleServerSideProps(
   withAuthentication,
@@ -46,7 +47,8 @@ export const getServerSideProps = withMultipleServerSideProps(
       return createRedirectResponse("/500")
     }
 
-    if (!user || !usersHaveSameForce(currentUser, user)) {
+    const isCurrentSuperUser = await isUserWithinGroup(connection, currentUser?.id || -1, "B7SuperUserManager")
+    if (!user || (!usersHaveSameForce(currentUser, user) && !isCurrentSuperUser)) {
       return {
         notFound: true
       }

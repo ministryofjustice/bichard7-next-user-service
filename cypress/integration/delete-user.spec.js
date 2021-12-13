@@ -56,4 +56,22 @@ describe("Delete user", () => {
   it("should respond with forbidden response code when CSRF tokens are invalid in delete page", (done) => {
     cy.checkCsrf("/users/Bichard01/delete", "POST").then(() => done())
   })
+
+  it("should de able to delete user regardless of force if current user is super user", () => {
+    cy.task("deleteFromGroupsTable")
+    cy.task("insertIntoGroupsTable")
+    cy.task("insertIntoUserGroupsTable", {
+      email: "bichard04@example.com",
+      groups: ["B7UserManager_grp", "B7SuperUserManager_grp"]
+    })
+    cy.login("bichard04@example.com", "password")
+    // When
+    cy.visit("/users/Bichard03", { failOnStatusCode: false })
+    // Then
+    cy.get("body").should("not.contain.text", "Are you sure you want to delete")
+    cy.get("body").should("not.contain.text", "Bichard03")
+    cy.get("body").should("not.contain.text", "Bichard User 03")
+    cy.get("body").should("not.contain.text", "Surname 03")
+    cy.get("body").should("contain.text", "Page not found")
+  })
 })
