@@ -11,7 +11,7 @@ const getAllUsers = async (
   page = 0
 ): PromiseResult<PaginatedResult<Pick<UserFullDetails, "username" | "forenames" | "surname" | "emailAddress">[]>> => {
   let users = []
-  if (visibleForces !== "") {
+  if (visibleForces !== "" || isSuperUser) {
     const forces = visibleForces.split(",")
     /* eslint-disable @typescript-eslint/naming-convention */
     const forceWhere = forces.map((code) => `visible_forces ~ '\\y${code}\\y'`).join(" OR ")
