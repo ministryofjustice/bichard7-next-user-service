@@ -1,4 +1,5 @@
 import crypto from "crypto"
+import logger from "utils/logger"
 
 const bufferConcat = (list: Buffer[]) => {
   let bufferLength = 0
@@ -41,7 +42,7 @@ const createSsha = (secret: string, salt?: Buffer | string): string => {
 
 const verifySsha = (secret: string, sshaHash: string): boolean => {
   if (!sshaHash.match(/^\{SSHA\}/i)) {
-    console.error("Hash scheme not supported. Only {SSHA} is supported.")
+    logger.error("Hash scheme not supported. Only {SSHA} is supported.")
     return false
   }
 
