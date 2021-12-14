@@ -44,3 +44,17 @@ it("should generate audit log when current user does not exist", () => {
   expect(attribute1).toBe("test")
   expect(attribute2).toBe(true)
 })
+
+it("should should remove unsafe attributes", () => {
+  const testContext = { req: dummyRequest } as unknown as GetServerSidePropsContext
+  const auditLog = generateAuditLog(testContext, "Dummy action", {
+    user: { name: "test User", password: "secret", migratedPassword: "secret" }
+  })
+
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const { user } = auditLog.attributes! as { user: { name: string; password?: string; migratedPassword?: string } }
+
+  expect(user.name).toBeDefined()
+  expect(user.password).toBeUndefined()
+  expect(user.migratedPassword).toBeUndefined()
+})

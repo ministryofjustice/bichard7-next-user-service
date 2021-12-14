@@ -234,18 +234,10 @@ describe("Authenticator", () => {
   })
 
   it("should not allow the user to authenticate if their account is soft deleted", async () => {
-    await insertUsers()
-    const emailAddress = "bichard03@example.com"
-    const verificationCode = "CoDeRs"
-    const expectedError = new Error("No data returned from the query.")
-    await storeVerificationCode(connection, emailAddress, verificationCode)
+    const emailAddress = "deleted@example.com"
+    const expectedError = new Error("User not found")
 
-    const mockedParseFormData = parseFormData as jest.MockedFunction<typeof parseFormData>
-    mockedParseFormData.mockResolvedValue({ deleteAccountConfirmation: emailAddress })
-    const isDeleted = await deleteUser(connection, fakeAuditLogger, { emailAddress } as User)
-    expect(isError(isDeleted)).toBe(false)
-
-    const isAuth = await authenticate(connection, fakeAuditLogger, emailAddress, correctPassword, verificationCode)
+    const isAuth = await authenticate(connection, fakeAuditLogger, emailAddress, correctPassword, "")
     expect(isError(isAuth)).toBe(true)
 
     const actualError = <Error>isAuth
@@ -271,5 +263,12 @@ describe("Authenticator", () => {
 
     expect(selectedUser).toHaveLength(1)
     expect(selectedUser[0].password).toBeDefined()
+  })
+
+  it("should return an error if the user doesn't exist", async () => {
+    const result = await authenticate(connection, fakeAuditLogger, "baduser@example.com", correctPassword, "123456")
+
+    expect(isError(result)).toBe(true)
+    expect(result).toEqual(new Error("User not found"))
   })
 })

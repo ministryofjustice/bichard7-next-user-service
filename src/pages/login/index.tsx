@@ -136,7 +136,7 @@ const handleValidateCodeStage = async (
   const user = await authenticate(connection, auditLogger, emailAddress, password, validationCode)
 
   if (isError(user)) {
-    logger.error(`Error logging in: ${user.message}`)
+    logger.error(`Error logging in user [${emailAddress}]: ${user.message}`)
     const attemptsSoFar = await getFailedPasswordAttempts(connection, emailAddress)
     if (!isError(attemptsSoFar) && attemptsSoFar >= config.maxPasswordFailedAttempts) {
       return {
