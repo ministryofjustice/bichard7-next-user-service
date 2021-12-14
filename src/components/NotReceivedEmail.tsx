@@ -15,6 +15,7 @@ const NotReceivedEmail = ({ sendAgainUrl }: Props) => {
         }
         <b>{"try using the older PNN version of your email address."}</b>
       </p>
+
       <details className="govuk-details" data-module="govuk-details">
         {" "}
         <summary className="govuk-details__summary" id="check-email">

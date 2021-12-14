@@ -401,9 +401,7 @@ const Index = ({
 
         {loginStage === "validateCode" && (
           <Form method="post" csrfToken={csrfToken}>
-            <p className="govuk-body">
-              <p>{"If an account was found we will have sent you an email."}</p>
-            </p>
+            <p className="govuk-body">{"If an account was found we will have sent you an email."}</p>
             <NotReceivedEmail sendAgainUrl="/login" />
             <input id="email" name="emailAddress" type="hidden" value={emailAddress} />
             <input type="hidden" name="loginStage" value="validateCode" />
