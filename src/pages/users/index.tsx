@@ -24,6 +24,7 @@ import logger from "utils/logger"
 import addQueryParams from "utils/addQueryParams"
 import SuccessBanner from "components/SuccessBanner"
 import isUserWithinGroup from "useCases/isUserWithinGroup"
+import createRedirectResponse from "utils/createRedirectResponse"
 
 export const getServerSideProps = withMultipleServerSideProps(
   withAuthentication,
@@ -35,6 +36,10 @@ export const getServerSideProps = withMultipleServerSideProps(
     let pageNumber = 0
     let previousFilter = ""
     let bannerMessage = ""
+
+    if (!currentUser) {
+      return createRedirectResponse("/login")
+    }
 
     if (isPost(req)) {
       const { filter } = formData as {

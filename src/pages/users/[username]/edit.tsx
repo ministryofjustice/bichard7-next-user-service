@@ -38,7 +38,7 @@ export const getServerSideProps = withMultipleServerSideProps(
 
     if (!currentUser || !currentUser.id || !currentUser.username) {
       logger.error("Unable to determine current user")
-      return createRedirectResponse("/500")
+      return createRedirectResponse("/login")
     }
 
     const connection = getConnection()
