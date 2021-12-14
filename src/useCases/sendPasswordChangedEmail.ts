@@ -28,7 +28,7 @@ export default async (connection: Database, emailAddress: string, baseUrl: strin
       to: addCjsmSuffix(emailAddress),
       ...emailContent
     })
-    .then(() => logger.log(`Email successfully sent to ${emailAddress}`))
+    .then(() => logger.info(`Email successfully sent to ${emailAddress}`))
     .catch((error: Error) => {
       logger.error(`Error sending email to ${emailAddress}`, error.message)
       return error

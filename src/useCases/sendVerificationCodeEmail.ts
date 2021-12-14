@@ -21,6 +21,7 @@ export default async (connection: Database, emailAddress: string, type: string):
   }
 
   if (!storeResult) {
+    logger.error(`No user found with email address ${emailAddress}`)
     return undefined
   }
 
@@ -44,7 +45,7 @@ export default async (connection: Database, emailAddress: string, type: string):
       to: addCjsmSuffix(normalisedEmail),
       ...emailContent
     })
-    .then(() => logger.log(`Email successfully sent to ${emailAddress}`))
+    .then(() => logger.info(`Email successfully sent to ${emailAddress}`))
     .catch((error: Error) => {
       logger.error(`Error sending email to ${emailAddress}`, error.message)
       return error

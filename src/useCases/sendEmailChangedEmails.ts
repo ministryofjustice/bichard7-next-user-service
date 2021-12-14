@@ -22,7 +22,7 @@ export default async (
       to: addCjsmSuffix(oldEmail),
       ...oldEmailContent
     })
-    .then(() => logger.log(`Email successfully sent to ${oldEmail}`))
+    .then(() => logger.info(`Email successfully sent to ${oldEmail}`))
     .catch((error: Error) => {
       logger.error(`Error sending email to ${oldEmail}`, error.message)
       sendingError = error
@@ -34,7 +34,7 @@ export default async (
       to: addCjsmSuffix(newEmail),
       ...newEmailContent
     })
-    .then(() => logger.log(`Email successfully sent to ${newEmail}`))
+    .then(() => logger.info(`Email successfully sent to ${newEmail}`))
     .catch((error: Error) => {
       logger.error(`Error sending email to ${newEmail}`, error.message)
       sendingError = error
