@@ -132,7 +132,7 @@ const authenticate = async (
 
     if (isAuthenticated && (verificationCode === null || isVerified)) {
       await resetUserVerificationCode(connection, emailAddress)
-      await auditLogger("User logged in", { user: { ...user, password: undefined } })
+      await auditLogger("User logged in", { user })
       return user
     }
 
