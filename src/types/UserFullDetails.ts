@@ -15,6 +15,8 @@ interface UserFullDetails {
   password: string
   migratedPassword: string
   groups: UserGroup[]
+  loginTooSoon: boolean
+  deletedAt: Date
 }
 
 export default UserFullDetails
