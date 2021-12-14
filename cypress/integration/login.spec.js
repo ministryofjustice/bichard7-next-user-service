@@ -111,6 +111,7 @@ describe("Logging In", () => {
       cy.task("getVerificationCode", user.email).then((verificationCode) => {
         cy.get("input#validationCode").type(verificationCode)
         cy.get("input#password").type(user.password)
+        cy.get("input[id=rememberEmailYes]").should("not.be.checked")
         cy.get("input[id=rememberEmailYes]").click()
         cy.get("button[type=submit]").click()
         cy.url().should("match", /\/users/)
@@ -120,7 +121,7 @@ describe("Logging In", () => {
         cy.get("body").should("contain", user.email)
         cy.get("input#validationCode").should("not.exist")
         cy.get("input#password").type(user.password)
-        cy.get("input[id=rememberEmailYes]").click()
+        cy.get("input[id=rememberEmailYes]").should("be.checked")
         cy.get("button[type=submit]").click()
         cy.url().should("match", /\/users/)
 
@@ -157,6 +158,7 @@ describe("Logging In", () => {
         cy.get("body").should("contain", user.email)
         cy.get("input#validationCode").should("not.exist")
         cy.get("input#password").type(user.password)
+        cy.get("input[id=rememberEmailYes]").click()
         cy.get("button[type=submit]").click()
         cy.url().should("match", /\/users/)
 
