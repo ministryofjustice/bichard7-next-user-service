@@ -105,15 +105,27 @@ jobs:
       image: ubuntu-2004:202104-01
       docker_layer_caching: true
     working_directory: ~
+    parallelism: 4
     steps:
-      - checkout_and_install
+      - checkout
+      - run:
+          name: Install Cypress in the background
+          command: ./.circleci/scripts/install-cypress.sh &
+      - restore_cache:
+          name: Load node_modules from the cache if they haven't changed
+          keys:
+            - v1-npm-deps-{{ checksum "package-lock.json" }}
+            - v1-npm-deps-
+      - run:
+          name: Install node dependencies
+          command: npm ci
       - attach_workspace:
           at: .
-      - run:
-          name: Install Cypress
-          command: ./.circleci/scripts/install-cypress.sh
       - clone_bichard_repo
       - run_postgres_database
+      - run:
+          name: Wait for Cypress
+          command: until [ -f cypressInstalled ]; do sleep 1; done
       - run:
           name: Run UI tests
           command: npm run test:ui
