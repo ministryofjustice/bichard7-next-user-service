@@ -6,15 +6,15 @@ import { createSsha } from "lib/ssha"
 import { hashPassword } from "lib/argon2"
 import Database from "types/Database"
 import getFailedPasswordAttempts from "useCases/getFailedPasswordAttempts"
+import User from "types/User"
+import parseFormData from "lib/parseFormData"
+import { deleteUser } from "useCases"
 import getTestConnection from "../../testFixtures/getTestConnection"
 import deleteFromTable from "../../testFixtures/database/deleteFromTable"
 import users from "../../testFixtures/database/data/users"
 import insertIntoTable from "../../testFixtures/database/insertIntoUsersTable"
 import fakeAuditLogger from "../fakeAuditLogger"
 import selectFromTable from "../../testFixtures/database/selectFromTable"
-import User from "types/User"
-import parseFormData from "lib/parseFormData"
-import { deleteUser } from "useCases"
 
 jest.mock("lib/parseFormData")
 

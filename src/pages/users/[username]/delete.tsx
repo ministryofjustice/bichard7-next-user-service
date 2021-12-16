@@ -70,7 +70,7 @@ export const getServerSideProps = withMultipleServerSideProps(
 
       const auditLogger = getAuditLogger(context, config)
 
-      let deleteUserResult;
+      let deleteUserResult
 
       if (currentUser.id && currentUser.id !== user.id) {
         deleteUserResult = await deleteUser(connection, auditLogger, user, currentUser.id)
@@ -147,13 +147,16 @@ const Delete = ({ user, showInputNotMatchingError, csrfToken, currentUser, isCur
 
           <ErrorSummary title="There is a problem" show={!!isCurrentUserUserToBeDeleted}>
             {!!isCurrentUserUserToBeDeleted && (
-              <p>
-               A user may not delete themselves, please contact another user manager to delete your user
-              </p>
+              <p>{"A user may not delete themselves, please contact another user manager to delete your user"}</p>
             )}
           </ErrorSummary>
           <ButtonGroup>
-            <Button dataTest="delete_delete-account-btn" variant="warning" noDoubleClick isDisabled={isCurrentUserUserToBeDeleted}>
+            <Button
+              dataTest="delete_delete-account-btn"
+              variant="warning"
+              noDoubleClick
+              isDisabled={isCurrentUserUserToBeDeleted}
+            >
               {"Delete account"}
             </Button>
             <Link data-test="cancel" href={`/users/${user.username}`}>

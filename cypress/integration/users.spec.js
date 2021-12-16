@@ -19,7 +19,7 @@ describe("Display list of users", () => {
     // When
     cy.visit("/users/Bichard01")
     // Then
-    cy.get('[data-test="disabled-delete-anchor"]').should('be.visible')
+    cy.get('[data-test="disabled-delete-anchor"]').should("be.visible")
   })
 
   it("should display a list of user in tabular form", () => {

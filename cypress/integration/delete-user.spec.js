@@ -19,13 +19,14 @@ describe("Delete user", () => {
     // Given
     cy.login("bichard01@example.com", "password")
     cy.visit("/users/Bichard01/delete")
-    cy.get('[data-test="text-input_deleteAccountConfirmation"]').type('Bichard01')
+    cy.get('[data-test="text-input_deleteAccountConfirmation"]').type("Bichard01")
     // When
     cy.get('[data-test="delete_delete-account-btn"]').click()
     // Then
-    cy.get('[data-test="error-summary"]').contains('There is a problem');
-    cy.get('[data-test="error-summary"]').contains('A user may not delete themselves, please contact another user manager to delete your user')
-
+    cy.get('[data-test="error-summary"]').contains("There is a problem")
+    cy.get('[data-test="error-summary"]').contains(
+      "A user may not delete themselves, please contact another user manager to delete your user"
+    )
   })
 
   it("should not allow deleting the user when confirmation text is invalid", () => {

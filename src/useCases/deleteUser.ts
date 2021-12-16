@@ -9,7 +9,12 @@ interface DeleteUserResult {
   isDeleted?: boolean
 }
 
-export default async (db: Database, auditLogger: AuditLogger, user: Partial<User>, currentUserId: number): Promise<DeleteUserResult> => {
+export default async (
+  db: Database,
+  auditLogger: AuditLogger,
+  user: Partial<User>,
+  currentUserId: number
+): Promise<DeleteUserResult> => {
   const markUserAsDeletedResult = await markUserAsDeleted(db, user.emailAddress as string, currentUserId)
 
   if (isError(markUserAsDeletedResult)) {

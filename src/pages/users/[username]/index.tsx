@@ -54,7 +54,7 @@ export const getServerSideProps = withMultipleServerSideProps(
 
 interface Props {
   user: User
-  currentUser?: Partial<User>,
+  currentUser?: Partial<User>
   isCurrentUserUserToBeDeleted?: boolean
 }
 
@@ -81,14 +81,20 @@ const Users = ({ user, currentUser, isCurrentUserUserToBeDeleted }: Props) => (
         <Link data-test="edit-user-view" href={`${user.username}/edit`}>
           {"Edit details"}
         </Link>
-        {isCurrentUserUserToBeDeleted ?
-          <a data-test="disabled-delete-anchor" title="A user may not delete themselves, please contact another user manager to delete your user" className="disabled-link">
-            Delete account
-          </a> :
+        {isCurrentUserUserToBeDeleted ? (
+          <button
+            data-test="disabled-delete-anchor"
+            title="A user may not delete themselves, please contact another user manager to delete your user"
+            className="disabled-link"
+            type="button"
+          >
+            {"Delete account"}
+          </button>
+        ) : (
           <Link data-test="delete-user-view" href={`${user.username}/delete`}>
             {"Delete account"}
           </Link>
-        }
+        )}
       </ButtonGroup>
       <BackLink href="/users" />
     </Layout>
