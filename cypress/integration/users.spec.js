@@ -13,7 +13,7 @@ describe("Display list of users", () => {
     cy.get('[data-test="404_header"]').should("contain.text", "Page not found")
   })
 
-  it("should prevent user from deleting themselves", () => {
+  it("should prevent user from clicking on delete user button", () => {
     // Given
     cy.login("bichard01@example.com", "password")
     // When
