@@ -4,6 +4,7 @@ import getEmailer from "lib/getEmailer"
 import Database from "types/Database"
 import PromiseResult from "types/PromiseResult"
 import { isError } from "types/Result"
+import logger from "utils/logger"
 import createPasswordChangedEmail from "./createPasswordChangedEmail"
 import getUserByEmailAddress from "./getUserByEmailAddress"
 
@@ -27,9 +28,9 @@ export default async (connection: Database, emailAddress: string, baseUrl: strin
       to: addCjsmSuffix(emailAddress),
       ...emailContent
     })
-    .then(() => console.log(`Email successfully sent to ${emailAddress}`))
+    .then(() => logger.info(`Email successfully sent to ${emailAddress}`))
     .catch((error: Error) => {
-      console.error(`Error sending email to ${emailAddress}`, error.message)
+      logger.error(`Error sending email to ${emailAddress}`, error.message)
       return error
     })
 }

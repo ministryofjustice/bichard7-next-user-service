@@ -6,6 +6,7 @@ import AuthenticationServerSidePropsContext from "types/AuthenticationServerSide
 import { isSuccess } from "types/Result"
 import User from "types/User"
 import getUserByEmailAddress from "useCases/getUserByEmailAddress"
+import logger from "utils/logger"
 import getAuthenticationPayloadFromCookie from "./getAuthenticationPayloadFromCookie"
 
 export default <Props>(getServerSidePropsFunction: GetServerSideProps<Props>): GetServerSideProps<Props> => {
@@ -24,7 +25,7 @@ export default <Props>(getServerSidePropsFunction: GetServerSideProps<Props>): G
       if (isSuccess(user)) {
         currentUser = user
       } else {
-        console.error(user)
+        logger.error(user)
       }
     }
 

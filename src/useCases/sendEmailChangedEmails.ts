@@ -4,6 +4,7 @@ import config from "lib/config"
 import getEmailer from "lib/getEmailer"
 import PromiseResult from "types/PromiseResult"
 import User from "types/User"
+import logger from "utils/logger"
 
 export default async (
   user: Pick<User, "forenames" | "surname">,
@@ -21,9 +22,9 @@ export default async (
       to: addCjsmSuffix(oldEmail),
       ...oldEmailContent
     })
-    .then(() => console.log(`Email successfully sent to ${oldEmail}`))
+    .then(() => logger.info(`Email successfully sent to ${oldEmail}`))
     .catch((error: Error) => {
-      console.error(`Error sending email to ${oldEmail}`, error.message)
+      logger.error(`Error sending email to ${oldEmail}`, error.message)
       sendingError = error
     })
 
@@ -33,9 +34,9 @@ export default async (
       to: addCjsmSuffix(newEmail),
       ...newEmailContent
     })
-    .then(() => console.log(`Email successfully sent to ${newEmail}`))
+    .then(() => logger.info(`Email successfully sent to ${newEmail}`))
     .catch((error: Error) => {
-      console.error(`Error sending email to ${newEmail}`, error.message)
+      logger.error(`Error sending email to ${newEmail}`, error.message)
       sendingError = error
     })
 

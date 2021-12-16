@@ -136,7 +136,7 @@ const handleValidateCodeStage = async (
   const user = await authenticate(connection, auditLogger, emailAddress, password, validationCode)
 
   if (isError(user)) {
-    logger.error(`Error logging in: ${user.message}`)
+    logger.error(`Error logging in user [${emailAddress}]: ${user.message}`)
     const attemptsSoFar = await getFailedPasswordAttempts(connection, emailAddress)
     if (!isError(attemptsSoFar) && attemptsSoFar >= config.maxPasswordFailedAttempts) {
       return {
@@ -295,7 +295,10 @@ interface Props {
   notYourEmailAddressUrl?: string
 }
 
-const RememberForm = () => (
+type RememberProps = {
+  checked: boolean
+}
+const RememberForm = ({ checked }: RememberProps) => (
   <div className="govuk-form-group">
     <fieldset className="govuk-fieldset" aria-describedby="waste-hint">
       <legend className="govuk-fieldset__legend">{"Do you want your email address to be remembered?"}</legend>
@@ -312,6 +315,7 @@ const RememberForm = () => (
             name="rememberEmailAddress"
             type="checkbox"
             value="yes"
+            defaultChecked={checked}
           />
           <label className="govuk-label govuk-checkboxes__label" htmlFor="rememberEmailYes">
             {"Yes, remember my email address."}
@@ -401,9 +405,7 @@ const Index = ({
 
         {loginStage === "validateCode" && (
           <Form method="post" csrfToken={csrfToken}>
-            <p className="govuk-body">
-              <p>{"If an account was found we will have sent you an email."}</p>
-            </p>
+            <p className="govuk-body">{"If an account was found we will have sent you an email."}</p>
             <NotReceivedEmail sendAgainUrl="/login" />
             <input id="email" name="emailAddress" type="hidden" value={emailAddress} />
             <input type="hidden" name="loginStage" value="validateCode" />
@@ -415,7 +417,7 @@ const Index = ({
               value={validationCode}
             />
             <TextInput name="password" label="Password" type="password" />
-            <RememberForm />
+            <RememberForm checked={false} />
             <Button>{"Sign in"}</Button>
           </Form>
         )}
@@ -438,7 +440,7 @@ const Index = ({
             )}
             <input type="hidden" name="loginStage" value="rememberedEmail" />
             <TextInput name="password" label="Password" type="password" />
-            <RememberForm />
+            <RememberForm checked />
             <Button>{"Sign in"}</Button>
           </Form>
         )}

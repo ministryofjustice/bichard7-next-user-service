@@ -2,6 +2,14 @@
 
 exports[`should render the component and match the snapshot 1`] = `
 <div>
+  <p
+    class="govuk-body"
+  >
+    You need to use the exact email address for your account in the Bichard system. If you're having problems receiving the email, please 
+    <b>
+      try using the older PNN version of your email address.
+    </b>
+  </p>
   <details
     class="govuk-details"
     data-module="govuk-details"
@@ -15,7 +23,7 @@ exports[`should render the component and match the snapshot 1`] = `
       <span
         class="govuk-details__summary-text"
       >
-         I have not received the email 
+         I still have not received the email 
       </span>
        
     </summary>

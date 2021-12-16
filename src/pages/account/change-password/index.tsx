@@ -20,6 +20,7 @@ import checkPassword from "useCases/checkPassword"
 import generateRandomPassword from "useCases/generateRandomPassword"
 import createRedirectResponse from "utils/createRedirectResponse"
 import { isPost } from "utils/http"
+import logger from "utils/logger"
 
 export const getServerSideProps = withMultipleServerSideProps(
   withAuthentication,
@@ -67,7 +68,7 @@ export const getServerSideProps = withMultipleServerSideProps(
       const baseUrl = req.headers["x-origin"] || req.headers.origin || config.baseUrl
 
       if (!baseUrl || Array.isArray(baseUrl)) {
-        console.error("baseUrl is invalid", baseUrl)
+        logger.error("baseUrl is invalid", baseUrl)
         return createRedirectResponse("/500")
       }
 

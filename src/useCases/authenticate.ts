@@ -44,11 +44,11 @@ const getUserWithInterval = async (task: ITask<unknown>, params: unknown[]): Pro
     password,
     email_verification_code,
     email_verification_generated > NOW() - INTERVAL '$3 minutes' as email_verification_current,
-    migrated_password
+    last_login_attempt is not null and last_login_attempt > NOW() - INTERVAL '$2 seconds' as login_too_soon,
+    migrated_password,
+    deleted_at
   FROM br7own.users
-  WHERE email = $1
-    AND last_login_attempt < NOW() - INTERVAL '$2 seconds'
-    AND deleted_at IS NULL`
+  WHERE email = $1`
 
   const user = await task.one(getUserQuery, params)
 
@@ -73,8 +73,10 @@ const getUserWithInterval = async (task: ITask<unknown>, params: unknown[]): Pro
     password: user.password,
     emailVerificationCode: user.email_verification_code,
     emailVerificationCurrent: user.email_verification_current,
+    loginTooSoon: user.login_too_soon,
     migratedPassword: user.migrated_password,
-    groups: await fetchGroups(task, user.email)
+    groups: await fetchGroups(task, user.email),
+    deletedAt: user.deleted_at
   }
 }
 
@@ -112,6 +114,14 @@ const authenticate = async (
       return u
     })
 
+    if (user.loginTooSoon) {
+      return new Error("User has tried to log in too soon")
+    }
+
+    if (user.deletedAt) {
+      return new Error("User is deleted")
+    }
+
     let isAuthenticated = false
 
     if (verificationCode && !user.emailVerificationCurrent) {
@@ -132,7 +142,7 @@ const authenticate = async (
 
     if (isAuthenticated && (verificationCode === null || isVerified)) {
       await resetUserVerificationCode(connection, emailAddress)
-      await auditLogger("User logged in", { user: { ...user, password: undefined } })
+      await auditLogger("User logged in", { user })
       return user
     }
 
@@ -150,6 +160,10 @@ const authenticate = async (
 
     return invalidCredentialsError
   } catch (error) {
+    if (error instanceof Error && error.message === "No data returned from the query.") {
+      return new Error(`User not found`)
+    }
+
     return error as Error
   }
 }
