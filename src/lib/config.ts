@@ -28,6 +28,7 @@ export interface UserServiceConfig {
   incorrectDelay: number
   isProduction: boolean
   passwordMinLength: number
+  productionUrl: string
   rememberEmailAddressCookieName: string
   rememberEmailAddressMaxAgeInMinutes: number
   suggestedPasswordNumWords: number
@@ -65,6 +66,7 @@ const config: UserServiceConfig = {
   incorrectDelay: parseInt(process.env.INCORRECT_DELAY ?? "10", 10),
   isProduction: process.env.IS_PRODUCTION === "true",
   passwordMinLength: 8,
+  productionUrl: "http://psnportal.bichard7.pnn.police.uk/",
   rememberEmailAddressCookieName: "LOGIN_EMAIL",
   rememberEmailAddressMaxAgeInMinutes: parseInt(process.env.REMEMBER_EMAIL_MAX_AGE ?? "1440", 10),
   suggestedPasswordNumWords: 3,
