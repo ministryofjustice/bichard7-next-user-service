@@ -52,7 +52,7 @@ describe("Delete user", () => {
     cy.url().should("contains", "/users/Bichard02/delete")
   })
 
-  it("should not allow the current user to visit navigate to /delete when user is in a different force", () => {
+  it("should not allow the current user to navigate to /delete when user is in a different force", () => {
     // Given
     cy.login("bichard02@example.com", "password")
 
