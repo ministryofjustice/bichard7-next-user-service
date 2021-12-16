@@ -27,6 +27,7 @@ import updateUserCodes from "useCases/updateUserCodes"
 import usersHaveSameForce from "lib/usersHaveSameForce"
 import getUserByEmailAddress from "useCases/getUserByEmailAddress"
 import sendEmailChangedEmails from "useCases/sendEmailChangedEmails"
+import isUserWithinGroup from "useCases/isUserWithinGroup"
 
 export const getServerSideProps = withMultipleServerSideProps(
   withAuthentication,
@@ -49,7 +50,9 @@ export const getServerSideProps = withMultipleServerSideProps(
       return createRedirectResponse("/500")
     }
 
-    if (!user || !usersHaveSameForce(currentUser, user)) {
+    const isCurrentSuperUser = await isUserWithinGroup(connection, currentUser?.id || -1, "B7SuperUserManager")
+
+    if (!user || (!usersHaveSameForce(currentUser, user) && !isCurrentSuperUser)) {
       return {
         notFound: true
       }
@@ -104,6 +107,7 @@ export const getServerSideProps = withMultipleServerSideProps(
                 user: { ...user, ...userDetails },
                 isFormValid: false,
                 emailError: "Please enter a unique email address",
+                isCurrentSuperUser,
                 currentUserVisibleForces: currentUser.visibleForces ?? ""
               }
             }
@@ -124,6 +128,7 @@ export const getServerSideProps = withMultipleServerSideProps(
               ...formValidationResult,
               user: { ...user, ...userDetails },
               errorMessage: userUpdated.message,
+              isCurrentSuperUser,
               currentUserVisibleForces: currentUser.visibleForces ?? ""
             }
           }
@@ -145,6 +150,7 @@ export const getServerSideProps = withMultipleServerSideProps(
               groups,
               user: { ...user, ...userDetails },
               ...formValidationResult,
+              isCurrentSuperUser,
               currentUserVisibleForces: currentUser.visibleForces ?? ""
             }
           }
@@ -158,6 +164,7 @@ export const getServerSideProps = withMultipleServerSideProps(
             currentUser,
             groups,
             ...formValidationResult,
+            isCurrentSuperUser,
             currentUserVisibleForces: currentUser.visibleForces ?? ""
           }
         }
@@ -171,6 +178,7 @@ export const getServerSideProps = withMultipleServerSideProps(
           currentUser,
           groups,
           ...formValidationResult,
+          isCurrentSuperUser,
           currentUserVisibleForces: currentUser.visibleForces ?? ""
         }
       }
@@ -184,6 +192,7 @@ export const getServerSideProps = withMultipleServerSideProps(
         currentUser,
         groups,
         isFormValid: true,
+        isCurrentSuperUser,
         currentUserVisibleForces: currentUser.visibleForces ?? ""
       }
     }
@@ -204,6 +213,7 @@ interface Props {
   surnameError?: string | false
   emailError?: string | false
   forcesError?: string | false
+  isCurrentSuperUser?: boolean
   isFormValid: boolean
   currentUserVisibleForces: string
 }
@@ -221,6 +231,7 @@ const editUser = ({
   csrfToken,
   currentUser,
   groups,
+  isCurrentSuperUser,
   isFormValid,
   currentUserVisibleForces
 }: Props) => (
@@ -272,6 +283,7 @@ const editUser = ({
             allGroups={groups}
             userGroups={user.groups}
             currentUserVisibleForces={currentUserVisibleForces}
+            isCurrentSuperUser={isCurrentSuperUser}
             isEdit
           />
           <input type="hidden" name="id" value={user.id} />

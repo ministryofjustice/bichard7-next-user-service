@@ -178,4 +178,38 @@ describe("Edit user", () => {
     // Then
     cy.get('[data-test="text-input_endorsedBy"]').should("not.exist")
   })
+
+  it("should de able to edit any user when logged in as super user", () => {
+    cy.task("deleteFromGroupsTable")
+    cy.task("insertIntoGroupsTable")
+    cy.task("deleteFromUsersTable")
+    cy.task("insertIntoUsersTable")
+    cy.task("insertIntoUserGroupsTable", {
+      email: "bichard04@example.com",
+      groups: ["B7UserManager_grp", "B7SuperUserManager_grp"]
+    })
+    cy.login("bichard04@example.com", "password")
+    cy.visit("/users")
+    cy.visit("users/Bichard01")
+    cy.get('a[data-test="edit-user-view"]').click()
+    cy.get('[data-test="text-input_forenames"]').clear().type("forename change 01")
+    cy.get('[data-test="text-input_orgServes"]').clear().type("org change 02")
+    cy.get('input[id="visibleForces001"]').uncheck()
+    cy.get('input[id="visibleForces002"]').check()
+    cy.get('[data-test="text-input_visibleCourts"]').clear().type("B02,B42MD00")
+    cy.get('span[data-test="included-triggers"]').click()
+    cy.get('input[id="excludedTriggersTRPR0001"]').uncheck()
+    cy.get('input[id="excludedTriggersTRPR0004"]').uncheck()
+    // When
+    cy.get('button[type="submit"]').click()
+    // Then
+    cy.get('[data-test="error-summary"]').should("not.exist")
+    cy.get('[data-test="text-input_username"]').should("have.value", "Bichard01")
+    cy.get('[data-test="text-input_forenames"]').should("have.value", "forename change 01")
+    cy.get('[data-test="text-input_emailAddress"]').should("have.value", "bichard01@example.com")
+    cy.get('[data-test="text-input_orgServes"]').should("have.value", "org change 02")
+    cy.get('span[data-test="included-triggers"]').click()
+    cy.get('input[id="excludedTriggersTRPR0001"]').should("not.be.checked")
+    cy.get('input[id="excludedTriggersTRPR0004"]').should("not.be.checked")
+  })
 })

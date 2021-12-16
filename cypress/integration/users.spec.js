@@ -43,6 +43,31 @@ describe("Display list of users", () => {
     cy.get("tbody tr:nth-child(1) td:nth-child(4)").should("have.text", "bichard03@example.com")
   })
 
+  it("should display the correct list of users when using the filter when logged in as super user", () => {
+    cy.task("deleteFromGroupsTable")
+    cy.task("insertIntoGroupsTable")
+    cy.task("insertIntoUserGroupsTable", {
+      email: "bichard04@example.com",
+      groups: ["B7UserManager_grp", "B7SuperUserManager_grp"]
+    })
+    cy.login("bichard04@example.com", "password")
+    cy.visit("/users")
+    cy.get('input[id="filter"]').type("Bichard02")
+    cy.get('button[id="filter"]').click()
+    cy.get("tbody tr:nth-child(1) td:nth-child(1)").should("have.text", "Bichard02")
+    cy.get("tbody tr:nth-child(1) td:nth-child(2)").should("have.text", "Bichard User 02")
+    cy.get("tbody tr:nth-child(1) td:nth-child(3)").should("have.text", "Surname 02")
+    cy.get("tbody tr:nth-child(1) td:nth-child(4)").should("have.text", "bichard02@example.com")
+
+    cy.get('input[id="filter"]').focus().clear()
+    cy.get('input[id="filter"]').type("bichard03")
+    cy.get('button[id="filter"]').click()
+    cy.get("tbody tr:nth-child(1) td:nth-child(1)").should("have.text", "Bichard03")
+    cy.get("tbody tr:nth-child(1) td:nth-child(2)").should("have.text", "Bichard User 03")
+    cy.get("tbody tr:nth-child(1) td:nth-child(3)").should("have.text", "Surname 03")
+    cy.get("tbody tr:nth-child(1) td:nth-child(4)").should("have.text", "bichard03@example.com")
+  })
+
   it("should display in paginated view when returning many users", () => {
     cy.task("deleteFromUsersTable")
     cy.task("insertManyIntoUsersTable")

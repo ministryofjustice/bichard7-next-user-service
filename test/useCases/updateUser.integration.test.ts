@@ -106,7 +106,7 @@ describe("updatePassword", () => {
       "bichard01@example.com",
       groups.map((g) => g.name)
     )
-    const updatedEmail = "bichard04@example.com"
+    const updatedEmail = "bichard05@example.com"
     const currentUserId = (await selectFromTable("users", "username", "Bichard01"))[0].id
 
     await insertUserWithGroup()

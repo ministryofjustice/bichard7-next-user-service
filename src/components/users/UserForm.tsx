@@ -22,6 +22,7 @@ interface Props {
   surnameError?: string | false
   emailError?: string | false
   forcesError?: string | false
+  isCurrentSuperUser?: boolean
   isEdit?: boolean
   currentUserVisibleForces: string
 }
@@ -55,6 +56,7 @@ const UserForm = ({
   emailError,
   forcesError,
   currentUserVisibleForces,
+  isCurrentSuperUser = false,
   isEdit = false
 }: Props) => {
   let forcesCheckboxClassName = "govuk-form-group"
@@ -110,7 +112,7 @@ const UserForm = ({
           hintLabel="Show records from the following forces"
           isError={forcesError}
           selectedOptions={visibleForces}
-          allOptions={listOfForces.filter((x) => currentUserVisibleForces.includes(x.id))}
+          allOptions={listOfForces.filter((x) => isCurrentSuperUser || currentUserVisibleForces.includes(x.id))}
         />
       </div>
 

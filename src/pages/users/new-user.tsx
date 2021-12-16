@@ -28,6 +28,7 @@ import isUsernameUnique from "useCases/isUsernameUnique"
 import updateUserCodes from "useCases/updateUserCodes"
 import isValidUsername from "utils/isValidUsername"
 import logger from "utils/logger"
+import isUserWithinGroup from "useCases/isUserWithinGroup"
 
 export const getServerSideProps = withMultipleServerSideProps(
   withAuthentication,
@@ -50,6 +51,7 @@ export const getServerSideProps = withMultipleServerSideProps(
       return createRedirectResponse("/500")
     }
     const currentUserVisibleForces = currentUser.visibleForces ?? ""
+    const isCurrentSuperUser = await isUserWithinGroup(connection, currentUser?.id || -1, "B7SuperUserManager")
 
     if (isPost(req)) {
       const userCreateDetails = formData as {
@@ -79,7 +81,8 @@ export const getServerSideProps = withMultipleServerSideProps(
             csrfToken,
             currentUser,
             userGroups,
-            currentUserVisibleForces
+            currentUserVisibleForces,
+            isCurrentSuperUser
           }
         }
       }
@@ -96,7 +99,8 @@ export const getServerSideProps = withMultipleServerSideProps(
             csrfToken,
             currentUser,
             userGroups,
-            currentUserVisibleForces
+            currentUserVisibleForces,
+            isCurrentSuperUser
           }
         }
       }
@@ -116,7 +120,8 @@ export const getServerSideProps = withMultipleServerSideProps(
               csrfToken,
               currentUser,
               userGroups,
-              currentUserVisibleForces
+              currentUserVisibleForces,
+              isCurrentSuperUser
             }
           }
         }
@@ -133,7 +138,8 @@ export const getServerSideProps = withMultipleServerSideProps(
               csrfToken,
               currentUser,
               userGroups,
-              currentUserVisibleForces
+              currentUserVisibleForces,
+              isCurrentSuperUser
             }
           }
         }
@@ -159,7 +165,8 @@ export const getServerSideProps = withMultipleServerSideProps(
               csrfToken,
               currentUser,
               userGroups,
-              currentUserVisibleForces
+              currentUserVisibleForces,
+              isCurrentSuperUser
             }
           }
         }
@@ -177,7 +184,8 @@ export const getServerSideProps = withMultipleServerSideProps(
             csrfToken,
             currentUser,
             userGroups,
-            currentUserVisibleForces
+            currentUserVisibleForces,
+            isCurrentSuperUser
           }
         }
       }
@@ -192,7 +200,8 @@ export const getServerSideProps = withMultipleServerSideProps(
           csrfToken,
           currentUser,
           userGroups,
-          currentUserVisibleForces
+          currentUserVisibleForces,
+          isCurrentSuperUser
         }
       }
     }
@@ -205,7 +214,8 @@ export const getServerSideProps = withMultipleServerSideProps(
         csrfToken,
         currentUser,
         userGroups,
-        currentUserVisibleForces
+        currentUserVisibleForces,
+        isCurrentSuperUser
       }
     }
   }
@@ -220,6 +230,7 @@ interface Props {
   emailError?: string | false
   forcesError?: string | false
   isFormValid: boolean
+  isCurrentSuperUser: boolean
   csrfToken: string
   currentUser?: Partial<User>
   userGroups?: UserGroupResult[]
@@ -240,6 +251,7 @@ const NewUser = ({
   userGroups,
   userDetails = {},
   isFormValid,
+  isCurrentSuperUser,
   currentUserVisibleForces
 }: Props) => (
   <>
@@ -276,6 +288,7 @@ const NewUser = ({
           endorsedBy={currentUser?.username}
           userGroups={userDetails.groups}
           currentUserVisibleForces={currentUserVisibleForces}
+          isCurrentSuperUser={isCurrentSuperUser}
         />
         <ButtonGroup>
           <Button data-test="new-user_save" name="save" value="save" noDoubleClick>
