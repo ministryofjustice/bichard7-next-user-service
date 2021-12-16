@@ -6,9 +6,6 @@ import { createSsha } from "lib/ssha"
 import { hashPassword } from "lib/argon2"
 import Database from "types/Database"
 import getFailedPasswordAttempts from "useCases/getFailedPasswordAttempts"
-import User from "types/User"
-import parseFormData from "lib/parseFormData"
-import { deleteUser } from "useCases"
 import getTestConnection from "../../testFixtures/getTestConnection"
 import deleteFromTable from "../../testFixtures/database/deleteFromTable"
 import users from "../../testFixtures/database/data/users"
@@ -234,16 +231,8 @@ describe("Authenticator", () => {
   })
 
   it("should not allow the user to authenticate if their account is soft deleted", async () => {
-    await insertUsers()
-    const emailAddress = "bichard03@example.com"
-    const verificationCode = "CoDeRs"
-    const expectedError = new Error("No data returned from the query.")
-    await storeVerificationCode(connection, emailAddress, verificationCode)
-
-    const mockedParseFormData = parseFormData as jest.MockedFunction<typeof parseFormData>
-    mockedParseFormData.mockResolvedValue({ deleteAccountConfirmation: emailAddress })
-    const isDeleted = await deleteUser(connection, fakeAuditLogger, { emailAddress } as User, -1)
-    expect(isError(isDeleted)).toBe(false)
+    const emailAddress = "deleted@example.com"
+    const expectedError = new Error("User not found")
 
     const isAuth = await authenticate(connection, fakeAuditLogger, emailAddress, correctPassword, "")
     expect(isError(isAuth)).toBe(true)
