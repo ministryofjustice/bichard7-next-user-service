@@ -15,6 +15,19 @@ describe("Delete user", () => {
     cy.get("h3").should("have.text", "User deleted successfully.")
   })
 
+  it("should prevent user from deleting themselves", () => {
+    // Given
+    cy.login("bichard01@example.com", "password")
+    cy.visit("/users/Bichard01/delete")
+    cy.get('[data-test="text-input_deleteAccountConfirmation"]').type('Bichard01')
+    // When
+    cy.get('[data-test="delete_delete-account-btn"]').click()
+    // Then
+    cy.get('[data-test="error-summary"]').contains('There is a problem');
+    cy.get('[data-test="error-summary"]').contains('A user may not delete themselves, please contact another user manager to delete your user')
+
+  })
+
   it("should not allow deleting the user when confirmation text is invalid", () => {
     cy.login("bichard01@example.com", "password")
     cy.visit("/users/Bichard02")
@@ -38,19 +51,15 @@ describe("Delete user", () => {
     cy.url().should("contains", "/users/Bichard02/delete")
   })
 
-  it("should not allow deleting a user outside of the current user's force", () => {
+  it("should not allow the current user to visit navigate to /delete when user is in a different force", () => {
     // Given
     cy.login("bichard02@example.com", "password")
 
     // When
-    cy.visit("/users/Bichard03", { failOnStatusCode: false })
+    cy.visit("/users/Bichard03/delete", { failOnStatusCode: false })
 
     // Then
-    cy.get("body").should("not.contain.text", "Are you sure you want to delete")
-    cy.get("body").should("not.contain.text", "Bichard03")
-    cy.get("body").should("not.contain.text", "Bichard User 03")
-    cy.get("body").should("not.contain.text", "Surname 03")
-    cy.get("body").should("contain.text", "Page not found")
+    cy.get('[data-test="404_header"]').should("contain.text", "Page not found")
   })
 
   it("should respond with forbidden response code when CSRF tokens are invalid in delete page", (done) => {

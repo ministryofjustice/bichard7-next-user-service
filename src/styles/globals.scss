@@ -5,3 +5,10 @@ $govuk-assets-path: "/users/assets/";
 .align-right {
   margin-left: auto;
 }
+
+.disabled-link {
+  color: currentColor;
+  cursor: not-allowed;
+  opacity: 0.5;
+  text-decoration: none;
+}

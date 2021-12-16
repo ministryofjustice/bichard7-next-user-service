@@ -10,6 +10,8 @@ interface Props {
   className?: string
   name?: string
   value?: string
+  isDisabled?: boolean
+  dataTest?: string
 }
 
 const getButtonClass = (variant?: ButtonVariant): string => {
@@ -17,7 +19,7 @@ const getButtonClass = (variant?: ButtonVariant): string => {
   return `govuk-button${variantClass}`
 }
 
-const Button = ({ children, variant, noDoubleClick, id, className, name, value }: Props) => {
+const Button = ({ children, variant, noDoubleClick, id, className, name, value, isDisabled, dataTest }: Props) => {
   const classes = classnames(getButtonClass(variant), className && { [className]: !!className })
 
   return (
@@ -28,6 +30,8 @@ const Button = ({ children, variant, noDoubleClick, id, className, name, value }
       value={value}
       data-module="govuk-button"
       data-prevent-double-click={noDoubleClick}
+      data-test={dataTest}
+      disabled={isDisabled}
       id={id}
     >
       {children}

@@ -12,6 +12,9 @@ import users from "../../testFixtures/database/data/users"
 import insertIntoTable from "../../testFixtures/database/insertIntoUsersTable"
 import fakeAuditLogger from "../fakeAuditLogger"
 import selectFromTable from "../../testFixtures/database/selectFromTable"
+import User from "types/User"
+import parseFormData from "lib/parseFormData"
+import { deleteUser } from "useCases"
 
 jest.mock("lib/parseFormData")
 
@@ -231,8 +234,16 @@ describe("Authenticator", () => {
   })
 
   it("should not allow the user to authenticate if their account is soft deleted", async () => {
-    const emailAddress = "deleted@example.com"
-    const expectedError = new Error("User not found")
+    await insertUsers()
+    const emailAddress = "bichard03@example.com"
+    const verificationCode = "CoDeRs"
+    const expectedError = new Error("No data returned from the query.")
+    await storeVerificationCode(connection, emailAddress, verificationCode)
+
+    const mockedParseFormData = parseFormData as jest.MockedFunction<typeof parseFormData>
+    mockedParseFormData.mockResolvedValue({ deleteAccountConfirmation: emailAddress })
+    const isDeleted = await deleteUser(connection, fakeAuditLogger, { emailAddress } as User, -1)
+    expect(isError(isDeleted)).toBe(false)
 
     const isAuth = await authenticate(connection, fakeAuditLogger, emailAddress, correctPassword, "")
     expect(isError(isAuth)).toBe(true)

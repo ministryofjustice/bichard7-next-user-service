@@ -4,6 +4,24 @@ describe("Display list of users", () => {
     cy.task("insertIntoUsersTable")
   })
 
+  it("should not allow the current user to view a user who is in a different force", () => {
+    // Given
+    cy.login("bichard02@example.com", "password")
+    // When
+    cy.visit("/users/Bichard03", { failOnStatusCode: false })
+    // Then
+    cy.get('[data-test="404_header"]').should("contain.text", "Page not found")
+  })
+
+  it("should prevent user from deleting themselves", () => {
+    // Given
+    cy.login("bichard01@example.com", "password")
+    // When
+    cy.visit("/users/Bichard01")
+    // Then
+    cy.get('[data-test="disabled-delete-anchor"]').should('be.visible')
+  })
+
   it("should display a list of user in tabular form", () => {
     cy.login("bichard01@example.com", "password")
     cy.visit("/users")

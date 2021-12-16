@@ -16,6 +16,7 @@ import logger from "utils/logger"
 import AuthenticationServerSidePropsContext from "types/AuthenticationServerSidePropsContext"
 import usersHaveSameForce from "lib/usersHaveSameForce"
 import isUserWithinGroup from "useCases/isUserWithinGroup"
+import React from "react"
 
 export const getServerSideProps = withMultipleServerSideProps(
   withAuthentication,
@@ -43,18 +44,21 @@ export const getServerSideProps = withMultipleServerSideProps(
       }
     }
 
+    const isCurrentUserUserToBeDeleted = currentUser.id === user.id
+
     return {
-      props: { user, currentUser }
+      props: { user, currentUser, isCurrentUserUserToBeDeleted }
     }
   }
 )
 
 interface Props {
   user: User
-  currentUser?: Partial<User>
+  currentUser?: Partial<User>,
+  isCurrentUserUserToBeDeleted?: boolean
 }
 
-const Users = ({ user, currentUser }: Props) => (
+const Users = ({ user, currentUser, isCurrentUserUserToBeDeleted }: Props) => (
   <>
     <Head>
       <title>{"User details"}</title>
@@ -72,13 +76,19 @@ const Users = ({ user, currentUser }: Props) => (
         <SummaryItem label="Visible Courts" value={user.visibleCourts} />
         <SummaryItem label="Excluded Triggers" value={user.excludedTriggers} />
       </Summary>
+
       <ButtonGroup>
         <Link data-test="edit-user-view" href={`${user.username}/edit`}>
           {"Edit details"}
         </Link>
-        <Link data-test="delete-user-view" href={`${user.username}/delete`}>
-          {"Delete account"}
-        </Link>
+        {isCurrentUserUserToBeDeleted ?
+          <a data-test="disabled-delete-anchor" title="A user may not delete themselves, please contact another user manager to delete your user" className="disabled-link">
+            Delete account
+          </a> :
+          <Link data-test="delete-user-view" href={`${user.username}/delete`}>
+            {"Delete account"}
+          </Link>
+        }
       </ButtonGroup>
       <BackLink href="/users" />
     </Layout>

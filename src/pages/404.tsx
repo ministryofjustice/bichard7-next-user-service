@@ -11,7 +11,7 @@ const Custom404 = () => (
     </Head>
     <Layout>
       <GridRow>
-        <h1 className="govuk-heading-xl">{"Page not found"}</h1>
+        <h1 data-test="404_header" className="govuk-heading-xl">{"Page not found"}</h1>
 
         <p className="govuk-body">{"If you typed the web address, check it is correct."}</p>
         <p className="govuk-body">{"If you pasted the web address, check you copied the entire address."}</p>

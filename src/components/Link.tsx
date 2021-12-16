@@ -9,15 +9,17 @@ interface Props {
   href: string
   id?: string
   rel?: string
+  title? : string
 }
 
-const Link = ({ children, basePath = true, className, "data-test": dataTest, href, id, rel }: Props) => (
+const Link = ({ children, basePath = true, className, "data-test": dataTest, href, id, rel, title }: Props) => (
   <a
     data-test={dataTest}
     href={basePath ? addBasePath(href) : href}
     className={className || "govuk-link"}
     id={id}
     rel={rel}
+    title={title}
   >
     {children}
   </a>
