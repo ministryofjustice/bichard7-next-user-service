@@ -61,6 +61,7 @@ The application makes use of the following environment variables to permit confi
 | `$EMAIL_FROM`                    | `"bichard@cjse.org"`               | The email address to send emails from                                                                |
 | `$EMAIL_VERIFICATION_EXPIRES_IN` | `30`                               | The number of minutes after which the email verification links will expire                           |
 | `$INCORRECT_DELAY`               | `10`                               | The amount of time (in seconds) to wait between successive login attemps for the same user           |
+| `$IS_PRODUCTION`                 | `false`                            | Whether the application is being run in production. Used to display a "development" warning banner.  |
 | `$REMEMBER_EMAIL_MAX_AGE`        | `1440`                             | The maximum validity of cookie for remembering user's email address in minutes                       |
 | `$SMTP_HOST`                     | `"console"`                        | The hostname of the SMTP server. If set to `console`, emails will be printed to the console instead. |
 | `$SMTP_USER`                     | `"bichard"`                        | The username to use when connecting to the SMTP server                                               |

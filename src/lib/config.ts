@@ -26,6 +26,7 @@ export interface UserServiceConfig {
   emailFrom: string
   emailVerificationExpiresIn: number
   incorrectDelay: number
+  isProduction: boolean
   passwordMinLength: number
   rememberEmailAddressCookieName: string
   rememberEmailAddressMaxAgeInMinutes: number
@@ -62,6 +63,7 @@ const config: UserServiceConfig = {
   emailFrom: `Bichard7 <${process.env.EMAIL_FROM ?? "bichard@cjse.org"}>`,
   emailVerificationExpiresIn: parseInt(process.env.EMAIL_VERIFICATION_EXPIRY ?? "30", 10),
   incorrectDelay: parseInt(process.env.INCORRECT_DELAY ?? "10", 10),
+  isProduction: process.env.IS_PRODUCTION === "true",
   passwordMinLength: 8,
   rememberEmailAddressCookieName: "LOGIN_EMAIL",
   rememberEmailAddressMaxAgeInMinutes: parseInt(process.env.REMEMBER_EMAIL_MAX_AGE ?? "1440", 10),
