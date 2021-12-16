@@ -15,7 +15,7 @@ describe("Delete user", () => {
     cy.get("h3").should("have.text", "User deleted successfully.")
   })
 
-  it("should prevent user from deleting themselves", () => {
+  it("should prevent the user from deleting themselves", () => {
     // Given
     cy.login("bichard01@example.com", "password")
     cy.visit("/users/Bichard01/delete")
