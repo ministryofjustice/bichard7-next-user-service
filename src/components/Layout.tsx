@@ -12,7 +12,7 @@ interface Props {
 
 const Layout = ({ children, user }: Props) => (
   <>
-    {!config.isProduction && <NonProdBanner />}
+    {!config.hideNonProdBanner && <NonProdBanner />}
     <Header serviceName="Ministry of Justice" user={user} />
 
     <div className="govuk-width-container">

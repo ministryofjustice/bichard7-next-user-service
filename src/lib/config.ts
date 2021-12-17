@@ -25,6 +25,7 @@ export interface UserServiceConfig {
   debugMode: string
   emailFrom: string
   emailVerificationExpiresIn: number
+  hideNonProdBanner: boolean
   incorrectDelay: number
   passwordMinLength: number
   productionUrl: string
@@ -62,6 +63,7 @@ const config: UserServiceConfig = {
   debugMode: "false",
   emailFrom: `Bichard7 <${process.env.EMAIL_FROM ?? "bichard@cjse.org"}>`,
   emailVerificationExpiresIn: parseInt(process.env.EMAIL_VERIFICATION_EXPIRY ?? "30", 10),
+  hideNonProdBanner: process.env.HIDE_NON_PROD_BANNER === "true",
   incorrectDelay: parseInt(process.env.INCORRECT_DELAY ?? "10", 10),
   passwordMinLength: 8,
   productionUrl: "http://psnportal.bichard7.pnn.police.uk/",
