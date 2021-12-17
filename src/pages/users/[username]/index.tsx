@@ -44,10 +44,10 @@ export const getServerSideProps = withMultipleServerSideProps(
       }
     }
 
-    const isCurrentUserUserToBeDeleted = currentUser.id === user.id
+    const isCurrentUserToBeDeleted = currentUser.id === user.id
 
     return {
-      props: { user, currentUser, isCurrentUserUserToBeDeleted }
+      props: { user, currentUser, isCurrentUserToBeDeleted }
     }
   }
 )
@@ -55,10 +55,10 @@ export const getServerSideProps = withMultipleServerSideProps(
 interface Props {
   user: User
   currentUser?: Partial<User>
-  isCurrentUserUserToBeDeleted?: boolean
+  isCurrentUserToBeDeleted?: boolean
 }
 
-const Users = ({ user, currentUser, isCurrentUserUserToBeDeleted }: Props) => (
+const Users = ({ user, currentUser, isCurrentUserToBeDeleted }: Props) => (
   <>
     <Head>
       <title>{"User details"}</title>
@@ -81,7 +81,7 @@ const Users = ({ user, currentUser, isCurrentUserUserToBeDeleted }: Props) => (
         <Link data-test="edit-user-view" href={`${user.username}/edit`}>
           {"Edit details"}
         </Link>
-        {isCurrentUserUserToBeDeleted ? (
+        {isCurrentUserToBeDeleted ? (
           <button
             data-test="disabled-delete-anchor"
             title="A user may not delete themselves, please contact another user manager to delete your user"

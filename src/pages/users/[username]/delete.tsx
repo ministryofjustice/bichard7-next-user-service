@@ -80,7 +80,7 @@ export const getServerSideProps = withMultipleServerSideProps(
             user,
             csrfToken,
             currentUser,
-            isCurrentUserUserToBeDeleted: true
+            isCurrentUserToBeDeleted: true
           }
         }
       }
@@ -106,10 +106,10 @@ interface Props {
   showInputNotMatchingError?: boolean
   csrfToken: string
   currentUser?: Partial<User>
-  isCurrentUserUserToBeDeleted?: boolean
+  isCurrentUserToBeDeleted?: boolean
 }
 
-const Delete = ({ user, showInputNotMatchingError, csrfToken, currentUser, isCurrentUserUserToBeDeleted }: Props) => {
+const Delete = ({ user, showInputNotMatchingError, csrfToken, currentUser, isCurrentUserToBeDeleted }: Props) => {
   const fullName = `${user.forenames} ${user.surname}`
 
   return (
@@ -145,8 +145,8 @@ const Delete = ({ user, showInputNotMatchingError, csrfToken, currentUser, isCur
             />
           </Fieldset>
 
-          <ErrorSummary title="There is a problem" show={!!isCurrentUserUserToBeDeleted}>
-            {!!isCurrentUserUserToBeDeleted && (
+          <ErrorSummary title="There is a problem" show={!!isCurrentUserToBeDeleted}>
+            {!!isCurrentUserToBeDeleted && (
               <p>{"A user may not delete themselves, please contact another user manager to delete your user"}</p>
             )}
           </ErrorSummary>
@@ -155,7 +155,7 @@ const Delete = ({ user, showInputNotMatchingError, csrfToken, currentUser, isCur
               dataTest="delete_delete-account-btn"
               variant="warning"
               noDoubleClick
-              isDisabled={isCurrentUserUserToBeDeleted}
+              isDisabled={isCurrentUserToBeDeleted}
             >
               {"Delete account"}
             </Button>
