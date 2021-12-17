@@ -2,6 +2,36 @@
 
 exports[`should render the component and match the snapshot 1`] = `
 <div>
+  <div
+    class="govuk-phase-banner"
+    style="background-color: rgb(212, 53, 28);"
+  >
+    <div
+      class="govuk-width-container "
+    >
+      <p
+        class="govuk-phase-banner__content"
+      >
+        <strong
+          class="govuk-tag govuk-tag--red govuk-phase-banner__content__tag"
+        >
+          development
+        </strong>
+        <span
+          class="govuk-phase-banner__text"
+          style="color: rgb(255, 255, 255);"
+        >
+          This is a development version of Bichard that is being used for testing. 
+          <a
+            href="http://psnportal.bichard7.pnn.police.uk/"
+            style="color: rgb(255, 255, 255);"
+          >
+            Go to production instead.
+          </a>
+        </span>
+      </p>
+    </div>
+  </div>
   <header
     class="govuk-header"
     data-module="govuk-header"
@@ -65,10 +95,10 @@ exports[`should render the component and match the snapshot 1`] = `
     </div>
   </header>
   <div
-    class="govuk-width-container "
+    class="govuk-width-container"
   >
     <main
-      class="govuk-main-wrapper "
+      class="govuk-main-wrapper"
       role="main"
     >
       <div
