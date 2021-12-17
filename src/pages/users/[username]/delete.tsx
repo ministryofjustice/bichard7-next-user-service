@@ -69,7 +69,21 @@ export const getServerSideProps = withMultipleServerSideProps(
       }
 
       const auditLogger = getAuditLogger(context, config)
-      const deleteUserResult = await deleteUser(connection, auditLogger, user)
+
+      let deleteUserResult
+
+      if (currentUser.id && currentUser.id !== user.id) {
+        deleteUserResult = await deleteUser(connection, auditLogger, user, currentUser.id)
+      } else {
+        return {
+          props: {
+            user,
+            csrfToken,
+            currentUser,
+            isCurrentUserToBeDeleted: true
+          }
+        }
+      }
 
       if (deleteUserResult.isDeleted) {
         return createRedirectResponse(`/users?action=user-deleted`)
@@ -92,9 +106,10 @@ interface Props {
   showInputNotMatchingError?: boolean
   csrfToken: string
   currentUser?: Partial<User>
+  isCurrentUserToBeDeleted?: boolean
 }
 
-const Delete = ({ user, showInputNotMatchingError, csrfToken, currentUser }: Props) => {
+const Delete = ({ user, showInputNotMatchingError, csrfToken, currentUser, isCurrentUserToBeDeleted }: Props) => {
   const fullName = `${user.forenames} ${user.surname}`
 
   return (
@@ -129,8 +144,19 @@ const Delete = ({ user, showInputNotMatchingError, csrfToken, currentUser }: Pro
               error={showInputNotMatchingError && "Username does not match"}
             />
           </Fieldset>
+
+          <ErrorSummary title="There is a problem" show={!!isCurrentUserToBeDeleted}>
+            {!!isCurrentUserToBeDeleted && (
+              <p>{"A user may not delete themselves, please contact another user manager to delete your user"}</p>
+            )}
+          </ErrorSummary>
           <ButtonGroup>
-            <Button variant="warning" noDoubleClick>
+            <Button
+              dataTest="delete_delete-account-btn"
+              variant="warning"
+              noDoubleClick
+              isDisabled={isCurrentUserToBeDeleted}
+            >
               {"Delete account"}
             </Button>
             <Link data-test="cancel" href={`/users/${user.username}`}>

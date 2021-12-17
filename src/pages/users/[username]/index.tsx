@@ -16,6 +16,7 @@ import logger from "utils/logger"
 import AuthenticationServerSidePropsContext from "types/AuthenticationServerSidePropsContext"
 import usersHaveSameForce from "lib/usersHaveSameForce"
 import isUserWithinGroup from "useCases/isUserWithinGroup"
+import React from "react"
 
 export const getServerSideProps = withMultipleServerSideProps(
   withAuthentication,
@@ -43,8 +44,10 @@ export const getServerSideProps = withMultipleServerSideProps(
       }
     }
 
+    const isCurrentUserToBeDeleted = currentUser.id === user.id
+
     return {
-      props: { user, currentUser }
+      props: { user, currentUser, isCurrentUserToBeDeleted }
     }
   }
 )
@@ -52,9 +55,10 @@ export const getServerSideProps = withMultipleServerSideProps(
 interface Props {
   user: User
   currentUser?: Partial<User>
+  isCurrentUserToBeDeleted?: boolean
 }
 
-const Users = ({ user, currentUser }: Props) => (
+const Users = ({ user, currentUser, isCurrentUserToBeDeleted }: Props) => (
   <>
     <Head>
       <title>{"User details"}</title>
@@ -72,13 +76,25 @@ const Users = ({ user, currentUser }: Props) => (
         <SummaryItem label="Visible Courts" value={user.visibleCourts} />
         <SummaryItem label="Excluded Triggers" value={user.excludedTriggers} />
       </Summary>
+
       <ButtonGroup>
         <Link data-test="edit-user-view" href={`${user.username}/edit`}>
           {"Edit details"}
         </Link>
-        <Link data-test="delete-user-view" href={`${user.username}/delete`}>
-          {"Delete account"}
-        </Link>
+        {isCurrentUserToBeDeleted ? (
+          <button
+            data-test="disabled-delete-anchor"
+            title="A user may not delete themselves, please contact another user manager to delete your user"
+            className="disabled-link"
+            type="button"
+          >
+            {"Delete account"}
+          </button>
+        ) : (
+          <Link data-test="delete-user-view" href={`${user.username}/delete`}>
+            {"Delete account"}
+          </Link>
+        )}
       </ButtonGroup>
       <BackLink href="/users" />
     </Layout>

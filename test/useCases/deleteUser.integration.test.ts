@@ -25,7 +25,7 @@ describe("DeleteUserUseCase", () => {
   it("should return deleted response when successfully deletes the user", async () => {
     const emailAddress = "bichard01@example.com"
     await insertIntoTable(users)
-    const result = await deleteUser(connection, fakeAuditLogger, { emailAddress } as any)
+    const result = await deleteUser(connection, fakeAuditLogger, { emailAddress } as any, -1)
 
     expect(result).toBeDefined()
 
@@ -52,7 +52,7 @@ describe("DeleteUserUseCase", () => {
     }))
 
     await insertIntoTable(mappedUsers)
-    const result = await deleteUser(connection, fakeAuditLogger, { emailAddress } as any)
+    const result = await deleteUser(connection, fakeAuditLogger, { emailAddress } as any, -1)
 
     expect(result).toBeDefined()
 
