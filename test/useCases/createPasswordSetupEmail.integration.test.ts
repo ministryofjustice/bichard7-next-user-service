@@ -5,7 +5,6 @@ import createUser from "useCases/createUser"
 import createNewUserEmail from "useCases/createNewUserEmail"
 import { isError } from "types/Result"
 import initialiseUserPassword from "useCases/initialiseUserPassword"
-import storePasswordResetCode from "useCases/storePasswordResetCode"
 import { generateEmailVerificationToken } from "lib/token/emailVerificationToken"
 import EmailContent from "types/EmailContent"
 import Database from "types/Database"
@@ -70,7 +69,7 @@ describe("AccountSetup", () => {
         endorsedBy: u.endorsed_by,
         surname: u.surname,
         orgServes: u.org_serves,
-        groupId: selectedGroup.id,
+        groups: [selectedGroup],
         visibleForces: "001,004,",
         visibleCourts: "B01,B41ME00",
         excludedTriggers: "TRPR0001,"
@@ -80,10 +79,8 @@ describe("AccountSetup", () => {
 
     expect(isError(result)).toBe(false)
 
-    const passwordSetCodeResult = await storePasswordResetCode(connection, "bichard01@example.com", verificationCode)
-    expect(isError(passwordSetCodeResult)).toBe(false)
 
-    const newUserEmailResult = createNewUserEmail(user, verificationCode, "http://localhost:3000")
+    const newUserEmailResult = createNewUserEmail(user, "http://localhost:3000")
     expect(isError(newUserEmailResult)).toBe(false)
 
     const email = newUserEmailResult as EmailContent

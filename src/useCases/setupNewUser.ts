@@ -12,7 +12,6 @@ import { getUserGroups } from "useCases"
 import logger from "utils/logger"
 import createNewUserEmail from "./createNewUserEmail"
 import createUser from "./createUser"
-import storePasswordResetCode from "./storePasswordResetCode"
 
 export interface newUserSetupResult {
   successMessage: string
@@ -33,19 +32,8 @@ export default async (
   }
 
   await auditLogger("Create user", { user: userCreateDetails })
-
-  const passwordSetCode = randomDigits(config.verificationCodeLength).join("")
-  const passwordSetCodeResult = await storePasswordResetCode(
-    connection,
-    userCreateDetails.emailAddress,
-    passwordSetCode
-  )
-
-  if (isError(passwordSetCodeResult)) {
-    return passwordSetCodeResult
-  }
-
-  const createNewUserEmailResult = createNewUserEmail(userCreateDetails, passwordSetCode, baseUrl)
+ 
+  const createNewUserEmailResult = createNewUserEmail(userCreateDetails, baseUrl)
 
   if (isError(createNewUserEmailResult)) {
     await auditLogger("Error creating new user email", { user: userCreateDetails })
