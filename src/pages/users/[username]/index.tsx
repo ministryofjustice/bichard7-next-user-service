@@ -66,15 +66,20 @@ const Users = ({ user, currentUser, isCurrentUserToBeDeleted }: Props) => (
     <Layout user={currentUser}>
       <h2 className="govuk-heading-l">{"User details"}</h2>
       <Summary>
-        <SummaryItem label="Username" value={user.username} />
-        <SummaryItem label="Forename(s)" value={user.forenames} />
-        <SummaryItem label="Surname" value={user.surname} />
-        <SummaryItem label="Email address" value={user.emailAddress} />
-        <SummaryItem label="Endorsed by" value={user.endorsedBy} />
-        <SummaryItem label="Organisation" value={user.orgServes} />
-        <SummaryItem label="Visible Forces" value={user.visibleForces} />
-        <SummaryItem label="Visible Courts" value={user.visibleCourts} />
-        <SummaryItem label="Excluded Triggers" value={user.excludedTriggers} />
+        <SummaryItem label="Username" value={user.username} dataTest={"username"} />
+        <SummaryItem label="Forename(s)" value={user.forenames} dataTest={"forename"} />
+        <SummaryItem label="Surname" value={user.surname} dataTest={"surname"} />
+        <SummaryItem label="Email address" value={user.emailAddress} dataTest={"email-address"} />
+        <SummaryItem label="Endorsed by" value={user.endorsedBy} dataTest={"endorsed-by"} />
+        <SummaryItem label="Organisation" value={user.orgServes} dataTest={"organisation"} />
+        <SummaryItem label="Visible Forces" value={user.visibleForces} dataTest={"visible-forces"} />
+        <SummaryItem label="Visible Courts" value={user.visibleCourts} dataTest={"visible-courts"} />
+        <SummaryItem label="Excluded Triggers" value={user.excludedTriggers} dataTest={"excluded-triggers"} />
+        <SummaryItem
+          label="Group Memberships"
+          value={user.groups.map((g) => g.friendly_name).join(",")}
+          dataTest={"group-memberships"}
+        />
       </Summary>
 
       <ButtonGroup>
