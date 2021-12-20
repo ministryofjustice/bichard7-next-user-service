@@ -5,7 +5,6 @@ import createUser from "useCases/createUser"
 import createNewUserEmail from "useCases/createNewUserEmail"
 import { isError } from "types/Result"
 import initialiseUserPassword from "useCases/initialiseUserPassword"
-import { generateEmailVerificationToken } from "lib/token/emailVerificationToken"
 import EmailContent from "types/EmailContent"
 import Database from "types/Database"
 import insertIntoUsersTable from "../../testFixtures/database/insertIntoUsersTable"
@@ -55,10 +54,6 @@ describe("AccountSetup", () => {
 
     const selectedGroups = await selectFromTable("groups", undefined, undefined, "name")
     const selectedGroup = selectedGroups[0]
-    const mockedGeneratePasswordResetToken = generateEmailVerificationToken as jest.MockedFunction<
-      typeof generateEmailVerificationToken
-    >
-    mockedGeneratePasswordResetToken.mockReturnValue("DUMMY_TOKEN")
 
     const user = users
       .filter((u) => u.username === "Bichard02")
