@@ -10,11 +10,13 @@ exports[`should render summary component and its items 1`] = `
     >
       <dt
         class="govuk-summary-list__key"
+        data-test="summary-item_undefined_label"
       >
         Label name 1
       </dt>
       <dd
         class="govuk-summary-list__value"
+        data-test="summary-item_undefined_value"
       >
         Label value 1
       </dd>
@@ -24,11 +26,13 @@ exports[`should render summary component and its items 1`] = `
     >
       <dt
         class="govuk-summary-list__key"
+        data-test="summary-item_undefined_label"
       >
         Label name 2
       </dt>
       <dd
         class="govuk-summary-list__value"
+        data-test="summary-item_undefined_value"
       >
         Label value 2
       </dd>
@@ -38,11 +42,13 @@ exports[`should render summary component and its items 1`] = `
     >
       <dt
         class="govuk-summary-list__key"
+        data-test="summary-item_undefined_label"
       >
         Label name 3
       </dt>
       <dd
         class="govuk-summary-list__value"
+        data-test="summary-item_undefined_value"
       >
         Label value 3
       </dd>
