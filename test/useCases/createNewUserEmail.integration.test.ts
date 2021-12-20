@@ -61,7 +61,6 @@ describe("AccountSetup", () => {
 
     expect(isError(result)).toBe(false)
 
-
     const newUserEmailResult = createNewUserEmail(user, "http://localhost:3000")
     expect(isError(newUserEmailResult)).toBe(false)
 

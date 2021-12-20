@@ -1,5 +1,3 @@
-import { generateNewPasswordToken } from "../helpers/tokens"
-
 describe("Creation of new user", () => {
   before(() => {
     cy.task("deleteFromUsersTable")

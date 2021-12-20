@@ -1,4 +1,3 @@
-import { randomDigits } from "crypto-secure-random-digit"
 import UserCreatedNotification from "emails/UserCreatedNotification"
 import { addCjsmSuffix } from "lib/cjsmSuffix"
 import config from "lib/config"
@@ -32,7 +31,7 @@ export default async (
   }
 
   await auditLogger("Create user", { user: userCreateDetails })
- 
+
   const createNewUserEmailResult = createNewUserEmail(userCreateDetails, baseUrl)
 
   if (isError(createNewUserEmailResult)) {
