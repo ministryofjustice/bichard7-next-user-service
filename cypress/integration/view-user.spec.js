@@ -2,7 +2,7 @@ describe("Viewing a single user", () => {
   beforeEach(() => {
     cy.task("deleteFromUsersTable")
     cy.task("insertIntoUsersTable")
-    cy.task("insertIntoUserGroupsTable", { email: "bichard01@bichard01@example.com", groups: ["test-group"] })
+    cy.task("insertIntoUserGroupsTable", { email: "bichard01@example.com", groups: ["B7UserManager_grp"] })
   })
 
   it("should not allow the current user to view a user who is in a different force", () => {
@@ -38,6 +38,6 @@ describe("Viewing a single user", () => {
     cy.get('[data-test="summary-item_visible-forces_value"]').should("be.visible").contains("001,002,004,014")
     cy.get('[data-test="summary-item_visible-courts_value"]').should("be.visible").contains("B01,B41ME00")
     cy.get('[data-test="summary-item_excluded-triggers_value"]').should("be.visible").contains("TRPR0001")
-    cy.get('[data-test="summary-item_group-memberships_value"]').should("be.visible")
+    cy.get('[data-test="summary-item_group-memberships_value"]').should("be.visible").contains("User Manager")
   })
 })
