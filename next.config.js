@@ -5,9 +5,6 @@ module.exports = {
   sassOptions: {
     quietDeps: true
   },
-  env: {
-    HIDE_NON_PROD_BANNER: process.env.HIDE_NON_PROD_BANNER
-  },
   async redirects() {
     return [
       {
