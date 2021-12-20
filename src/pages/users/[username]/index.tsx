@@ -77,7 +77,7 @@ const Users = ({ user, currentUser, isCurrentUserToBeDeleted }: Props) => (
         <SummaryItem label="Excluded Triggers" value={user.excludedTriggers} dataTest={"excluded-triggers"} />
         <SummaryItem
           label="Group Memberships"
-          value={user.groups.map((g) => g.friendly_name).join(",")}
+          value={user.groups.map((g) => g.friendly_name).join(", ")}
           dataTest={"group-memberships"}
         />
       </Summary>
