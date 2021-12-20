@@ -7,11 +7,13 @@ exports[`should render component 1`] = `
   >
     <dt
       class="govuk-summary-list__key"
+      data-test="summary-item_undefined_label"
     >
       Label name
     </dt>
     <dd
       class="govuk-summary-list__value"
+      data-test="summary-item_undefined_value"
     >
       Label value
     </dd>
