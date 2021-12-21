@@ -25,10 +25,8 @@ export interface UserServiceConfig {
   debugMode: string
   emailFrom: string
   emailVerificationExpiresIn: number
-  hideNonProdBanner: boolean
   incorrectDelay: number
   passwordMinLength: number
-  productionUrl: string
   rememberEmailAddressCookieName: string
   rememberEmailAddressMaxAgeInMinutes: number
   suggestedPasswordNumWords: number
@@ -63,10 +61,8 @@ const config: UserServiceConfig = {
   debugMode: "false",
   emailFrom: `Bichard7 <${process.env.EMAIL_FROM ?? "bichard@cjse.org"}>`,
   emailVerificationExpiresIn: parseInt(process.env.EMAIL_VERIFICATION_EXPIRY ?? "30", 10),
-  hideNonProdBanner: process.env.HIDE_NON_PROD_BANNER === "true",
   incorrectDelay: parseInt(process.env.INCORRECT_DELAY ?? "10", 10),
   passwordMinLength: 8,
-  productionUrl: "http://psnportal.bichard7.pnn.police.uk/",
   rememberEmailAddressCookieName: "LOGIN_EMAIL",
   rememberEmailAddressMaxAgeInMinutes: parseInt(process.env.REMEMBER_EMAIL_MAX_AGE ?? "1440", 10),
   suggestedPasswordNumWords: 3,
