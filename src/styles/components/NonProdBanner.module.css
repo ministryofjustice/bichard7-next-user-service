@@ -1,0 +1,8 @@
+.nonProdBanner {
+  background-color: #d4351c;
+}
+
+.nonProdBanner a,
+.nonProdBanner span {
+  color: #fff;
+}
