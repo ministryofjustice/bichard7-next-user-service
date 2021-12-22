@@ -30,7 +30,7 @@ export default async (
     return result
   }
 
-  await auditLogger("Create user", { user: userCreateDetails })
+  await auditLogger("Create user", { user: userCreateDetails, by: currentUser })
 
   const createNewUserEmailResult = createNewUserEmail(userCreateDetails, baseUrl)
 

@@ -30,7 +30,7 @@ describe("updatePassword", () => {
   })
 
   const insertUserWithGroup = async () => {
-    const currentUserId = (await selectFromTable("users", "username", "Bichard01"))[0].id
+    const currentUser = (await selectFromTable("users", "username", "Bichard01"))[0]
     const selectedGroups = await selectFromTable("groups", undefined, undefined, "name")
     const initialGroup = selectedGroups[0]
 
@@ -49,7 +49,7 @@ describe("updatePassword", () => {
       excludedTriggers: "TRPR0001,"
     }
 
-    await createUser(connection, currentUserId, createUserDetails)
+    await createUser(connection, currentUser, createUserDetails)
   }
 
   it("should update user successfully when called", async () => {
@@ -59,7 +59,7 @@ describe("updatePassword", () => {
       "bichard01@example.com",
       groups.map((g) => g.name)
     )
-    const currentUserId = (await selectFromTable("users", "username", "Bichard01"))[0].id
+    const currentUser = (await selectFromTable("users", "username", "Bichard01"))[0]
 
     await insertUserWithGroup()
     const emailAddress = "bichard02@example.com"
@@ -82,7 +82,7 @@ describe("updatePassword", () => {
       excludedTriggers: "TRPR0002,"
     }
 
-    const result = await updateUser(connection, fakeAuditLogger, currentUserId, user)
+    const result = await updateUser(connection, fakeAuditLogger, currentUser, user)
     expect(result).toBeUndefined()
 
     const initialUser02 = (await selectFromTable("users", "email", emailAddress))[0]
@@ -107,7 +107,7 @@ describe("updatePassword", () => {
       groups.map((g) => g.name)
     )
     const updatedEmail = "bichard05@example.com"
-    const currentUserId = (await selectFromTable("users", "username", "Bichard01"))[0].id
+    const currentUser = (await selectFromTable("users", "username", "Bichard01"))[0]
 
     await insertUserWithGroup()
     const emailAddress = "bichard02@example.com"
@@ -131,7 +131,7 @@ describe("updatePassword", () => {
       excludedTriggers: "TRPR0002,"
     }
 
-    const result = await updateUser(connection, fakeAuditLogger, currentUserId, user)
+    const result = await updateUser(connection, fakeAuditLogger, currentUser, user)
     expect(result).toBeUndefined()
     const initialUserList02 = await selectFromTable("users", "email", updatedEmail)
     const initialUser02 = initialUserList02[0]
@@ -146,7 +146,7 @@ describe("updatePassword", () => {
       "bichard01@example.com",
       groups.map((g) => g.name)
     )
-    const currentUserId = (await selectFromTable("users", "username", "Bichard01"))[0].id
+    const currentUser = (await selectFromTable("users", "username", "Bichard01"))[0]
 
     await insertUserWithGroup()
     const expectedError = Error("Error updating user")
@@ -167,7 +167,7 @@ describe("updatePassword", () => {
       excludedTriggers: "TRPR0002,"
     }
 
-    const result = await updateUser(connection, fakeAuditLogger, currentUserId, user)
+    const result = await updateUser(connection, fakeAuditLogger, currentUser, user)
     expect(isError(expectedError)).toBe(true)
 
     const actualError = result as Error
@@ -181,7 +181,7 @@ describe("updatePassword", () => {
       "bichard01@example.com",
       groups.map((g) => g.name)
     )
-    const currentUserId = (await selectFromTable("users", "username", "Bichard01"))[0].id
+    const currentUser = (await selectFromTable("users", "username", "Bichard01"))[0]
 
     const selectedGroups = await selectFromTable("groups", undefined, undefined, "name")
     const initialGroup = selectedGroups[0]
@@ -202,7 +202,7 @@ describe("updatePassword", () => {
       excludedTriggers: user.excluded_triggers
     }
 
-    await createUser(connection, currentUserId, createUserDetails)
+    await createUser(connection, currentUser, createUserDetails)
 
     const initialUserList = await selectFromTable("users", "email", user.email)
     const initialUser = initialUserList[0]
@@ -223,7 +223,7 @@ describe("updatePassword", () => {
 
     updateUserDetails[initialGroup.name] = "yes"
 
-    const updateResult = await updateUser(connection, fakeAuditLogger, currentUserId, updateUserDetails)
+    const updateResult = await updateUser(connection, fakeAuditLogger, currentUser, updateUserDetails)
     expect(isError(updateResult)).toBe(false)
 
     const expectedUsers = await selectFromTable("users", "email", user.email)
@@ -242,7 +242,7 @@ describe("updatePassword", () => {
       "bichard01@example.com",
       groups.map((g) => g.name)
     )
-    const currentUserId = (await selectFromTable("users", "username", "Bichard01"))[0].id
+    const currentUser = (await selectFromTable("users", "username", "Bichard01"))[0]
 
     const selectedGroups = await selectFromTable("groups", undefined, undefined, "name")
     const initialGroup = selectedGroups[0]
@@ -267,7 +267,7 @@ describe("updatePassword", () => {
       excludedTriggers: user.excluded_triggers
     }
 
-    await createUser(connection, currentUserId, createUserDetails)
+    await createUser(connection, currentUser, createUserDetails)
 
     const initialUserList = await selectFromTable("users", "email", "bichard01@example.com")
     const initialUser = initialUserList[0]
@@ -286,7 +286,7 @@ describe("updatePassword", () => {
       excludedTriggers: "TRPR0002,"
     }
 
-    const updateResult = await updateUser(connection, fakeAuditLogger, currentUserId, updateUserDetails)
+    const updateResult = await updateUser(connection, fakeAuditLogger, currentUser, updateUserDetails)
     expect(isError(updateResult)).toBe(false)
 
     const expectedUsersGroups = await selectFromTable("users_groups", "user_id", initialUser.id)
@@ -300,7 +300,7 @@ describe("updatePassword", () => {
       "bichard01@example.com",
       groups.map((g) => g.name)
     )
-    const currentUserId = (await selectFromTable("users", "username", "Bichard01"))[0].id
+    const currentUser = (await selectFromTable("users", "username", "Bichard01"))[0]
 
     const selectedGroups = await selectFromTable("groups", undefined, undefined, "name")
     const initialGroup = selectedGroups[0]
@@ -321,7 +321,7 @@ describe("updatePassword", () => {
       excludedTriggers: user.excluded_triggers
     }
 
-    await createUser(connection, currentUserId, createUserDetails)
+    await createUser(connection, currentUser, createUserDetails)
 
     const initialUserList = await selectFromTable("users", "email", user.email)
     const initialUser = initialUserList[0]
@@ -340,7 +340,7 @@ describe("updatePassword", () => {
       excludedTriggers: "TRPR0002,"
     }
 
-    const updateResult = await updateUser(connection, fakeAuditLogger, currentUserId, updateUserDetails)
+    const updateResult = await updateUser(connection, fakeAuditLogger, currentUser, updateUserDetails)
     expect(isError(updateResult)).toBe(false)
 
     const expectedUser = (await selectFromTable("users", "email", user.email))[0]
@@ -378,7 +378,7 @@ describe("updatePassword", () => {
 
     updateUserDetails[groups[1].name] = "yes"
     // When the current user updates a user
-    const updateResult = await updateUser(connection, fakeAuditLogger, currentUser.id, updateUserDetails)
+    const updateResult = await updateUser(connection, fakeAuditLogger, currentUser, updateUserDetails)
 
     // Then the updated user is updates succesfully and only has the groups the current user can assign
     expect(isError(updateResult)).toBe(false)
