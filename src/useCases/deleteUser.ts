@@ -13,15 +13,15 @@ export default async (
   db: Database,
   auditLogger: AuditLogger,
   user: Partial<User>,
-  currentUserId: number
+  currentUser: Partial<User>
 ): Promise<DeleteUserResult> => {
-  const markUserAsDeletedResult = await markUserAsDeleted(db, user.emailAddress as string, currentUserId)
+  const markUserAsDeletedResult = await markUserAsDeleted(db, user.emailAddress as string, currentUser.id as number)
 
   if (isError(markUserAsDeletedResult)) {
     return { serverSideError: markUserAsDeletedResult }
   }
 
-  await auditLogger("Delete user", { user })
+  await auditLogger("Delete user", { user, by: currentUser })
 
   return { isDeleted: true }
 }

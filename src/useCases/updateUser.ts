@@ -36,9 +36,9 @@ const updateUsersGroup = (
       user_id,
       group_id
     )
-    SELECT 
+    SELECT
       $\{targetUserId\} AS user_id,
-      group_id 
+      group_id
     FROM br7own.users_groups AS ug
     WHERE
       ug.user_id = $\{currentUserId\} AND
@@ -75,7 +75,7 @@ const updateUserTable = async (task: ITask<unknown>, userDetails: Partial<User>)
 const updateUser = async (
   connection: Database,
   auditLogger: AuditLogger,
-  currentUserId: number,
+  currentUser: Partial<User>,
   userDetails: Partial<User>
 ): PromiseResult<void | Error> => {
   const result = await connection.tx(async (task: ITask<unknown>): PromiseResult<void> => {
@@ -83,6 +83,7 @@ const updateUser = async (
       ? userDetails.groups.map((group: UserGroupResult) => parseInt(group.id, 10))
       : []
     const userId = userDetails.id as number
+    const currentUserId = currentUser.id as number
     const updateUserResult = await updateUserTable(task, userDetails)
 
     if (isError(updateUserResult)) {
@@ -112,7 +113,7 @@ const updateUser = async (
     return new Error("There was an error while updating the user. Please try again.")
   }
 
-  await auditLogger("Edit user", { user: userDetails })
+  await auditLogger("Edit user", { user: userDetails, by: currentUser })
 
   return undefined
 }

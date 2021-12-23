@@ -73,7 +73,7 @@ export const getServerSideProps = withMultipleServerSideProps(
       let deleteUserResult
 
       if (currentUser.id && currentUser.id !== user.id) {
-        deleteUserResult = await deleteUser(connection, auditLogger, user, currentUser.id)
+        deleteUserResult = await deleteUser(connection, auditLogger, user, currentUser)
       } else {
         return {
           props: {

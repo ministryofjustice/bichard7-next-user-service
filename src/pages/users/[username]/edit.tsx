@@ -115,7 +115,7 @@ export const getServerSideProps = withMultipleServerSideProps(
         }
 
         const auditLogger = getAuditLogger(context, config)
-        const userUpdated = await updateUser(connection, auditLogger, currentUser.id, userDetails)
+        const userUpdated = await updateUser(connection, auditLogger, currentUser, userDetails)
 
         if (isError(userUpdated)) {
           logger.error(userUpdated)
