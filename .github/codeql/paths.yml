@@ -1,4 +1,4 @@
 paths-ignore:
-  - ./cypress/*
-  - ./test/*
-  - ./testFixtures/*
+  - cypress
+  - test
+  - testFixtures
