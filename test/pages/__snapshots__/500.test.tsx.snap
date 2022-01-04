@@ -92,7 +92,7 @@ exports[`should render the component and match the snapshot 1`] = `
           >
             <a
               class="govuk-link"
-              href="https://mojprod.service-now.com/"
+              href="undefined/users/faq"
             >
               Contact support
             </a>
