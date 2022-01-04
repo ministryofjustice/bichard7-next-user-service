@@ -4,4 +4,3 @@ paths-ignore:
   - testFixtures
   - src/lib/config.ts
   - src/pages/login/reset-password.tsx
-  - src/useCases/*
