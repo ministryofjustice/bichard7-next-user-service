@@ -9,28 +9,30 @@ const cjsmDomainExceptions: CjsmDomainException[] = [
 ]
 
 const addCjsmSuffix = (emailAddress: string): string => {
-  if (emailAddress.match(/\.cjsm\.net$/i)) {
-    return emailAddress
+  const lowerEmail = emailAddress.toLowerCase()
+  if (lowerEmail.endsWith(".cjsm.net")) {
+    return lowerEmail
   }
 
   for (let i = 0; i < cjsmDomainExceptions.length; i++) {
-    const domainRegex = new RegExp(`${cjsmDomainExceptions[i].domain}$`, "i")
-    if (emailAddress.match(domainRegex)) {
-      return emailAddress.replace(domainRegex, cjsmDomainExceptions[i].cjsmDomain)
+    const { domain, cjsmDomain } = cjsmDomainExceptions[i]
+    if (lowerEmail.endsWith(domain)) {
+      return lowerEmail.replace(domain, cjsmDomain)
     }
   }
 
-  return `${emailAddress}.cjsm.net`
+  return `${lowerEmail}.cjsm.net`
 }
 
 const removeCjsmSuffix = (emailAddress: string): string => {
+  const lowerEmail = emailAddress.toLowerCase()
   for (let i = 0; i < cjsmDomainExceptions.length; i++) {
-    const cjsmRegex = new RegExp(`${cjsmDomainExceptions[i].cjsmDomain}$`, "i")
-    if (emailAddress.match(cjsmRegex)) {
-      return emailAddress.replace(cjsmRegex, cjsmDomainExceptions[i].domain)
+    const { domain, cjsmDomain } = cjsmDomainExceptions[i]
+    if (lowerEmail.endsWith(cjsmDomain)) {
+      return lowerEmail.replace(cjsmDomain, domain)
     }
   }
-  return emailAddress.replace(/\.cjsm\.net$/i, "")
+  return lowerEmail.replace(".cjsm.net", "")
 }
 
 export { addCjsmSuffix, removeCjsmSuffix }
