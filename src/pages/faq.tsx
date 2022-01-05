@@ -9,6 +9,7 @@ interface faqJson {
 }
 
 interface faqElement {
+  id: string
   question: string
   answer: string
 }
