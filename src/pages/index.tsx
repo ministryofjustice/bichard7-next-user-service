@@ -16,6 +16,7 @@ import ServiceMessage from "types/ServiceMessage"
 import { isError } from "types/Result"
 import Pagination from "components/Pagination"
 import ServiceMessages from "components/ServiceMessages"
+import ContactLink from "components/ContactLink"
 
 export const getServerSideProps = withMultipleServerSideProps(
   withAuthentication,
@@ -138,7 +139,7 @@ const Home = ({
             <h3 className="govuk-heading-m govuk-!-margin-top-5">{"Need help?"}</h3>
             <p className="govuk-body">
               {"If you need help, you can "}
-              <Link href={config.contactUrl}>{"contact support"}</Link>
+              <ContactLink>{"contact support"}</ContactLink>
               {"."}
             </p>
           </div>

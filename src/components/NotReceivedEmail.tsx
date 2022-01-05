@@ -1,4 +1,4 @@
-import config from "lib/config"
+import ContactLink from "./ContactLink"
 import Link from "./Link"
 
 interface Props {
@@ -6,7 +6,6 @@ interface Props {
 }
 
 const NotReceivedEmail = ({ sendAgainUrl }: Props) => {
-  const { contactUrl } = config
   return (
     <>
       <p className="govuk-body">
@@ -31,7 +30,7 @@ const NotReceivedEmail = ({ sendAgainUrl }: Props) => {
           </p>
           <p>
             {"If you no longer have access to your email address you will need to "}
-            <Link href={contactUrl}>{"contact us"}</Link>
+            <ContactLink>{"contact us"}</ContactLink>
             {"."}
           </p>
         </div>
