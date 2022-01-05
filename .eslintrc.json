@@ -18,7 +18,8 @@
       "rules": {
         "@typescript-eslint/no-var-requires": "off",
         "curly": ["error", "all"],
-        "no-useless-escape": "off"
+        "no-useless-escape": "off",
+        "import/no-import-module-exports": "off"
       }
     },
     {

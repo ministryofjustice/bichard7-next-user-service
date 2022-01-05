@@ -1,5 +1,5 @@
 import { IncomingMessage } from "http"
-import { Result } from "types/Result"
+import { isError, Result } from "types/Result"
 import { parse } from "cookie"
 import { unsign } from "cookie-signature"
 import config from "lib/config"
@@ -17,7 +17,7 @@ export default (request: IncomingMessage, cookieName: string): Result<string> =>
   try {
     unsignedCookieToken = unsign(cookieToken, cookieSecret)
   } catch (error) {
-    return error
+    return isError(error) ? error : Error("Error parsing cookie token")
   }
 
   if (!unsignedCookieToken) {

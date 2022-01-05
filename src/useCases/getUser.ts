@@ -1,7 +1,9 @@
 import Database from "types/Database"
+import PromiseResult from "types/PromiseResult"
+import { isError } from "types/Result"
 import User from "types/User"
 
-const getUser = async (connection: Database, username: string): Promise<Partial<User>> => {
+const getUser = async (connection: Database, username: string): PromiseResult<Partial<User>> => {
   let user
 
   const getUserQuery = `
@@ -19,7 +21,7 @@ const getUser = async (connection: Database, username: string): Promise<Partial<
   try {
     user = await connection.one(getUserQuery, [username])
   } catch (error) {
-    return error
+    return isError(error) ? error : Error("Error getting user")
   }
 
   return {
