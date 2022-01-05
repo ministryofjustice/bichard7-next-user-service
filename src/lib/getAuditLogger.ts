@@ -1,6 +1,7 @@
 import { GetServerSidePropsContext } from "next"
 import AuditLogger from "types/AuditLogger"
 import PromiseResult from "types/PromiseResult"
+import { isError } from "types/Result"
 import logger from "utils/logger"
 import { UserServiceConfig } from "./config"
 import generateAuditLog from "./generateAuditLog"
@@ -31,7 +32,7 @@ const getConsoleAuditLogger =
       })
     } catch (error) {
       logger.error(error)
-      return Promise.resolve(error)
+      return Promise.resolve(isError(error) ? error : Error("Error writing to log"))
     }
 
     return Promise.resolve()

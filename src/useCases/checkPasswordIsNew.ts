@@ -1,6 +1,7 @@
 import { verifyPassword } from "lib/argon2"
 import Database from "types/Database"
 import PromiseResult from "types/PromiseResult"
+import { isError } from "types/Result"
 import Task from "types/Task"
 
 const checkPasswordIsNew = async (
@@ -24,7 +25,7 @@ const checkPasswordIsNew = async (
       return Error("Cannot save previously used password.")
     }
   } catch (error) {
-    return error
+    return isError(error) ? error : Error("Error verifying password")
   }
 
   return undefined
