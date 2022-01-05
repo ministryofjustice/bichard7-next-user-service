@@ -29,6 +29,7 @@ export interface UserServiceConfig {
   passwordMinLength: number
   rememberEmailAddressCookieName: string
   rememberEmailAddressMaxAgeInMinutes: number
+  serviceNowUrl: string
   suggestedPasswordNumWords: number
   suggestedPasswordMinWordLength: number
   suggestedPasswordMaxWordLength: number
@@ -65,6 +66,7 @@ const config: UserServiceConfig = {
   passwordMinLength: 8,
   rememberEmailAddressCookieName: "LOGIN_EMAIL",
   rememberEmailAddressMaxAgeInMinutes: parseInt(process.env.REMEMBER_EMAIL_MAX_AGE ?? "1440", 10),
+  serviceNowUrl: "https://mojprod.service-now.com/",
   suggestedPasswordNumWords: 3,
   suggestedPasswordMinWordLength: 3,
   suggestedPasswordMaxWordLength: 8,
