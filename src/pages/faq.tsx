@@ -13,7 +13,7 @@ interface faqElement {
   answer: string
 }
 
-export const getServerSideProps = () => {
+export const getStaticProps = () => {
   return {
     props: faqJSON
   }
