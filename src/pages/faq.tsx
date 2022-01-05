@@ -1,7 +1,7 @@
 import GridRow from "components/GridRow"
 import Layout from "components/Layout"
 import Head from "next/head"
-import faqJSON from "faq"
+import faqJSON from "../faqs.json"
 
 interface faqJson {
   lastUpdated: string
