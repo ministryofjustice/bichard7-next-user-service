@@ -34,6 +34,7 @@ import UserFullDetails from "types/UserFullDetails"
 import { removeCjsmSuffix } from "lib/cjsmSuffix"
 import NotReceivedEmail from "components/NotReceivedEmail"
 import logger from "utils/logger"
+import ContactLink from "components/ContactLink"
 
 const authenticationErrorMessage = "Error authenticating the reqest"
 
@@ -353,7 +354,7 @@ const Index = ({
           </p>
           <p>
             {"Please try again or "}
-            <Link href={config.contactUrl}>{"contact support"}</Link>
+            <ContactLink>{"contact support"}</ContactLink>
             {" to report this issue."}
           </p>
         </ErrorSummary>

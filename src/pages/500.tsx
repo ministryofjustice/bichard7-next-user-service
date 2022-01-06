@@ -1,7 +1,6 @@
+import ContactLink from "components/ContactLink"
 import GridRow from "components/GridRow"
 import Layout from "components/Layout"
-import Link from "components/Link"
-import config from "lib/config"
 import Head from "next/head"
 
 const Custom500 = () => (
@@ -15,7 +14,7 @@ const Custom500 = () => (
 
         <p className="govuk-body">{"Try again later."}</p>
         <p className="govuk-body">
-          <Link href={config.contactUrl}>{"Contact support"}</Link>
+          <ContactLink>{"Contact support"}</ContactLink>
           {" if you have repeated problems with the service."}
         </p>
       </GridRow>

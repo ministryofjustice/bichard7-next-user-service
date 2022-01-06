@@ -17,7 +17,6 @@ export interface UserServiceConfig {
   authenticationCookieName: string
   baseUrl?: string
   bichardRedirectURL: string
-  contactUrl: string
   cookieSecret: string
   cookiesSecureOption: boolean
   csrf: CsrfConfig
@@ -29,6 +28,7 @@ export interface UserServiceConfig {
   passwordMinLength: number
   rememberEmailAddressCookieName: string
   rememberEmailAddressMaxAgeInMinutes: number
+  serviceNowUrl: string
   suggestedPasswordNumWords: number
   suggestedPasswordMinWordLength: number
   suggestedPasswordMaxWordLength: number
@@ -55,7 +55,6 @@ const config: UserServiceConfig = {
   authenticationCookieName: ".AUTH",
   baseUrl: process.env.BASE_URL,
   bichardRedirectURL: process.env.BICHARD_REDIRECT_URL ?? "/bichard-ui/InitialRefreshList",
-  contactUrl: "https://mojprod.service-now.com/",
   cookieSecret: process.env.COOKIE_SECRET ?? "OliverTwist",
   cookiesSecureOption: (process.env.COOKIES_SECURE ?? "true") === "true",
   debugMode: "false",
@@ -65,6 +64,7 @@ const config: UserServiceConfig = {
   passwordMinLength: 8,
   rememberEmailAddressCookieName: "LOGIN_EMAIL",
   rememberEmailAddressMaxAgeInMinutes: parseInt(process.env.REMEMBER_EMAIL_MAX_AGE ?? "1440", 10),
+  serviceNowUrl: "https://mojprod.service-now.com/",
   suggestedPasswordNumWords: 3,
   suggestedPasswordMinWordLength: 3,
   suggestedPasswordMaxWordLength: 8,

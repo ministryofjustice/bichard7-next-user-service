@@ -2,8 +2,8 @@ import { GetServerSidePropsContext } from "next"
 import GridRow from "components/GridRow"
 import Layout from "components/Layout"
 import Link from "components/Link"
-import config from "lib/config"
 import Head from "next/head"
+import ContactLink from "components/ContactLink"
 
 export const getServerSideProps = ({ res }: GetServerSidePropsContext) => {
   res.statusCode = 403
@@ -29,7 +29,7 @@ const AccessDenied = () => (
         </p>
         <p className="govuk-body">
           {"If you believe you have permission to access this page, you can "}
-          <Link href={config.contactUrl}>{"contact support"}</Link>
+          <ContactLink>{"contact support"}</ContactLink>
           {" to report this issue."}
         </p>
       </GridRow>
