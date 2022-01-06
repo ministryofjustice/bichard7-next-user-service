@@ -3,13 +3,15 @@ describe("FAQ", () => {
     // When
     cy.visit("/faq")
     // Then
-    cy.get("[data-test='faq_heading']").should("have.text", "FAQ")
+    cy.get("[data-test='faq_heading']").should("have.text", "Frequently Asked Questions")
   })
 
   it("should display the correct last updated information", () => {
     // When
     cy.visit("/faq")
     // Then
+    cy.get("[data-test='faq_last-updated'").should("exist")
+    cy.get("[data-test='faq_last-updated'").should("contain", "Last Updated:")
     cy.get("[data-test='faq_last-updated']").should("contain", "04-01-2022")
   })
 
@@ -17,7 +19,6 @@ describe("FAQ", () => {
     // When
     cy.visit("/faq")
     // Then
-    cy.get("[data-test='faq_question']").should("have.length", "5")
-    cy.get("[data-test='faq_answer']").should("have.length", "5")
+    cy.get("[data-test='faq-item']").should("have.length", "5")
   })
 })

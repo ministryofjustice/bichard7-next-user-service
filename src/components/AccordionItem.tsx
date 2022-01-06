@@ -2,13 +2,14 @@ import { ReactNode } from "react"
 
 interface Props {
   children: ReactNode
+  dataTest?: string
   heading: string
   id: string
 }
 
-const AccordionItem = ({ children, heading, id }: Props) => (
+const AccordionItem = ({ children, dataTest, heading, id }: Props) => (
   <>
-    <div className="govuk-accordion__section">
+    <div className="govuk-accordion__section" data-test={dataTest}>
       <div className="govuk-accordion__section-header">
         <h2 className="govuk-accordion__section-heading">
           <span className="govuk-accordion__section-button" id={id}>

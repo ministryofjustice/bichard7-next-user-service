@@ -47,7 +47,7 @@ const faq = (faqJson: faqJson) => (
 
         <Accordion>
           {faqJson.faqs.map((faqItem) => (
-            <AccordionItem heading={faqItem.question} id={faqItem.id} key={faqItem.id}>
+            <AccordionItem heading={faqItem.question} id={faqItem.id} key={faqItem.id} dataTest="faq-item">
               <p className="govuk-body">{faqItem.answer}</p>
             </AccordionItem>
           ))}
