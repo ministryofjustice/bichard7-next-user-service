@@ -47,7 +47,7 @@ exports[`should render the component and match the snapshot 1`] = `
         If you no longer have access to your email address you will need to 
         <a
           class="govuk-link"
-          href="undefined/users/faq"
+          href="/faq"
         >
           contact us
         </a>
