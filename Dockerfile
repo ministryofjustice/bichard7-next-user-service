@@ -11,8 +11,8 @@ WORKDIR /src/user-service
 COPY ./package*.json ./
 COPY ./scripts/ ./scripts/
 
-RUN npm install
-RUN npm run install:assets
+RUN npm install && \
+    npm run install:assets
 
 COPY . ./
 
@@ -23,9 +23,9 @@ RUN npm run build
 
 FROM ${BUILD_IMAGE} as runner
 
-RUN useradd nextjs
-RUN groupadd nodejs
-RUN usermod -a -G nodejs nextjs
+RUN useradd nextjs && \
+    groupadd nodejs && \
+    usermod -a -G nodejs nextjs
 
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_ENV=production
