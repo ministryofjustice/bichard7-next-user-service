@@ -1,5 +1,4 @@
 import Button from "components/Button"
-import GridRow from "components/GridRow"
 import Layout from "components/Layout"
 import Head from "next/head"
 import TextInput from "components/TextInput"
@@ -30,9 +29,14 @@ import passwordSecurityCheck from "useCases/passwordSecurityCheck"
 import resetPassword, { ResetPasswordOptions } from "useCases/resetPassword"
 import SuccessBanner from "components/SuccessBanner"
 import NotReceivedEmail from "components/NotReceivedEmail"
+import React from "react"
+import ServiceMessages from "components/ServiceMessages"
+import ServiceMessage from "types/ServiceMessage"
+import getServiceMessages from "useCases/getServiceMessages"
 
 const handleEmailStage = async (
   context: GetServerSidePropsContext<ParsedUrlQuery>,
+  serviceMessages: ServiceMessage[],
   connection: Database
 ): Promise<GetServerSidePropsResult<Props>> => {
   const { formData, csrfToken } = context as CsrfServerSidePropsContext & AuthenticationServerSidePropsContext
@@ -44,7 +48,8 @@ const handleEmailStage = async (
         csrfToken,
         emailAddress,
         emailError: "Enter a valid email address",
-        resetStage: "email"
+        resetStage: "email",
+        serviceMessages
       }
     }
   }
@@ -55,7 +60,11 @@ const handleEmailStage = async (
   if (isError(sent)) {
     logger.error(sent)
     return {
-      props: { csrfToken, emailAddress: normalisedEmail }
+      props: {
+        csrfToken,
+        emailAddress: normalisedEmail,
+        serviceMessages
+      }
     }
   }
   const suggestedPasswordUrl = addQueryParams("/login/reset-password", {
@@ -69,13 +78,15 @@ const handleEmailStage = async (
       emailAddress: normalisedEmail,
       resetStage: "validateCode",
       validationCode: "",
-      suggestedPasswordUrl
+      suggestedPasswordUrl,
+      serviceMessages
     }
   })
 }
 
 const handleValidateCodeStage = async (
   context: GetServerSidePropsContext<ParsedUrlQuery>,
+  serviceMessages: ServiceMessage[],
   connection: Database
 ): Promise<GetServerSidePropsResult<Props>> => {
   const { formData, csrfToken } = context as CsrfServerSidePropsContext & AuthenticationServerSidePropsContext
@@ -99,7 +110,8 @@ const handleValidateCodeStage = async (
         csrfToken,
         suggestedPassword: "",
         suggestedPasswordUrl,
-        resetStage: "validateCode"
+        resetStage: "validateCode",
+        serviceMessages
       }
     }
   }
@@ -113,7 +125,8 @@ const handleValidateCodeStage = async (
         csrfToken,
         suggestedPassword: "",
         suggestedPasswordUrl,
-        resetStage: "validateCode"
+        resetStage: "validateCode",
+        serviceMessages
       }
     }
   }
@@ -130,7 +143,8 @@ const handleValidateCodeStage = async (
         csrfToken,
         suggestedPassword: "",
         suggestedPasswordUrl,
-        resetStage: "validateCode"
+        resetStage: "validateCode",
+        serviceMessages
       }
     }
   }
@@ -157,7 +171,8 @@ const handleValidateCodeStage = async (
         csrfToken,
         suggestedPassword: "",
         suggestedPasswordUrl,
-        resetStage: "validateCode"
+        resetStage: "validateCode",
+        serviceMessages
       }
     }
   }
@@ -165,28 +180,35 @@ const handleValidateCodeStage = async (
   return {
     props: {
       csrfToken,
-      resetStage: "success"
+      resetStage: "success",
+      serviceMessages
     }
   }
 }
 
-const handlePost = (context: GetServerSidePropsContext<ParsedUrlQuery>): Promise<GetServerSidePropsResult<Props>> => {
+const handlePost = (
+  context: GetServerSidePropsContext<ParsedUrlQuery>,
+  serviceMessages: ServiceMessage[]
+): Promise<GetServerSidePropsResult<Props>> => {
   const { formData } = context as CsrfServerSidePropsContext
   const { resetStage } = formData as { emailAddress: string; resetStage: string }
   const connection = getConnection()
 
   if (resetStage === "email") {
-    return handleEmailStage(context, connection)
+    return handleEmailStage(context, serviceMessages, connection)
   }
 
   if (resetStage === "validateCode") {
-    return handleValidateCodeStage(context, connection)
+    return handleValidateCodeStage(context, serviceMessages, connection)
   }
 
   return Promise.resolve(createRedirectResponse("/500"))
 }
 
-const handleGet = (context: GetServerSidePropsContext<ParsedUrlQuery>): GetServerSidePropsResult<Props> => {
+const handleGet = (
+  context: GetServerSidePropsContext<ParsedUrlQuery>,
+  serviceMessages: ServiceMessage[]
+): GetServerSidePropsResult<Props> => {
   const { csrfToken, query } = context as CsrfServerSidePropsContext
   const { email, suggestPassword } = query as { email: string; suggestPassword: string }
   let suggestedPassword = ""
@@ -208,28 +230,38 @@ const handleGet = (context: GetServerSidePropsContext<ParsedUrlQuery>): GetServe
         resetStage: "validateCode",
         validationCode: "",
         suggestedPassword,
-        suggestedPasswordUrl
+        suggestedPasswordUrl,
+        serviceMessages
       }
     }
   }
   return {
     props: {
       csrfToken,
-      resetStage: "email"
+      resetStage: "email",
+      serviceMessages
     }
   }
 }
 
 export const getServerSideProps = withCsrf(
-  (context: GetServerSidePropsContext<ParsedUrlQuery>): Promise<GetServerSidePropsResult<Props>> => {
+  async (context: GetServerSidePropsContext<ParsedUrlQuery>): Promise<GetServerSidePropsResult<Props>> => {
     const { req } = context as CsrfServerSidePropsContext
 
+    const connection = getConnection()
+    let serviceMessagesResult = await getServiceMessages(connection, 0)
+
+    if (isError(serviceMessagesResult)) {
+      logger.error(serviceMessagesResult)
+      serviceMessagesResult = { result: [], totalElements: 0 }
+    }
+
     if (isPost(req)) {
-      return handlePost(context)
+      return handlePost(context, serviceMessagesResult.result)
     }
 
     if (isGet(req)) {
-      return Promise.resolve(handleGet(context))
+      return Promise.resolve(handleGet(context, serviceMessagesResult.result))
     }
 
     return Promise.resolve(createRedirectResponse("/400"))
@@ -248,6 +280,7 @@ interface Props {
   passwordInsecureMessage?: string
   suggestedPassword?: string
   suggestedPasswordUrl?: string
+  serviceMessages: ServiceMessage[]
 }
 
 const ForgotPassword = ({
@@ -261,7 +294,8 @@ const ForgotPassword = ({
   passwordInsecure,
   passwordInsecureMessage,
   suggestedPassword,
-  suggestedPasswordUrl
+  suggestedPasswordUrl,
+  serviceMessages
 }: Props) => {
   const passwordMismatchError = "Passwords do not match"
   const newPasswordMissingError = "Enter a new password"
@@ -289,64 +323,71 @@ const ForgotPassword = ({
             </div>
           </div>
         ) : (
-          <GridRow>
-            <BackLink href="/" />
+          <div className="govuk-grid-row">
+            <div className="govuk-grid-column-two-thirds">
+              <BackLink href="/" />
 
-            <h1 className="govuk-heading-xl">{"Reset password"}</h1>
+              <h1 className="govuk-heading-xl">{"Reset password"}</h1>
 
-            <ErrorSummary title={errorSummaryTitle} show={invalidPassword || passwordsMismatch || !!passwordInsecure}>
-              <ErrorSummaryList
-                items={[
-                  { id: "newPassword", error: invalidPassword && newPasswordMissingError },
-                  { id: "newPassword", error: passwordsMismatch && "Enter the same password twice" },
-                  { id: "newPassword", error: passwordInsecureMessage }
-                ]}
-              />
-            </ErrorSummary>
+              <ErrorSummary title={errorSummaryTitle} show={invalidPassword || passwordsMismatch || !!passwordInsecure}>
+                <ErrorSummaryList
+                  items={[
+                    { id: "newPassword", error: invalidPassword && newPasswordMissingError },
+                    { id: "newPassword", error: passwordsMismatch && "Enter the same password twice" },
+                    { id: "newPassword", error: passwordInsecureMessage }
+                  ]}
+                />
+              </ErrorSummary>
 
-            <ErrorSummary title="There is a problem" show={!!emailError}>
-              <ErrorSummaryList
-                items={[{ id: "email", error: "Please check you have entered your email address correctly." }]}
-              />
-            </ErrorSummary>
+              <ErrorSummary title="There is a problem" show={!!emailError}>
+                <ErrorSummaryList
+                  items={[{ id: "email", error: "Please check you have entered your email address correctly." }]}
+                />
+              </ErrorSummary>
 
-            {resetStage === "email" && (
-              <p className="govuk-body">
-                <p>{"We will email you a code to reset your password."}</p>
+              {resetStage === "email" && (
+                <p className="govuk-body">
+                  <p>{"We will email you a code to reset your password."}</p>
 
+                  <Form method="post" csrfToken={csrfToken}>
+                    <TextInput id="email" name="emailAddress" label="Email address" type="email" error={emailError} />
+                    <input type="hidden" name="resetStage" value="email" />
+                    <Button noDoubleClick>{"Send the code"}</Button>
+                  </Form>
+                </p>
+              )}
+
+              {resetStage === "validateCode" && (
                 <Form method="post" csrfToken={csrfToken}>
-                  <TextInput id="email" name="emailAddress" label="Email address" type="email" error={emailError} />
-                  <input type="hidden" name="resetStage" value="email" />
-                  <Button noDoubleClick>{"Send the code"}</Button>
+                  <p className="govuk-body">{"If an account was found we will have sent you an email."}</p>
+                  <input id="email" name="emailAddress" type="hidden" value={emailAddress} />
+                  <input type="hidden" name="resetStage" value="validateCode" />
+                  <NotReceivedEmail sendAgainUrl="/login/reset-password" />
+                  <TextInput
+                    id="validationCode"
+                    name="validationCode"
+                    label="Enter the 6 character code from the email"
+                    type="text"
+                    value={validationCode}
+                  />
+                  <TextInput name="newPassword" label="New password" type="password" error={newPasswordError} />
+                  <TextInput
+                    name="confirmPassword"
+                    label="Confirm new password"
+                    type="password"
+                    error={passwordsMismatch && passwordMismatchError}
+                  />
+                  <Button noDoubleClick>{"Reset password"}</Button>
+                  <SuggestPassword suggestedPassword={suggestedPassword} suggestedPasswordUrl={suggestedPasswordUrl} />
                 </Form>
-              </p>
-            )}
+              )}
+            </div>
+            <div className="govuk-grid-column-one-third">
+              <h2 className="govuk-heading-m">{"Latest service messages"}</h2>
 
-            {resetStage === "validateCode" && (
-              <Form method="post" csrfToken={csrfToken}>
-                <p className="govuk-body">{"If an account was found we will have sent you an email."}</p>
-                <input id="email" name="emailAddress" type="hidden" value={emailAddress} />
-                <input type="hidden" name="resetStage" value="validateCode" />
-                <NotReceivedEmail sendAgainUrl="/login/reset-password" />
-                <TextInput
-                  id="validationCode"
-                  name="validationCode"
-                  label="Enter the 6 character code from the email"
-                  type="text"
-                  value={validationCode}
-                />
-                <TextInput name="newPassword" label="New password" type="password" error={newPasswordError} />
-                <TextInput
-                  name="confirmPassword"
-                  label="Confirm new password"
-                  type="password"
-                  error={passwordsMismatch && passwordMismatchError}
-                />
-                <Button noDoubleClick>{"Reset password"}</Button>
-                <SuggestPassword suggestedPassword={suggestedPassword} suggestedPasswordUrl={suggestedPasswordUrl} />
-              </Form>
-            )}
-          </GridRow>
+              <ServiceMessages messages={serviceMessages} />
+            </div>
+          </div>
         )}
       </Layout>
     </>
