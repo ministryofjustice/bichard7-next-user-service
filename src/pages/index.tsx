@@ -52,10 +52,8 @@ export const getServerSideProps = withMultipleServerSideProps(
       props: {
         currentUser,
         currentUserManagerNames: isError(currentUserManagers)
-          ? ""
-          : currentUserManagers
-              .map((cu) => (cu.forenames ? cu.forenames : "") + " " + (cu.surname ? cu.surname : ""))
-              .join(", "),
+          ? [""]
+          : currentUserManagers.map((cu) => (cu.forenames ? cu.forenames : "") + " " + (cu.surname ? cu.surname : "")),
         hasAccessToUserManagement,
         hasAccessToAuditLogging,
         hasAccessToBichard,
@@ -69,7 +67,7 @@ export const getServerSideProps = withMultipleServerSideProps(
 
 interface Props {
   currentUser?: Partial<User>
-  currentUserManagerNames: string
+  currentUserManagerNames: string[]
   hasAccessToUserManagement: boolean
   hasAccessToAuditLogging: boolean
   hasAccessToBichard: boolean
