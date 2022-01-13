@@ -37,7 +37,6 @@ export const getServerSideProps = async () => {
   } else {
     serviceMessages = JSON.parse(JSON.stringify(serviceMessagesResult.result))
   }
-  console.log(serviceMessages)
   return {
     props: {
       faqJson: faqJSON,
