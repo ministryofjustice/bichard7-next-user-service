@@ -69,7 +69,7 @@ const handleEmailStage = async (
         csrfToken,
         emailAddress,
         emailError: "Enter a valid email address",
-        serviceMessages
+        serviceMessages: JSON.parse(JSON.stringify(serviceMessages))
       }
     }
   }
@@ -84,7 +84,7 @@ const handleEmailStage = async (
         csrfToken,
         emailAddress: normalisedEmail,
         sendingError: true,
-        serviceMessages
+        serviceMessages: JSON.parse(JSON.stringify(serviceMessages))
       }
     }
   }
@@ -94,7 +94,7 @@ const handleEmailStage = async (
       csrfToken,
       emailAddress: normalisedEmail,
       loginStage: "validateCode",
-      serviceMessages
+      serviceMessages: JSON.parse(JSON.stringify(serviceMessages))
     }
   }
 }
@@ -158,7 +158,7 @@ const handleValidateCodeStage = async (
           csrfToken,
           loginStage: "email",
           tooManyPasswordAttempts: true,
-          serviceMessages
+          serviceMessages: JSON.parse(JSON.stringify(serviceMessages))
         }
       }
     }
@@ -169,7 +169,7 @@ const handleValidateCodeStage = async (
         csrfToken,
         loginStage: "validateCode",
         validationCode,
-        serviceMessages
+        serviceMessages: JSON.parse(JSON.stringify(serviceMessages))
       }
     }
   }
@@ -210,7 +210,7 @@ const handleRememberedEmailStage = async (
           loginStage: "rememberedEmail",
           notYourEmailAddressUrl,
           tooManyPasswordAttempts: true,
-          serviceMessages
+          serviceMessages: JSON.parse(JSON.stringify(serviceMessages))
         }
       }
     }
@@ -221,7 +221,7 @@ const handleRememberedEmailStage = async (
         emailAddress,
         notYourEmailAddressUrl,
         loginStage: "rememberedEmail",
-        serviceMessages
+        serviceMessages: JSON.parse(JSON.stringify(serviceMessages))
       }
     }
   }
@@ -275,14 +275,18 @@ const handleGet = (
           emailAddress,
           notYourEmailAddressUrl,
           loginStage: "rememberedEmail",
-          serviceMessages
+          serviceMessages: JSON.parse(JSON.stringify(serviceMessages))
         }
       }
     }
   }
 
   return {
-    props: { csrfToken, loginStage: "email", serviceMessages }
+    props: {
+      csrfToken,
+      loginStage: "email",
+      serviceMessages: JSON.parse(JSON.stringify(serviceMessages))
+    }
   }
 }
 

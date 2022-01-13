@@ -49,7 +49,7 @@ const handleEmailStage = async (
         emailAddress,
         emailError: "Enter a valid email address",
         resetStage: "email",
-        serviceMessages
+        serviceMessages: JSON.parse(JSON.stringify(serviceMessages))
       }
     }
   }
@@ -63,7 +63,7 @@ const handleEmailStage = async (
       props: {
         csrfToken,
         emailAddress: normalisedEmail,
-        serviceMessages
+        serviceMessages: JSON.parse(JSON.stringify(serviceMessages))
       }
     }
   }
@@ -79,7 +79,7 @@ const handleEmailStage = async (
       resetStage: "validateCode",
       validationCode: "",
       suggestedPasswordUrl,
-      serviceMessages
+      serviceMessages: JSON.parse(JSON.stringify(serviceMessages))
     }
   })
 }
@@ -111,7 +111,7 @@ const handleValidateCodeStage = async (
         suggestedPassword: "",
         suggestedPasswordUrl,
         resetStage: "validateCode",
-        serviceMessages
+        serviceMessages: JSON.parse(JSON.stringify(serviceMessages))
       }
     }
   }
@@ -126,7 +126,7 @@ const handleValidateCodeStage = async (
         suggestedPassword: "",
         suggestedPasswordUrl,
         resetStage: "validateCode",
-        serviceMessages
+        serviceMessages: JSON.parse(JSON.stringify(serviceMessages))
       }
     }
   }
@@ -144,7 +144,7 @@ const handleValidateCodeStage = async (
         suggestedPassword: "",
         suggestedPasswordUrl,
         resetStage: "validateCode",
-        serviceMessages
+        serviceMessages: JSON.parse(JSON.stringify(serviceMessages))
       }
     }
   }
@@ -172,7 +172,7 @@ const handleValidateCodeStage = async (
         suggestedPassword: "",
         suggestedPasswordUrl,
         resetStage: "validateCode",
-        serviceMessages
+        serviceMessages: JSON.parse(JSON.stringify(serviceMessages))
       }
     }
   }
@@ -181,7 +181,7 @@ const handleValidateCodeStage = async (
     props: {
       csrfToken,
       resetStage: "success",
-      serviceMessages
+      serviceMessages: JSON.parse(JSON.stringify(serviceMessages))
     }
   }
 }
@@ -231,7 +231,7 @@ const handleGet = (
         validationCode: "",
         suggestedPassword,
         suggestedPasswordUrl,
-        serviceMessages
+        serviceMessages: JSON.parse(JSON.stringify(serviceMessages))
       }
     }
   }
@@ -239,7 +239,7 @@ const handleGet = (
     props: {
       csrfToken,
       resetStage: "email",
-      serviceMessages
+      serviceMessages: JSON.parse(JSON.stringify(serviceMessages))
     }
   }
 }
