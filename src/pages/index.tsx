@@ -20,6 +20,8 @@ import ContactLink from "components/ContactLink"
 import UserManagers from "components/UserManagers"
 import getUserManagersForForce from "useCases/getUserManagersForForce"
 import Paragraph from "components/Paragraph"
+import GridRow from "components/GridRow"
+import GridColumn from "components/GridColumn"
 
 export const getServerSideProps = withMultipleServerSideProps(
   withAuthentication,
@@ -93,8 +95,8 @@ const Home = ({
         <title>{"Home"}</title>
       </Head>
       <Layout user={currentUser}>
-        <div className="govuk-grid-row">
-          <div className="govuk-grid-column-two-thirds">
+        <GridRow>
+          <GridColumn width="two-thirds">
             <h1 className="govuk-heading-l">{`Welcome ${currentUser?.forenames} ${currentUser?.surname}`}</h1>
 
             {hasAccessToBichard && (
@@ -159,8 +161,9 @@ const Home = ({
               <ContactLink>{"contact support"}</ContactLink>
               {"."}
             </Paragraph>
-          </div>
-          <div className="govuk-grid-column-one-third">
+          </GridColumn>
+
+          <GridColumn width="one-third">
             <h2 className="govuk-heading-m">{"Latest service messages"}</h2>
 
             <ServiceMessages messages={serviceMessages} />
@@ -172,8 +175,8 @@ const Home = ({
               href="/"
               className="govuk-!-font-size-16"
             />
-          </div>
-        </div>
+          </GridColumn>
+        </GridRow>
       </Layout>
     </>
   )

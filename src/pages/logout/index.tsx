@@ -1,3 +1,4 @@
+import GridColumn from "components/GridColumn"
 import GridRow from "components/GridRow"
 import Layout from "components/Layout"
 import Link from "components/Link"
@@ -27,16 +28,18 @@ const Index = () => (
     </Head>
     <Layout>
       <GridRow>
-        <h1 className="govuk-heading-xl">{"Signed out of Bichard 7"}</h1>
+        <GridColumn width="two-thirds">
+          <h1 className="govuk-heading-xl">{"Signed out of Bichard 7"}</h1>
 
-        <Paragraph>{"You have been signed out of your account."}</Paragraph>
-        <Paragraph>
-          {"In order to sign back in, please click "}
-          <Link href="/login" data-test="log-back-in">
-            {"here"}
-          </Link>
-          {"."}
-        </Paragraph>
+          <Paragraph>{"You have been signed out of your account."}</Paragraph>
+          <Paragraph>
+            {"In order to sign back in, please click "}
+            <Link href="/login" data-test="log-back-in">
+              {"here"}
+            </Link>
+            {"."}
+          </Paragraph>
+        </GridColumn>
       </GridRow>
     </Layout>
   </>
