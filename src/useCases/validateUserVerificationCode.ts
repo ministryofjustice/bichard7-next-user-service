@@ -14,7 +14,7 @@ const validateUserVerificationCode = async (
   const query = `
     SELECT *
     FROM br7own.users
-    WHERE email = $1
+    WHERE LOWER(email) = LOWER($1)
       AND password_reset_code = $2
       AND deleted_at IS NULL
     `

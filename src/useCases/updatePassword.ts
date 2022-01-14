@@ -11,7 +11,7 @@ export default async (connection: Database | Task, emailAddress: string, newPass
     UPDATE br7own.users
     SET email_verification_code = NULL,
     password = \${passwordHash}
-    WHERE email = \${emailAddress}
+    WHERE LOWER(email) = LOWER(\${emailAddress})
       AND deleted_at IS NULL
   `
   const result = await connection

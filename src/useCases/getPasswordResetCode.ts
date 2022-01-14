@@ -7,7 +7,7 @@ export default async (connection: Database, emailAddress: string): PromiseResult
     SELECT
       password_reset_code AS "passwordResetCode"
     FROM br7own.users
-    WHERE email = $1 AND deleted_at IS NULL
+    WHERE LOWER(email) = LOWER($1) AND deleted_at IS NULL
   `
   const result = await connection
     .oneOrNone<{ passwordResetCode: string }>(query, [emailAddress])

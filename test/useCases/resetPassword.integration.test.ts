@@ -53,7 +53,7 @@ describe("resetPassword", () => {
     expect(result).toBeUndefined()
 
     const actualUser = await connection.oneOrNone(
-      `SELECT username, password FROM br7own.users WHERE email = $\{email\}`,
+      `SELECT username, password FROM br7own.users WHERE LOWER(email) = LOWER($\{email\})`,
       {
         email: emailAddress
       }

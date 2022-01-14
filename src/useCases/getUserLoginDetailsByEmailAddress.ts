@@ -8,7 +8,7 @@ export default (db: Database, emailAddress: string): PromiseResult<Pick<UserFull
         id,
         password
       FROM br7own.users
-      WHERE email = \${emailAddress}
+      WHERE LOWER(email) = LOWER(\${emailAddress})
         AND deleted_at IS NULL
     `
   return db.one<Pick<UserFullDetails, "id" | "password">>(query, { emailAddress }).catch((error) => error)
