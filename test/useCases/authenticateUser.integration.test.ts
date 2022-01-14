@@ -109,7 +109,7 @@ describe("Authenticator", () => {
       `
       UPDATE br7own.users
       SET last_login_attempt = NOW() - INTERVAL '$\{interval\} seconds'
-      WHERE email = $\{email\}`,
+      WHERE LOWER(email) = LOWER($\{email\})`,
       { interval: config.incorrectDelay, email: emailAddress }
     )
 
@@ -148,7 +148,7 @@ describe("Authenticator", () => {
       `
       UPDATE br7own.users
       SET last_login_attempt = NOW() - INTERVAL '$\{interval\} seconds'
-      WHERE email = $\{email\}`,
+      WHERE LOWER(email) = LOWER($\{email\})`,
       { interval: config.incorrectDelay, email: emailAddress }
     )
 
@@ -183,7 +183,7 @@ describe("Authenticator", () => {
       `
       UPDATE br7own.users
       SET last_login_attempt = NOW() - INTERVAL '$\{interval\} seconds'
-      WHERE email = $\{email\}`,
+      WHERE LOWER(email) = LOWER($\{email\})`,
       { interval: config.incorrectDelay, email: emailAddress }
     )
 
@@ -200,7 +200,7 @@ describe("Authenticator", () => {
       `
       UPDATE br7own.users
       SET last_login_attempt = NOW() - INTERVAL '$\{interval\} seconds'
-      WHERE email = $\{email\}`,
+      WHERE LOWER(email) = LOWER($\{email\})`,
       { interval: config.incorrectDelay, email: emailAddress }
     )
 
@@ -217,7 +217,7 @@ describe("Authenticator", () => {
       `
       UPDATE br7own.users
       SET last_login_attempt = NOW() - INTERVAL '$\{interval\} seconds'
-      WHERE email = $\{email\}`,
+      WHERE LOWER(email) = LOWER($\{email\})`,
       { interval: config.incorrectDelay, email: emailAddress }
     )
 

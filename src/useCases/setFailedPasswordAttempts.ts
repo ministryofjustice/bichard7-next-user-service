@@ -5,7 +5,7 @@ export default (connection: Database, emailAddress: string, failedPasswordAttemp
   const query = `
         UPDATE br7own.users
         SET failed_password_attempts = $\{failedPasswordAttempts\}
-        WHERE email = $\{emailAddress\} AND deleted_at IS NULL
+        WHERE LOWER(email) = LOWER($\{emailAddress\}) AND deleted_at IS NULL
     `
 
   return connection.none(query, { failedPasswordAttempts, emailAddress }).catch((error) => error)
