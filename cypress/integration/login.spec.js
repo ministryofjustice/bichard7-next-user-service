@@ -80,6 +80,21 @@ describe("Logging In", () => {
       })
     })
 
+    it("should allow login with case-insensitive email address", () => {
+      cy.visit("/login")
+      cy.get("input[type=email]").type(user.email.toUpperCase())
+      cy.get("button[type=submit]").click()
+      cy.get("input#validationCode").should("exist")
+      cy.task("getVerificationCode", user.email).then((verificationCode) => {
+        cy.get("input#validationCode").type(verificationCode)
+        cy.get("input#password").type(user.password)
+        cy.get("button[type=submit]").click()
+        cy.url().should("match", /\/users/)
+        cy.get("body").should("contain", "Welcome Bichard User 01")
+        cy.getCookie(authCookieName).should("exist")
+      })
+    })
+
     it("should accept a correct password and verification code even after incorrect password attempt", () => {
       cy.visit("/login")
       cy.get("input[type=email]").type(user.email)
