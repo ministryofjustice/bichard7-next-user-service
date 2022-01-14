@@ -1,5 +1,6 @@
 import ContactLink from "./ContactLink"
 import Link from "./Link"
+import Paragraph from "./Paragraph"
 
 interface Props {
   sendAgainUrl: string
@@ -8,12 +9,12 @@ interface Props {
 const NotReceivedEmail = ({ sendAgainUrl }: Props) => {
   return (
     <>
-      <p className="govuk-body">
+      <Paragraph>
         {
           "You need to use the exact email address for your account in the Bichard system. If you're having problems receiving the email, please "
         }
         <b>{"try using the older PNN version of your email address."}</b>
-      </p>
+      </Paragraph>
 
       <details className="govuk-details" data-module="govuk-details">
         {" "}

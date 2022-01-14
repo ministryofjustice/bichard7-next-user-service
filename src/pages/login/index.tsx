@@ -35,6 +35,7 @@ import { removeCjsmSuffix } from "lib/cjsmSuffix"
 import NotReceivedEmail from "components/NotReceivedEmail"
 import logger from "utils/logger"
 import ContactLink from "components/ContactLink"
+import Paragraph from "components/Paragraph"
 
 const authenticationErrorMessage = "Error authenticating the reqest"
 
@@ -406,7 +407,7 @@ const Index = ({
 
         {loginStage === "validateCode" && (
           <Form method="post" csrfToken={csrfToken}>
-            <p className="govuk-body">{"If an account was found we will have sent you an email."}</p>
+            <Paragraph>{"If an account was found we will have sent you an email."}</Paragraph>
             <NotReceivedEmail sendAgainUrl="/login" />
             <input id="email" name="emailAddress" type="hidden" value={emailAddress} />
             <input type="hidden" name="loginStage" value="validateCode" />
@@ -425,19 +426,19 @@ const Index = ({
 
         {loginStage === "rememberedEmail" && (
           <Form method="post" csrfToken={csrfToken}>
-            <p className="govuk-body">
+            <Paragraph>
               {"You are signing in as "}
               <b>{emailAddress}</b>
               {"."}
-            </p>
+            </Paragraph>
             {notYourEmailAddressUrl && (
-              <p className="govuk-body">
+              <Paragraph>
                 {"If this is not your account, you can "}
                 <Link href={notYourEmailAddressUrl} data-test="not-you-link">
                   {"sign in with a different email address"}
                 </Link>
                 {"."}
-              </p>
+              </Paragraph>
             )}
             <input type="hidden" name="loginStage" value="rememberedEmail" />
             <TextInput name="password" label="Password" type="password" />
@@ -445,11 +446,11 @@ const Index = ({
             <Button>{"Sign in"}</Button>
           </Form>
         )}
-        <p>
+        <Paragraph>
           <Link href="/login/reset-password" data-test="reset-password">
             {"I have forgotten my password"}
           </Link>
-        </p>
+        </Paragraph>
       </GridRow>
     </Layout>
   </>

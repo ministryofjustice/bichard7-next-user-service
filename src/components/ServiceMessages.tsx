@@ -1,5 +1,6 @@
 import { format } from "date-fns"
 import ServiceMessage from "types/ServiceMessage"
+import Paragraph from "./Paragraph"
 
 interface Props {
   messages: ServiceMessage[]
@@ -7,12 +8,12 @@ interface Props {
 
 const ServiceMessages = ({ messages }: Props) => (
   <>
-    {messages.length === 0 && <p className="govuk-body">{"There are no service messages to display."}</p>}
+    {messages.length === 0 && <Paragraph>{"There are no service messages to display."}</Paragraph>}
 
     {messages.map((message, index) => (
       <div className="govuk-grid-row" key={String(index)}>
         <div className="govuk-grid-column-full">
-          <p className="govuk-body govuk-!-font-size-16">
+          <Paragraph className="govuk-!-font-size-16">
             <time
               className="govuk-!-font-weight-bold govuk-!-font-size-14"
               aria-label="time"
@@ -22,7 +23,7 @@ const ServiceMessages = ({ messages }: Props) => (
             </time>
             <br />
             {message.message}
-          </p>
+          </Paragraph>
         </div>
       </div>
     ))}

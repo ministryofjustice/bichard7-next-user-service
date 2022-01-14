@@ -30,6 +30,7 @@ import passwordSecurityCheck from "useCases/passwordSecurityCheck"
 import resetPassword, { ResetPasswordOptions } from "useCases/resetPassword"
 import SuccessBanner from "components/SuccessBanner"
 import NotReceivedEmail from "components/NotReceivedEmail"
+import Paragraph from "components/Paragraph"
 
 const handleEmailStage = async (
   context: GetServerSidePropsContext<ParsedUrlQuery>,
@@ -311,20 +312,17 @@ const ForgotPassword = ({
             </ErrorSummary>
 
             {resetStage === "email" && (
-              <p className="govuk-body">
-                <p>{"We will email you a code to reset your password."}</p>
-
-                <Form method="post" csrfToken={csrfToken}>
-                  <TextInput id="email" name="emailAddress" label="Email address" type="email" error={emailError} />
-                  <input type="hidden" name="resetStage" value="email" />
-                  <Button noDoubleClick>{"Send the code"}</Button>
-                </Form>
-              </p>
+              <Form method="post" csrfToken={csrfToken}>
+                <Paragraph>{"We will email you a code to reset your password."}</Paragraph>
+                <TextInput id="email" name="emailAddress" label="Email address" type="email" error={emailError} />
+                <input type="hidden" name="resetStage" value="email" />
+                <Button noDoubleClick>{"Send the code"}</Button>
+              </Form>
             )}
 
             {resetStage === "validateCode" && (
               <Form method="post" csrfToken={csrfToken}>
-                <p className="govuk-body">{"If an account was found we will have sent you an email."}</p>
+                <Paragraph>{"If an account was found we will have sent you an email."}</Paragraph>
                 <input id="email" name="emailAddress" type="hidden" value={emailAddress} />
                 <input type="hidden" name="resetStage" value="validateCode" />
                 <NotReceivedEmail sendAgainUrl="/login/reset-password" />

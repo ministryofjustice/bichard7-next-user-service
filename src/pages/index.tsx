@@ -19,6 +19,7 @@ import ServiceMessages from "components/ServiceMessages"
 import ContactLink from "components/ContactLink"
 import UserManagers from "components/UserManagers"
 import getUserManagersForForce from "useCases/getUserManagersForForce"
+import Paragraph from "components/Paragraph"
 
 export const getServerSideProps = withMultipleServerSideProps(
   withAuthentication,
@@ -153,11 +154,11 @@ const Home = ({
 
             <UserManagers userManagerNames={currentUserManagerNames} />
 
-            <p className="govuk-body">
+            <Paragraph>
               {"If you need help with anything else, you can "}
               <ContactLink>{"contact support"}</ContactLink>
               {"."}
-            </p>
+            </Paragraph>
           </div>
           <div className="govuk-grid-column-one-third">
             <h2 className="govuk-heading-m">{"Latest service messages"}</h2>

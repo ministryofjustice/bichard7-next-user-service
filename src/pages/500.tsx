@@ -1,6 +1,7 @@
 import ContactLink from "components/ContactLink"
 import GridRow from "components/GridRow"
 import Layout from "components/Layout"
+import Paragraph from "components/Paragraph"
 import Head from "next/head"
 
 const Custom500 = () => (
@@ -12,11 +13,11 @@ const Custom500 = () => (
       <GridRow>
         <h1 className="govuk-heading-xl">{"Sorry, there is a problem with the service"}</h1>
 
-        <p className="govuk-body">{"Try again later."}</p>
-        <p className="govuk-body">
+        <Paragraph>{"Try again later."}</Paragraph>
+        <Paragraph>
           <ContactLink>{"Contact support"}</ContactLink>
           {" if you have repeated problems with the service."}
-        </p>
+        </Paragraph>
       </GridRow>
     </Layout>
   </>

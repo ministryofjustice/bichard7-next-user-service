@@ -1,5 +1,6 @@
 import config from "lib/config"
 import Link from "./Link"
+import Paragraph from "./Paragraph"
 
 interface Props {
   suggestedPassword?: string
@@ -10,7 +11,7 @@ const SuggestPassword = ({ suggestedPassword, suggestedPasswordUrl }: Props) => 
   return (
     <>
       <h3 className="govuk-heading-m govuk-!-margin-top-6">{"Password policy requirements"}</h3>
-      <p className="govuk-body">{"Your password must meet the following requirements:"}</p>
+      <Paragraph>{"Your password must meet the following requirements:"}</Paragraph>
       <ul className="govuk-list govuk-list--bullet">
         <li>{`It has at least ${config.passwordMinLength} characters`}</li>
         <li>{"It does not contain your details such as first name, last name, username, and email address"}</li>
@@ -26,30 +27,30 @@ const SuggestPassword = ({ suggestedPassword, suggestedPasswordUrl }: Props) => 
       </ul>
       <h3 className="govuk-heading-m govuk-!-margin-top-6">{"Not sure what password to choose?"}</h3>
       {!suggestedPassword && (
-        <p className="govuk-body">
+        <Paragraph>
           {"If you need help choosing a password, we can "}
           <Link href={suggestedPasswordUrl ?? ""} data-test="generate-password">
             {"suggest a password"}
           </Link>
           {" for you."}
-        </p>
+        </Paragraph>
       )}
       {suggestedPassword && (
         <>
-          <p className="govuk-body">{"Here is a password suggestion:"}</p>
+          <Paragraph>{"Here is a password suggestion:"}</Paragraph>
           <div className="govuk-inset-text" data-test="generated-password">
             {suggestedPassword}
           </div>
-          <p className="govuk-body">
+          <Paragraph>
             {"If you want to use this password, you can type it or copy and paste it into the fields above."}
-          </p>
-          <p className="govuk-body">
+          </Paragraph>
+          <Paragraph>
             {"If you don't want to use this password, we can "}
             <Link href={suggestedPasswordUrl ?? ""} data-test="generate-password">
               {"suggest another password"}
             </Link>
             {"."}
-          </p>
+          </Paragraph>
         </>
       )}
     </>
