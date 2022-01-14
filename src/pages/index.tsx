@@ -150,8 +150,10 @@ const Home = ({
             )}
 
             <h3 className="govuk-heading-m govuk-!-margin-top-5">{"Need help?"}</h3>
+
+            <UserManagers userManagerNames={currentUserManagerNames} />
+
             <p className="govuk-body">
-              <UserManagers userManagerNames={currentUserManagerNames} />
               {"If you need help with anything else, you can "}
               <ContactLink>{"contact support"}</ContactLink>
               {"."}
