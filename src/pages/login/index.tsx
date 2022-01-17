@@ -35,6 +35,8 @@ import { removeCjsmSuffix } from "lib/cjsmSuffix"
 import NotReceivedEmail from "components/NotReceivedEmail"
 import logger from "utils/logger"
 import ContactLink from "components/ContactLink"
+import Paragraph from "components/Paragraph"
+import GridColumn from "components/GridColumn"
 
 const authenticationErrorMessage = "Error authenticating the reqest"
 
@@ -344,112 +346,114 @@ const Index = ({
     </Head>
     <Layout>
       <GridRow>
-        <h1 className="govuk-heading-xl">{"Sign in to Bichard 7"}</h1>
+        <GridColumn width="two-thirds">
+          <h1 className="govuk-heading-xl">{"Sign in to Bichard 7"}</h1>
 
-        <ErrorSummary title="There is a problem" show={!!sendingError}>
-          <p>
-            {"There is a problem signing in "}
-            <b>{emailAddress}</b>
-            {"."}
-          </p>
-          <p>
-            {"Please try again or "}
-            <ContactLink>{"contact support"}</ContactLink>
-            {" to report this issue."}
-          </p>
-        </ErrorSummary>
-
-        <ErrorSummary title="There is a problem" show={!!emailError}>
-          <ErrorSummaryList items={[{ id: "email", error: emailError }]} />
-        </ErrorSummary>
-
-        <ErrorSummary title="There is a problem" show={!!tooManyPasswordAttempts}>
-          <p>{"Too many incorrect password attempts. Please try signing in again."}</p>
-        </ErrorSummary>
-
-        {invalidCredentials && (
-          <ErrorSummary title="Your details do not match" show={invalidCredentials}>
-            <ErrorSummaryList
-              items={[
-                { id: "password", error: "Enter a valid code and password combination." },
-                {
-                  error: (
-                    <>
-                      {"Please wait "}
-                      <b>
-                        {config.incorrectDelay}
-                        {" seconds"}
-                      </b>
-                      {" before trying again."}
-                    </>
-                  )
-                }
-              ]}
-            />
-          </ErrorSummary>
-        )}
-
-        {loginStage === "email" && (
-          <Form method="post" csrfToken={csrfToken}>
-            <input type="hidden" name="loginStage" value="email" />
-            <TextInput
-              id="email"
-              name="emailAddress"
-              label="Email address"
-              type="email"
-              error={emailError}
-              value={emailAddress}
-            />
-            <Button>{"Sign in"}</Button>
-          </Form>
-        )}
-
-        {loginStage === "validateCode" && (
-          <Form method="post" csrfToken={csrfToken}>
-            <p className="govuk-body">{"If an account was found we will have sent you an email."}</p>
-            <NotReceivedEmail sendAgainUrl="/login" />
-            <input id="email" name="emailAddress" type="hidden" value={emailAddress} />
-            <input type="hidden" name="loginStage" value="validateCode" />
-            <TextInput
-              id="validationCode"
-              name="validationCode"
-              label="Enter the 6 character code from the email"
-              type="text"
-              value={validationCode}
-            />
-            <TextInput name="password" label="Password" type="password" />
-            <RememberForm checked={false} />
-            <Button>{"Sign in"}</Button>
-          </Form>
-        )}
-
-        {loginStage === "rememberedEmail" && (
-          <Form method="post" csrfToken={csrfToken}>
-            <p className="govuk-body">
-              {"You are signing in as "}
+          <ErrorSummary title="There is a problem" show={!!sendingError}>
+            <p>
+              {"There is a problem signing in "}
               <b>{emailAddress}</b>
               {"."}
             </p>
-            {notYourEmailAddressUrl && (
-              <p className="govuk-body">
-                {"If this is not your account, you can "}
-                <Link href={notYourEmailAddressUrl} data-test="not-you-link">
-                  {"sign in with a different email address"}
-                </Link>
+            <p>
+              {"Please try again or "}
+              <ContactLink>{"contact support"}</ContactLink>
+              {" to report this issue."}
+            </p>
+          </ErrorSummary>
+
+          <ErrorSummary title="There is a problem" show={!!emailError}>
+            <ErrorSummaryList items={[{ id: "email", error: emailError }]} />
+          </ErrorSummary>
+
+          <ErrorSummary title="There is a problem" show={!!tooManyPasswordAttempts}>
+            <p>{"Too many incorrect password attempts. Please try signing in again."}</p>
+          </ErrorSummary>
+
+          {invalidCredentials && (
+            <ErrorSummary title="Your details do not match" show={invalidCredentials}>
+              <ErrorSummaryList
+                items={[
+                  { id: "password", error: "Enter a valid code and password combination." },
+                  {
+                    error: (
+                      <>
+                        {"Please wait "}
+                        <b>
+                          {config.incorrectDelay}
+                          {" seconds"}
+                        </b>
+                        {" before trying again."}
+                      </>
+                    )
+                  }
+                ]}
+              />
+            </ErrorSummary>
+          )}
+
+          {loginStage === "email" && (
+            <Form method="post" csrfToken={csrfToken}>
+              <input type="hidden" name="loginStage" value="email" />
+              <TextInput
+                id="email"
+                name="emailAddress"
+                label="Email address"
+                type="email"
+                error={emailError}
+                value={emailAddress}
+              />
+              <Button>{"Sign in"}</Button>
+            </Form>
+          )}
+
+          {loginStage === "validateCode" && (
+            <Form method="post" csrfToken={csrfToken}>
+              <Paragraph>{"If an account was found we will have sent you an email."}</Paragraph>
+              <NotReceivedEmail sendAgainUrl="/login" />
+              <input id="email" name="emailAddress" type="hidden" value={emailAddress} />
+              <input type="hidden" name="loginStage" value="validateCode" />
+              <TextInput
+                id="validationCode"
+                name="validationCode"
+                label="Enter the 6 character code from the email"
+                type="text"
+                value={validationCode}
+              />
+              <TextInput name="password" label="Password" type="password" />
+              <RememberForm checked={false} />
+              <Button>{"Sign in"}</Button>
+            </Form>
+          )}
+
+          {loginStage === "rememberedEmail" && (
+            <Form method="post" csrfToken={csrfToken}>
+              <Paragraph>
+                {"You are signing in as "}
+                <b>{emailAddress}</b>
                 {"."}
-              </p>
-            )}
-            <input type="hidden" name="loginStage" value="rememberedEmail" />
-            <TextInput name="password" label="Password" type="password" />
-            <RememberForm checked />
-            <Button>{"Sign in"}</Button>
-          </Form>
-        )}
-        <p>
-          <Link href="/login/reset-password" data-test="reset-password">
-            {"I have forgotten my password"}
-          </Link>
-        </p>
+              </Paragraph>
+              {notYourEmailAddressUrl && (
+                <Paragraph>
+                  {"If this is not your account, you can "}
+                  <Link href={notYourEmailAddressUrl} data-test="not-you-link">
+                    {"sign in with a different email address"}
+                  </Link>
+                  {"."}
+                </Paragraph>
+              )}
+              <input type="hidden" name="loginStage" value="rememberedEmail" />
+              <TextInput name="password" label="Password" type="password" />
+              <RememberForm checked />
+              <Button>{"Sign in"}</Button>
+            </Form>
+          )}
+          <Paragraph>
+            <Link href="/login/reset-password" data-test="reset-password">
+              {"I have forgotten my password"}
+            </Link>
+          </Paragraph>
+        </GridColumn>
       </GridRow>
     </Layout>
   </>

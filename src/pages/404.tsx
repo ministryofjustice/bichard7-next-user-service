@@ -1,6 +1,8 @@
 import ContactLink from "components/ContactLink"
+import GridColumn from "components/GridColumn"
 import GridRow from "components/GridRow"
 import Layout from "components/Layout"
+import Paragraph from "components/Paragraph"
 import Head from "next/head"
 
 const Custom404 = () => (
@@ -10,17 +12,19 @@ const Custom404 = () => (
     </Head>
     <Layout>
       <GridRow>
-        <h1 data-test="404_header" className="govuk-heading-xl">
-          {"Page not found"}
-        </h1>
+        <GridColumn width="two-thirds">
+          <h1 data-test="404_header" className="govuk-heading-xl">
+            {"Page not found"}
+          </h1>
 
-        <p className="govuk-body">{"If you typed the web address, check it is correct."}</p>
-        <p className="govuk-body">{"If you pasted the web address, check you copied the entire address."}</p>
-        <p className="govuk-body">
-          {"If the web address is correct or you selected a link or button, "}
-          <ContactLink>{"contact support"}</ContactLink>
-          {"."}
-        </p>
+          <Paragraph>{"If you typed the web address, check it is correct."}</Paragraph>
+          <Paragraph>{"If you pasted the web address, check you copied the entire address."}</Paragraph>
+          <Paragraph>
+            {"If the web address is correct or you selected a link or button, "}
+            <ContactLink>{"contact support"}</ContactLink>
+            {"."}
+          </Paragraph>
+        </GridColumn>
       </GridRow>
     </Layout>
   </>

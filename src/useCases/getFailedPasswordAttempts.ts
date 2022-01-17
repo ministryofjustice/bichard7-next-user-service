@@ -7,7 +7,7 @@ export default async (connection: Database, emailAddress: string): PromiseResult
         SELECT
             failed_password_attempts AS "failedPasswordAttempts"
         FROM br7own.users
-        WHERE email = $1 AND deleted_at IS NULL
+        WHERE LOWER(email) = LOWER($1) AND deleted_at IS NULL
     `
 
   const result = await connection.oneOrNone(query, [emailAddress]).catch((error) => error)

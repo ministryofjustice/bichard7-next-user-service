@@ -8,7 +8,7 @@ export default async (db: Database, emailAddress: string, password: string): Pro
   const query = `
     SELECT password
     FROM br7own.users
-    WHERE email = $1 AND deleted_at IS NULL
+    WHERE LOWER(email) = LOWER($1) AND deleted_at IS NULL
   `
   const queryResult = await db.one(query, [emailAddress]).catch((error) => error)
 

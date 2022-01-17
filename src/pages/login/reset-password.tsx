@@ -30,6 +30,8 @@ import passwordSecurityCheck from "useCases/passwordSecurityCheck"
 import resetPassword, { ResetPasswordOptions } from "useCases/resetPassword"
 import SuccessBanner from "components/SuccessBanner"
 import NotReceivedEmail from "components/NotReceivedEmail"
+import Paragraph from "components/Paragraph"
+import GridColumn from "components/GridColumn"
 
 const handleEmailStage = async (
   context: GetServerSidePropsContext<ParsedUrlQuery>,
@@ -277,8 +279,8 @@ const ForgotPassword = ({
       </Head>
       <Layout>
         {resetStage === "success" ? (
-          <div className="govuk-grid-row">
-            <div className="govuk-grid-column-two-thirds">
+          <GridRow>
+            <GridColumn width="two-thirds">
               <BackLink href="/" />
 
               <SuccessBanner>
@@ -286,66 +288,65 @@ const ForgotPassword = ({
                 <Link href="/">{`sign in with your new password`}</Link>
                 {`.`}
               </SuccessBanner>
-            </div>
-          </div>
+            </GridColumn>
+          </GridRow>
         ) : (
           <GridRow>
-            <BackLink href="/" />
+            <GridColumn width="two-thirds">
+              <BackLink href="/" />
 
-            <h1 className="govuk-heading-xl">{"Reset password"}</h1>
+              <h1 className="govuk-heading-xl">{"Reset password"}</h1>
 
-            <ErrorSummary title={errorSummaryTitle} show={invalidPassword || passwordsMismatch || !!passwordInsecure}>
-              <ErrorSummaryList
-                items={[
-                  { id: "newPassword", error: invalidPassword && newPasswordMissingError },
-                  { id: "newPassword", error: passwordsMismatch && "Enter the same password twice" },
-                  { id: "newPassword", error: passwordInsecureMessage }
-                ]}
-              />
-            </ErrorSummary>
+              <ErrorSummary title={errorSummaryTitle} show={invalidPassword || passwordsMismatch || !!passwordInsecure}>
+                <ErrorSummaryList
+                  items={[
+                    { id: "newPassword", error: invalidPassword && newPasswordMissingError },
+                    { id: "newPassword", error: passwordsMismatch && "Enter the same password twice" },
+                    { id: "newPassword", error: passwordInsecureMessage }
+                  ]}
+                />
+              </ErrorSummary>
 
-            <ErrorSummary title="There is a problem" show={!!emailError}>
-              <ErrorSummaryList
-                items={[{ id: "email", error: "Please check you have entered your email address correctly." }]}
-              />
-            </ErrorSummary>
+              <ErrorSummary title="There is a problem" show={!!emailError}>
+                <ErrorSummaryList
+                  items={[{ id: "email", error: "Please check you have entered your email address correctly." }]}
+                />
+              </ErrorSummary>
 
-            {resetStage === "email" && (
-              <p className="govuk-body">
-                <p>{"We will email you a code to reset your password."}</p>
-
+              {resetStage === "email" && (
                 <Form method="post" csrfToken={csrfToken}>
+                  <Paragraph>{"We will email you a code to reset your password."}</Paragraph>
                   <TextInput id="email" name="emailAddress" label="Email address" type="email" error={emailError} />
                   <input type="hidden" name="resetStage" value="email" />
                   <Button noDoubleClick>{"Send the code"}</Button>
                 </Form>
-              </p>
-            )}
+              )}
 
-            {resetStage === "validateCode" && (
-              <Form method="post" csrfToken={csrfToken}>
-                <p className="govuk-body">{"If an account was found we will have sent you an email."}</p>
-                <input id="email" name="emailAddress" type="hidden" value={emailAddress} />
-                <input type="hidden" name="resetStage" value="validateCode" />
-                <NotReceivedEmail sendAgainUrl="/login/reset-password" />
-                <TextInput
-                  id="validationCode"
-                  name="validationCode"
-                  label="Enter the 6 character code from the email"
-                  type="text"
-                  value={validationCode}
-                />
-                <TextInput name="newPassword" label="New password" type="password" error={newPasswordError} />
-                <TextInput
-                  name="confirmPassword"
-                  label="Confirm new password"
-                  type="password"
-                  error={passwordsMismatch && passwordMismatchError}
-                />
-                <Button noDoubleClick>{"Reset password"}</Button>
-                <SuggestPassword suggestedPassword={suggestedPassword} suggestedPasswordUrl={suggestedPasswordUrl} />
-              </Form>
-            )}
+              {resetStage === "validateCode" && (
+                <Form method="post" csrfToken={csrfToken}>
+                  <Paragraph>{"If an account was found we will have sent you an email."}</Paragraph>
+                  <input id="email" name="emailAddress" type="hidden" value={emailAddress} />
+                  <input type="hidden" name="resetStage" value="validateCode" />
+                  <NotReceivedEmail sendAgainUrl="/login/reset-password" />
+                  <TextInput
+                    id="validationCode"
+                    name="validationCode"
+                    label="Enter the 6 character code from the email"
+                    type="text"
+                    value={validationCode}
+                  />
+                  <TextInput name="newPassword" label="New password" type="password" error={newPasswordError} />
+                  <TextInput
+                    name="confirmPassword"
+                    label="Confirm new password"
+                    type="password"
+                    error={passwordsMismatch && passwordMismatchError}
+                  />
+                  <Button noDoubleClick>{"Reset password"}</Button>
+                  <SuggestPassword suggestedPassword={suggestedPassword} suggestedPasswordUrl={suggestedPasswordUrl} />
+                </Form>
+              )}
+            </GridColumn>
           </GridRow>
         )}
       </Layout>
