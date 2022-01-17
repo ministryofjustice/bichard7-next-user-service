@@ -4,6 +4,7 @@ describe("Creation of new user", () => {
     cy.task("deleteFromGroupsTable")
     cy.task("deleteFromUsersGroupsTable")
     cy.task("insertIntoGroupsTable")
+    cy.task("insertGroupHierarchies")
     cy.task("insertIntoUsersTable")
     cy.task("insertIntoUserGroupsTable", {
       email: "bichard01@example.com",
@@ -18,6 +19,14 @@ describe("Creation of new user", () => {
   it("should be successful and stay on add user page if all of the inputs are populated", () => {
     cy.login("bichard01@example.com", "password")
     cy.visit("users/new-user")
+
+    cy.get('[data-test="B7ExceptionHandler_grp"]').should("have.text", "Exception Handler")
+    cy.get('[data-test="B7GeneralHandler_grp"]').should("have.text", "General Handler")
+    cy.get('[data-test="B7TriggerHandler_grp"]').should("have.text", "Trigger Handler")
+    cy.get('[data-test="B7Supervisor_grp"]').should("have.text", "Supervisor")
+    cy.get('[data-test="B7Allocator_grp"]').should("have.text", "Allocator")
+    cy.get('[data-test="B7Audit_grp"]').should("have.text", "Audit")
+    cy.get('[data-test="B7UserManager_grp"]').should("have.text", "User Manager")
 
     cy.get('[data-test="text-input_username"]').type("Buser")
     cy.get('[data-test="text-input_forenames"]').type("B forename")

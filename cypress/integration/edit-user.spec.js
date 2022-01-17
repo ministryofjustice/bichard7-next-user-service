@@ -8,6 +8,7 @@ describe("Edit user", () => {
     cy.task("deleteFromUsersGroupsTable")
     cy.task("insertIntoGroupsTable")
     cy.task("insertIntoUsersTable")
+    cy.task("insertGroupHierarchies")
     cy.task("insertIntoUserGroupsTable", {
       email: "bichard02@example.com",
       groups: currentUserGroupNames
@@ -24,6 +25,14 @@ describe("Edit user", () => {
 
     cy.task("selectFromUsersTable", emailAddress).then((user) => {
       cy.task("selectFromGroupsTable", "user_id", user.id).then((groups) => {
+        cy.get('[data-test="B7ExceptionHandler_grp"]').should("have.text", "Exception Handler")
+        cy.get('[data-test="B7GeneralHandler_grp"]').should("have.text", "General Handler")
+        cy.get('[data-test="B7TriggerHandler_grp"]').should("have.text", "Trigger Handler")
+        cy.get('[data-test="B7Supervisor_grp"]').should("have.text", "Supervisor")
+        cy.get('[data-test="B7Allocator_grp"]').should("have.text", "Allocator")
+        cy.get('[data-test="B7Audit_grp"]').should("have.text", "Audit")
+        cy.get('[data-test="B7UserManager_grp"]').should("have.text", "User Manager")
+
         const currentUserGroups = getCurrentUserGroups(groups)
         cy.get('[data-test="text-input_username"]').should("have.value", "Bichard01")
         cy.get('[data-test="text-input_forenames"]').should("have.value", "Bichard User 01")

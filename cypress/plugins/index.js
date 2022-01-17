@@ -9,6 +9,7 @@ import pgPromise from "pg-promise"
 import deleteFromTable from "../../testFixtures/database/deleteFromTable"
 import insertIntoUsersTable from "../../testFixtures/database/insertIntoUsersTable"
 import insertIntoGroupsTable from "../../testFixtures/database/insertIntoGroupsTable"
+import insertGroupHierarchies from "../../testFixtures/database/insertGroupHierarchies"
 import insertIntoUsersAndGroupsTable from "../../testFixtures/database/insertIntoUsersAndGroupsTable"
 import insertIntoUserGroupsTable from "../../testFixtures/database/insertIntoUserGroupsTable"
 import insertIntoServiceMessagesTable from "../../testFixtures/database/insertIntoServiceMessagesTable"
@@ -65,6 +66,11 @@ module.exports = (on, config) => {
 
     async insertIntoUsersTable() {
       await insertIntoUsersTable(users)
+      return null
+    },
+
+    async insertGroupHierarchies() {
+      await insertGroupHierarchies()
       return null
     },
 
