@@ -1,8 +1,9 @@
 import Accordion from "components/Accordion"
 import AccordionItem from "components/AccordionItem"
+import ServiceMessages from "components/ServiceMessages"
 import Layout from "components/Layout"
 import Link from "components/Link"
-import ServiceMessages from "components/ServiceMessages"
+import Paragraph from "components/Paragraph"
 import config from "lib/config"
 import getConnection from "lib/getConnection"
 import Head from "next/head"
@@ -11,6 +12,9 @@ import ServiceMessage from "types/ServiceMessage"
 import getServiceMessages from "useCases/getServiceMessages"
 import logger from "utils/logger"
 import faqJSON from "../faqs.json"
+import React from "react"
+import GridColumn from "components/GridColumn"
+import GridRow from "components/GridRow"
 
 interface faqJson {
   lastUpdated: string
@@ -53,8 +57,8 @@ const faq = ({ faqJson, serviceMessages }: Props) => {
       </Head>
 
       <Layout>
-        <div className="govuk-grid-row">
-          <div className="govuk-grid-column-two-thirds">
+        <GridRow>
+          <GridColumn width="two-thirds">
             <h1 data-test="faq_heading" className="govuk-heading-xl">
               {"Frequently Asked Questions"}
             </h1>
@@ -64,32 +68,32 @@ const faq = ({ faqJson, serviceMessages }: Props) => {
               {faqJson.lastUpdated}
             </div>
 
-            <p className="govuk-body">
+            <Paragraph>
               {
                 "Before contacting support, please check to see if your query is already answered by the information below."
               }
-            </p>
+            </Paragraph>
 
             <Accordion>
               {faqJson.faqs.map((faqItem) => (
                 <AccordionItem heading={faqItem.question} id={faqItem.id} key={faqItem.id} dataTest="faq-item">
-                  <p className="govuk-body">{faqItem.answer}</p>
+                  <Paragraph>{faqItem.answer}</Paragraph>
                 </AccordionItem>
               ))}
             </Accordion>
 
             <h3 className="govuk-heading-m">{"Still need help?"}</h3>
-            <p className="govuk-body">
+            <Paragraph>
               {"If your query isn't answered by the above information, then you can "}
               <Link href={config.serviceNowUrl}>{"raise a ticket with the service desk"}</Link>
               {"."}
-            </p>
-          </div>
-          <div className="govuk-grid-column-one-third">
+            </Paragraph>
+          </GridColumn>
+          <GridColumn width="one-third">
             <h2 className="govuk-heading-m">{"Latest service messages"}</h2>
             <ServiceMessages messages={serviceMessages} />
-          </div>
-        </div>
+          </GridColumn>
+        </GridRow>
       </Layout>
     </>
   )

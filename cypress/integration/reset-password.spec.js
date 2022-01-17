@@ -20,6 +20,15 @@ describe("Reset password", () => {
       cy.get("body").contains(/sent you an email/i)
     })
 
+    it("should ignore email case when resetting the password", () => {
+      cy.visit("/login")
+      cy.get("a[data-test='reset-password']").click()
+      cy.get("body").contains(/reset password/i)
+      cy.get("input[type=email]").type(user.email.toUpperCase())
+      cy.get("button[type=submit]").click()
+      cy.get("body").contains(/sent you an email/i)
+    })
+
     it("should not allow submission when passwords are too short", () => {
       cy.visit(`/login/reset-password`)
       cy.get("input[name=emailAddress]").type(user.email)

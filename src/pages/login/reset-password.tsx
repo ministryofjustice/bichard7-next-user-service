@@ -29,10 +29,13 @@ import passwordSecurityCheck from "useCases/passwordSecurityCheck"
 import resetPassword, { ResetPasswordOptions } from "useCases/resetPassword"
 import SuccessBanner from "components/SuccessBanner"
 import NotReceivedEmail from "components/NotReceivedEmail"
-import React from "react"
 import ServiceMessages from "components/ServiceMessages"
 import ServiceMessage from "types/ServiceMessage"
 import getServiceMessages from "useCases/getServiceMessages"
+import Paragraph from "components/Paragraph"
+import GridColumn from "components/GridColumn"
+import React from "react"
+import GridRow from "components/GridRow"
 
 const handleEmailStage = async (
   context: GetServerSidePropsContext<ParsedUrlQuery>,
@@ -311,8 +314,8 @@ const ForgotPassword = ({
       </Head>
       <Layout>
         {resetStage === "success" ? (
-          <div className="govuk-grid-row">
-            <div className="govuk-grid-column-two-thirds">
+          <GridRow>
+            <GridColumn width="two-thirds">
               <BackLink href="/" />
 
               <SuccessBanner>
@@ -320,11 +323,11 @@ const ForgotPassword = ({
                 <Link href="/">{`sign in with your new password`}</Link>
                 {`.`}
               </SuccessBanner>
-            </div>
-          </div>
+            </GridColumn>
+          </GridRow>
         ) : (
-          <div className="govuk-grid-row">
-            <div className="govuk-grid-column-two-thirds">
+          <GridRow>
+            <GridColumn width="two-thirds">
               <BackLink href="/" />
 
               <h1 className="govuk-heading-xl">{"Reset password"}</h1>
@@ -346,20 +349,17 @@ const ForgotPassword = ({
               </ErrorSummary>
 
               {resetStage === "email" && (
-                <p className="govuk-body">
-                  <p>{"We will email you a code to reset your password."}</p>
-
-                  <Form method="post" csrfToken={csrfToken}>
-                    <TextInput id="email" name="emailAddress" label="Email address" type="email" error={emailError} />
-                    <input type="hidden" name="resetStage" value="email" />
-                    <Button noDoubleClick>{"Send the code"}</Button>
-                  </Form>
-                </p>
+                <Form method="post" csrfToken={csrfToken}>
+                  <Paragraph>{"We will email you a code to reset your password."}</Paragraph>
+                  <TextInput id="email" name="emailAddress" label="Email address" type="email" error={emailError} />
+                  <input type="hidden" name="resetStage" value="email" />
+                  <Button noDoubleClick>{"Send the code"}</Button>
+                </Form>
               )}
 
               {resetStage === "validateCode" && (
                 <Form method="post" csrfToken={csrfToken}>
-                  <p className="govuk-body">{"If an account was found we will have sent you an email."}</p>
+                  <Paragraph>{"If an account was found we will have sent you an email."}</Paragraph>
                   <input id="email" name="emailAddress" type="hidden" value={emailAddress} />
                   <input type="hidden" name="resetStage" value="validateCode" />
                   <NotReceivedEmail sendAgainUrl="/login/reset-password" />
@@ -381,13 +381,11 @@ const ForgotPassword = ({
                   <SuggestPassword suggestedPassword={suggestedPassword} suggestedPasswordUrl={suggestedPasswordUrl} />
                 </Form>
               )}
-            </div>
-            <div className="govuk-grid-column-one-third">
-              <h2 className="govuk-heading-m">{"Latest service messages"}</h2>
-
+            </GridColumn>
+            <GridColumn width="one-third">
               <ServiceMessages messages={serviceMessages} />
-            </div>
-          </div>
+            </GridColumn>
+          </GridRow>
         )}
       </Layout>
     </>

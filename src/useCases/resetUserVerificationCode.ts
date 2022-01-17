@@ -6,7 +6,7 @@ const resetUserVerificationCode = async (connection: Database, emailAddress: str
         UPDATE br7own.users
         SET email_verification_code = NULL,
           failed_password_attempts = 0
-        WHERE email = $1
+        WHERE LOWER(email) = LOWER($1)
           AND deleted_at IS NULL
       `
 

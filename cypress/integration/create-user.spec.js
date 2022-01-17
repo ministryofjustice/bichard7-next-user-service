@@ -28,7 +28,7 @@ describe("Creation of new user", () => {
     cy.get('input[id="visibleForces004"]').check()
     cy.get('[data-test="text-input_visibleCourts"]').type("B01,B41ME00")
 
-    cy.get('span[data-test="included-triggers"]').click()
+    cy.get('[data-test="included-triggers"]').click()
     cy.get('input[id="excludedTriggersTRPR0001"]').uncheck()
 
     cy.get("button[name=saveAndAddAnother]").click()
@@ -47,7 +47,7 @@ describe("Creation of new user", () => {
     cy.get('input[id="visibleForces004"]').check()
     cy.get('[data-test="text-input_visibleCourts"]').type("B01,B41ME00")
 
-    cy.get('span[data-test="included-triggers"]').click()
+    cy.get('[data-test="included-triggers"]').click()
     cy.get('input[id="excludedTriggersTRPR0001"]').uncheck()
 
     cy.get("button[name=save]").click()
@@ -141,7 +141,7 @@ describe("Creation of new user", () => {
     cy.get('input[id="visibleForces001"]').check()
     cy.get('input[id="visibleForces004"]').check()
     cy.get('[data-test="text-input_visibleCourts"]').type("B01,B41ME00")
-    cy.get('span[data-test="included-triggers"]').click()
+    cy.get('[data-test="included-triggers"]').click()
     cy.get('input[id="excludedTriggersTRPR0001"]').uncheck()
     cy.get('[data-test="checkbox-user-groups"]')
       .find('[data-test="checkbox-multiselect-checkboxes"]')
@@ -176,7 +176,7 @@ describe("Creation of new user", () => {
     cy.get('input[id="visibleForces004"]').check()
     cy.get('[data-test="text-input_visibleCourts"]').type("B01,B41ME00")
 
-    cy.get('span[data-test="included-triggers"]').click()
+    cy.get('[data-test="included-triggers"]').click()
     cy.get('input[id="excludedTriggersTRPR0001"]').uncheck()
 
     // When
@@ -205,7 +205,7 @@ describe("Creation of new user", () => {
     cy.get('input[id="visibleForces004"]').check()
     cy.get('[data-test="text-input_visibleCourts"]').type("B01,B41ME00")
 
-    cy.get('span[data-test="included-triggers"]').click()
+    cy.get('[data-test="included-triggers"]').click()
     cy.get('input[id="excludedTriggersTRPR0001"]').uncheck()
 
     // When

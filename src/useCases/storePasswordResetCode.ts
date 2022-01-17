@@ -10,13 +10,13 @@ export default async (
   let updateUserQuery = `
     UPDATE br7own.users
     SET password_reset_code = $1
-    WHERE email = $2 AND deleted_at IS NULL
+    WHERE LOWER(email) = LOWER($2) AND deleted_at IS NULL
   `
   if (passwordResetCode === null) {
     updateUserQuery = `
       UPDATE br7own.users
       SET password_reset_code = NULL
-      WHERE email = $2 AND deleted_at IS NULL
+      WHERE LOEWR(email) = LOWER($2) AND deleted_at IS NULL
     `
   }
   const result = await connection.result(updateUserQuery, [passwordResetCode, emailAddress]).catch((error) => error)
