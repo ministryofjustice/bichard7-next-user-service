@@ -4,6 +4,7 @@ import forceInclusions from "codes/forceInclusions.json"
 import triggersList from "codes/triggersList.json"
 import React from "react"
 import CheckboxMultiSelect from "components/CheckboxMultiSelect"
+import Details from "components/Details"
 
 interface Props {
   username?: string
@@ -126,24 +127,17 @@ const UserForm = ({
       </div>
 
       <div className="govuk-form-group">
-        <details className="govuk-details" data-module="govuk-details">
-          <summary className="govuk-details__summary">
-            <span className="govuk-details__summary-text" data-test="included-triggers">
-              {"Included Triggers"}
-            </span>
-          </summary>
-          <div className="govuk-details__text">
-            <CheckboxMultiSelect
-              idMappingFn={(item) => `excludedTriggers${item?.id}`}
-              nameMappingFn={(item) => `excludedTriggers${item?.id}`}
-              keymappingFn={(item) => `excludedTriggers${item?.id}`}
-              displayValueMappingFn={(item) => `${item.id} - ${item.name}`}
-              hintLabel="All triggers that are visible to the user"
-              selectedOptions={listOfTriggers.filter((x) => !excludedTriggers?.includes(x.id))}
-              allOptions={listOfTriggers}
-            />
-          </div>
-        </details>
+        <Details summary={"Included Triggers"} data-test="included-triggers">
+          <CheckboxMultiSelect
+            idMappingFn={(item) => `excludedTriggers${item?.id}`}
+            nameMappingFn={(item) => `excludedTriggers${item?.id}`}
+            keymappingFn={(item) => `excludedTriggers${item?.id}`}
+            displayValueMappingFn={(item) => `${item.id} - ${item.name}`}
+            hintLabel="All triggers that are visible to the user"
+            selectedOptions={listOfTriggers.filter((x) => !excludedTriggers?.includes(x.id))}
+            allOptions={listOfTriggers}
+          />
+        </Details>
       </div>
     </>
   )

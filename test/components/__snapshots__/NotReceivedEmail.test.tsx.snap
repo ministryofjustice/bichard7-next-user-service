@@ -14,18 +14,14 @@ exports[`should render the component and match the snapshot 1`] = `
     class="govuk-details"
     data-module="govuk-details"
   >
-     
     <summary
       class="govuk-details__summary"
-      id="check-email"
     >
-       
       <span
         class="govuk-details__summary-text"
       >
-         I still have not received the email 
+        I still have not received the email
       </span>
-       
     </summary>
     <div
       class="govuk-details__text"

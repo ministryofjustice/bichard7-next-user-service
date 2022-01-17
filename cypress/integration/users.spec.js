@@ -38,7 +38,7 @@ describe("Display list of users", () => {
     cy.login("bichard01@example.com", "password")
     cy.visit("/login")
     cy.get("body").contains(
-      /If you have any queries about your permissions or cannot see the resources you expect, please contact one of the user managers for your force./i
+      /If you have any queries about your permissions or you cannot see the resources you expect, please contact one of the user managers for your force./i
     )
     cy.get("details").click()
     cy.get('[data-test="manager-list"]').contains("Bichard User 01 Surname 01")

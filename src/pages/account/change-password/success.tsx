@@ -3,6 +3,8 @@ import Head from "next/head"
 import BackLink from "components/BackLink"
 import SuccessBanner from "components/SuccessBanner"
 import Link from "components/Link"
+import GridColumn from "components/GridColumn"
+import GridRow from "components/GridRow"
 
 const Success = () => (
   <>
@@ -10,8 +12,8 @@ const Success = () => (
       <title>{"Password Changed"}</title>
     </Head>
     <Layout>
-      <div className="govuk-grid-row">
-        <div className="govuk-grid-column-two-thirds">
+      <GridRow>
+        <GridColumn width="two-thirds">
           <BackLink href="/" />
 
           <SuccessBanner>
@@ -19,8 +21,8 @@ const Success = () => (
             <Link href="/">{`sign in with your new password`}</Link>
             {`.`}
           </SuccessBanner>
-        </div>
-      </div>
+        </GridColumn>
+      </GridRow>
     </Layout>
   </>
 )
