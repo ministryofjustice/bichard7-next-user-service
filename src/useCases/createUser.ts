@@ -68,6 +68,7 @@ const insertUserIntoGroup = async (
 
   if (isError(result)) {
     logger.error(result)
+    return result
   }
 
   return undefined
@@ -96,7 +97,7 @@ export default async (
         logger.error(insertUserResult)
         return Error("Could not insert record into users table")
       }
-      const groups = await getUserGroups(connection, [currentUser.username ?? ""])
+      const groups = await getUserGroups(connection, currentUser.username ?? "")
       if (isError(groups)) {
         return groups
       }

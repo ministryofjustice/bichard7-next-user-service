@@ -9,6 +9,7 @@ import getTestConnection from "../../testFixtures/getTestConnection"
 import users from "../../testFixtures/database/data/users"
 import groups from "../../testFixtures/database/data/groups"
 import insertIntoGroupsTable from "../../testFixtures/database/insertIntoGroupsTable"
+import insertGroupHierarchies from "../../testFixtures/database/insertGroupHierarchies"
 import insertIntoUsersTable from "../../testFixtures/database/insertIntoUsersTable"
 import insertIntoUserGroupsTable from "../../testFixtures/database/insertIntoUserGroupsTable"
 
@@ -57,7 +58,7 @@ describe("DeleteUserUseCase", () => {
       excludedTriggers: "TRPR0001,"
     }
 
-    const result = await createUser(connection, currentUserId, createUserDetails)
+    const result = await createUser(connection, { id: currentUserId, username: "Bichard01" }, createUserDetails)
     expect(isError(result)).toBe(true)
     const actualError = <Error>result
     expect(actualError.message).toBe(expectedError.message)
@@ -90,7 +91,7 @@ describe("DeleteUserUseCase", () => {
     }
 
     const expectedError = new Error(`Email address bichard01@example.com already exists.`)
-    const result = await createUser(connection, currentUserId, createUserDetails)
+    const result = await createUser(connection, { id: currentUserId, username: "Bichard01" }, createUserDetails)
     expect(isError(result)).toBe(true)
     const actualError = <Error>result
     expect(actualError.message).toBe(expectedError.message)
@@ -100,6 +101,7 @@ describe("DeleteUserUseCase", () => {
     const username = "Bichard02"
     await insertIntoUsersTable(users.filter((u) => u.username !== username))
     await insertIntoGroupsTable(groups)
+    await insertGroupHierarchies()
     await insertIntoUserGroupsTable(
       "bichard01@example.com",
       groups.map((g) => g.name)
@@ -123,7 +125,8 @@ describe("DeleteUserUseCase", () => {
       excludedTriggers: user.excluded_triggers
     }
 
-    const createResult = await createUser(connection, currentUserId, createUserDetails)
+    const createResult = await createUser(connection, { id: currentUserId, username: "Bichard01" }, createUserDetails)
+    console.log(createResult)
     expect(isError(createResult)).toBe(false)
 
     const getResult = await getUserByUsername(connection, user.username)
@@ -208,7 +211,7 @@ describe("DeleteUserUseCase", () => {
       excludedTriggers: "TRPR0001,"
     }
 
-    const createResult = await createUser(connection, currentUserId, createUserDetails)
+    const createResult = await createUser(connection, { id: currentUserId, username: "Bichard01" }, createUserDetails)
     expect(isError(createResult)).toBe(false)
 
     const userId = (await selectFromTable("users", "username", user.username))[0].id
@@ -237,7 +240,7 @@ describe("DeleteUserUseCase", () => {
       excludedTriggers: "TRPR0001,"
     }
 
-    const createResult = await createUser(connection, currentUserId, createUserDetails)
+    const createResult = await createUser(connection, { id: currentUserId, username: "Bichard01" }, createUserDetails)
     expect(isError(createResult)).toBe(false)
 
     const userId = (await selectFromTable("users", "username", user.username))[0].id

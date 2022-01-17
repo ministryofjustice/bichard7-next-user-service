@@ -43,7 +43,7 @@ export default async (
   const email = createNewUserEmailResult
   const emailer = getEmailer(userCreateDetails.emailAddress)
 
-  const groupsForCurrentUser = await getUserGroups(connection, [currentUser.username, userCreateDetails.username])
+  const groupsForCurrentUser = await getUserGroups(connection, currentUser.username ?? "")
 
   if (isError(groupsForCurrentUser)) {
     logger.error(groupsForCurrentUser)
