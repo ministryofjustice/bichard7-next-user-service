@@ -15,7 +15,7 @@ export default async (connection: Database, page: number): PromiseResult<Paginat
   FROM 
     br7own.service_messages
   WHERE
-	  created_at >= NOW() - INTERVAL '30 days'
+	  created_at >= NOW() - INTERVAL '${config.serviceMessagesStaleDays} days'
   ORDER BY created_at DESC
     OFFSET ${page * config.maxServiceMessagesPerPage} ROWS
     FETCH NEXT ${config.maxServiceMessagesPerPage} ROWS ONLY
