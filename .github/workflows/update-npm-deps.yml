@@ -3,6 +3,7 @@ name: Update npm dependencies
 on:
   schedule:
     - cron: '0 9 * * 1-5'
+    - cron: '45 10 * * 1-5'
 
 jobs:
   update_deps:
