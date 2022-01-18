@@ -31,7 +31,7 @@ describe("getServiceMessages", () => {
 
     const pageOne = pageOneResult as PaginatedResult<ServiceMessage[]>
 
-    expect(pageOne.totalElements).toBe(data.length)
+    expect(pageOne.totalElements).toBe(7)
     expect(pageOne.result).toHaveLength(5)
 
     const pageOneItems = pageOne.result
@@ -44,25 +44,12 @@ describe("getServiceMessages", () => {
 
     const pageTwo = pageTwoResult as PaginatedResult<ServiceMessage[]>
 
-    expect(pageTwo.totalElements).toBe(data.length)
-    expect(pageTwo.result).toHaveLength(5)
+    expect(pageTwo.totalElements).toBe(7)
+    expect(pageTwo.result).toHaveLength(2)
 
     const pageTwoItems = pageTwo.result
     for (let i = 0; i < pageTwoItems.length; i++) {
       expect(pageTwoItems[i].message).toBe(`Message ${data.length - i - 5}`)
-    }
-
-    const pageThreeResult = await getServiceMessages(connection, 2)
-    expect(isError(pageThreeResult)).toBe(false)
-
-    const pageThree = pageThreeResult as PaginatedResult<ServiceMessage[]>
-
-    expect(pageThree.totalElements).toBe(data.length)
-    expect(pageThree.result).toHaveLength(3)
-
-    const pageThreeItems = pageThree.result
-    for (let i = 0; i < pageThreeItems.length; i++) {
-      expect(pageThreeItems[i].message).toBe(`Message ${data.length - i - 10}`)
     }
   })
 })

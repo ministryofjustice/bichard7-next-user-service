@@ -14,6 +14,8 @@ export default async (connection: Database, page: number): PromiseResult<Paginat
     COUNT(*) OVER() AS "allMessages"
   FROM 
     br7own.service_messages
+  WHERE
+	  created_at >= NOW() - INTERVAL '30 days'
   ORDER BY created_at DESC
     OFFSET ${page * config.maxServiceMessagesPerPage} ROWS
     FETCH NEXT ${config.maxServiceMessagesPerPage} ROWS ONLY
