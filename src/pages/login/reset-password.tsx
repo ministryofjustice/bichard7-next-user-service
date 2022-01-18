@@ -1,5 +1,4 @@
 import Button from "components/Button"
-import GridRow from "components/GridRow"
 import Layout from "components/Layout"
 import Head from "next/head"
 import TextInput from "components/TextInput"
@@ -30,11 +29,17 @@ import passwordSecurityCheck from "useCases/passwordSecurityCheck"
 import resetPassword, { ResetPasswordOptions } from "useCases/resetPassword"
 import SuccessBanner from "components/SuccessBanner"
 import NotReceivedEmail from "components/NotReceivedEmail"
+import ServiceMessages from "components/ServiceMessages"
+import ServiceMessage from "types/ServiceMessage"
+import getServiceMessages from "useCases/getServiceMessages"
 import Paragraph from "components/Paragraph"
 import GridColumn from "components/GridColumn"
+import React from "react"
+import GridRow from "components/GridRow"
 
 const handleEmailStage = async (
   context: GetServerSidePropsContext<ParsedUrlQuery>,
+  serviceMessages: ServiceMessage[],
   connection: Database
 ): Promise<GetServerSidePropsResult<Props>> => {
   const { formData, csrfToken } = context as CsrfServerSidePropsContext & AuthenticationServerSidePropsContext
@@ -46,7 +51,8 @@ const handleEmailStage = async (
         csrfToken,
         emailAddress,
         emailError: "Enter a valid email address",
-        resetStage: "email"
+        resetStage: "email",
+        serviceMessages: JSON.parse(JSON.stringify(serviceMessages))
       }
     }
   }
@@ -57,7 +63,11 @@ const handleEmailStage = async (
   if (isError(sent)) {
     logger.error(sent)
     return {
-      props: { csrfToken, emailAddress: normalisedEmail }
+      props: {
+        csrfToken,
+        emailAddress: normalisedEmail,
+        serviceMessages: JSON.parse(JSON.stringify(serviceMessages))
+      }
     }
   }
   const suggestedPasswordUrl = addQueryParams("/login/reset-password", {
@@ -71,13 +81,15 @@ const handleEmailStage = async (
       emailAddress: normalisedEmail,
       resetStage: "validateCode",
       validationCode: "",
-      suggestedPasswordUrl
+      suggestedPasswordUrl,
+      serviceMessages: JSON.parse(JSON.stringify(serviceMessages))
     }
   })
 }
 
 const handleValidateCodeStage = async (
   context: GetServerSidePropsContext<ParsedUrlQuery>,
+  serviceMessages: ServiceMessage[],
   connection: Database
 ): Promise<GetServerSidePropsResult<Props>> => {
   const { formData, csrfToken } = context as CsrfServerSidePropsContext & AuthenticationServerSidePropsContext
@@ -101,7 +113,8 @@ const handleValidateCodeStage = async (
         csrfToken,
         suggestedPassword: "",
         suggestedPasswordUrl,
-        resetStage: "validateCode"
+        resetStage: "validateCode",
+        serviceMessages: JSON.parse(JSON.stringify(serviceMessages))
       }
     }
   }
@@ -115,7 +128,8 @@ const handleValidateCodeStage = async (
         csrfToken,
         suggestedPassword: "",
         suggestedPasswordUrl,
-        resetStage: "validateCode"
+        resetStage: "validateCode",
+        serviceMessages: JSON.parse(JSON.stringify(serviceMessages))
       }
     }
   }
@@ -132,7 +146,8 @@ const handleValidateCodeStage = async (
         csrfToken,
         suggestedPassword: "",
         suggestedPasswordUrl,
-        resetStage: "validateCode"
+        resetStage: "validateCode",
+        serviceMessages: JSON.parse(JSON.stringify(serviceMessages))
       }
     }
   }
@@ -159,7 +174,8 @@ const handleValidateCodeStage = async (
         csrfToken,
         suggestedPassword: "",
         suggestedPasswordUrl,
-        resetStage: "validateCode"
+        resetStage: "validateCode",
+        serviceMessages: JSON.parse(JSON.stringify(serviceMessages))
       }
     }
   }
@@ -167,28 +183,35 @@ const handleValidateCodeStage = async (
   return {
     props: {
       csrfToken,
-      resetStage: "success"
+      resetStage: "success",
+      serviceMessages: JSON.parse(JSON.stringify(serviceMessages))
     }
   }
 }
 
-const handlePost = (context: GetServerSidePropsContext<ParsedUrlQuery>): Promise<GetServerSidePropsResult<Props>> => {
+const handlePost = (
+  context: GetServerSidePropsContext<ParsedUrlQuery>,
+  serviceMessages: ServiceMessage[]
+): Promise<GetServerSidePropsResult<Props>> => {
   const { formData } = context as CsrfServerSidePropsContext
   const { resetStage } = formData as { emailAddress: string; resetStage: string }
   const connection = getConnection()
 
   if (resetStage === "email") {
-    return handleEmailStage(context, connection)
+    return handleEmailStage(context, serviceMessages, connection)
   }
 
   if (resetStage === "validateCode") {
-    return handleValidateCodeStage(context, connection)
+    return handleValidateCodeStage(context, serviceMessages, connection)
   }
 
   return Promise.resolve(createRedirectResponse("/500"))
 }
 
-const handleGet = (context: GetServerSidePropsContext<ParsedUrlQuery>): GetServerSidePropsResult<Props> => {
+const handleGet = (
+  context: GetServerSidePropsContext<ParsedUrlQuery>,
+  serviceMessages: ServiceMessage[]
+): GetServerSidePropsResult<Props> => {
   const { csrfToken, query } = context as CsrfServerSidePropsContext
   const { email, suggestPassword } = query as { email: string; suggestPassword: string }
   let suggestedPassword = ""
@@ -210,28 +233,38 @@ const handleGet = (context: GetServerSidePropsContext<ParsedUrlQuery>): GetServe
         resetStage: "validateCode",
         validationCode: "",
         suggestedPassword,
-        suggestedPasswordUrl
+        suggestedPasswordUrl,
+        serviceMessages: JSON.parse(JSON.stringify(serviceMessages))
       }
     }
   }
   return {
     props: {
       csrfToken,
-      resetStage: "email"
+      resetStage: "email",
+      serviceMessages: JSON.parse(JSON.stringify(serviceMessages))
     }
   }
 }
 
 export const getServerSideProps = withCsrf(
-  (context: GetServerSidePropsContext<ParsedUrlQuery>): Promise<GetServerSidePropsResult<Props>> => {
+  async (context: GetServerSidePropsContext<ParsedUrlQuery>): Promise<GetServerSidePropsResult<Props>> => {
     const { req } = context as CsrfServerSidePropsContext
 
+    const connection = getConnection()
+    let serviceMessagesResult = await getServiceMessages(connection, 0)
+
+    if (isError(serviceMessagesResult)) {
+      logger.error(serviceMessagesResult)
+      serviceMessagesResult = { result: [], totalElements: 0 }
+    }
+
     if (isPost(req)) {
-      return handlePost(context)
+      return handlePost(context, serviceMessagesResult.result)
     }
 
     if (isGet(req)) {
-      return Promise.resolve(handleGet(context))
+      return Promise.resolve(handleGet(context, serviceMessagesResult.result))
     }
 
     return Promise.resolve(createRedirectResponse("/400"))
@@ -250,6 +283,7 @@ interface Props {
   passwordInsecureMessage?: string
   suggestedPassword?: string
   suggestedPasswordUrl?: string
+  serviceMessages: ServiceMessage[]
 }
 
 const ForgotPassword = ({
@@ -263,7 +297,8 @@ const ForgotPassword = ({
   passwordInsecure,
   passwordInsecureMessage,
   suggestedPassword,
-  suggestedPasswordUrl
+  suggestedPasswordUrl,
+  serviceMessages
 }: Props) => {
   const passwordMismatchError = "Passwords do not match"
   const newPasswordMissingError = "Enter a new password"
@@ -346,6 +381,9 @@ const ForgotPassword = ({
                   <SuggestPassword suggestedPassword={suggestedPassword} suggestedPasswordUrl={suggestedPasswordUrl} />
                 </Form>
               )}
+            </GridColumn>
+            <GridColumn width="one-third">
+              <ServiceMessages messages={serviceMessages} />
             </GridColumn>
           </GridRow>
         )}

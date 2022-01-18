@@ -1,6 +1,5 @@
 import Button from "components/Button"
 import ErrorSummary from "components/ErrorSummary/ErrorSummary"
-import GridRow from "components/GridRow"
 import Layout from "components/Layout"
 import Head from "next/head"
 import TextInput from "components/TextInput"
@@ -35,8 +34,13 @@ import { removeCjsmSuffix } from "lib/cjsmSuffix"
 import NotReceivedEmail from "components/NotReceivedEmail"
 import logger from "utils/logger"
 import ContactLink from "components/ContactLink"
-import Paragraph from "components/Paragraph"
+import ServiceMessages from "components/ServiceMessages"
+import ServiceMessage from "types/ServiceMessage"
+import getServiceMessages from "useCases/getServiceMessages"
 import GridColumn from "components/GridColumn"
+import React from "react"
+import GridRow from "components/GridRow"
+import Paragraph from "components/Paragraph"
 
 const authenticationErrorMessage = "Error authenticating the reqest"
 
@@ -56,6 +60,7 @@ const getNotYourEmailLink = (query: ParsedUrlQuery): string => {
 
 const handleEmailStage = async (
   context: GetServerSidePropsContext<ParsedUrlQuery>,
+  serviceMessages: ServiceMessage[],
   connection: Database
 ): Promise<GetServerSidePropsResult<Props>> => {
   const { formData, csrfToken } = context as CsrfServerSidePropsContext & AuthenticationServerSidePropsContext
@@ -66,7 +71,8 @@ const handleEmailStage = async (
       props: {
         csrfToken,
         emailAddress,
-        emailError: "Enter a valid email address"
+        emailError: "Enter a valid email address",
+        serviceMessages: JSON.parse(JSON.stringify(serviceMessages))
       }
     }
   }
@@ -77,7 +83,12 @@ const handleEmailStage = async (
   if (isError(sent)) {
     logger.error(sent)
     return {
-      props: { csrfToken, emailAddress: normalisedEmail, sendingError: true }
+      props: {
+        csrfToken,
+        emailAddress: normalisedEmail,
+        sendingError: true,
+        serviceMessages: JSON.parse(JSON.stringify(serviceMessages))
+      }
     }
   }
 
@@ -85,7 +96,8 @@ const handleEmailStage = async (
     props: {
       csrfToken,
       emailAddress: normalisedEmail,
-      loginStage: "validateCode"
+      loginStage: "validateCode",
+      serviceMessages: JSON.parse(JSON.stringify(serviceMessages))
     }
   }
 }
@@ -126,6 +138,7 @@ const logInUser = async (
 
 const handleValidateCodeStage = async (
   context: GetServerSidePropsContext<ParsedUrlQuery>,
+  serviceMessages: ServiceMessage[],
   connection: Database
 ): Promise<GetServerSidePropsResult<Props>> => {
   const { formData, csrfToken } = context as CsrfServerSidePropsContext & AuthenticationServerSidePropsContext
@@ -147,7 +160,8 @@ const handleValidateCodeStage = async (
           emailAddress,
           csrfToken,
           loginStage: "email",
-          tooManyPasswordAttempts: true
+          tooManyPasswordAttempts: true,
+          serviceMessages: JSON.parse(JSON.stringify(serviceMessages))
         }
       }
     }
@@ -157,7 +171,8 @@ const handleValidateCodeStage = async (
         emailAddress,
         csrfToken,
         loginStage: "validateCode",
-        validationCode
+        validationCode,
+        serviceMessages: JSON.parse(JSON.stringify(serviceMessages))
       }
     }
   }
@@ -167,6 +182,7 @@ const handleValidateCodeStage = async (
 
 const handleRememberedEmailStage = async (
   context: GetServerSidePropsContext<ParsedUrlQuery>,
+  serviceMessages: ServiceMessage[],
   connection: Database
 ): Promise<GetServerSidePropsResult<Props>> => {
   const { req, formData, csrfToken, query } = context as CsrfServerSidePropsContext &
@@ -196,7 +212,8 @@ const handleRememberedEmailStage = async (
           emailAddress,
           loginStage: "rememberedEmail",
           notYourEmailAddressUrl,
-          tooManyPasswordAttempts: true
+          tooManyPasswordAttempts: true,
+          serviceMessages: JSON.parse(JSON.stringify(serviceMessages))
         }
       }
     }
@@ -206,7 +223,8 @@ const handleRememberedEmailStage = async (
         csrfToken,
         emailAddress,
         notYourEmailAddressUrl,
-        loginStage: "rememberedEmail"
+        loginStage: "rememberedEmail",
+        serviceMessages: JSON.parse(JSON.stringify(serviceMessages))
       }
     }
   }
@@ -214,27 +232,33 @@ const handleRememberedEmailStage = async (
   return logInUser(connection, context, user)
 }
 
-const handlePost = (context: GetServerSidePropsContext<ParsedUrlQuery>): Promise<GetServerSidePropsResult<Props>> => {
+const handlePost = (
+  context: GetServerSidePropsContext<ParsedUrlQuery>,
+  serviceMessages: ServiceMessage[]
+): Promise<GetServerSidePropsResult<Props>> => {
   const { formData } = context as CsrfServerSidePropsContext & AuthenticationServerSidePropsContext
   const { loginStage } = formData
   const connection = getConnection()
 
   if (loginStage === "email") {
-    return handleEmailStage(context, connection)
+    return handleEmailStage(context, serviceMessages, connection)
   }
 
   if (loginStage === "validateCode") {
-    return handleValidateCodeStage(context, connection)
+    return handleValidateCodeStage(context, serviceMessages, connection)
   }
 
   if (loginStage === "rememberedEmail") {
-    return handleRememberedEmailStage(context, connection)
+    return handleRememberedEmailStage(context, serviceMessages, connection)
   }
 
   return Promise.resolve(createRedirectResponse("/500"))
 }
 
-const handleGet = (context: GetServerSidePropsContext<ParsedUrlQuery>): GetServerSidePropsResult<Props> => {
+const handleGet = (
+  context: GetServerSidePropsContext<ParsedUrlQuery>,
+  serviceMessages: ServiceMessage[]
+): GetServerSidePropsResult<Props> => {
   const { csrfToken, query, req, res } = context as CsrfServerSidePropsContext & AuthenticationServerSidePropsContext
   const { notYou } = query as { notYou: string }
 
@@ -253,33 +277,45 @@ const handleGet = (context: GetServerSidePropsContext<ParsedUrlQuery>): GetServe
           csrfToken,
           emailAddress,
           notYourEmailAddressUrl,
-          loginStage: "rememberedEmail"
+          loginStage: "rememberedEmail",
+          serviceMessages: JSON.parse(JSON.stringify(serviceMessages))
         }
       }
     }
   }
 
   return {
-    props: { csrfToken, loginStage: "email" }
+    props: {
+      csrfToken,
+      loginStage: "email",
+      serviceMessages: JSON.parse(JSON.stringify(serviceMessages))
+    }
   }
 }
 
 export const getServerSideProps = withMultipleServerSideProps(
   withAuthentication,
   withCsrf,
-  (context: GetServerSidePropsContext<ParsedUrlQuery>): Promise<GetServerSidePropsResult<Props>> => {
+  async (context: GetServerSidePropsContext<ParsedUrlQuery>): Promise<GetServerSidePropsResult<Props>> => {
     const { req, currentUser } = context as CsrfServerSidePropsContext & AuthenticationServerSidePropsContext
 
     if (currentUser) {
       return Promise.resolve(createRedirectResponse("/"))
     }
+    const connection = getConnection()
+    let serviceMessagesResult = await getServiceMessages(connection, 0)
+
+    if (isError(serviceMessagesResult)) {
+      logger.error(serviceMessagesResult)
+      serviceMessagesResult = { result: [], totalElements: 0 }
+    }
 
     if (isPost(req)) {
-      return handlePost(context)
+      return handlePost(context, serviceMessagesResult.result)
     }
 
     if (isGet(req)) {
-      return Promise.resolve(handleGet(context))
+      return Promise.resolve(handleGet(context, serviceMessagesResult.result))
     }
 
     return Promise.resolve(createRedirectResponse("/400"))
@@ -296,6 +332,7 @@ interface Props {
   validationCode?: string
   tooManyPasswordAttempts?: boolean
   notYourEmailAddressUrl?: string
+  serviceMessages: ServiceMessage[]
 }
 
 type RememberProps = {
@@ -338,7 +375,8 @@ const Index = ({
   validationCode,
   invalidCredentials,
   tooManyPasswordAttempts,
-  notYourEmailAddressUrl
+  notYourEmailAddressUrl,
+  serviceMessages
 }: Props) => (
   <>
     <Head>
@@ -453,6 +491,9 @@ const Index = ({
               {"I have forgotten my password"}
             </Link>
           </Paragraph>
+        </GridColumn>
+        <GridColumn width="one-third">
+          <ServiceMessages messages={serviceMessages} />
         </GridColumn>
       </GridRow>
     </Layout>
