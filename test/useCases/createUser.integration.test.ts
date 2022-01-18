@@ -143,6 +143,52 @@ describe("DeleteUserUseCase", () => {
     expect(actualUser.excludedTriggers).toBe(user.excluded_triggers)
   })
 
+  it("should be possible to add a user to my force even if we insert whitespaces at ends", async () => {
+    const username = "Bichard02"
+    await insertIntoUsersTable(users.filter((u) => u.username !== username))
+    await insertIntoGroupsTable(groups)
+    await insertGroupHierarchies()
+    await insertIntoUserGroupsTable(
+      "bichard01@example.com",
+      groups.map((g) => g.name)
+    )
+    const currentUserId = (await selectFromTable("users", "username", "Bichard01"))[0].id
+
+    const user = users.filter((u) => u.username === "Bichard02")[0]
+    const selectedGroups = await selectFromTable("groups", undefined, undefined, "name")
+    const selectedGroup = selectedGroups[0]
+
+    const createUserDetails = {
+      username: user.username,
+      forenames: ` ${user.forenames} `,
+      emailAddress: user.email,
+      endorsedBy: `${user.endorsed_by} `,
+      surname: ` ${user.surname}`,
+      orgServes: user.org_serves,
+      groupId: selectedGroup.id,
+      visibleForces: user.visible_forces,
+      visibleCourts: user.visible_courts,
+      excludedTriggers: user.excluded_triggers
+    }
+
+    const createResult = await createUser(connection, { id: currentUserId, username: "Bichard01" }, createUserDetails)
+    console.log(createResult)
+    expect(isError(createResult)).toBe(false)
+
+    const getResult = await getUserByUsername(connection, user.username)
+    expect(isError(getResult)).toBe(false)
+
+    const actualUser = <User>getResult
+    expect(actualUser.emailAddress).toBe(user.email)
+    expect(actualUser.username).toBe(user.username)
+    expect(actualUser.endorsedBy).toBe(user.endorsed_by)
+    expect(actualUser.orgServes).toBe(user.org_serves)
+    expect(actualUser.forenames).toBe(user.forenames)
+    expect(actualUser.visibleForces).toBe(user.visible_forces)
+    expect(actualUser.visibleCourts).toBe(user.visible_courts)
+    expect(actualUser.excludedTriggers).toBe(user.excluded_triggers)
+  })
+
   it("should add the user to the correct group that exists in the user table", async () => {
     const username = "Bichard02"
     await insertIntoUsersTable(users.filter((u) => u.username !== username))

@@ -79,6 +79,16 @@ export default async (
   currentUser: Partial<User>,
   userDetails: Partial<User>
 ): PromiseResult<void> => {
+  const tmpUserDetails: Partial<User> = {}
+  for (const [key, value] of Object.entries(userDetails)) {
+    if (typeof value === "string") {
+      tmpUserDetails[key] = String(value).trim()
+    } else {
+      tmpUserDetails[key] = value
+    }
+  }
+  userDetails = tmpUserDetails
+
   const isUsernameUniqueResult = await isUsernameUnique(connection, userDetails.username as string)
   if (isError(isUsernameUniqueResult)) {
     return isUsernameUniqueResult
