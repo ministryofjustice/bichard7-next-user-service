@@ -57,7 +57,7 @@ describe("AccountSetup", () => {
         excludedTriggers: "TRPR0001,"
       }))[0]
 
-    const result = await createUser(connection, currentUserId, user)
+    const result = await createUser(connection, { id: currentUserId, username: "Bichard01" }, user)
 
     expect(isError(result)).toBe(false)
 

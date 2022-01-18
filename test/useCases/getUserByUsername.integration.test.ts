@@ -19,8 +19,8 @@ describe("getUserByUsername", () => {
   let user: any
 
   const insertGroupAndUser = async () => {
-    const currentUserId = (await selectFromTable("users", "username", "Bichard01"))[0]
-    selectedGroups = await selectFromTable("groups", undefined, undefined, "name")
+    const currentUser = (await selectFromTable("users", "username", "Bichard01"))[0]
+    selectedGroups = await selectFromTable("groups", undefined, undefined, "id")
     user = users.filter((u) => u.username === "Bichard02")[0] as any
     selectedGroupId = selectedGroups[0].id
     const createUserDetails: any = {
@@ -39,7 +39,8 @@ describe("getUserByUsername", () => {
       createUserDetails[group.name] = "yes"
     })
 
-    await createUser(connection, currentUserId, createUserDetails)
+    const result = await createUser(connection, { id: currentUser.id, username: "Bichard01" }, createUserDetails)
+    expect(isError(result)).toBe(false)
   }
 
   beforeAll(() => {

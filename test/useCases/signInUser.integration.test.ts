@@ -53,7 +53,7 @@ describe("SigninUser", () => {
       excludedTriggers: "TRPR0001,"
     } as Partial<User>
 
-    const userCreateResult = await createUser(connection, currentUserId, user)
+    const userCreateResult = await createUser(connection, { id: currentUserId, username: "Bichard01" }, user)
     expect(isError(userCreateResult)).toBe(false)
 
     const selectedUsers = await selectFromTable("users", "username", user.username)

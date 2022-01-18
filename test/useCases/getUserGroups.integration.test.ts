@@ -37,8 +37,8 @@ describe("getUserGroups", () => {
     )
     const { username } = (await selectFromTable("users", "username", "Bichard01"))[0]
 
-    const groupsResult = (await getUserGroups(connection, [username])) as UserGroupResult[]
-    const selectedGroups = await selectFromTable("groups", undefined, undefined, "name")
+    const groupsResult = (await getUserGroups(connection, username)) as UserGroupResult[]
+    const selectedGroups = await selectFromTable("groups", undefined, undefined, "id")
 
     expect(isError(groupsResult)).toBe(false)
     expect(groupsResult.length).toBe(selectedGroups.length)

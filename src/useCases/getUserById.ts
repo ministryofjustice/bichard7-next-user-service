@@ -29,7 +29,7 @@ const getUserById = async (connection: Database, id: number): PromiseResult<Part
     return error as Error
   }
 
-  const groups = await getUserGroups(connection, [user.username])
+  const groups = await getUserGroups(connection, user.username)
   if (isError(groups)) {
     return groups
   }

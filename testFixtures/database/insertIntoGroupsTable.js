@@ -15,7 +15,6 @@ const insertIntoGroupTable = async (data) => {
   `
 
   const queries = data.map((datum) => connection.none(insertQuery, { ...datum }))
-
   return Promise.all(queries)
 }
 

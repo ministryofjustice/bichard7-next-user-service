@@ -44,7 +44,7 @@ export const getServerSideProps = withMultipleServerSideProps(
     }
 
     const connection = getConnection()
-    const userGroups = await getUserGroups(connection, [currentUser.username])
+    const userGroups = await getUserGroups(connection, currentUser.username)
 
     if (isError(userGroups)) {
       logger.error(userGroups)
