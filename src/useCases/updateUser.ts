@@ -78,6 +78,16 @@ const updateUser = async (
   currentUser: Partial<User>,
   userDetails: Partial<User>
 ): PromiseResult<void | Error> => {
+  const tmpUserDetails: Partial<User> = {}
+  for (const [key, value] of Object.entries(userDetails)) {
+    if (typeof value === "string") {
+      tmpUserDetails[key] = String(value).trim()
+    } else {
+      tmpUserDetails[key] = value
+    }
+  }
+  userDetails = tmpUserDetails
+
   const result = await connection.tx(async (task: ITask<unknown>): PromiseResult<void> => {
     const selectedGroups: number[] = userDetails.groups
       ? userDetails.groups.map((group: UserGroupResult) => parseInt(group.id, 10))

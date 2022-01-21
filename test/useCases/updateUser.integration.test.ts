@@ -99,6 +99,53 @@ describe("updatePassword", () => {
     expect(initialUser02.excluded_triggers).toBe("TRPR0002,")
   })
 
+  it("should update user successfully when called even if they have whitespaces at ends", async () => {
+    await insertIntoUsersTable(users)
+    await insertIntoGroupsTable(groups)
+    await insertIntoUserGroupsTable(
+      "bichard01@example.com",
+      groups.map((g) => g.name)
+    )
+    const currentUser = (await selectFromTable("users", "username", "Bichard01"))[0]
+
+    await insertUserWithGroup()
+    const emailAddress = "bichard02@example.com"
+    const initialUserList = await selectFromTable("users", "email", emailAddress)
+    const initialUser = initialUserList[0]
+
+    const selectedGroups = await selectFromTable("groups", undefined, undefined, "name")
+    const initialGroup = selectedGroups[0]
+
+    const user = {
+      id: initialUser.id,
+      username: "Bichard04",
+      emailAddress: initialUser.email,
+      forenames: "forename04 ",
+      surname: " surname04",
+      orgServes: " orgServes 04 ",
+      groups: [initialGroup],
+      visibleForces: "004,007,",
+      visibleCourts: "B02,",
+      excludedTriggers: "TRPR0002,"
+    }
+
+    const result = await updateUser(connection, fakeAuditLogger, currentUser, user)
+    expect(result).toBeUndefined()
+
+    const initialUser02 = (await selectFromTable("users", "email", emailAddress))[0]
+
+    expect(initialUser02.id).toBe(initialUser.id)
+    expect(initialUser02.username).toBe("Bichard02")
+    expect(initialUser02.email).toBe("bichard02@example.com")
+    expect(initialUser02.forenames).toBe("forename04")
+    expect(initialUser02.surname).toBe("surname04")
+    expect(initialUser02.endorsed_by).toBe("endorsed_by 02")
+    expect(initialUser02.org_serves).toBe("orgServes 04")
+    expect(initialUser02.visible_forces).toBe("004,007,")
+    expect(initialUser02.visible_courts).toBe("B02,")
+    expect(initialUser02.excluded_triggers).toBe("TRPR0002,")
+  })
+
   it("should update emailAddress if provided in user object", async () => {
     await insertIntoUsersTable(users)
     await insertIntoGroupsTable(groups)
