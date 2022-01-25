@@ -399,7 +399,7 @@ describe("updatePassword", () => {
     expect(updatedGroup.id).toBe(expectedUserGroup.group_id)
   })
 
-  it("should not add the user to the group if current user does not have that group", async () => {
+  it("should add the user to the group even if current user does not have that group", async () => {
     // Given a user with a group assigned
     await insertIntoUsersTable(users)
     await insertIntoGroupsTable(groups)
@@ -431,6 +431,10 @@ describe("updatePassword", () => {
     expect(isError(updateResult)).toBe(false)
 
     const expectedUsersGroups = await selectFromTable("users_groups", "user_id", initialUser.id)
-    expect(expectedUsersGroups).toHaveLength(0)
+    expect(expectedUsersGroups).toHaveLength(1)
+
+    const expectedUserGroup = expectedUsersGroups[0]
+    expect(initialUser.id).toBe(expectedUserGroup.user_id)
+    expect(groupToAdd[0].id).toBe(expectedUserGroup.group_id)
   })
 })

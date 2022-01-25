@@ -15,14 +15,12 @@ import insertIntoUserGroupsTable from "../../testFixtures/database/insertIntoUse
 describe("getUserByUsername", () => {
   let connection: Database
   let selectedGroups: any
-  let selectedGroupId: any
   let user: any
 
   const insertGroupAndUser = async () => {
     const currentUser = (await selectFromTable("users", "username", "Bichard01"))[0]
     selectedGroups = await selectFromTable("groups", undefined, undefined, "id")
     user = users.filter((u) => u.username === "Bichard02")[0] as any
-    selectedGroupId = selectedGroups[0].id
     const createUserDetails: any = {
       username: user.username,
       forenames: user.forenames,
@@ -112,6 +110,6 @@ describe("getUserByUsername", () => {
     expect(isError(userResult)).toBe(false)
 
     const actualUser = userResult as User
-    expect(actualUser.groups[0].id).toBe(selectedGroupId)
+    expect(actualUser.groups.length).toBe(9)
   })
 })

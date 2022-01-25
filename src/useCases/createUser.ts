@@ -5,9 +5,9 @@ import { isError } from "types/Result"
 import User from "types/User"
 import { UserGroupResult } from "types/UserGroup"
 import logger from "utils/logger"
-import { getUserGroups } from "useCases"
 import isUsernameUnique from "./isUsernameUnique"
 import isEmailUnique from "./IsEmailUnique"
+import getUserHierarchyGroups from "./getUserHierarchyGroups"
 
 type InsertUserResult = PromiseResult<{ id: number }>
 
@@ -43,7 +43,6 @@ const insertUser = (task: ITask<unknown>, userDetails: Partial<User>): InsertUse
 const insertUserIntoGroup = async (
   task: ITask<unknown>,
   newUserId: number,
-  currentUserId: number,
   groups: UserGroupResult[]
 ): PromiseResult<void> => {
   const groupIds = groups.map((group: UserGroupResult) => group.id)
@@ -55,16 +54,13 @@ const insertUserIntoGroup = async (
     )
     SELECT 
       $\{newUserId\} AS user_id,
-      group_id 
-    FROM br7own.users_groups AS ug
-    WHERE
-      ug.user_id = $\{currentUserId\} AND
-      ug.group_id IN ($\{groupIds:csv\});
+      g.id
+    FROM br7own.groups AS g
+      WHERE
+        g.id IN ($\{groupIds:csv\});
   `
 
-  const result = await task
-    .result(insertGroupQuery, { newUserId, currentUserId, groupIds })
-    .catch((error) => error as Error)
+  const result = await task.result(insertGroupQuery, { newUserId, groupIds }).catch((error) => error as Error)
 
   if (isError(result)) {
     logger.error(result)
@@ -107,19 +103,14 @@ export default async (
         logger.error(insertUserResult)
         return Error("Could not insert record into users table")
       }
-      const groups = await getUserGroups(connection, currentUser.username ?? "")
+      const groups = await getUserHierarchyGroups(connection, currentUser.username ?? "")
       if (isError(groups)) {
         return groups
       }
       const filteredGroups = groups.filter((group) => userDetails[group.name] === "yes")
       const userDetailsWithGroups = { ...userDetails, groups: filteredGroups }
       if (currentUser.id && userDetailsWithGroups.groups && userDetailsWithGroups.groups.length > 0) {
-        const userGroupResult = await insertUserIntoGroup(
-          task,
-          insertUserResult.id,
-          currentUser.id,
-          userDetailsWithGroups.groups
-        )
+        const userGroupResult = await insertUserIntoGroup(task, insertUserResult.id, userDetailsWithGroups.groups)
         return userGroupResult
       }
 

@@ -116,13 +116,16 @@ describe("Edit user", () => {
       .find('[data-test="checkbox-multiselect-checkboxes"]')
       .find(`input[name="B7ExceptionHandler_grp"]`)
       .check()
+    cy.get('[data-test="checkbox-user-groups"]')
+      .find('[data-test="checkbox-multiselect-checkboxes"]')
+      .find(`input[name="B7GeneralHandler_grp"]`)
+      .check()
     // When
     cy.get('button[type="submit"]').click()
     // Then
     cy.get('[data-test="error-summary"]').should("not.exist")
     cy.task("selectFromUsersTable", "bichard01@example.com").then((user) => {
-      cy.task("selectFromGroupsTable", "user_id", user.id).then((groups) => {
-        const currentUserGroups = getCurrentUserGroups(groups)
+      cy.task("selectFromGroupsTable", "user_id", user.id).then(() => {
         cy.get('[data-test="text-input_username"]').should("have.value", "Bichard01")
         cy.get('[data-test="text-input_forenames"]').should("have.value", "forename change 01")
         cy.get('[data-test="text-input_emailAddress"]').should("have.value", "bichard01@example.com")
@@ -130,10 +133,8 @@ describe("Edit user", () => {
         cy.get('[data-test="included-triggers"]').click()
         cy.get('input[id="excludedTriggersTRPR0001"]').should("not.be.checked")
         cy.get('input[id="excludedTriggersTRPR0004"]').should("not.be.checked")
-        cy.get('[data-test="checkbox-user-groups"]')
-          .find('[data-test="checkbox-multiselect-checkboxes"]')
-          .find(`[data-test="B7ExceptionHandler_grp"]`)
-          .contains(currentUserGroups[0].friendly_name)
+        cy.get('[data-test="checkbox-user-groups"]').find(`input[name="B7ExceptionHandler_grp"]`).should("be.checked")
+        cy.get('[data-test="checkbox-user-groups"]').find(`input[name="B7GeneralHandler_grp"]`).should("be.checked")
       })
     })
   })

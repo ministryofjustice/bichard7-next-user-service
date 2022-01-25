@@ -5,7 +5,7 @@ import SuccessBanner from "components/SuccessBanner"
 import getConnection from "lib/getConnection"
 import userFormIsValid from "lib/userFormIsValid"
 import getUserById from "useCases/getUserById"
-import { updateUser, getUserByUsername, getUserGroups } from "useCases"
+import { updateUser, getUserByUsername } from "useCases"
 import UserForm, { listOfForces, listOfTriggers } from "components/users/UserForm"
 import { isError } from "types/Result"
 import User from "types/User"
@@ -28,6 +28,7 @@ import usersHaveSameForce from "lib/usersHaveSameForce"
 import getUserByEmailAddress from "useCases/getUserByEmailAddress"
 import sendEmailChangedEmails from "useCases/sendEmailChangedEmails"
 import isUserWithinGroup from "useCases/isUserWithinGroup"
+import getUserHierarchyGroups from "useCases/getUserHierarchyGroups"
 
 export const getServerSideProps = withMultipleServerSideProps(
   withAuthentication,
@@ -58,7 +59,7 @@ export const getServerSideProps = withMultipleServerSideProps(
       }
     }
 
-    const groups = await getUserGroups(connection, currentUser.username)
+    const groups = await getUserHierarchyGroups(connection, currentUser.username)
 
     if (isError(groups)) {
       logger.error(groups)

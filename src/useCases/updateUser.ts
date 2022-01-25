@@ -7,22 +7,13 @@ import { isError } from "types/Result"
 import { UserGroupResult } from "types/UserGroup"
 import logger from "utils/logger"
 
-const deleteFromUsersGroups = (task: ITask<unknown>, userId: number, newGroupIds: number[]): PromiseResult<null> => {
-  if (newGroupIds.length === 0) {
-    const deleteAllFromUsersGroupsQuery = `
-      DELETE FROM br7own.users_groups
-      WHERE user_id = $\{userId\}
-    `
-
-    return task.none(deleteAllFromUsersGroupsQuery, { userId }).catch((error) => error as Error)
-  }
-
+const deleteFromUsersGroups = (task: ITask<unknown>, userId: number): PromiseResult<null> => {
   const deleteFromUsersGroupsQuery = `
     DELETE FROM br7own.users_groups
-    WHERE user_id = $\{userId\} AND group_id NOT IN ($\{newGroupIds:csv\})
+    WHERE user_id = $\{userId\}
   `
 
-  return task.none(deleteFromUsersGroupsQuery, { userId, newGroupIds }).catch((error) => error as Error)
+  return task.none(deleteFromUsersGroupsQuery, { userId }).catch((error) => error as Error)
 }
 
 const updateUsersGroup = (
@@ -38,12 +29,10 @@ const updateUsersGroup = (
     )
     SELECT
       $\{targetUserId\} AS user_id,
-      group_id
-    FROM br7own.users_groups AS ug
+      g.id
+    FROM br7own.groups AS g
     WHERE
-      ug.user_id = $\{currentUserId\} AND
-      ug.group_id IN ($\{groupIds:csv\}) AND
-      ug.group_id NOT IN (SELECT group_id FROM br7own.users_groups as ug2 WHERE ug2.user_id = $\{targetUserId\});
+      g.id IN ($\{groupIds:csv\});
   `
   return task.none(insertGroupQuery, { targetUserId: userId, currentUserId, groupIds })
 }
@@ -99,8 +88,7 @@ const updateUser = async (
     if (isError(updateUserResult)) {
       return Error("Could not update user")
     }
-    const deleteUserGroupsResult = await deleteFromUsersGroups(task, userId, selectedGroups)
-
+    const deleteUserGroupsResult = await deleteFromUsersGroups(task, userId)
     if (isError(deleteUserGroupsResult)) {
       logger.error(deleteUserGroupsResult)
       return Error("Could not delete groups")
@@ -108,7 +96,6 @@ const updateUser = async (
 
     if (selectedGroups.length !== 0) {
       const updateUserGroupsResult = await updateUsersGroup(task, userId, currentUserId, selectedGroups)
-
       if (isError(updateUserGroupsResult)) {
         logger.error(updateUserGroupsResult)
         return Error("Could not insert groups")

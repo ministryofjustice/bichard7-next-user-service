@@ -137,7 +137,7 @@ describe("Creation of new user", () => {
     })
   })
 
-  it("should assign the correct group to a newly created user", () => {
+  it("should assign the correct group to a newly created user manager", () => {
     const emailAddress = "bemailzz@example.com"
 
     cy.visit("users/new-user")
@@ -161,6 +161,42 @@ describe("Creation of new user", () => {
     cy.task("selectFromUsersGroupsTable").then((usersGroups) => {
       cy.task("selectFromGroupsTable").then((groups) => {
         const selectedGroup = groups.filter((g) => g.name === "B7UserManager_grp")[0]
+        cy.task("selectFromUsersTable", emailAddress).then((user) => {
+          const userGroups = usersGroups.filter((u) => u.user_id === user.id)
+          expect(user.id).to.equal(userGroups[0].user_id)
+          expect(userGroups[0].group_id).to.equal(selectedGroup.id)
+          expect(user.visible_forces).to.equal("001,004")
+          expect(user.visible_courts).to.equal("B01,B41ME00")
+          expect(user.excluded_triggers).to.equal("TRPR0001")
+        })
+      })
+    })
+  })
+
+  it("should assign the correct group to a newly created general handler", () => {
+    const emailAddress = "bemailzz2@example.com"
+
+    cy.visit("users/new-user")
+
+    cy.get('[data-test="text-input_username"]').type("Buserzz2")
+    cy.get('[data-test="text-input_forenames"]').type("B forename zz2")
+    cy.get('[data-test="text-input_surname"]').type("B surname zzz2")
+    cy.get('[data-test="text-input_emailAddress"]').type(emailAddress)
+    cy.get('[data-test="text-input_orgServes"]').type("B organisation zz")
+    cy.get('input[id="visibleForces001"]').check()
+    cy.get('input[id="visibleForces004"]').check()
+    cy.get('[data-test="text-input_visibleCourts"]').type("B01,B41ME00")
+    cy.get('[data-test="included-triggers"]').click()
+    cy.get('input[id="excludedTriggersTRPR0001"]').uncheck()
+    cy.get('[data-test="checkbox-user-groups"]')
+      .find('[data-test="checkbox-multiselect-checkboxes"]')
+      .find(`input[name="B7GeneralHandler_grp"]`)
+      .check()
+    cy.get("button[name=save]").click()
+
+    cy.task("selectFromUsersGroupsTable").then((usersGroups) => {
+      cy.task("selectFromGroupsTable").then((groups) => {
+        const selectedGroup = groups.filter((g) => g.name === "B7GeneralHandler_grp")[0]
         cy.task("selectFromUsersTable", emailAddress).then((user) => {
           const userGroups = usersGroups.filter((u) => u.user_id === user.id)
           expect(user.id).to.equal(userGroups[0].user_id)

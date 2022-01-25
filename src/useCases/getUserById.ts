@@ -2,7 +2,7 @@ import Database from "types/Database"
 import User from "types/User"
 import { isError } from "types/Result"
 import PromiseResult from "types/PromiseResult"
-import { getUserGroups } from "useCases"
+import getUserSpecificGroups from "./getUserSpecificGroups"
 
 const getUserById = async (connection: Database, id: number): PromiseResult<Partial<User>> => {
   let user
@@ -29,7 +29,7 @@ const getUserById = async (connection: Database, id: number): PromiseResult<Part
     return error as Error
   }
 
-  const groups = await getUserGroups(connection, user.username)
+  const groups = await getUserSpecificGroups(connection, user.username)
   if (isError(groups)) {
     return groups
   }
