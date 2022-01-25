@@ -16,7 +16,6 @@ import { ParsedUrlQuery } from "querystring"
 import AuthenticationServerSidePropsContext from "types/AuthenticationServerSidePropsContext"
 import User from "types/User"
 import { isPost } from "utils/http"
-import { getUserGroups } from "useCases"
 import { UserGroupResult } from "types/UserGroup"
 import getAuditLogger from "lib/getAuditLogger"
 import config from "lib/config"
@@ -29,6 +28,7 @@ import updateUserCodes from "useCases/updateUserCodes"
 import isValidUsername from "utils/isValidUsername"
 import logger from "utils/logger"
 import isUserWithinGroup from "useCases/isUserWithinGroup"
+import getUserHierarchyGroups from "useCases/getUserHierarchyGroups"
 
 export const getServerSideProps = withMultipleServerSideProps(
   withAuthentication,
@@ -44,7 +44,7 @@ export const getServerSideProps = withMultipleServerSideProps(
     }
 
     const connection = getConnection()
-    const userGroups = await getUserGroups(connection, currentUser.username)
+    const userGroups = await getUserHierarchyGroups(connection, currentUser.username)
 
     if (isError(userGroups)) {
       logger.error(userGroups)

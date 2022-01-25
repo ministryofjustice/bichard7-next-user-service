@@ -2,7 +2,7 @@ import Database from "types/Database"
 import { UserGroupResult } from "types/UserGroup"
 import PromiseResult from "types/PromiseResult"
 
-const getUserGroups = (connection: Database, username: string): PromiseResult<UserGroupResult[]> => {
+const getUserHierarchyGroups = (connection: Database, username: string): PromiseResult<UserGroupResult[]> => {
   const getUserGroupsQuery = `
     WITH RECURSIVE name_tree AS ( 
       SELECT DISTINCT
@@ -35,4 +35,4 @@ const getUserGroups = (connection: Database, username: string): PromiseResult<Us
   return connection.any(getUserGroupsQuery, { username }).catch((error) => error as Error)
 }
 
-export default getUserGroups
+export default getUserHierarchyGroups

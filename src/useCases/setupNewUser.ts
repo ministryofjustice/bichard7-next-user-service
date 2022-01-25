@@ -7,10 +7,10 @@ import Database from "types/Database"
 import PromiseResult from "types/PromiseResult"
 import { isError } from "types/Result"
 import User from "types/User"
-import { getUserGroups } from "useCases"
 import logger from "utils/logger"
 import createNewUserEmail from "./createNewUserEmail"
 import createUser from "./createUser"
+import getUserHierarchyGroups from "./getUserHierarchyGroups"
 
 export interface newUserSetupResult {
   successMessage: string
@@ -43,7 +43,7 @@ export default async (
   const email = createNewUserEmailResult
   const emailer = getEmailer(userCreateDetails.emailAddress)
 
-  const groupsForCurrentUser = await getUserGroups(connection, currentUser.username ?? "")
+  const groupsForCurrentUser = await getUserHierarchyGroups(connection, currentUser.username ?? "")
 
   if (isError(groupsForCurrentUser)) {
     logger.error(groupsForCurrentUser)
