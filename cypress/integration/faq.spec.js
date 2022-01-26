@@ -15,10 +15,10 @@ describe("FAQ", () => {
     cy.get("[data-test='faq_last-updated']").should("contain", "04-01-2022")
   })
 
-  it("should display the expected 5 questions and answers", () => {
+  it("should display the expected 6 questions and answers", () => {
     // When
     cy.visit("/faq")
     // Then
-    cy.get("[data-test='faq-item']").should("have.length", "5")
+    cy.get("[data-test='faq-item']").should("have.length", "6")
   })
 })
