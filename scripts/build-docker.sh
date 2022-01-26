@@ -26,12 +26,7 @@ aws ecr get-login-password --region eu-west-2 | docker login \
     "${AWS_ACCOUNT_ID}.dkr.ecr.eu-west-2.amazonaws.com"
 
 # Get our latest staged nodejs image
-IMAGE_HASH=$(aws ecr describe-images \
-    --repository-name nginx-nodejs-supervisord \
-    --query 'to_string(sort_by(imageDetails,& imagePushedAt)[-1].imageDigest)' \
-    --output text |
-    head -n 1
-)
+IMAGE_HASH=$(aws ecr describe-images --repository-name nginx-nodejs-supervisord | jq '.imageDetails|sort_by(.imagePushedAt)[-1].imageDigest' | tr -d '"')
 
 DOCKER_IMAGE_HASH="${AWS_ACCOUNT_ID}.dkr.ecr.eu-west-2.amazonaws.com/nginx-nodejs-supervisord@${IMAGE_HASH}"
 
