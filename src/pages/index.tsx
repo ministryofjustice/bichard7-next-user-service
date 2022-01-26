@@ -121,6 +121,14 @@ const Home = ({
               </Link>
             )}
 
+            {!hasAccessToBichard && (
+              <Paragraph>
+                {
+                  "You do not have any Bichard groups associated with your account. If this is incorrect, please contact a User Manager in your force."
+                }
+              </Paragraph>
+            )}
+
             {(hasAccessToUserManagement || hasAccessToAuditLogging) && (
               <>
                 <h3 className="govuk-heading-m govuk-!-margin-top-5" id="services-title">
