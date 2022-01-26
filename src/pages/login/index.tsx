@@ -491,6 +491,11 @@ const Index = ({
               {"I have forgotten my password"}
             </Link>
           </Paragraph>
+          <Paragraph>
+            {"If you need help with anything else, you can "}
+            <ContactLink>{"contact support"}</ContactLink>
+            {"."}
+          </Paragraph>
         </GridColumn>
         <GridColumn width="one-third">
           <ServiceMessages messages={serviceMessages} />
