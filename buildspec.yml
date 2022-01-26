@@ -6,6 +6,11 @@ env:
     - USER_SERVICE_HASH
 
 phases:
+  install:
+    runtime-versions:
+      python: 3.9
+    commands:
+      - yum install -y jq
   build:
     commands:
       - set -ev
