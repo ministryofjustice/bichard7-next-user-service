@@ -66,8 +66,6 @@ if [[ -n "${CODEBUILD_RESOLVED_SOURCE_VERSION}" && -n "${CODEBUILD_START_TIME}" 
     install_trivy
     pull_trivy_db
 
-    sed -i 's/\"Version\"\:1/"Version":2/g' trivy/db/metadata.json # very dirty hack to avoid the db schema out of date error, please check that we can remove this ASAP
-
     ## Run goss tests
     GOSS_SLEEP=15 dgoss run -e DB_HOST=172.17.0.1 "user-service:latest"
     ## Run Trivy scan
