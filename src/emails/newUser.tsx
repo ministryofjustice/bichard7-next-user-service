@@ -1,11 +1,11 @@
 import ReactDOMServer from "react-dom/server"
 import EmailContent from "types/EmailContent"
-import UserDetails from "types/UserDetails"
+import User from "types/User"
 import EmailLayout from "./EmailLayout"
 
 interface Props {
   url: string
-  user: UserDetails
+  user: User
 }
 
 const NewUserEmail = ({ url, user }: Props): JSX.Element => (

@@ -1,6 +1,5 @@
 import KeyValuePair from "types/KeyValuePair"
 import User from "types/User"
-import UserCreateDetails from "types/UserDetails"
 
 interface ValidationResult {
   usernameError: string | false
@@ -11,7 +10,7 @@ interface ValidationResult {
 }
 
 const userFormIsValid = (
-  { username, forenames, surname, emailAddress }: Partial<User> | Partial<UserCreateDetails>,
+  { username, forenames, surname, emailAddress }: Partial<User> | Partial<User>,
   isEdit: boolean
 ): ValidationResult => {
   const validationResult = {

@@ -2,9 +2,9 @@ import generateNewUserEmail from "emails/newUser"
 import { addBasePath } from "next/dist/shared/lib/router/router"
 import EmailContent from "types/EmailContent"
 import { Result } from "types/Result"
-import UserCreateDetails from "types/UserDetails"
+import User from "types/User"
 
-export default (user: UserCreateDetails, baseUrl: string): Result<EmailContent> => {
+export default (user: User, baseUrl: string): Result<EmailContent> => {
   const url = new URL(addBasePath("/login/reset-password"), baseUrl)
 
   return generateNewUserEmail({ url: url.href, user })

@@ -1,9 +1,9 @@
 import userFormIsValid from "lib/userFormIsValid"
-import UserCreateDetails from "types/UserDetails"
+import User from "types/User"
 
 describe("userFormIsValid", () => {
   it("should return false when username is empty", () => {
-    const userDetails: Partial<UserCreateDetails> = {
+    const userDetails: Partial<User> = {
       username: "",
       forenames: "test-value-01",
       surname: "test-value-02",
@@ -20,7 +20,7 @@ describe("userFormIsValid", () => {
   })
 
   it("should return false when username is whitespace", () => {
-    const userDetails: Partial<UserCreateDetails> = {
+    const userDetails: Partial<User> = {
       username: " ",
       forenames: "test-value-01",
       surname: "test-value-02",
@@ -37,7 +37,7 @@ describe("userFormIsValid", () => {
   })
 
   it("should return false when forenames is empty", () => {
-    const userDetails: Partial<UserCreateDetails> = {
+    const userDetails: Partial<User> = {
       username: "test-value-01",
       forenames: "",
       surname: "test-value-02",
@@ -54,7 +54,7 @@ describe("userFormIsValid", () => {
   })
 
   it("should return false when forenames is whitespace", () => {
-    const userDetails: Partial<UserCreateDetails> = {
+    const userDetails: Partial<User> = {
       username: "test-value-01",
       forenames: " ",
       surname: "test-value-02",
@@ -71,7 +71,7 @@ describe("userFormIsValid", () => {
   })
 
   it("should return false when surname is empty", () => {
-    const userDetails: Partial<UserCreateDetails> = {
+    const userDetails: Partial<User> = {
       username: "test-value-01",
       forenames: "test-value-02",
       surname: "",
@@ -88,7 +88,7 @@ describe("userFormIsValid", () => {
   })
 
   it("should return false when surname is whitespace", () => {
-    const userDetails: Partial<UserCreateDetails> = {
+    const userDetails: Partial<User> = {
       username: "test-value-01",
       forenames: "test-value-02",
       surname: " ",
@@ -105,7 +105,7 @@ describe("userFormIsValid", () => {
   })
 
   it("should return false when emailAddress is empty", () => {
-    const userDetails: Partial<UserCreateDetails> = {
+    const userDetails: Partial<User> = {
       username: "test-value-01",
       forenames: "test-value-02",
       surname: "test-value-03",
@@ -122,7 +122,7 @@ describe("userFormIsValid", () => {
   })
 
   it("should return false when emailAddress is whitespace", () => {
-    const userDetails: Partial<UserCreateDetails> = {
+    const userDetails: Partial<User> = {
       username: "test-value-01",
       forenames: "test-value-02",
       surname: "test-value-03",
@@ -139,7 +139,7 @@ describe("userFormIsValid", () => {
   })
 
   it("should return true when all relevant fields are valid", () => {
-    const userDetails: Partial<UserCreateDetails> = {
+    const userDetails: Partial<User> = {
       username: "test-value-01",
       forenames: "test-value-02",
       surname: "test-value-03",
