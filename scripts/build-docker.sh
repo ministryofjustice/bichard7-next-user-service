@@ -36,9 +36,9 @@ function pull_and_build_from_aws() {
       "${AWS_ACCOUNT_ID}.dkr.ecr.eu-west-2.amazonaws.com"
 
   # Get our latest staged nodejs image
-  IMAGE_HASH=$(aws ecr describe-images --repository-name nginx-nodejs-supervisord | jq '.imageDetails|sort_by(.imagePushedAt)[-1].imageDigest' | tr -d '"')
+  IMAGE_HASH=$(aws ecr describe-images --repository-name "${DOCKER_REFERENCE}" | jq '.imageDetails|sort_by(.imagePushedAt)[-1].imageDigest' | tr -d '"')
 
-  DOCKER_IMAGE_HASH="${AWS_ACCOUNT_ID}.dkr.ecr.eu-west-2.amazonaws.com/nginx-nodejs-supervisord@${IMAGE_HASH}"
+  DOCKER_IMAGE_HASH="${AWS_ACCOUNT_ID}.dkr.ecr.eu-west-2.amazonaws.com/${DOCKER_REFERENCE}@${IMAGE_HASH}"
 
   docker build --build-arg "BUILD_IMAGE=${DOCKER_IMAGE_HASH}" -t user-service .
 
@@ -108,7 +108,7 @@ EOF
 }
 
 if [[ "$(has_local_image)" -gt 0 ]]; then
-  docker build -t audit-log-portal:latest .
+  docker build -t user-service:latest .
 else
   pull_and_build_from_aws
 fi
