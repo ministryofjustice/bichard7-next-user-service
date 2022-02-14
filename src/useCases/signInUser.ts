@@ -5,14 +5,14 @@ import setCookie from "utils/setCookie"
 import { v4 as uuidv4 } from "uuid"
 import { isError } from "types/Result"
 import Database from "types/Database"
-import UserFullDetails from "types/UserFullDetails"
 import logger from "utils/logger"
 import updateUserLastLogin from "./updateUserLastLogin"
+import UserAuthBichard from "types/UserAuthBichard"
 
 export default async (
   connection: Database,
   response: ServerResponse,
-  user: UserFullDetails
+  user: UserAuthBichard
 ): Promise<string | Error> => {
   const { authenticationCookieName } = config
   const uniqueId = uuidv4()

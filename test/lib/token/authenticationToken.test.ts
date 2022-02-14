@@ -8,11 +8,11 @@ import {
   storeTokenId
 } from "lib/token/authenticationToken"
 import { isError } from "types/Result"
-import UserFullDetails from "types/UserFullDetails"
+import User from "types/User"
 import UserCredentials from "types/UserCredentials"
 import Database from "types/Database"
 
-const user: UserFullDetails & UserCredentials = {
+const user: User & UserCredentials = {
   id: 1,
   username: "bichard01",
   exclusionList: ["1", "2", "3", "4"],

@@ -29,7 +29,6 @@ import getFailedPasswordAttempts from "useCases/getFailedPasswordAttempts"
 import sendVerificationCodeEmail from "useCases/sendVerificationCodeEmail"
 import Database from "types/Database"
 import addQueryParams from "utils/addQueryParams"
-import UserFullDetails from "types/UserFullDetails"
 import { removeCjsmSuffix } from "lib/cjsmSuffix"
 import NotReceivedEmail from "components/NotReceivedEmail"
 import logger from "utils/logger"
@@ -41,6 +40,7 @@ import GridColumn from "components/GridColumn"
 import React from "react"
 import GridRow from "components/GridRow"
 import Paragraph from "components/Paragraph"
+import UserAuthBichard from "types/UserAuthBichard"
 
 const authenticationErrorMessage = "Error authenticating the reqest"
 
@@ -105,7 +105,7 @@ const handleEmailStage = async (
 const logInUser = async (
   connection: Database,
   context: GetServerSidePropsContext<ParsedUrlQuery>,
-  user: UserFullDetails
+  user: UserAuthBichard
 ): Promise<GetServerSidePropsResult<Props>> => {
   const { res, req, formData, query } = context as CsrfServerSidePropsContext & AuthenticationServerSidePropsContext
   const { rememberEmailAddress } = formData as {

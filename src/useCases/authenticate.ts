@@ -1,17 +1,17 @@
 import { ITask } from "pg-promise"
-import UserGroup from "types/UserGroup"
 import config from "lib/config"
 import Database from "types/Database"
 import AuditLogger from "types/AuditLogger"
 import { verifySsha } from "lib/ssha"
 import { verifyPassword } from "lib/argon2"
-import UserFullDetails from "types/UserFullDetails"
 import PromiseResult from "types/PromiseResult"
 import { isError } from "types/Result"
 import resetUserVerificationCode from "./resetUserVerificationCode"
 import updatePassword from "./updatePassword"
 import getFailedPasswordAttempts from "./getFailedPasswordAttempts"
 import setFailedPasswordAttempts from "./setFailedPasswordAttempts"
+import UserAuthBichard from "types/UserAuthBichard"
+import UserGroup from "types/UserGroup"
 
 const fetchGroups = async (task: ITask<unknown>, emailAddress: string): Promise<UserGroup[]> => {
   const fetchGroupsQuery = `
@@ -28,7 +28,7 @@ const fetchGroups = async (task: ITask<unknown>, emailAddress: string): Promise<
   return groups
 }
 
-const getUserWithInterval = async (task: ITask<unknown>, params: unknown[]): Promise<UserFullDetails> => {
+const getUserWithInterval = async (task: ITask<unknown>, params: unknown[]): Promise<UserAuthBichard> => {
   const getUserQuery = `
   SELECT
     id,
@@ -65,10 +65,6 @@ const getUserWithInterval = async (task: ITask<unknown>, params: unknown[]): Pro
     username: user.username,
     exclusionList: user.excluded_triggers ? user.excluded_triggers.split(/[, ]/) : [],
     inclusionList,
-    endorsedBy: user.endorsed_by,
-    orgServes: user.org_serves,
-    forenames: user.forenames,
-    surname: user.surname,
     emailAddress: user.email,
     password: user.password,
     emailVerificationCode: user.email_verification_code,
@@ -96,7 +92,7 @@ const authenticate = async (
   emailAddress: string,
   password: string,
   verificationCode: string | null
-): PromiseResult<UserFullDetails> => {
+): PromiseResult<UserAuthBichard> => {
   const invalidCredentialsError = new Error("Invalid credentials or invalid verification")
 
   if (!emailAddress || !password || (verificationCode && verificationCode.length !== config.verificationCodeLength)) {
