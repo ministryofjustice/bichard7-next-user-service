@@ -2,7 +2,7 @@ import config from "lib/config"
 import Database from "types/Database"
 import PaginatedResult from "types/PaginatedResult"
 import PromiseResult from "types/PromiseResult"
-import UserDetails from "types/UserDetails"
+import User from "types/User"
 
 const getFilteredUsers = async (
   connection: Database,
@@ -10,7 +10,7 @@ const getFilteredUsers = async (
   visibleForces: string,
   isSuperUser = false,
   page = 0
-): PromiseResult<PaginatedResult<Partial<UserDetails>[]>> => {
+): PromiseResult<PaginatedResult<Partial<User>[]>> => {
   let users = []
   if (visibleForces !== "" || isSuperUser) {
     const forces = visibleForces.split(",")
@@ -44,7 +44,7 @@ const getFilteredUsers = async (
 
   return {
     result: users.map((r: { [key: string]: string }) => ({
-      id: r.id,
+      id: Number(r.id),
       username: r.username,
       forenames: r.forenames,
       surname: r.surname,

@@ -2,14 +2,14 @@ import config from "lib/config"
 import Database from "types/Database"
 import PaginatedResult from "types/PaginatedResult"
 import PromiseResult from "types/PromiseResult"
-import UserFullDetails from "types/UserFullDetails"
+import User from "types/User"
 
 const getAllUsers = async (
   connection: Database,
   visibleForces: string,
   isSuperUser = false,
   page = 0
-): PromiseResult<PaginatedResult<Pick<UserFullDetails, "username" | "forenames" | "surname" | "emailAddress">[]>> => {
+): PromiseResult<PaginatedResult<Pick<User, "username" | "forenames" | "surname" | "emailAddress">[]>> => {
   let users = []
   if (visibleForces !== "" || isSuperUser) {
     const forces = visibleForces.split(",")

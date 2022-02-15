@@ -1,10 +1,10 @@
 import jwt from "jsonwebtoken"
 import { Result } from "types/Result"
-import UserFullDetails from "types/UserFullDetails"
 import Database from "types/Database"
 import PromiseResult from "types/PromiseResult"
 import config from "../config"
 import UserGroup from "../../types/UserGroup"
+import UserAuthBichard from "types/UserAuthBichard"
 
 const signOptions: jwt.SignOptions = {
   issuer: config.tokenIssuer
@@ -21,7 +21,7 @@ export interface AuthenticationTokenPayload {
   id: string
 }
 
-export function generateAuthenticationToken(user: Partial<UserFullDetails>, uniqueId: string): AuthenticationToken {
+export function generateAuthenticationToken(user: Partial<UserAuthBichard>, uniqueId: string): AuthenticationToken {
   const options: jwt.SignOptions = {
     expiresIn: config.tokenExpiresIn,
     ...signOptions

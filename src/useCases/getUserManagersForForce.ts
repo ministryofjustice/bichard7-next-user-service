@@ -1,11 +1,8 @@
 import Database from "types/Database"
 import PromiseResult from "types/PromiseResult"
-import UserDetails from "types/UserDetails"
+import User from "types/User"
 
-export default async (
-  connection: Database,
-  visibleForces: string | undefined
-): PromiseResult<Partial<UserDetails>[]> => {
+export default async (connection: Database, visibleForces: string | undefined): PromiseResult<Partial<User>[]> => {
   let users = []
   if (visibleForces != undefined && visibleForces !== "") {
     const forces = visibleForces.split(",")

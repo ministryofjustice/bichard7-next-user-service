@@ -1,8 +1,12 @@
 import Database from "types/Database"
 import PromiseResult from "types/PromiseResult"
-import UserFullDetails from "types/UserFullDetails"
 
-export default (db: Database, emailAddress: string): PromiseResult<Pick<UserFullDetails, "id" | "password">> => {
+interface LoginDetails {
+  id: number
+  password: string
+}
+
+export default (db: Database, emailAddress: string): PromiseResult<LoginDetails> => {
   const query = `
       SELECT
         id,
@@ -11,5 +15,5 @@ export default (db: Database, emailAddress: string): PromiseResult<Pick<UserFull
       WHERE LOWER(email) = LOWER(\${emailAddress})
         AND deleted_at IS NULL
     `
-  return db.one<Pick<UserFullDetails, "id" | "password">>(query, { emailAddress }).catch((error) => error)
+  return db.one<LoginDetails>(query, { emailAddress }).catch((error) => error)
 }

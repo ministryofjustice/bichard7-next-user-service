@@ -1,9 +1,9 @@
 import EmailContent from "types/EmailContent"
-import UserDetails from "types/UserDetails"
+import User from "types/User"
 import { UserGroupResult } from "types/UserGroup"
 
 interface Props {
-  user: UserDetails
+  user: Partial<User>
 }
 
 function printGroups(groups: UserGroupResult[]): string {
@@ -20,7 +20,7 @@ const UserCreatedNotificationText = ({ user }: Props): string =>
              Last name: ${user.surname}
                  Email: ${user.emailAddress}
               Endorser: ${user.endorsedBy}
-    Permissions Groups: ${printGroups(user.groups)}
+    Permissions Groups: ${printGroups(user.groups ? user.groups : [])}
   `
 
 export default function generateUserCreatedNotification(props: Props): EmailContent {

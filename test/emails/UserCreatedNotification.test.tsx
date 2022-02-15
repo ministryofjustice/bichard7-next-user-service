@@ -1,9 +1,9 @@
 import UserCreatedNotification from "emails/UserCreatedNotification"
-import UserDetails from "types/UserDetails"
+import User from "types/User"
 
 describe("WHEN UserCreatedNotification is created", () => {
   describe("AND valid arguments are passed through", () => {
-    let validUser: UserDetails
+    let validUser: Partial<User>
     beforeEach(() => {
       // Given
       validUser = {
@@ -26,7 +26,7 @@ describe("WHEN UserCreatedNotification is created", () => {
       expect(result.text).toContain(validUser.surname)
       expect(result.text).toContain(validUser.emailAddress)
       expect(result.text).toContain(validUser.endorsedBy)
-      expect(result.text).toContain(validUser.groups[0].friendly_name)
+      expect(result.text).toContain(validUser.groups ? validUser.groups[0].friendly_name : [])
     })
 
     it("SHOULD use the friendly name when outputting groups", () => {
@@ -34,7 +34,7 @@ describe("WHEN UserCreatedNotification is created", () => {
       const result = UserCreatedNotification({ user: validUser })
       // Then
       expect(result.text).toBeTruthy()
-      expect(result.text).toContain(validUser.groups[0].friendly_name)
+      expect(result.text).toContain(validUser.groups ? validUser.groups[0].friendly_name : [])
     })
 
     it("SHOULD trim the trailing comma for the groups output", () => {
