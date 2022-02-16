@@ -8,7 +8,6 @@ import Link from "components/Link"
 import Paragraph from "components/Paragraph"
 import SuccessBanner from "components/SuccessBanner"
 import config from "lib/config"
-import getConnection from "lib/getConnection"
 import { withAuthentication, withCsrf, withMultipleServerSideProps } from "middleware"
 import { GetServerSidePropsContext, GetServerSidePropsResult } from "next"
 import Head from "next/head"
@@ -26,7 +25,7 @@ export const getServerSideProps = withMultipleServerSideProps(
   withAuthentication,
   withCsrf,
   async (context: GetServerSidePropsContext<ParsedUrlQuery>): Promise<GetServerSidePropsResult<Props>> => {
-    const { req, csrfToken, authentication, currentUser } = context as CsrfServerSidePropsContext &
+    const { req, formData, csrfToken, authentication, currentUser } = context as CsrfServerSidePropsContext &
       AuthenticationServerSidePropsContext
 
     if (!currentUser || !authentication) {
@@ -34,13 +33,8 @@ export const getServerSideProps = withMultipleServerSideProps(
     }
 
     if (isPost(req)) {
-      const connection = getConnection()
-
-      const feedbackResult = await postFeedback(
-        connection,
-        "",
-        currentUser?.emailAddress ? currentUser?.emailAddress : ""
-      )
+      const { feedback } = formData as { feedback: string }
+      const feedbackResult = await postFeedback(feedback, currentUser?.emailAddress ? currentUser?.emailAddress : "")
       if (isError(feedbackResult)) {
         return {
           props: {
@@ -55,7 +49,7 @@ export const getServerSideProps = withMultipleServerSideProps(
         props: {
           csrfToken,
           errorMessage: "",
-          successMessage: "Submited feedback",
+          successMessage: "Feedback submitted successfully",
           currentUser
         }
       }
@@ -103,7 +97,7 @@ const ShareFeedback = ({ csrfToken, currentUser, errorMessage, successMessage }:
               <ContactLink>{"FAQ page"}</ContactLink>
               {" or "}
               <Link href={config.serviceNowUrl}>{"raise a ticket with the service desk"}</Link>
-              {"."}
+              {". Any issues raised via this page will not be handled."}
             </Paragraph>
           </div>
           <div id="feedback-hint" className="govuk-label">

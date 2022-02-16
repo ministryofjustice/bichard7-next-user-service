@@ -169,6 +169,12 @@ const Home = ({
               <ContactLink>{"contact support"}</ContactLink>
               {"."}
             </Paragraph>
+
+            <Paragraph>
+              {"If you have any feedback you wish to share, please use "}
+              <Link href={"/feedback"}>{"this link"}</Link>
+              {"."}
+            </Paragraph>
           </GridColumn>
 
           <GridColumn width="one-third">

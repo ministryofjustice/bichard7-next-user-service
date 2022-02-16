@@ -1,14 +1,29 @@
-import Database from "types/Database"
+import config from "lib/config"
+import getEmailer from "lib/getEmailer"
 import PromiseResult from "types/PromiseResult"
+import logger from "utils/logger"
 
-const postFeedback = async (connection: Database, feedback: string, currentUserEmail: string): PromiseResult<void> => {
-  const addFeedback = `
-        INSERT INTO (email, feedback)
-        VALUES()
-    `
+const postFeedback = (feedback: string, currentUserEmail: string): PromiseResult<void> => {
+  const sendFeedbackTo = "kayleigh.derricutt@madetech.cjsm.net" // sorry Kayleigh :(
 
-  const result = await connection.result(addFeedback, [feedback, currentUserEmail]).catch((error) => error)
-  return result
+  const emailer = getEmailer(sendFeedbackTo)
+  const emailContent = {
+    subject: "New Feedback",
+    html: "",
+    text: `User ${currentUserEmail} has written the following feedback: '${feedback}'`
+  }
+
+  return emailer
+    .sendMail({
+      from: config.emailFrom,
+      to: sendFeedbackTo,
+      ...emailContent
+    })
+    .then(() => logger.info(`Feedback successfully sent`))
+    .catch((error: Error) => {
+      logger.error(`Error sending email `, error.message)
+      return error
+    })
 }
 
 export default postFeedback
