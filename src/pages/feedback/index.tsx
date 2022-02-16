@@ -18,7 +18,7 @@ import AuthenticationServerSidePropsContext from "types/AuthenticationServerSide
 import CsrfServerSidePropsContext from "types/CsrfServerSidePropsContext"
 import { isError } from "types/Result"
 import User from "types/User"
-import postFeedback from "useCases/postfeedback"
+import postFeedback from "useCases/postFeedback"
 import createRedirectResponse from "utils/createRedirectResponse"
 import { isPost } from "utils/http"
 
