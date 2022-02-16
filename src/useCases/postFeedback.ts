@@ -3,14 +3,15 @@ import getEmailer from "lib/getEmailer"
 import PromiseResult from "types/PromiseResult"
 import logger from "utils/logger"
 
-const postFeedback = (feedback: string, currentUserEmail: string): PromiseResult<void> => {
+const postFeedback = (feedback: string, currentUserEmail?: string): PromiseResult<void> => {
   const sendFeedbackTo = "kayleigh.derricutt@madetech.cjsm.net" // sorry Kayleigh :(
 
   const emailer = getEmailer(sendFeedbackTo)
+  const fromUser = currentUserEmail ? `User ${currentUserEmail}` : "An unknown user"
   const emailContent = {
     subject: "New Feedback",
     html: "",
-    text: `User ${currentUserEmail} has written the following feedback: '${feedback}'`
+    text: `${fromUser} has written the following feedback: '${feedback}'`
   }
 
   return emailer
