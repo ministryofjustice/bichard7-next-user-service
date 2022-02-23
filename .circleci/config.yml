@@ -109,6 +109,7 @@ jobs:
     parallelism: 4
     steps:
       - checkout
+      - run: touch cypress.log
       - run:
           name: Install Cypress in the background
           command: ./.circleci/scripts/install-cypress.sh > cypress.log 2>&1 &
@@ -120,6 +121,9 @@ jobs:
       - run:
           name: Install node dependencies
           command: npm ci
+      - run:
+          name: Install GOV.UK Assets
+          command: npm run install:assets
       - attach_workspace:
           at: .
       - clone_bichard_repo
