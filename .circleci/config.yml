@@ -121,6 +121,9 @@ jobs:
       - run:
           name: Install node dependencies
           command: npm ci
+      - run:
+          name: Install GOV.UK Assets
+          command: npm run install:assets
       - attach_workspace:
           at: .
       - clone_bichard_repo
