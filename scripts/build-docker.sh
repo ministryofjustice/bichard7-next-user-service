@@ -108,7 +108,14 @@ EOF
 }
 
 if [[ "$(has_local_image)" -gt 0 ]]; then
-  docker build -t user-service:latest .
+  if [ $(arch) = "arm64" ]
+  then
+      echo "Building for ARM"
+      docker build --platform=linux/amd64 -t user-service:latest .
+  else
+      echo "Building regular image"
+      docker build -t user-service:latest .
+  fi
 else
   pull_and_build_from_aws
 fi
