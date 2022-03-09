@@ -2,6 +2,7 @@
 
 exports[`should render the component and match the snapshot 1`] = `
 <div>
+  <noscript />
   <header
     class="govuk-header"
     data-module="govuk-header"
@@ -65,10 +66,10 @@ exports[`should render the component and match the snapshot 1`] = `
     </div>
   </header>
   <div
-    class="govuk-width-container "
+    class="govuk-width-container"
   >
     <main
-      class="govuk-main-wrapper "
+      class="govuk-main-wrapper"
       role="main"
     >
       <div
