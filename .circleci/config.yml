@@ -112,7 +112,8 @@ jobs:
       - run: touch cypress.log
       - run:
           name: Install Cypress in the background
-          command: ./.circleci/scripts/install-cypress.sh > cypress.log 2>&1 &
+          command: ./.circleci/scripts/install-cypress.sh 2>&1
+          background: true
       - restore_cache:
           name: Load node_modules from the cache if they haven't changed
           keys:
@@ -129,8 +130,12 @@ jobs:
       - clone_bichard_repo
       - run_postgres_database
       - run:
-          name: Wait for Cypress
-          command: cat cypress.log; until [ -f cypressInstalled ]; do sleep 1; done
+          name: Wait for Cypress installation to finish
+          command: until [ -f cypressInstalled ]; do sleep 1; done
+          no_output_timeout: 5m
+      - run:
+          name: Retrying installing Cypress
+          command: ./.circleci/scripts/install-cypress.sh
       - run:
           name: Run UI tests
           command: npm run test:ui
