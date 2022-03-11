@@ -154,13 +154,21 @@ jobs:
       - clone_bichard_repo
       - fetch_docker_images
       - run:
-          name: Run full stack
+          name: Run full stack (excluding beanconnect and PNC emulator)
           working_directory: ~/bichard7-next
           command: make run-all -j 4
+      - run:
+          name: Run beanconnect and PNC emulator
+          working_directory: ~/bichard7-next
+          command: make run-beanconnect
       - run:
           name: Wait for Bichard
           working_directory: ~/bichard7-next
           command: bash ./scripts/wait_for_bichard.sh
+      - run:
+          name: Trying to run beanconnect and PNC emulator again
+          command: make run-beanconnect && bash ./scripts/wait_for_bichard.sh
+          when: on_fail
       - run:
           name: Run end-to-end tests
           working_directory: ~/bichard7-next
