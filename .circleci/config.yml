@@ -156,7 +156,7 @@ jobs:
       - run:
           name: Run full stack
           working_directory: ~/bichard7-next
-          command: make run-all
+          command: make run-all -j 4
       - run:
           name: Wait for Bichard
           working_directory: ~/bichard7-next
