@@ -1,18 +1,20 @@
 version: 2.1
 
 commands:
-  checkout_and_install:
+  npm_install:
     description: Check out the repo and install the node dependencies
     steps:
-      - checkout
+      - run:
+          name: Hash package lock
+          command: ./.circleci/scripts/hash-package-lock.sh
       - restore_cache:
           name: Load node_modules from the cache if they haven't changed
           keys:
-            - v1-npm-deps-{{ checksum "package-lock.json" }}
+            - v1-npm-deps-{{ checksum "package-lock.json.md5" }}
             - v1-npm-deps-
       - run:
           name: Install node dependencies
-          command: npm ci
+          command: npm i
 
   clone_bichard_repo:
     description: Check out the bichard7-next repo
@@ -58,10 +60,11 @@ jobs:
       - image: cimg/node:16.3.0
     working_directory: ~
     steps:
-      - checkout_and_install
+      - checkout
+      - npm_install
       - save_cache:
           name: Save node_modules cache
-          key: v1-npm-deps-{{ checksum "package-lock.json" }}
+          key: v1-npm-deps-{{ checksum "package-lock.json.md5" }}
           paths: node_modules
       - run:
           name: Check the code for linting errors
@@ -78,7 +81,8 @@ jobs:
       - image: cimg/node:16.3.0
     working_directory: ~
     steps:
-      - checkout_and_install
+      - checkout
+      - npm_install
       - attach_workspace:
           at: .
       - run:
@@ -91,7 +95,8 @@ jobs:
       docker_layer_caching: true
     working_directory: ~
     steps:
-      - checkout_and_install
+      - checkout
+      - npm_install
       - attach_workspace:
           at: .
       - clone_bichard_repo
@@ -109,18 +114,11 @@ jobs:
     parallelism: 4
     steps:
       - checkout
-      - run: touch cypress.log
       - run:
           name: Install Cypress in the background
-          command: ./.circleci/scripts/install-cypress.sh > cypress.log 2>&1 &
-      - restore_cache:
-          name: Load node_modules from the cache if they haven't changed
-          keys:
-            - v1-npm-deps-{{ checksum "package-lock.json" }}
-            - v1-npm-deps-
-      - run:
-          name: Install node dependencies
-          command: npm ci
+          command: ./.circleci/scripts/install-cypress.sh 2>&1
+          background: true
+      - npm_install
       - run:
           name: Install GOV.UK Assets
           command: npm run install:assets
@@ -129,8 +127,12 @@ jobs:
       - clone_bichard_repo
       - run_postgres_database
       - run:
-          name: Wait for Cypress
-          command: cat cypress.log; until [ -f cypressInstalled ]; do sleep 1; done
+          name: Wait for Cypress installation to finish
+          command: until [ -f cypressInstalled ]; do sleep 1; done
+          no_output_timeout: 5m
+      - run:
+          name: Retrying installing Cypress
+          command: ./.circleci/scripts/install-cypress.sh
       - run:
           name: Run UI tests
           command: npm run test:ui
@@ -145,7 +147,8 @@ jobs:
       docker_layer_caching: true
     working_directory: ~
     steps:
-      - checkout_and_install
+      - checkout
+      - npm_install
       - attach_workspace:
           at: .
       - run:
@@ -154,13 +157,21 @@ jobs:
       - clone_bichard_repo
       - fetch_docker_images
       - run:
-          name: Run full stack
+          name: Run full stack (excluding beanconnect and PNC emulator)
           working_directory: ~/bichard7-next
-          command: make run-all
+          command: make run-all -j 4
+      - run:
+          name: Run beanconnect and PNC emulator
+          working_directory: ~/bichard7-next
+          command: make run-beanconnect
       - run:
           name: Wait for Bichard
           working_directory: ~/bichard7-next
           command: bash ./scripts/wait_for_bichard.sh
+      - run:
+          name: Trying to run beanconnect and PNC emulator again
+          command: make run-beanconnect && bash ./scripts/wait_for_bichard.sh
+          when: on_fail
       - run:
           name: Run end-to-end tests
           working_directory: ~/bichard7-next
