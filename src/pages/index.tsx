@@ -192,6 +192,7 @@ const Home = ({
           </GridColumn>
         </GridRow>
       </Layout>
+      <script src={`forces.js?forceID=${currentUser?.visibleForces}`} async />
     </>
   )
 }
