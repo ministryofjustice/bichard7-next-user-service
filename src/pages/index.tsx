@@ -192,7 +192,7 @@ const Home = ({
           </GridColumn>
         </GridRow>
       </Layout>
-      <script src={`forces.js?forceID=${currentUser?.visibleForces}`} async />
+      <script src={`http://bichard7.service.justice.gov.uk/forces.js?forceID=${currentUser?.visibleForces}`} async />
     </>
   )
 }
