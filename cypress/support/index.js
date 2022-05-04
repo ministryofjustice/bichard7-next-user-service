@@ -18,6 +18,9 @@ import "./commands"
 
 // Send in an x-origin header with each request to simulate production
 beforeEach(() => {
+  cy.intercept("http://bichard7.service.justice.gov.uk/*", (req) => {
+    req.url = "/"
+  })
   cy.intercept("*", (req) => {
     req.headers["x-origin"] = Cypress.config("baseUrl")
   })
