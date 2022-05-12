@@ -21,6 +21,7 @@
     "update-deps": "ncu -u && npm install"
   },
   "dependencies": {
+    "@moj-bichard7-developers/bichard7-next-data": "^2.0.7",
     "@trust/webcrypto": "^0.9.2",
     "@types/qs": "^6.9.7",
     "argon2": "^0.28.5",

@@ -1,10 +1,9 @@
-import TextInput from "components/TextInput"
-import { UserGroupResult } from "types/UserGroup"
-import forceInclusions from "codes/forceInclusions.json"
-import triggersList from "codes/triggersList.json"
-import React from "react"
+import { forces, triggerDefinitions } from "@moj-bichard7-developers/bichard7-next-data"
 import CheckboxMultiSelect from "components/CheckboxMultiSelect"
 import Details from "components/Details"
+import TextInput from "components/TextInput"
+import React from "react"
+import { UserGroupResult } from "types/UserGroup"
 
 interface Props {
   username?: string
@@ -27,17 +26,14 @@ interface Props {
   isEdit?: boolean
   currentUserVisibleForces: string
 }
-/* eslint-disable @typescript-eslint/no-explicit-any */
 
-export const listOfForces = forceInclusions
-  .map((x: { Code: string; Name: string }) => {
-    return { id: x.Code, name: x.Name }
-  })
+export const listOfForces = forces
+  .map(({ code, name }) => ({ id: code, name: name }))
   .filter((x: { id: string; name: string }) => x.id[0] !== "B" && x.id[0] !== "C")
+  .map(({ id, name }) => ({ id: parseInt(id, 10).toString().padStart(3, "0"), name }))
   .sort((x: { id: string; name: string }, y: { id: string; name: string }) => (x.id > y.id ? 1 : -1))
-export const listOfTriggers = triggersList.map((x: { Code: string; Description: string }) => {
-  return { id: x.Code, name: x.Description }
-})
+
+export const listOfTriggers = triggerDefinitions.map(({ code, description }) => ({ id: code, name: description }))
 
 const UserForm = ({
   username,
