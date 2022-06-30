@@ -25,10 +25,16 @@ export default ({ groups }: AuthenticationTokenPayload): GetUserServiceAccessRes
   const hasAccessToUserManagement = groups.includes("B7UserManager" as UserGroup)
 
   const hasAccessToAuditLogging = groups.includes("B7AuditLoggingManager" as UserGroup)
-  
+
   const hasAccessToNewBichard = groups.includes("B7NewUI" as UserGroup)
 
   const hasAccessToReports = bichardGroups.some((g) => groups.includes(g as UserGroup))
 
-  return { hasAccessToBichard, hasAccessToUserManagement, hasAccessToAuditLogging, hasAccessToReports, hasAccessToNewBichard }
+  return {
+    hasAccessToBichard,
+    hasAccessToUserManagement,
+    hasAccessToAuditLogging,
+    hasAccessToReports,
+    hasAccessToNewBichard
+  }
 }
