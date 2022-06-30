@@ -35,7 +35,7 @@ export const getServerSideProps = withMultipleServerSideProps(
     const { page } = query as { page: string }
     const pageNumber = page ? parseInt(page, 10) : 0
 
-    const { hasAccessToBichard, hasAccessToUserManagement, hasAccessToAuditLogging } =
+    const { hasAccessToBichard, hasAccessToUserManagement, hasAccessToAuditLogging, hasAccessToNewBichard } =
       getUserServiceAccess(authentication)
     const connection = getConnection()
     let serviceMessagesResult = await getServiceMessages(connection, pageNumber)
@@ -60,6 +60,7 @@ export const getServerSideProps = withMultipleServerSideProps(
         hasAccessToUserManagement,
         hasAccessToAuditLogging,
         hasAccessToBichard,
+        hasAccessToNewBichard,
         serviceMessages: JSON.parse(JSON.stringify(serviceMessagesResult.result)),
         pageNumber,
         totalMessages: serviceMessagesResult.totalElements
@@ -74,6 +75,7 @@ interface Props {
   hasAccessToUserManagement: boolean
   hasAccessToAuditLogging: boolean
   hasAccessToBichard: boolean
+  hasAccessToNewBichard: boolean
   serviceMessages: ServiceMessage[]
   pageNumber: number
   totalMessages: number
@@ -85,6 +87,7 @@ const Home = ({
   hasAccessToUserManagement,
   hasAccessToAuditLogging,
   hasAccessToBichard,
+  hasAccessToNewBichard,
   serviceMessages,
   pageNumber,
   totalMessages
@@ -127,6 +130,28 @@ const Home = ({
                   "You do not have any Bichard groups associated with your account. If this is incorrect, please contact a User Manager in your force."
                 }
               </Paragraph>
+            )}
+
+            {hasAccessToNewBichard && (
+              <Link
+                href="/bichard"
+                basePath={true}
+                className="govuk-button govuk-button--start govuk-!-margin-top-5"
+                id="bichard-link"
+              >
+                {"Access New Bichard"}
+                <svg
+                  className="govuk-button__start-icon"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="17.5"
+                  height="19"
+                  viewBox="0 0 33 40"
+                  aria-hidden="true"
+                  focusable="false"
+                >
+                  <path fill="currentColor" d="M0 0h13l20 20-20 20H0l20-20z" />
+                </svg>
+              </Link>
             )}
 
             {(hasAccessToUserManagement || hasAccessToAuditLogging) && (
