@@ -10,6 +10,7 @@ WORKDIR /src/user-service
 
 COPY ./package*.json ./
 COPY ./scripts/ ./scripts/
+COPY ./public/ ./public/
 
 RUN npm install && \
     npm run install:assets
