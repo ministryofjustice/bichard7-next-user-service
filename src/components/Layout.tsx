@@ -16,13 +16,12 @@ const FakeAssetForNoJsStatsGathering = () => (
   </noscript>
 )
 
-const ScreenSizeStats = () => <script src={addBasePath("/js/grabScreenSize.js")} />
+const ScreenSizeStats = () => <script src={addBasePath("/js/grabScreenSize.js")} async />
 
 /* eslint-enable jsx-a11y/alt-text, @next/next/no-img-element */
 const Layout = ({ children, user }: Props) => (
   <>
     <FakeAssetForNoJsStatsGathering />
-    <ScreenSizeStats />
     <Header serviceName="Ministry of Justice" user={user} />
 
     <div className="govuk-width-container">
@@ -32,6 +31,7 @@ const Layout = ({ children, user }: Props) => (
     </div>
 
     <Footer />
+    <ScreenSizeStats />
   </>
 )
 
