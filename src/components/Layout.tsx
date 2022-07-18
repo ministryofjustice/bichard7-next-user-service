@@ -2,6 +2,7 @@ import Footer from "components/Footer"
 import Header from "components/Header"
 import { ReactNode } from "react"
 import User from "types/User"
+import { addBasePath } from "next/dist/shared/lib/router/router"
 
 interface Props {
   children: ReactNode
@@ -14,8 +15,10 @@ const FakeAssetForNoJsStatsGathering = () => (
     <img src="/assets/nojs.png" className="govuk-!-display-none" />
   </noscript>
 )
-/* eslint-enable jsx-a11y/alt-text, @next/next/no-img-element */
 
+const ScreenSizeStats = () => <script src={addBasePath("/js/grabScreenSize.js")} async />
+
+/* eslint-enable jsx-a11y/alt-text, @next/next/no-img-element */
 const Layout = ({ children, user }: Props) => (
   <>
     <FakeAssetForNoJsStatsGathering />
@@ -28,6 +31,7 @@ const Layout = ({ children, user }: Props) => (
     </div>
 
     <Footer />
+    <ScreenSizeStats />
   </>
 )
 
