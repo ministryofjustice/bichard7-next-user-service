@@ -3,6 +3,9 @@
 exports[`should render the component and match the snapshot 1`] = `
 <div>
   <noscript />
+  <script
+    src="/js/grabScreenSize.js"
+  />
   <header
     class="govuk-header"
     data-module="govuk-header"
