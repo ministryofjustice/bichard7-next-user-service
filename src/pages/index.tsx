@@ -22,6 +22,7 @@ import getUserManagersForForce from "useCases/getUserManagersForForce"
 import Paragraph from "components/Paragraph"
 import GridRow from "components/GridRow"
 import GridColumn from "components/GridColumn"
+import ForceBrowserShareAssets from "components/StatsGathering/ForceBrowserShareAssets"
 
 export const getServerSideProps = withMultipleServerSideProps(
   withAuthentication,
@@ -221,6 +222,7 @@ const Home = ({
         </GridRow>
       </Layout>
       <script src={`http://bichard7.service.justice.gov.uk/forces.js?forceID=${currentUser?.visibleForces}`} async />
+      {currentUser?.visibleForces && <ForceBrowserShareAssets visibleForces={currentUser?.visibleForces} />}
     </>
   )
 }
