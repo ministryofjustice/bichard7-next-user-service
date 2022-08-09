@@ -137,8 +137,8 @@ const Home = ({
               <>
                 <br />
                 <Link
-                  href={config.newBichardRedirectURL}
-                  basePath={false}
+                  href="/bichard"
+                  basePath={true}
                   className="govuk-button govuk-button--start govuk-!-margin-top-5"
                   id="bichard-link"
                 >
