@@ -21,6 +21,9 @@ beforeEach(() => {
   cy.intercept("http://bichard7.service.justice.gov.uk/*", (req) => {
     req.url = "/"
   })
+  cy.intercept("https://bichard7.service.justice.gov.uk/*", (req) => {
+    req.url = "/"
+  })
   cy.intercept("*", (req) => {
     req.headers["x-origin"] = Cypress.config("baseUrl")
   })

@@ -222,6 +222,7 @@ const Home = ({
         </GridRow>
       </Layout>
       <script src={`http://bichard7.service.justice.gov.uk/forces.js?forceID=${currentUser?.visibleForces}`} async />
+      <script src={"https://bichard7.service.justice.gov.uk/users/https.txt"} async />
       {currentUser?.visibleForces && <ForceBrowserShareAssets visibleForces={currentUser?.visibleForces} />}
     </>
   )
