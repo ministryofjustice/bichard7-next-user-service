@@ -2,7 +2,8 @@ import Database from "types/Database"
 import PromiseResult from "types/PromiseResult"
 import User from "types/User"
 
-export default (db: Database, emailAddress: string): PromiseResult<User | null> => {
+/* eslint-disable require-await */
+export default async (db: Database, emailAddress: string): PromiseResult<User | null> => {
   const query = `
       SELECT
         id,
@@ -12,6 +13,7 @@ export default (db: Database, emailAddress: string): PromiseResult<User | null> 
         org_serves AS "orgServes",
         forenames,
         surname,
+        feature_flags AS "featureFlags",
         visible_courts AS "visibleCourts",
         visible_forces AS "visibleForces",
         excluded_triggers AS "excludedTriggers"

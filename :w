@@ -179,7 +179,9 @@ jobs:
       - run:
           name: Run end-to-end tests
           working_directory: ~/bichard7-next
-          command: bash -c ". ./scripts/e2e-tests/e2e-tests-env.sh && docker-compose run e2e-tests npm run test:must"
+          command: |
+            echo "export USERS_SCHEME='https'" >> scripts/e2e-tests/workspaces/local-next.env
+            bash -c ". ./scripts/e2e-tests/e2e-tests-env.sh && docker-compose run e2e-tests npm run test:must"
           environment:
             STACK_TYPE: next
             WORKSPACE: local-next
