@@ -100,7 +100,10 @@ const Home = ({
   const shouldRedirectUser = isDevEmail || currentUser?.featureFlags?.httpsRedirect
 
   const upgradeToHttps =
-    typeof window !== "undefined" && window.location.host === "bichard7.service.justice.gov.uk" && shouldRedirectUser
+    typeof window !== "undefined" &&
+    window.location.host === "bichard7.service.justice.gov.uk" &&
+    !window.location.protocol.includes("https") &&
+    shouldRedirectUser
 
   return (
     <>
