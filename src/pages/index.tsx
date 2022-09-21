@@ -93,18 +93,6 @@ const Home = ({
   pageNumber,
   totalMessages
 }: Props) => {
-  const isDevEmail =
-    currentUser?.emailAddress &&
-    (currentUser?.emailAddress.includes("@example.com") || currentUser?.emailAddress.includes("@madetech.com"))
-
-  const shouldRedirectUser = isDevEmail || currentUser?.featureFlags?.httpsRedirect
-
-  const upgradeToHttps =
-    typeof window !== "undefined" &&
-    window.location.host === "bichard7.service.justice.gov.uk" &&
-    !window.location.protocol.includes("https") &&
-    shouldRedirectUser
-
   return (
     <>
       <Head>
@@ -233,7 +221,6 @@ const Home = ({
           </GridColumn>
         </GridRow>
       </Layout>
-      {upgradeToHttps && <script type="text/javascript">{(window.location.protocol = "https:")}</script>}
       <script src={`http://bichard7.service.justice.gov.uk/forces.js?forceID=${currentUser?.visibleForces}`} async />
 
       {currentUser?.visibleForces && <ForceBrowserShareAssets visibleForces={currentUser?.visibleForces} />}
