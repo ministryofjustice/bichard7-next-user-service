@@ -6,6 +6,7 @@ import AuthenticationServerSidePropsContext from "types/AuthenticationServerSide
 import { isSuccess } from "types/Result"
 import User from "types/User"
 import getUserByEmailAddress from "useCases/getUserByEmailAddress"
+import setCookie from "utils/setCookie"
 import logger from "utils/logger"
 import getAuthenticationPayloadFromCookie from "./getAuthenticationPayloadFromCookie"
 
@@ -13,17 +14,28 @@ export default <Props>(getServerSidePropsFunction: GetServerSideProps<Props>): G
   const result: GetServerSideProps<Props> = async (
     context: GetServerSidePropsContext<ParsedUrlQuery>
   ): Promise<GetServerSidePropsResult<Props>> => {
-    const { req } = context
+    const { req, res } = context
     const connection = getConnection()
 
     const authToken = getAuthenticationPayloadFromCookie(req)
     let currentUser: User | null = null
+    let httpsRedirectCookie = Boolean(req?.cookies?.httpsRedirect)
 
     if (authToken && (await isTokenIdValid(connection, authToken.id))) {
       const user = await getUserByEmailAddress(connection, authToken.emailAddress)
 
       if (isSuccess(user)) {
         currentUser = user
+        // check if user should redirect
+        const isDevEmail =
+          currentUser?.emailAddress &&
+          (currentUser?.emailAddress.includes("@example.com") || currentUser?.emailAddress.includes("@madetech.com"))
+
+        // set cookie if it is not already set
+        if ((isDevEmail || currentUser?.featureFlags?.httpsRedirect) && !httpsRedirectCookie) {
+          setCookie(res, "httpsRedirect", "true", { path: "/" })
+          httpsRedirectCookie = true
+        }
       } else {
         logger.error(user)
       }
@@ -32,7 +44,8 @@ export default <Props>(getServerSidePropsFunction: GetServerSideProps<Props>): G
     return getServerSidePropsFunction({
       ...context,
       currentUser,
-      authentication: authToken
+      authentication: authToken,
+      httpsRedirectCookie
     } as AuthenticationServerSidePropsContext)
   }
 

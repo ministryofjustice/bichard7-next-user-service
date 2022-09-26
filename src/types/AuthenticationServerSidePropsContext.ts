@@ -6,6 +6,7 @@ import User from "./User"
 type AuthenticationServerSidePropsContext = GetServerSidePropsContext<ParsedUrlQuery> & {
   currentUser?: Partial<User>
   authentication?: AuthenticationTokenPayload
+  httpsRedirectCookie?: boolean
 }
 
 export default AuthenticationServerSidePropsContext
