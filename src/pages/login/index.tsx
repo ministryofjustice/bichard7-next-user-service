@@ -63,7 +63,8 @@ const handleEmailStage = async (
   serviceMessages: ServiceMessage[],
   connection: Database
 ): Promise<GetServerSidePropsResult<Props>> => {
-  const { formData, csrfToken } = context as CsrfServerSidePropsContext & AuthenticationServerSidePropsContext
+  const { formData, csrfToken, httpsRedirectCookie } = context as CsrfServerSidePropsContext &
+    AuthenticationServerSidePropsContext
   const { emailAddress } = formData as { emailAddress: string }
 
   if (!emailAddress.match(/\S+@\S+\.\S+/)) {
@@ -97,7 +98,8 @@ const handleEmailStage = async (
       csrfToken,
       emailAddress: normalisedEmail,
       loginStage: "validateCode",
-      serviceMessages: JSON.parse(JSON.stringify(serviceMessages))
+      serviceMessages: JSON.parse(JSON.stringify(serviceMessages)),
+      httpsRedirectCookie
     }
   }
 }
@@ -259,7 +261,8 @@ const handleGet = (
   context: GetServerSidePropsContext<ParsedUrlQuery>,
   serviceMessages: ServiceMessage[]
 ): GetServerSidePropsResult<Props> => {
-  const { csrfToken, query, req, res } = context as CsrfServerSidePropsContext & AuthenticationServerSidePropsContext
+  const { csrfToken, query, req, res, httpsRedirectCookie } = context as CsrfServerSidePropsContext &
+    AuthenticationServerSidePropsContext
   const { notYou } = query as { notYou: string }
 
   if (notYou === "true") {
@@ -278,7 +281,8 @@ const handleGet = (
           emailAddress,
           notYourEmailAddressUrl,
           loginStage: "rememberedEmail",
-          serviceMessages: JSON.parse(JSON.stringify(serviceMessages))
+          serviceMessages: JSON.parse(JSON.stringify(serviceMessages)),
+          httpsRedirectCookie
         }
       }
     }
@@ -288,7 +292,8 @@ const handleGet = (
     props: {
       csrfToken,
       loginStage: "email",
-      serviceMessages: JSON.parse(JSON.stringify(serviceMessages))
+      serviceMessages: JSON.parse(JSON.stringify(serviceMessages)),
+      httpsRedirectCookie
     }
   }
 }
@@ -333,6 +338,7 @@ interface Props {
   tooManyPasswordAttempts?: boolean
   notYourEmailAddressUrl?: string
   serviceMessages: ServiceMessage[]
+  httpsRedirectCookie?: boolean
 }
 
 type RememberProps = {
@@ -376,133 +382,142 @@ const Index = ({
   invalidCredentials,
   tooManyPasswordAttempts,
   notYourEmailAddressUrl,
-  serviceMessages
-}: Props) => (
-  <>
-    <Head>
-      <title>{"Sign in to Bichard 7"}</title>
-    </Head>
-    <Layout>
-      <GridRow>
-        <GridColumn width="two-thirds">
-          <h1 className="govuk-heading-xl">{"Sign in to Bichard 7"}</h1>
+  serviceMessages,
+  httpsRedirectCookie
+}: Props) => {
+  const upgradeToHttps =
+    typeof window !== "undefined" &&
+    window.location.host === "bichard7.service.justice.gov.uk" &&
+    !window.location.protocol.includes("https") &&
+    httpsRedirectCookie
+  return (
+    <>
+      <Head>
+        <title>{"Sign in to Bichard 7"}</title>
+      </Head>
+      <Layout>
+        <GridRow>
+          <GridColumn width="two-thirds">
+            <h1 className="govuk-heading-xl">{"Sign in to Bichard 7"}</h1>
 
-          <ErrorSummary title="There is a problem" show={!!sendingError}>
-            <p>
-              {"There is a problem signing in "}
-              <b>{emailAddress}</b>
-              {"."}
-            </p>
-            <p>
-              {"Please try again or "}
-              <ContactLink>{"contact support"}</ContactLink>
-              {" to report this issue."}
-            </p>
-          </ErrorSummary>
-
-          <ErrorSummary title="There is a problem" show={!!emailError}>
-            <ErrorSummaryList items={[{ id: "email", error: emailError }]} />
-          </ErrorSummary>
-
-          <ErrorSummary title="There is a problem" show={!!tooManyPasswordAttempts}>
-            <p>{"Too many incorrect password attempts. Please try signing in again."}</p>
-          </ErrorSummary>
-
-          {invalidCredentials && (
-            <ErrorSummary title="Your details do not match" show={invalidCredentials}>
-              <ErrorSummaryList
-                items={[
-                  { id: "password", error: "Enter a valid code and password combination." },
-                  {
-                    error: (
-                      <>
-                        {"Please wait "}
-                        <b>
-                          {config.incorrectDelay}
-                          {" seconds"}
-                        </b>
-                        {" before trying again."}
-                      </>
-                    )
-                  }
-                ]}
-              />
-            </ErrorSummary>
-          )}
-
-          {loginStage === "email" && (
-            <Form method="post" csrfToken={csrfToken}>
-              <input type="hidden" name="loginStage" value="email" />
-              <TextInput
-                id="email"
-                name="emailAddress"
-                label="Email address"
-                type="email"
-                error={emailError}
-                value={emailAddress}
-              />
-              <Button>{"Sign in"}</Button>
-            </Form>
-          )}
-
-          {loginStage === "validateCode" && (
-            <Form method="post" csrfToken={csrfToken}>
-              <Paragraph>{"If an account was found we will have sent you an email."}</Paragraph>
-              <NotReceivedEmail sendAgainUrl="/login" />
-              <input id="email" name="emailAddress" type="hidden" value={emailAddress} />
-              <input type="hidden" name="loginStage" value="validateCode" />
-              <TextInput
-                id="validationCode"
-                name="validationCode"
-                label="Enter the 6 character code from the email"
-                type="text"
-                value={validationCode}
-              />
-              <TextInput name="password" label="Password" type="password" />
-              <RememberForm checked={false} />
-              <Button>{"Sign in"}</Button>
-            </Form>
-          )}
-
-          {loginStage === "rememberedEmail" && (
-            <Form method="post" csrfToken={csrfToken}>
-              <Paragraph>
-                {"You are signing in as "}
+            <ErrorSummary title="There is a problem" show={!!sendingError}>
+              <p>
+                {"There is a problem signing in "}
                 <b>{emailAddress}</b>
                 {"."}
-              </Paragraph>
-              {notYourEmailAddressUrl && (
+              </p>
+              <p>
+                {"Please try again or "}
+                <ContactLink>{"contact support"}</ContactLink>
+                {" to report this issue."}
+              </p>
+            </ErrorSummary>
+
+            <ErrorSummary title="There is a problem" show={!!emailError}>
+              <ErrorSummaryList items={[{ id: "email", error: emailError }]} />
+            </ErrorSummary>
+
+            <ErrorSummary title="There is a problem" show={!!tooManyPasswordAttempts}>
+              <p>{"Too many incorrect password attempts. Please try signing in again."}</p>
+            </ErrorSummary>
+
+            {invalidCredentials && (
+              <ErrorSummary title="Your details do not match" show={invalidCredentials}>
+                <ErrorSummaryList
+                  items={[
+                    { id: "password", error: "Enter a valid code and password combination." },
+                    {
+                      error: (
+                        <>
+                          {"Please wait "}
+                          <b>
+                            {config.incorrectDelay}
+                            {" seconds"}
+                          </b>
+                          {" before trying again."}
+                        </>
+                      )
+                    }
+                  ]}
+                />
+              </ErrorSummary>
+            )}
+
+            {loginStage === "email" && (
+              <Form method="post" csrfToken={csrfToken}>
+                <input type="hidden" name="loginStage" value="email" />
+                <TextInput
+                  id="email"
+                  name="emailAddress"
+                  label="Email address"
+                  type="email"
+                  error={emailError}
+                  value={emailAddress}
+                />
+                <Button>{"Sign in"}</Button>
+              </Form>
+            )}
+
+            {loginStage === "validateCode" && (
+              <Form method="post" csrfToken={csrfToken}>
+                <Paragraph>{"If an account was found we will have sent you an email."}</Paragraph>
+                <NotReceivedEmail sendAgainUrl="/login" />
+                <input id="email" name="emailAddress" type="hidden" value={emailAddress} />
+                <input type="hidden" name="loginStage" value="validateCode" />
+                <TextInput
+                  id="validationCode"
+                  name="validationCode"
+                  label="Enter the 6 character code from the email"
+                  type="text"
+                  value={validationCode}
+                />
+                <TextInput name="password" label="Password" type="password" />
+                <RememberForm checked={false} />
+                <Button>{"Sign in"}</Button>
+              </Form>
+            )}
+
+            {loginStage === "rememberedEmail" && (
+              <Form method="post" csrfToken={csrfToken}>
                 <Paragraph>
-                  {"If this is not your account, you can "}
-                  <Link href={notYourEmailAddressUrl} data-test="not-you-link">
-                    {"sign in with a different email address"}
-                  </Link>
+                  {"You are signing in as "}
+                  <b>{emailAddress}</b>
                   {"."}
                 </Paragraph>
-              )}
-              <input type="hidden" name="loginStage" value="rememberedEmail" />
-              <TextInput name="password" label="Password" type="password" />
-              <RememberForm checked />
-              <Button>{"Sign in"}</Button>
-            </Form>
-          )}
-          <Paragraph>
-            <Link href="/login/reset-password" data-test="reset-password">
-              {"I have forgotten my password"}
-            </Link>
-          </Paragraph>
-          <Paragraph>
-            {"If you need help with anything else, you can "}
-            <ContactLink>{"contact support"}</ContactLink>
-            {"."}
-          </Paragraph>
-        </GridColumn>
-        <GridColumn width="one-third">
-          <ServiceMessages messages={serviceMessages} />
-        </GridColumn>
-      </GridRow>
-    </Layout>
-  </>
-)
+                {notYourEmailAddressUrl && (
+                  <Paragraph>
+                    {"If this is not your account, you can "}
+                    <Link href={notYourEmailAddressUrl} data-test="not-you-link">
+                      {"sign in with a different email address"}
+                    </Link>
+                    {"."}
+                  </Paragraph>
+                )}
+                <input type="hidden" name="loginStage" value="rememberedEmail" />
+                <TextInput name="password" label="Password" type="password" />
+                <RememberForm checked />
+                <Button>{"Sign in"}</Button>
+              </Form>
+            )}
+            <Paragraph>
+              <Link href="/login/reset-password" data-test="reset-password">
+                {"I have forgotten my password"}
+              </Link>
+            </Paragraph>
+            <Paragraph>
+              {"If you need help with anything else, you can "}
+              <ContactLink>{"contact support"}</ContactLink>
+              {"."}
+            </Paragraph>
+          </GridColumn>
+          <GridColumn width="one-third">
+            <ServiceMessages messages={serviceMessages} />
+          </GridColumn>
+        </GridRow>
+      </Layout>
+      {upgradeToHttps && <script type="text/javascript">{(window.location.protocol = "https:")}</script>}
+    </>
+  )
+}
 
 export default Index
