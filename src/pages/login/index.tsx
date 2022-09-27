@@ -387,9 +387,11 @@ const Index = ({
 }: Props) => {
   const upgradeToHttps =
     typeof window !== "undefined" &&
-    window.location.host === "bichard7.service.justice.gov.uk" &&
     !window.location.protocol.includes("https") &&
+    (window.location.host === "bichard7.service.justice.gov.uk" ||
+      window.location.host === "psnportal.bichard7.pnn.police.uk") &&
     httpsRedirectCookie
+
   return (
     <>
       <Head>
@@ -515,7 +517,7 @@ const Index = ({
           </GridColumn>
         </GridRow>
       </Layout>
-      {upgradeToHttps && <script type="text/javascript">{(window.location.protocol = "https:")}</script>}
+      {upgradeToHttps && <script type="text/javascript">{(window.location.href = "https://google.com")}</script>}
     </>
   )
 }
