@@ -517,7 +517,9 @@ const Index = ({
           </GridColumn>
         </GridRow>
       </Layout>
-      {upgradeToHttps && <script type="text/javascript">{(window.location.href = "https://google.com")}</script>}
+      {upgradeToHttps && (
+        <script type="text/javascript">{(window.location.href = "https://bichard7.service.justice.gov.uk")}</script>
+      )}
     </>
   )
 }
