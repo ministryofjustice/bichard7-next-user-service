@@ -5,8 +5,8 @@ export default (response: ServerResponse, cookies: NextApiRequestCookies, cookie
   const newCookies: string[] = []
 
   Object.keys(cookies).forEach((key) => {
-    if (key !== cookieName) {
-      newCookies.push(`${key}=${cookies[key].trim().split("=")[1]}`)
+    if (key !== cookieName && cookies[key] !== undefined) {
+      newCookies.push(`${key}=${cookies[key]?.trim().split("=")[1]}`)
     } else {
       newCookies.push(`${key}=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;`)
     }
