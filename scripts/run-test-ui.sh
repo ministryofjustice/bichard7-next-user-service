@@ -11,12 +11,12 @@ echo "TOTAL_CHUNKS: ${TOTAL_CHUNKS}"
 echo "CHUNK_NUMBER: ${CHUNK_NUMBER}"
 
 if [ $# -eq 0 ]; then
-    CHUNKS=$(find cypress/integration/** -iname '*.spec.js' | sort | awk "(NR % $TOTAL_CHUNKS == $CHUNK_NUMBER)" | paste -d ' ' -s -)
+    CHUNKS=$(find cypress/e2e/** -iname '*.cy.js' | sort | awk "(NR % $TOTAL_CHUNKS == $CHUNK_NUMBER)" | paste -d ' ' -s -)
     npx concurrently --raw --kill-others --success first "$START_CMD" "npm:cypress:run:file ${CHUNKS}"
 else
     FILES=""
     for f in "$@"; do
-        [[ $f =~ ^cypress/integration ]] && file_path="$f" || file_path="cypress/integration/$f"
+        [[ $f =~ ^cypress/e2e ]] && file_path="$f" || file_path="cypress/e2e/$f"
         FILES="$file_path,${FILES}"
     done
 
