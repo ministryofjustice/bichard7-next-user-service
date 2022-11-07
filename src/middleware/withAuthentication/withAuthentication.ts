@@ -10,7 +10,8 @@ import setCookie from "utils/setCookie"
 import logger from "utils/logger"
 import getAuthenticationPayloadFromCookie from "./getAuthenticationPayloadFromCookie"
 
-export default <Props extends { [key: string]: string }>(
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export default <Props extends { [key: string]: any }>(
   getServerSidePropsFunction: GetServerSideProps<Props>
 ): GetServerSideProps<Props> => {
   const result: GetServerSideProps<Props> = async (

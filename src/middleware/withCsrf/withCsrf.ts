@@ -6,7 +6,8 @@ import setCookie from "utils/setCookie"
 import generateCsrfToken from "./generateCsrfToken"
 import verifyCsrfToken from "./verifyCsrfToken"
 
-export default <Props extends { [key: string]: string }>(
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export default <Props extends { [key: string]: any }>(
   getServerSidePropsFunction: GetServerSideProps<Props>
 ): GetServerSideProps<Props> => {
   const result: GetServerSideProps<Props> = async (
