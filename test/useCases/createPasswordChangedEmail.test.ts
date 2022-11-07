@@ -1,3 +1,7 @@
+/**
+ * @jest-environment node
+ */
+
 import User from "types/User"
 import createPasswordChangedEmail from "useCases/createPasswordChangedEmail"
 
