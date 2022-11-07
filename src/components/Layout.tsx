@@ -2,7 +2,7 @@ import Footer from "components/Footer"
 import Header from "components/Header"
 import { ReactNode } from "react"
 import User from "types/User"
-import { addBasePath } from "next/dist/shared/lib/router/router"
+import { addBasePath } from "next/dist/client/add-base-path"
 
 interface Props {
   children: ReactNode
