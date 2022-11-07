@@ -24,7 +24,7 @@
     {
       "id": "inactivity-log-out",
       "question": "Why am I getting logged out of Bichard?",
-      "answer": "Bichard will automatically log you out after 10 minutes of inactivity. You will need to verify your email again unless you click the “Remember me” checkbox on the login page, in which case you will only need to use your password for the next 24 hours."
+      "answer": "Bichard will automatically log you out after 30 minutes of inactivity. You will need to verify your email again unless you click the “Remember me” checkbox on the login page, in which case you will only need to use your password for the next 24 hours."
     },
     {
       "id": "no-bichard-button",
