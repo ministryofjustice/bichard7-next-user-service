@@ -1,3 +1,7 @@
+/**
+ * @jest-environment node
+ */
+
 import { IncomingMessage, ServerResponse } from "http"
 import { NextApiRequestCookies } from "next/dist/server/api-utils"
 import { isError } from "types/Result"
