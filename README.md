@@ -175,8 +175,8 @@ There are a number of different types of test that form part of the user-service
   $ npm run test:ui
 
   # Build a production copy of the app and run one or more of the UI tests against it
-  $ npm run test:ui cypress/integration/login.spec.js
-  $ npm run test:ui login.spec.js users.spec.js
+  $ npm run test:ui cypress/e2e/login.cy.js
+  $ npm run test:ui login.cy.js users.cy.js
 
   # Run the UI tests against a version of the app that is already running
   $ npm run cypress:run

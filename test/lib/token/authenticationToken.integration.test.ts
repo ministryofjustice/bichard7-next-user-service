@@ -1,3 +1,7 @@
+/**
+ * @jest-environment node
+ */
+
 import { v4 as uuidv4 } from "uuid"
 import { getUserByUsername } from "useCases"
 import { isTokenIdValid, storeTokenId } from "lib/token/authenticationToken"

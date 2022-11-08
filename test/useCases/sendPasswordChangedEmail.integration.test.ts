@@ -1,3 +1,7 @@
+/**
+ * @jest-environment node
+ */
+
 import { isError } from "types/Result"
 import getEmailer from "lib/getEmailer"
 import sendPasswordChangedEmail from "useCases/sendPasswordChangedEmail"

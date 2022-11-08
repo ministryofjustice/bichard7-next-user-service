@@ -1,3 +1,7 @@
+/**
+ * @jest-environment node
+ */
+
 import { IncomingMessage, ServerResponse } from "http"
 import config from "lib/config"
 import { storeEmailAddressInCookie } from "useCases"

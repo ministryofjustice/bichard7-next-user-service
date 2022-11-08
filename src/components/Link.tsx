@@ -1,4 +1,4 @@
-import { addBasePath } from "next/dist/shared/lib/router/router"
+import { addBasePath } from "next/dist/client/add-base-path"
 import { ReactNode } from "react"
 
 interface Props {

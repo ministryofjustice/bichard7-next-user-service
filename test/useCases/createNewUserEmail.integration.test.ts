@@ -1,3 +1,7 @@
+/**
+ * @jest-environment node
+ */
+
 import createUser from "useCases/createUser"
 import createNewUserEmail from "useCases/createNewUserEmail"
 import { isError } from "types/Result"

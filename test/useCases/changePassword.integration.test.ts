@@ -1,3 +1,7 @@
+/**
+ * @jest-environment node
+ */
+
 import { isError } from "types/Result"
 import { changePassword } from "useCases"
 import Database from "types/Database"

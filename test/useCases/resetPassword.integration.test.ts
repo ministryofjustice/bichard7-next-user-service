@@ -1,3 +1,7 @@
+/**
+ * @jest-environment node
+ */
+
 import { isError } from "types/Result"
 import { resetPassword } from "useCases"
 import { ResetPasswordOptions } from "useCases/resetPassword"
