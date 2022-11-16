@@ -4,7 +4,6 @@ import UserGroup from "types/UserGroup"
 interface GetUserServiceAccessResult {
   hasAccessToBichard: boolean
   hasAccessToUserManagement: boolean
-  hasAccessToAuditLogging: boolean
   hasAccessToReports: boolean
   hasAccessToNewBichard: boolean
 }
@@ -24,8 +23,6 @@ export default ({ groups }: AuthenticationTokenPayload): GetUserServiceAccessRes
 
   const hasAccessToUserManagement = groups.includes("B7UserManager" as UserGroup)
 
-  const hasAccessToAuditLogging = groups.includes("B7AuditLoggingManager" as UserGroup)
-
   const hasAccessToNewBichard = groups.includes("B7NewUI" as UserGroup)
 
   const hasAccessToReports = bichardGroups.some((g) => groups.includes(g as UserGroup))
@@ -33,7 +30,6 @@ export default ({ groups }: AuthenticationTokenPayload): GetUserServiceAccessRes
   return {
     hasAccessToBichard,
     hasAccessToUserManagement,
-    hasAccessToAuditLogging,
     hasAccessToReports,
     hasAccessToNewBichard
   }

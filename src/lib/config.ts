@@ -13,7 +13,6 @@ interface SmtpConfig {
 export interface UserServiceConfig {
   argon2: Argon2Config
   auditLoggerType: string
-  auditLoggingURL: string
   authenticationCookieName: string
   baseUrl?: string
   bichardRedirectURL: string
@@ -53,7 +52,6 @@ const config: UserServiceConfig = {
     timeCost: 2
   },
   auditLoggerType: "console",
-  auditLoggingURL: process.env.AUDIT_LOGGING_URL ?? "/audit-logging",
   authenticationCookieName: ".AUTH",
   baseUrl: process.env.BASE_URL,
   bichardRedirectURL: process.env.BICHARD_REDIRECT_URL ?? "/bichard-ui/InitialRefreshList",

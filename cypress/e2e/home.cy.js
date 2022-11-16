@@ -22,7 +22,6 @@ describe("Home", () => {
       cy.login(emailAddress, "password")
       cy.get("h1").contains(/welcome bichard user 01/i)
       cy.get("a[id=user-management-link]").should("have.attr", "href").and("equal", "/users/users")
-      cy.get("a[id=audit-logging-link]").should("have.attr", "href").and("equal", "/audit-logging")
       cy.get("a[id=bichard-link]").should("have.attr", "href").and("equal", "/bichard-ui/InitialRefreshList")
     })
 
