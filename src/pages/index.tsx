@@ -1,28 +1,28 @@
+import ContactLink from "components/ContactLink"
+import GridColumn from "components/GridColumn"
+import GridRow from "components/GridRow"
 import Layout from "components/Layout"
-import Head from "next/head"
 import Link from "components/Link"
+import Pagination from "components/Pagination"
+import Paragraph from "components/Paragraph"
+import ServiceMessages from "components/ServiceMessages"
+import ForceBrowserShareAssets from "components/StatsGathering/ForceBrowserShareAssets"
+import UserManagers from "components/UserManagers"
+import config from "lib/config"
+import getConnection from "lib/getConnection"
 import { withAuthentication, withMultipleServerSideProps } from "middleware"
 import { GetServerSidePropsContext, GetServerSidePropsResult } from "next"
+import Head from "next/head"
 import { ParsedUrlQuery } from "querystring"
 import AuthenticationServerSidePropsContext from "types/AuthenticationServerSidePropsContext"
-import User from "types/User"
-import config from "lib/config"
-import logger from "utils/logger"
-import createRedirectResponse from "utils/createRedirectResponse"
-import getUserServiceAccess from "useCases/getUserServiceAccess"
-import getServiceMessages from "useCases/getServiceMessages"
-import getConnection from "lib/getConnection"
-import ServiceMessage from "types/ServiceMessage"
 import { isError } from "types/Result"
-import Pagination from "components/Pagination"
-import ServiceMessages from "components/ServiceMessages"
-import ContactLink from "components/ContactLink"
-import UserManagers from "components/UserManagers"
+import ServiceMessage from "types/ServiceMessage"
+import User from "types/User"
+import getServiceMessages from "useCases/getServiceMessages"
 import getUserManagersForForce from "useCases/getUserManagersForForce"
-import Paragraph from "components/Paragraph"
-import GridRow from "components/GridRow"
-import GridColumn from "components/GridColumn"
-import ForceBrowserShareAssets from "components/StatsGathering/ForceBrowserShareAssets"
+import getUserServiceAccess from "useCases/getUserServiceAccess"
+import createRedirectResponse from "utils/createRedirectResponse"
+import logger from "utils/logger"
 
 export const getServerSideProps = withMultipleServerSideProps(
   withAuthentication,
@@ -36,7 +36,7 @@ export const getServerSideProps = withMultipleServerSideProps(
     const { page } = query as { page: string }
     const pageNumber = page ? parseInt(page, 10) : 0
 
-    const { hasAccessToBichard, hasAccessToUserManagement, hasAccessToAuditLogging, hasAccessToNewBichard } =
+    const { hasAccessToBichard, hasAccessToUserManagement, hasAccessToNewBichard } =
       getUserServiceAccess(authentication)
     const connection = getConnection()
     let serviceMessagesResult = await getServiceMessages(connection, pageNumber)
@@ -59,7 +59,6 @@ export const getServerSideProps = withMultipleServerSideProps(
           ? [""]
           : currentUserManagers.map((cu) => (cu.forenames ? cu.forenames : "") + " " + (cu.surname ? cu.surname : "")),
         hasAccessToUserManagement,
-        hasAccessToAuditLogging,
         hasAccessToBichard,
         hasAccessToNewBichard,
         serviceMessages: JSON.parse(JSON.stringify(serviceMessagesResult.result)),
@@ -74,7 +73,6 @@ interface Props {
   currentUser?: Partial<User>
   currentUserManagerNames: string[]
   hasAccessToUserManagement: boolean
-  hasAccessToAuditLogging: boolean
   hasAccessToBichard: boolean
   hasAccessToNewBichard: boolean
   serviceMessages: ServiceMessage[]
@@ -86,7 +84,6 @@ const Home = ({
   currentUser,
   currentUserManagerNames,
   hasAccessToUserManagement,
-  hasAccessToAuditLogging,
   hasAccessToBichard,
   hasAccessToNewBichard,
   serviceMessages,
@@ -158,7 +155,7 @@ const Home = ({
               </>
             )}
 
-            {(hasAccessToUserManagement || hasAccessToAuditLogging) && (
+            {hasAccessToUserManagement && (
               <>
                 <h3 className="govuk-heading-m govuk-!-margin-top-5" id="services-title">
                   {"Quick access"}
@@ -169,18 +166,6 @@ const Home = ({
                       <li>
                         <Link href="/users" className="govuk-link govuk-link--no-underline" id="user-management-link">
                           {"User management"}
-                        </Link>
-                      </li>
-                    )}
-                    {hasAccessToAuditLogging && (
-                      <li>
-                        <Link
-                          href={config.auditLoggingURL}
-                          basePath={false}
-                          className="govuk-link govuk-link--no-underline"
-                          id="audit-logging-link"
-                        >
-                          {"Audit logging"}
                         </Link>
                       </li>
                     )}
