@@ -26,7 +26,8 @@ FROM ${BUILD_IMAGE} as runner
 
 RUN useradd nextjs && \
     groupadd nodejs && \
-    usermod -a -G nodejs nextjs
+    usermod -a -G nodejs nextjs && \
+    npm config set cache /tmp/npm --global
 
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_ENV=production
