@@ -201,6 +201,7 @@ describe("Logging In", () => {
         cy.get("a[data-test=not-you-link").click()
         cy.url().should("match", /\/login\?notYou=true$/)
         cy.get("body").should("not.contain", user.email)
+        cy.getCookie(emailCookieName).should("have.property", "value", "")
       })
     })
 
