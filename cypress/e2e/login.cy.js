@@ -195,10 +195,10 @@ describe("Logging In", () => {
         cy.get("button[type=submit]").click()
         cy.url().should("match", /\/users/)
 
-        cy.get("a[data-test=logout").click()
-        cy.get("a[data-test=log-back-in").click()
+        cy.get("a[data-test=logout]").click()
+        cy.get("a[data-test=log-back-in]").click()
         cy.get("body").should("contain", user.email)
-        cy.get("a[data-test=not-you-link").click()
+        cy.get("a[data-test=not-you-link]").click()
         cy.url().should("match", /\/login\?notYou=true$/)
         cy.get("body").should("not.contain", user.email)
         cy.getCookie(emailCookieName).should("have.property", "value", "")
