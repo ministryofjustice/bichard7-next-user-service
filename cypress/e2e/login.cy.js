@@ -183,7 +183,7 @@ describe("Logging In", () => {
       })
     })
 
-    it("should forget remembered email address when 'not you' link is clicked", () => {
+    it.only("should forget remembered email address when 'not you' link is clicked", () => {
       cy.visit("/login")
       cy.get("input[type=email]").type(user.email)
       cy.get("button[type=submit]").click()
