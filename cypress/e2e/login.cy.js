@@ -137,7 +137,7 @@ describe("Logging In", () => {
         cy.get("input#validationCode").should("not.exist")
         cy.get("input#password").type(user.password)
         cy.get("input[id=rememberEmailYes]").should("be.checked")
-        cy.get("button[type=submit]").click()
+        cy.get("button[type=submit]").trigger("click")
         cy.url().should("match", /\/users/)
 
         const expectedRememberEmailCookieExpiry = new Date()
@@ -174,7 +174,7 @@ describe("Logging In", () => {
         cy.get("input#validationCode").should("not.exist")
         cy.get("input#password").type(user.password)
         cy.get("input[id=rememberEmailYes]").click()
-        cy.get("button[type=submit]").click()
+        cy.get("button[type=submit]").trigger("click")
         cy.url().should("match", /\/users/)
 
         const expectedRememberEmailCookieExpiry = new Date()
