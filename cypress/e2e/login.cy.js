@@ -168,8 +168,8 @@ describe("Logging In", () => {
         cy.get("button[type=submit]").click()
         cy.url().should("match", /\/users/)
 
-        cy.clearCookie(authCookieName)
-        cy.visit("/login")
+        cy.get("a[data-test=logout").click()
+        cy.get("a[data-test=log-back-in").click()
         cy.get("body").should("contain", user.email)
         cy.get("input#validationCode").should("not.exist")
         cy.get("input#password").type(user.password)
@@ -179,11 +179,14 @@ describe("Logging In", () => {
 
         const expectedRememberEmailCookieExpiry = new Date()
         expectedRememberEmailCookieExpiry.setHours(expectedRememberEmailCookieExpiry.getHours() + 24)
-        cy.getCookie(emailCookieName).should("not.exist")
+        cy.get("button[type=submit]").click()
+        cy.get("a[data-test=logout]").click()
+        cy.get("a[data-test=log-back-in]").click()
+        cy.getCookie(emailCookieName).should("have.property", "value", "")
       })
     })
 
-    it.only("should forget remembered email address when 'not you' link is clicked", () => {
+    it("should forget remembered email address when 'not you' link is clicked", () => {
       cy.visit("/login")
       cy.get("input[type=email]").type(user.email)
       cy.get("button[type=submit]").click()
