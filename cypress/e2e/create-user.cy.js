@@ -13,11 +13,10 @@ describe("Creation of new user", () => {
   })
 
   beforeEach(() => {
-    Cypress.Cookies.preserveOnce(".AUTH")
+    cy.login("bichard01@example.com", "password")
   })
 
   it("should be successful and stay on add user page if all of the inputs are populated", () => {
-    cy.login("bichard01@example.com", "password")
     cy.visit("users/new-user")
 
     cy.get('[data-test="B7ExceptionHandler_grp"]').should("have.text", "Exception Handler")
