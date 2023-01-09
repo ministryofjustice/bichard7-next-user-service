@@ -13,7 +13,6 @@ describe("Edit user", () => {
       email: "bichard02@example.com",
       groups: currentUserGroupNames
     })
-    Cypress.Cookies.preserveOnce(".AUTH")
   })
 
   it("should display correct user details when navigating to the edit user page", () => {
