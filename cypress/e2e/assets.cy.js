@@ -18,6 +18,7 @@ describe("GOV.UK Assets", () => {
   })
 
   it("should provide favicon icon that loads correctly", () => {
+    cy.visit("/login")
     cy.get("link[rel='shortcut icon']")
       .should("have.attr", "href")
       .then((iconHref) => {
