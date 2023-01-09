@@ -133,6 +133,7 @@ describe("Reset password", () => {
       cy.get("input[name=emailAddress]").type(user.email)
       cy.get("button[type=submit]").click()
       cy.get("body").contains(/sent you an email/i)
+
       cy.task("getVerificationCode", user.email).then((verificationCode) => {
         cy.get("input#validationCode").type(verificationCode)
         cy.get("input#newPassword").type(newPassword)
@@ -141,10 +142,12 @@ describe("Reset password", () => {
         cy.get("body").contains(/You can now sign in with your new password./i)
       })
 
-      cy.visit(`/login/reset-password`)
+      cy.visit("/login")
+      cy.get('[data-test="reset-password"]').click()
       cy.get("input[name=emailAddress]").type(user.email)
       cy.get("button[type=submit]").click()
       cy.get("body").contains(/sent you an email/i)
+
       cy.task("getVerificationCode", user.email).then((verificationCode) => {
         cy.get("input#validationCode").type(verificationCode)
         cy.get("input#newPassword").type(newPassword)
