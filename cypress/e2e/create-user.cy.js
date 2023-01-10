@@ -1,22 +1,23 @@
 describe("Creation of new user", () => {
   before(() => {
-    cy.task("deleteFromUsersTable")
-    cy.task("deleteFromGroupsTable")
-    cy.task("deleteFromUsersGroupsTable")
-    cy.task("insertIntoGroupsTable")
-    cy.task("insertGroupHierarchies")
-    cy.task("insertIntoUsersTable")
+    cy.tableSetup()
+    // cy.task("deleteFromUsersTable")
+    // cy.task("deleteFromGroupsTable")
+    // cy.task("deleteFromUsersGroupsTable")
+    // cy.task("insertIntoGroupsTable")
+    // cy.task("insertGroupHierarchies")
+    // cy.task("insertIntoUsersTable")
     cy.task("insertIntoUserGroupsTable", {
       email: "bichard01@example.com",
       groups: ["B7UserManager_grp", "B7Supervisor_grp"]
     })
   })
 
-  beforeEach(() => {
-    cy.login("bichard01@example.com", "password")
-  })
+  // beforeEach(() => {
+  // })
 
-  it("should be successful and stay on add user page if all of the inputs are populated", () => {
+  it.only("should be successful and stay on add user page if all of the inputs are populated", () => {
+    cy.login("bichard01@example.com", "password")
     cy.visit("users/new-user")
 
     cy.get('[data-test="B7ExceptionHandler_grp"]').should("have.text", "Exception Handler")
