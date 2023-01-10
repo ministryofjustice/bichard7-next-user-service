@@ -6,7 +6,7 @@ describe("Change password", () => {
       cy.clearCookies()
     })
 
-    it.only("should prompt the user that password change was successful when provided password is valid", () => {
+    it("should prompt the user that password change was successful when provided password is valid", () => {
       const emailAddress = "bichard01@example.com"
       const newPassword = "Test@123456"
       cy.login(emailAddress, "password")
@@ -23,16 +23,15 @@ describe("Change password", () => {
       /* eslint-disable-next-line cypress/no-unnecessary-waiting */
       cy.wait(10000)
       cy.get("a[class=govuk-link]").click()
-      // cy.get("input[type=email]").type(emailAddress)
-      // cy.get("button[type=submit]").click()
-      // cy.get("input#validationCode").should("exist")
-      // cy.task("getVerificationCode", emailAddress).then((verificationCode) => {
-      //   cy.get("input#validationCode").type(verificationCode)
-      //   cy.get("input#password").type(newPassword)
-      //   cy.get("button[type=submit]").click()
-      //   cy.url().should("match", /\/users$/)
-      // })
-      cy.login(emailAddress, "Test@123456")
+      cy.get("input[type=email]").type(emailAddress)
+      cy.get("button[type=submit]").click()
+      cy.get("input#validationCode").should("exist")
+      cy.task("getVerificationCode", emailAddress).then((verificationCode) => {
+        cy.get("input#validationCode").type(verificationCode)
+        cy.get("input#password").type(newPassword)
+        cy.get("button[type=submit]").click()
+        cy.url().should("match", /\/users$/)
+      })
     })
 
     it("should not allow submission when passwords are too short", () => {
