@@ -19,13 +19,12 @@ describe("Delete user", () => {
   })
 
   it("should prevent the user from deleting themselves", () => {
-    // Given
     cy.login("bichard01@example.com", "password")
     cy.visit("/users/Bichard01/delete")
     cy.get('[data-test="text-input_deleteAccountConfirmation"]').type("Bichard01")
-    // When
+
     cy.get('[data-test="delete_delete-account-btn"]').click()
-    // Then
+
     cy.get('[data-test="error-summary"]').contains("There is a problem")
     cy.get('[data-test="error-summary"]').contains(
       "A user may not delete themselves, please contact another user manager to delete your user"
@@ -56,13 +55,10 @@ describe("Delete user", () => {
   })
 
   it("should not allow the current user to navigate to /delete when user is in a different force", () => {
-    // Given
     cy.login("bichard02@example.com", "password")
 
-    // When
     cy.visit("/users/Bichard03/delete", { failOnStatusCode: false })
 
-    // Then
     cy.get('[data-test="404_header"]').should("contain.text", "Page not found")
   })
 

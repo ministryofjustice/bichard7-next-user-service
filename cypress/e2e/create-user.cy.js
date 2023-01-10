@@ -99,7 +99,6 @@ describe("Creation of new user", () => {
   })
 
   it("should fail if no force is selected for user", () => {
-    // Given
     cy.visit("users/new-user")
 
     cy.get('[data-test="text-input_username"]').type("Bichard01")
@@ -108,10 +107,8 @@ describe("Creation of new user", () => {
     cy.get('[data-test="text-input_emailAddress"]').type("bemail2@example.com")
     cy.get('[data-test="text-input_orgServes"]').type("B organisation")
 
-    // When
     cy.get("button[name=saveAndAddAnother]").click()
 
-    // Then
     cy.get('[data-test="error-summary"]').contains("Please ensure that user is assigned to least one force.")
   })
 
@@ -201,7 +198,6 @@ describe("Creation of new user", () => {
   })
 
   it("should show a user-friendly validation error message when username contains a forbidden character", () => {
-    // Given
     cy.visit("users/new-user")
     cy.get('[data-test="text-input_username"]').type("B%user2")
     cy.get('[data-test="text-input_forenames"]').type("B forename")
@@ -215,10 +211,8 @@ describe("Creation of new user", () => {
     cy.get('[data-test="included-triggers"]').click()
     cy.get('input[id="excludedTriggersTRPR0001"]').uncheck()
 
-    // When
     cy.get("button[name=save]").click()
 
-    // Then
     const errorMessage =
       "Your username may only contain letters, numbers, dots (.), hyphens(-) and/or underscores (_), your username must also begin and end with a letter or a number"
 
@@ -230,7 +224,6 @@ describe("Creation of new user", () => {
   })
 
   it("should show a user-friendly validation error message when email contains the cjsm domain", () => {
-    // Given
     cy.visit("users/new-user")
     cy.get('[data-test="text-input_username"]').type("Buser2")
     cy.get('[data-test="text-input_forenames"]').type("B forename")
@@ -244,10 +237,8 @@ describe("Creation of new user", () => {
     cy.get('[data-test="included-triggers"]').click()
     cy.get('input[id="excludedTriggersTRPR0001"]').uncheck()
 
-    // When
     cy.get("button[name=save]").click()
 
-    // Then
     const errorMessage = "The user's email address should not end with .cjsm.net"
 
     // The summary should contain the validation error
@@ -258,9 +249,8 @@ describe("Creation of new user", () => {
   })
 
   it("should automatically have the endorsedBy field populated and be read only", () => {
-    // When
     cy.visit("users/new-user")
-    // Then
+
     cy.get('[data-test="text-input_endorsedBy"]')
       .should("contain.value", "Bichard01")
       .should("have.attr", "readonly", "readonly")

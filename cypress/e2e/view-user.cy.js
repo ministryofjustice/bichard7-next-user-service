@@ -5,29 +5,26 @@ describe("Viewing a single user", () => {
   })
 
   it("should not allow the current user to view a user who is in a different force", () => {
-    // Given
     cy.login("bichard02@example.com", "password")
-    // When
+
     cy.visit("/users/Bichard03", { failOnStatusCode: false })
-    // Then
+
     cy.get('[data-test="404_header"]').should("contain.text", "Page not found")
   })
 
   it("should prevent user from clicking on delete user button", () => {
-    // Given
     cy.login("bichard01@example.com", "password")
-    // When
+
     cy.visit("/users/Bichard01")
-    // Then
+
     cy.get('[data-test="disabled-delete-anchor"]').should("be.visible")
   })
 
   it("should show all summary information", () => {
-    // Given
     cy.login("bichard01@example.com", "password")
-    // When
+
     cy.visit("/users/Bichard01")
-    // Then
+
     cy.get('[data-test="summary-item_username_value"]').should("be.visible").contains("Bichard01")
     cy.get('[data-test="summary-item_forename_value"]').should("be.visible").contains("Bichard User 01")
     cy.get('[data-test="summary-item_surname_value"]').should("be.visible").contains("Surname 01")
