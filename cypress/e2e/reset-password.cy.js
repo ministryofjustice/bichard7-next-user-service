@@ -5,11 +5,11 @@ const user = {
 describe("Reset password", () => {
   context("720p resolution", () => {
     beforeEach(() => {
-      cy.task("deleteFromUsersTable")
-      cy.task("deleteFromGroupsTable")
-      cy.task("insertIntoUsersAndGroupsTable")
+      cy.tableSetup()
       cy.viewport(1280, 720)
     })
+
+    // TODO: check permissions - insertIntoUserGroupsTable
 
     it("should send out email to reset password", () => {
       cy.visit("/login")

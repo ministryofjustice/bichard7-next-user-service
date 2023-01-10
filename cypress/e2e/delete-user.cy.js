@@ -1,8 +1,11 @@
 describe("Delete user", () => {
   beforeEach(() => {
-    cy.task("deleteFromUsersTable")
-    cy.task("insertIntoUsersAndGroupsTable")
+    cy.tableSetup()
+    // cy.task("insertIntoUsersAndGroupsTable")
   })
+
+  // TODO: check permissions - insertIntoUserGroupsTable
+  // TODO: check what insertIntoUsersAndGroupsTable is doing
 
   it("should delete the user when confirmation text is valid", () => {
     cy.login("bichard01@example.com", "password")
@@ -67,9 +70,7 @@ describe("Delete user", () => {
     cy.checkCsrf("/users/Bichard01/delete", "POST").then(() => done())
   })
 
-  it("should de able to delete user regardless of force if current user is super user", () => {
-    cy.task("deleteFromGroupsTable")
-    cy.task("insertIntoGroupsTable")
+  it("should be able to delete user regardless of force if current user is super user", () => {
     cy.task("insertIntoUserGroupsTable", {
       email: "bichard04@example.com",
       groups: ["B7UserManager_grp", "B7SuperUserManager_grp"]

@@ -11,9 +11,10 @@ describe("Logging In", () => {
       cy.viewport(1280, 720)
       cy.clearCookies()
 
-      cy.task("deleteFromUsersTable")
-      cy.task("insertIntoUsersTable")
+      cy.tableSetup()
     })
+
+    // TODO: check permissions - insertIntoUserGroupsTable
 
     it("should initially only ask for an email", () => {
       cy.visit("/login")

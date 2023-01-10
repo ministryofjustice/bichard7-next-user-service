@@ -1,8 +1,9 @@
 describe("Redirection log in", () => {
   before(() => {
-    cy.task("deleteFromUsersTable")
-    cy.task("insertIntoUsersTable")
+    cy.tableSetup()
   })
+
+  // TODO: check permissions - insertIntoUserGroupsTable
 
   it("should be able to log in given a valid url passed as a 'redirect' query parameter and redirect to the url given in the query parameter", () => {
     const emailAddress = "bichard01@example.com"

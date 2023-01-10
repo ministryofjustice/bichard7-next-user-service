@@ -1,7 +1,6 @@
 describe("Viewing a single user", () => {
   beforeEach(() => {
-    cy.task("deleteFromUsersTable")
-    cy.task("insertIntoUsersTable")
+    cy.tableSetup()
     cy.task("insertIntoUserGroupsTable", { email: "bichard01@example.com", groups: ["B7UserManager_grp"] })
   })
 

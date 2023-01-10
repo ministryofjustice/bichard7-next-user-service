@@ -3,12 +3,7 @@ const getCurrentUserGroups = (allGroups) => allGroups.filter((g) => currentUserG
 
 describe("Edit user", () => {
   beforeEach(() => {
-    cy.task("deleteFromUsersTable")
-    cy.task("deleteFromGroupsTable")
-    cy.task("deleteFromUsersGroupsTable")
-    cy.task("insertIntoGroupsTable")
-    cy.task("insertIntoUsersTable")
-    cy.task("insertGroupHierarchies")
+    cy.tableSetup()
     cy.task("insertIntoUserGroupsTable", {
       email: "bichard02@example.com",
       groups: currentUserGroupNames
@@ -188,10 +183,6 @@ describe("Edit user", () => {
   })
 
   it("should de able to edit any user when logged in as super user", () => {
-    cy.task("deleteFromGroupsTable")
-    cy.task("insertIntoGroupsTable")
-    cy.task("deleteFromUsersTable")
-    cy.task("insertIntoUsersTable")
     cy.task("insertIntoUserGroupsTable", {
       email: "bichard04@example.com",
       groups: ["B7UserManager_grp", "B7SuperUserManager_grp"]

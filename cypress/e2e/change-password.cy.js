@@ -1,10 +1,11 @@
 describe("Change password", () => {
   context("720p resolution", () => {
     beforeEach(() => {
-      cy.task("deleteFromUsersTable")
-      cy.task("insertIntoUsersTable")
+      cy.tableSetup()
       cy.clearCookies()
     })
+
+    // TODO: check permissions - insertIntoUserGroupsTable
 
     it("should prompt the user that password change was successful when provided password is valid", () => {
       const emailAddress = "bichard01@example.com"

@@ -1,13 +1,11 @@
 describe("Forgot password", () => {
   context("720p resolution", () => {
     beforeEach(() => {
-      cy.task("deleteFromUsersTable")
-      cy.task("insertIntoUsersTable")
-    })
-
-    beforeEach(() => {
+      cy.tableSetup()
       cy.viewport(1280, 720)
     })
+
+    // TODO: check permissions - insertIntoUserGroupsTable
 
     it("should prompt the user to check their email after entering an email address", () => {
       cy.visit("/login")

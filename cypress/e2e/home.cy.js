@@ -1,19 +1,11 @@
 describe("Home", () => {
   context("720p resolution", () => {
     beforeEach(() => {
-      cy.task("deleteFromGroupsTable")
-      cy.task("insertIntoGroupsTable")
-      cy.task("deleteFromUsersTable")
-      cy.task("deleteFromServiceMessagesTable")
-      cy.task("insertIntoUsersTable")
+      cy.tableSetup()
       cy.task("insertIntoUserGroupsTable", {
         email: "bichard01@example.com",
         groups: ["B7UserManager_grp", "B7AuditLoggingManager_grp", "B7Supervisor_grp"]
       })
-      cy.task("insertIntoServiceMessagesTable")
-    })
-
-    beforeEach(() => {
       cy.viewport(1280, 720)
     })
 

@@ -1,8 +1,9 @@
 describe("Display list of users", () => {
   beforeEach(() => {
-    cy.task("deleteFromUsersTable")
-    cy.task("insertIntoUsersTable")
+    cy.tableSetup()
   })
+
+  // TODO: check permissions - insertIntoUserGroupsTable
 
   it("should display a list of user in tabular form", () => {
     cy.login("bichard01@example.com", "password")
@@ -25,8 +26,6 @@ describe("Display list of users", () => {
   })
 
   it("should display the correct list of users when using the filter", () => {
-    cy.task("deleteFromGroupsTable")
-    cy.task("insertIntoGroupsTable")
     cy.task("insertIntoUserGroupsTable", {
       email: "bichard01@example.com",
       groups: ["B7UserManager_grp"]
@@ -61,8 +60,6 @@ describe("Display list of users", () => {
   })
 
   it("should display the correct list of users when using the filter when logged in as super user", () => {
-    cy.task("deleteFromGroupsTable")
-    cy.task("insertIntoGroupsTable")
     cy.task("insertIntoUserGroupsTable", {
       email: "bichard04@example.com",
       groups: ["B7UserManager_grp", "B7SuperUserManager_grp"]
@@ -86,8 +83,6 @@ describe("Display list of users", () => {
   })
 
   it("should display in paginated view when returning many users", () => {
-    cy.task("deleteFromUsersTable")
-    cy.task("insertManyIntoUsersTable")
     cy.login("bichard01@example.com", "password")
 
     cy.visit("/users")
@@ -121,8 +116,6 @@ describe("Display list of users", () => {
   })
 
   it("should display different users depending on the force codes assigned", () => {
-    cy.task("deleteFromUsersTable")
-    cy.task("insertManyIntoUsersTable")
     cy.login("bichard13@example.com", "password")
 
     cy.visit("/users")

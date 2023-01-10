@@ -4,9 +4,10 @@ describe("Logging Out", () => {
       cy.viewport(1280, 720)
       cy.clearCookies()
 
-      cy.task("deleteFromUsersTable")
-      cy.task("insertIntoUsersTable")
+      cy.tableSetup()
     })
+
+    // TODO: check permissions - insertIntoUserGroupsTable
 
     it("can successfully log out after logging in", () => {
       cy.login("bichard01@example.com", "password")
