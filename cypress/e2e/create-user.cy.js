@@ -36,6 +36,8 @@ describe("Creation of new user", () => {
   })
 
   it("should be successful and navigate to users page if all of the inputs are populated", () => {
+    cy.login("bichard01@example.com", "password")
+
     cy.visit("users/new-user")
 
     cy.get('[data-test="text-input_username"]').type("Buser2")
@@ -57,6 +59,8 @@ describe("Creation of new user", () => {
   })
 
   it("should show a newly-created user in the list of users", () => {
+    cy.login("bichard01@example.com", "password")
+
     cy.visit("users")
 
     cy.get("tbody tr:nth-child(4) td:nth-child(1)").should("have.text", "Buser")
@@ -66,6 +70,8 @@ describe("Creation of new user", () => {
   })
 
   it("doesn't update other users when a new user is created", () => {
+    cy.login("bichard01@example.com", "password")
+
     cy.visit("users")
 
     cy.get("tbody tr:nth-child(1) td:nth-child(1)").should("have.text", "Bichard01")
@@ -85,6 +91,8 @@ describe("Creation of new user", () => {
   })
 
   it("should fail if previously used username is given", () => {
+    cy.login("bichard01@example.com", "password")
+
     cy.visit("users/new-user")
 
     cy.get('[data-test="text-input_username"]').type("Bichard01")
@@ -99,6 +107,8 @@ describe("Creation of new user", () => {
   })
 
   it("should fail if no force is selected for user", () => {
+    cy.login("bichard01@example.com", "password")
+
     cy.visit("users/new-user")
 
     cy.get('[data-test="text-input_username"]').type("Bichard01")
@@ -115,6 +125,8 @@ describe("Creation of new user", () => {
   it("should show the correct values for groups select input when on the create new user page", () => {
     cy.task("selectFromGroupsTable").then((groups) => {
       const userGroups = groups.filter((g) => g.name === "B7Supervisor_grp" || g.name === "B7UserManager_grp")
+      cy.login("bichard01@example.com", "password")
+
       cy.visit("users/new-user")
       cy.get('[data-test="checkbox-user-groups"]')
         .find('[data-test="checkbox-multiselect-checkboxes"]')
@@ -127,6 +139,7 @@ describe("Creation of new user", () => {
 
   it("should assign the correct group to a newly created user manager", () => {
     const emailAddress = "bemailzz@example.com"
+    cy.login("bichard01@example.com", "password")
 
     cy.visit("users/new-user")
 
@@ -163,6 +176,7 @@ describe("Creation of new user", () => {
 
   it("should assign the correct group to a newly created general handler", () => {
     const emailAddress = "bemailzz2@example.com"
+    cy.login("bichard01@example.com", "password")
 
     cy.visit("users/new-user")
 
@@ -198,6 +212,8 @@ describe("Creation of new user", () => {
   })
 
   it("should show a user-friendly validation error message when username contains a forbidden character", () => {
+    cy.login("bichard01@example.com", "password")
+
     cy.visit("users/new-user")
     cy.get('[data-test="text-input_username"]').type("B%user2")
     cy.get('[data-test="text-input_forenames"]').type("B forename")
@@ -224,6 +240,8 @@ describe("Creation of new user", () => {
   })
 
   it("should show a user-friendly validation error message when email contains the cjsm domain", () => {
+    cy.login("bichard01@example.com", "password")
+
     cy.visit("users/new-user")
     cy.get('[data-test="text-input_username"]').type("Buser2")
     cy.get('[data-test="text-input_forenames"]').type("B forename")
@@ -249,6 +267,8 @@ describe("Creation of new user", () => {
   })
 
   it("should automatically have the endorsedBy field populated and be read only", () => {
+    cy.login("bichard01@example.com", "password")
+
     cy.visit("users/new-user")
 
     cy.get('[data-test="text-input_endorsedBy"]')
