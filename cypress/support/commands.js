@@ -26,6 +26,43 @@ Cypress.Commands.add("checkCsrf", (url, method) => {
   })
 })
 
+// const login = ({ emailAddress, password }) => {
+//   let runningWithProxy
+//   if (Cypress.config("baseUrl") !== "http://localhost:3000/users/login") {
+//     console.log(`Running with proxy: ${Cypress.config("baseUrl")}`)
+//     runningWithProxy = true
+//   } else {
+//     console.log(`Running locally: ${Cypress.config("baseUrl")}`)
+//     runningWithProxy = false
+//   }
+
+//   cy.visit(runningWithProxy ? "http://localhost:3000/users/login" : "/users/login")
+//   cy.get("#email").type(emailAddress)
+//   cy.get("button[type=submit]").click()
+//   cy.get("input#validationCode").should("exist")
+//   cy.task("getVerificationCode", emailAddress).then((verificationCode) => {
+//     cy.get("input#validationCode").type(verificationCode)
+//     cy.get("input#password").type(password)
+//     cy.get("button[type=submit]").click()
+//   })
+// }
+
+// Cypress.Commands.add("login", (emailAddress, password) => {
+//   cy.session(
+//     [emailAddress, password],
+//     () => {
+//       cy.intercept("GET", "http://bichard7.service.justice.gov.uk/forces.js?forceID=***", {})
+
+//       login({ emailAddress, password })
+//     },
+//     {
+//       validate() {
+//         cy.visit("/login")
+//         cy.get('a[data-test="logout"]').should("have.text", "Sign out")
+//       }
+//     }
+//   )
+// })
 Cypress.Commands.add("login", (emailAddress, password) => {
   cy.visit("/login")
   cy.get("input[type=email]").type(emailAddress)

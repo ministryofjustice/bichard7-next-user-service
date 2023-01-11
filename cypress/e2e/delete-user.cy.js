@@ -1,4 +1,8 @@
 describe("Delete user", () => {
+  // before(() => {
+  //   cy.login("bichard01@example.com", "password")
+  // })
+
   beforeEach(() => {
     cy.tableSetup()
     // cy.task("insertIntoUsersAndGroupsTable")
@@ -7,7 +11,7 @@ describe("Delete user", () => {
   // TODO: check permissions - insertIntoUserGroupsTable
   // TODO: check what insertIntoUsersAndGroupsTable is doing
 
-  it("should delete the user when confirmation text is valid", () => {
+  it.only("should delete the user when confirmation text is valid", () => {
     cy.login("bichard01@example.com", "password")
     cy.visit("/users/Bichard02")
     cy.get('a[data-test="delete-user-view"]').click()
