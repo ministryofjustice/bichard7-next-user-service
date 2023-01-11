@@ -3,7 +3,7 @@ const getCurrentUserGroups = (allGroups) => allGroups.filter((g) => currentUserG
 
 describe("Edit user", () => {
   beforeEach(() => {
-    cy.tableSetup()
+    cy.resetTableToDefault()
     cy.task("insertIntoUserGroupsTable", {
       email: "bichard02@example.com",
       groups: currentUserGroupNames

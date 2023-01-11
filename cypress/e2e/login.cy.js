@@ -11,7 +11,7 @@ describe("Logging In", () => {
       cy.viewport(1280, 720)
       cy.clearCookies()
 
-      cy.tableSetup()
+      cy.resetTableToDefault()
     })
 
     // TODO: check permissions - insertIntoUserGroupsTable

@@ -1,6 +1,6 @@
 describe("Viewing a single user", () => {
   beforeEach(() => {
-    cy.tableSetup()
+    cy.resetTableToDefault()
     cy.task("insertIntoUserGroupsTable", { email: "bichard01@example.com", groups: ["B7UserManager_grp"] })
   })
 

@@ -1,7 +1,7 @@
 describe("Forgot password", () => {
   context("720p resolution", () => {
     beforeEach(() => {
-      cy.tableSetup()
+      cy.resetTableToDefault()
       cy.viewport(1280, 720)
     })
 

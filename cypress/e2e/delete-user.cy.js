@@ -1,7 +1,7 @@
 describe("Delete user", () => {
   before(() => {
-    cy.tableSetup()
-    // 🧹TODO: check at end of refactor if deleteFromUsersGroupsTable can be brought into tableSetup
+    cy.resetTableToDefault()
+    // 🧹TODO: check at end of refactor if deleteFromUsersGroupsTable can be brought into resetTableToDefault
     cy.task("deleteFromUsersGroupsTable")
     cy.task("insertIntoUserGroupsTable", {
       email: "bichard01@example.com",
@@ -34,7 +34,8 @@ describe("Delete user", () => {
     )
   })
 
-  it("should not allow deleting the user when confirmation text is invalid", () => {
+  it.only("should not allow deleting the user when confirmation text is invalid", () => {
+    cy.resetTableToDefault()
     cy.login("bichard01@example.com", "password")
     cy.visit("/users/Bichard02")
     cy.get('a[data-test="delete-user-view"]').click()

@@ -39,7 +39,7 @@ Cypress.Commands.add("login", (emailAddress, password) => {
   })
 })
 
-Cypress.Commands.add("tableSetup", () => {
+Cypress.Commands.add("resetTableToDefault", () => {
   cy.task("deleteFromUsersTable")
   cy.task("deleteFromGroupsTable")
   cy.task("deleteFromServiceMessagesTable")

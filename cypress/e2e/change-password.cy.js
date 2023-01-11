@@ -1,7 +1,7 @@
 describe("Change password", () => {
   context("720p resolution", () => {
     beforeEach(() => {
-      cy.tableSetup()
+      cy.resetTableToDefault()
       cy.clearCookies()
     })
 

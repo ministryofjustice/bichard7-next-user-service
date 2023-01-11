@@ -1,6 +1,6 @@
 describe("Display list of users", () => {
   beforeEach(() => {
-    cy.tableSetup()
+    cy.resetTableToDefault()
   })
 
   // TODO: check permissions - insertIntoUserGroupsTable
