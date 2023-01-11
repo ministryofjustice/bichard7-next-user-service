@@ -1,5 +1,5 @@
 describe("Delete user", () => {
-  before(() => {
+  beforeEach(() => {
     cy.resetTableToDefault()
     // 🧹TODO: check at end of refactor if deleteFromUsersGroupsTable can be brought into resetTableToDefault
     cy.task("deleteFromUsersGroupsTable")
@@ -8,11 +8,14 @@ describe("Delete user", () => {
       groups: ["B7UserManager_grp", "B7Supervisor_grp"]
     })
   })
+
   // TODO: check permissions - insertIntoUserGroupsTable
 
   it("should delete the user when confirmation text is valid", () => {
     cy.login("bichard01@example.com", "password")
-    cy.visit("/users/Bichard02")
+    cy.get("#user-management-link").click()
+
+    cy.get('a[href="users/Bichard02"]').click()
     cy.get('a[data-test="delete-user-view"]').click()
     cy.get("h1").contains("Are you sure you want to delete Bichard User 02 Surname 02?")
     cy.get("input[id=delete-account-confirmation]").type("Bichard02")
@@ -21,21 +24,23 @@ describe("Delete user", () => {
     cy.get("h3").should("have.text", "User deleted successfully.")
   })
 
+  // TODO: lines 35-40 seem unreachable through user journey
   it("should prevent the user from deleting themselves", () => {
     cy.login("bichard01@example.com", "password")
-    cy.visit("/users/Bichard01/delete")
-    cy.get('[data-test="text-input_deleteAccountConfirmation"]').type("Bichard01")
+    cy.get("#user-management-link").click()
 
-    cy.get('[data-test="delete_delete-account-btn"]').click()
+    cy.get('a[href="users/Bichard01"]').click()
+    cy.get('[data-test="disabled-delete-anchor"]').should("have.attr", "class", "disabled-link")
 
-    cy.get('[data-test="error-summary"]').contains("There is a problem")
-    cy.get('[data-test="error-summary"]').contains(
-      "A user may not delete themselves, please contact another user manager to delete your user"
-    )
+    // cy.get('[data-test="delete_delete-account-btn"]').click()
+
+    // cy.get('[data-test="error-summary"]').contains("There is a problem")
+    // cy.get('[data-test="error-summary"]').contains(
+    //   "A user may not delete themselves, please contact another user manager to delete your user"
+    // )
   })
 
-  it.only("should not allow deleting the user when confirmation text is invalid", () => {
-    cy.resetTableToDefault()
+  it("should not allow deleting the user when confirmation text is invalid", () => {
     cy.login("bichard01@example.com", "password")
     cy.visit("/users/Bichard02")
     cy.get('a[data-test="delete-user-view"]').click()
