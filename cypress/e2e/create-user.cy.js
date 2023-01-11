@@ -1,9 +1,7 @@
 describe("Creation of new user", () => {
   before(() => {
     cy.tableSetup()
-  })
-
-  beforeEach(() => {
+    // TODO: check at end of refactor if deleteFromUsersGroupsTable can be brought into tableSetup
     cy.task("deleteFromUsersGroupsTable")
     cy.task("insertIntoUserGroupsTable", {
       email: "bichard01@example.com",

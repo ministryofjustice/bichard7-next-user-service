@@ -1,17 +1,16 @@
 describe("Delete user", () => {
-  // before(() => {
-  //   cy.login("bichard01@example.com", "password")
-  // })
-
-  beforeEach(() => {
+  before(() => {
     cy.tableSetup()
-    // cy.task("insertIntoUsersAndGroupsTable")
+    // 🧹TODO: check at end of refactor if deleteFromUsersGroupsTable can be brought into tableSetup
+    cy.task("deleteFromUsersGroupsTable")
+    cy.task("insertIntoUserGroupsTable", {
+      email: "bichard01@example.com",
+      groups: ["B7UserManager_grp", "B7Supervisor_grp"]
+    })
   })
-
   // TODO: check permissions - insertIntoUserGroupsTable
-  // TODO: check what insertIntoUsersAndGroupsTable is doing
 
-  it.only("should delete the user when confirmation text is valid", () => {
+  it("should delete the user when confirmation text is valid", () => {
     cy.login("bichard01@example.com", "password")
     cy.visit("/users/Bichard02")
     cy.get('a[data-test="delete-user-view"]').click()
