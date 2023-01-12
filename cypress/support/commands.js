@@ -51,6 +51,7 @@ Cypress.Commands.add("resetPassword", (emailAddress, newPassword) => {
 Cypress.Commands.add("resetTableToDefault", () => {
   cy.task("deleteFromUsersTable")
   cy.task("deleteFromGroupsTable")
+  cy.task("deleteFromUsersGroupsTable")
   cy.task("deleteFromServiceMessagesTable")
   cy.task("insertIntoGroupsTable")
   cy.task("insertGroupHierarchies")

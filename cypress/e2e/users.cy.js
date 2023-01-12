@@ -4,7 +4,6 @@ describe("Display a list of few users", () => {
     cy.task("insertIntoUsersTable")
   })
 
-  // TODO: check permissions - insertIntoUserGroupsTable
   it("should display a list of user in tabular form", () => {
     cy.task("insertIntoUserGroupsTable", {
       email: "bichard01@example.com",

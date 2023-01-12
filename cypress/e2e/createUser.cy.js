@@ -4,7 +4,6 @@ describe("Creation of new user", () => {
     cy.task("insertIntoUsersTable")
 
     // TODO: check at end of refactor if deleteFromUsersGroupsTable can be brought into resetTableToDefault
-    cy.task("deleteFromUsersGroupsTable")
     cy.task("insertIntoUserGroupsTable", {
       email: "bichard01@example.com",
       groups: ["B7UserManager_grp", "B7Supervisor_grp"]

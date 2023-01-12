@@ -3,15 +3,11 @@ describe("Delete user", () => {
     cy.resetTableToDefault()
     cy.task("insertIntoUsersTable")
 
-    // 🧹TODO: check at end of refactor if deleteFromUsersGroupsTable can be brought into resetTableToDefault
-    cy.task("deleteFromUsersGroupsTable")
     cy.task("insertIntoUserGroupsTable", {
       email: "bichard01@example.com",
       groups: ["B7UserManager_grp", "B7Supervisor_grp"]
     })
   })
-
-  // TODO: check permissions - insertIntoUserGroupsTable
 
   it("should delete the user when confirmation text is valid", () => {
     cy.login("bichard01@example.com", "password")
