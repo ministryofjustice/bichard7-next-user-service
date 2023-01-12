@@ -1,12 +1,16 @@
-describe("Display list of users", () => {
+describe("Display a list of few users", () => {
   beforeEach(() => {
-    cy.task("deleteFromUsersTable")
+    cy.resetTablesToDefault()
     cy.task("insertIntoUsersTable")
   })
 
   it("should display a list of user in tabular form", () => {
+    cy.task("insertIntoUserGroupsTable", {
+      email: "bichard01@example.com",
+      groups: ["B7UserManager_grp"]
+    })
     cy.login("bichard01@example.com", "password")
-    cy.visit("/users")
+    cy.get("#user-management-link").click()
 
     cy.get("tbody tr:nth-child(1) td:nth-child(1)").should("have.text", "Bichard01")
     cy.get("tbody tr:nth-child(1) td:nth-child(2)").should("have.text", "Bichard User 01")
@@ -25,8 +29,6 @@ describe("Display list of users", () => {
   })
 
   it("should display the correct list of users when using the filter", () => {
-    cy.task("deleteFromGroupsTable")
-    cy.task("insertIntoGroupsTable")
     cy.task("insertIntoUserGroupsTable", {
       email: "bichard01@example.com",
       groups: ["B7UserManager_grp"]
@@ -36,7 +38,6 @@ describe("Display list of users", () => {
       groups: ["B7UserManager_grp"]
     })
     cy.login("bichard01@example.com", "password")
-    cy.visit("/login")
     cy.get("body").contains(
       /If you have any queries about your permissions or you cannot see the resources you expect, please contact one of the user managers for your force./i
     )
@@ -61,14 +62,12 @@ describe("Display list of users", () => {
   })
 
   it("should display the correct list of users when using the filter when logged in as super user", () => {
-    cy.task("deleteFromGroupsTable")
-    cy.task("insertIntoGroupsTable")
     cy.task("insertIntoUserGroupsTable", {
       email: "bichard04@example.com",
       groups: ["B7UserManager_grp", "B7SuperUserManager_grp"]
     })
     cy.login("bichard04@example.com", "password")
-    cy.visit("/users")
+    cy.get("#user-management-link").click()
     cy.get('input[id="filter"]').type("Bichard02")
     cy.get('button[id="filter"]').click()
     cy.get("tbody tr:nth-child(1) td:nth-child(1)").should("have.text", "Bichard02")
@@ -84,13 +83,21 @@ describe("Display list of users", () => {
     cy.get("tbody tr:nth-child(1) td:nth-child(3)").should("have.text", "Surname 03")
     cy.get("tbody tr:nth-child(1) td:nth-child(4)").should("have.text", "bichard03@example.com")
   })
+})
+
+describe("Display a list of many users", () => {
+  beforeEach(() => {
+    cy.resetTablesToDefault()
+    cy.task("insertManyIntoUsersTable")
+  })
 
   it("should display in paginated view when returning many users", () => {
-    cy.task("deleteFromUsersTable")
-    cy.task("insertManyIntoUsersTable")
+    cy.task("insertIntoUserGroupsTable", {
+      email: "bichard01@example.com",
+      groups: ["B7UserManager_grp"]
+    })
     cy.login("bichard01@example.com", "password")
-
-    cy.visit("/users")
+    cy.get("#user-management-link").click()
     cy.get("tbody tr:nth-child(1) td:nth-child(1)").should("have.text", "Bichard01")
     cy.get("tbody tr:nth-child(2) td:nth-child(1)").should("have.text", "Bichard02")
     cy.get("tbody tr:nth-child(3) td:nth-child(1)").should("have.text", "Bichard03")
@@ -121,11 +128,12 @@ describe("Display list of users", () => {
   })
 
   it("should display different users depending on the force codes assigned", () => {
-    cy.task("deleteFromUsersTable")
-    cy.task("insertManyIntoUsersTable")
+    cy.task("insertIntoUserGroupsTable", {
+      email: "bichard13@example.com",
+      groups: ["B7UserManager_grp"]
+    })
     cy.login("bichard13@example.com", "password")
-
-    cy.visit("/users")
+    cy.get("#user-management-link").click()
     cy.get("tbody tr:nth-child(1) td:nth-child(1)").should("have.text", "Bichard01")
     cy.get("tbody tr:nth-child(2) td:nth-child(1)").should("have.text", "Bichard02")
     cy.get("tbody tr:nth-child(3) td:nth-child(1)").should("have.text", "Bichard03")

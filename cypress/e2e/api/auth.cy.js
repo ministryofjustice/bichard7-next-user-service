@@ -1,9 +1,8 @@
 describe("Authentication API endpoint", () => {
   beforeEach(() => {
-    cy.task("deleteFromGroupsTable")
-    cy.task("deleteFromUsersTable")
-    cy.task("insertIntoGroupsTable")
+    cy.resetTablesToDefault()
     cy.task("insertIntoUsersTable")
+
     cy.task("insertIntoUserGroupsTable", {
       email: "bichard01@example.com",
       groups: ["B7UserManager_grp", "B7Supervisor_grp"]

@@ -6,78 +6,74 @@ const user = {
 }
 
 describe("Logging In", () => {
-  context("720p resolution", () => {
-    beforeEach(() => {
-      cy.viewport(1280, 720)
-      cy.clearCookies()
+  beforeEach(() => {
+    cy.clearCookies()
+    cy.resetTablesToDefault()
+    cy.task("insertIntoUsersTable")
+  })
 
-      cy.task("deleteFromUsersTable")
-      cy.task("insertIntoUsersTable")
-    })
+  it("should initially only ask for an email", () => {
+    cy.visit("/login")
+    cy.get("input[type=email]").should("be.visible")
+    cy.get("button[type=submit").should("be.visible")
+    cy.get("input[type=password]").should("not.exist")
+  })
 
-    it("should initially only ask for an email", () => {
-      cy.visit("/login")
-      cy.get("input[type=email]").should("be.visible")
-      cy.get("button[type=submit").should("be.visible")
-      cy.get("input[type=password]").should("not.exist")
-    })
+  it("should prompt the user to check their emails after entering an email address", () => {
+    cy.visit("/login")
+    cy.get("input[type=email]").type(user.email)
+    cy.get("button[type=submit]").click()
+    cy.get("body").contains(/sent you an email/i)
+  })
 
-    it("should prompt the user to check their emails after entering an email address", () => {
-      cy.visit("/login")
-      cy.get("input[type=email]").type(user.email)
-      cy.get("button[type=submit]").click()
-      cy.get("body").contains(/sent you an email/i)
-    })
+  it("should prompt the user to check their emails even if the entered email address does not belong to a user", () => {
+    cy.visit("/login")
+    cy.get("input[type=email]").type("userdoesnotexist@example.com")
+    cy.get("button[type=submit]").click()
+    cy.get("body").contains(/sent you an email/i)
+  })
 
-    it("should prompt the user to check their emails even if the entered email address does not belong to a user", () => {
-      cy.visit("/login")
-      cy.get("input[type=email]").type("userdoesnotexist@example.com")
-      cy.get("button[type=submit]").click()
-      cy.get("body").contains(/sent you an email/i)
-    })
+  it("should not allow submission of something that isn't an email address", () => {
+    cy.visit("/login")
+    cy.get("input[type=email]").type("foobar")
+    cy.get("button[type=submit]").click()
+    cy.url().should("match", /\/login\/?$/)
+  })
 
-    it("should not allow submission of something that isn't an email address", () => {
-      cy.visit("/login")
-      cy.get("input[type=email]").type("foobar")
-      cy.get("button[type=submit]").click()
-      cy.url().should("match", /\/login\/?$/)
-    })
-
-    it("should display an error if an password is incorrect and verification code is correct", () => {
-      cy.visit("/login")
-      cy.get("input[type=email]").type(user.email)
-      cy.get("button[type=submit]").click()
-      cy.task("getVerificationCode", user.email).then((verificationCode) => {
-        cy.get("input#validationCode").type(verificationCode)
-        cy.get("input#password").type("wrongPassword")
-        cy.get("button[type=submit]").click()
-        cy.get('[data-test="error-summary"]').should("be.visible").contains("h2", "Your details do not match")
-      })
-    })
-
-    it("should display an error if password is correct but verification code is incorrect", () => {
-      cy.visit("/login")
-      cy.get("input[type=email]").type(user.email)
-      cy.get("button[type=submit]").click()
-      cy.get("input#validationCode").type("123456")
-      cy.get("input#password").type(user.password)
+  it("should display an error if an password is incorrect and verification code is correct", () => {
+    cy.visit("/login")
+    cy.get("input[type=email]").type(user.email)
+    cy.get("button[type=submit]").click()
+    cy.task("getVerificationCode", user.email).then((verificationCode) => {
+      cy.get("input#validationCode").type(verificationCode)
+      cy.get("input#password").type("wrongPassword")
       cy.get("button[type=submit]").click()
       cy.get('[data-test="error-summary"]').should("be.visible").contains("h2", "Your details do not match")
     })
+  })
 
-    it("should redirect to Bichard with a token in the cookie when password and verification code are correct", () => {
-      cy.visit("/login")
-      cy.get("input[type=email]").type(user.email)
+  it("should display an error if password is correct but verification code is incorrect", () => {
+    cy.visit("/login")
+    cy.get("input[type=email]").type(user.email)
+    cy.get("button[type=submit]").click()
+    cy.get("input#validationCode").type("123456")
+    cy.get("input#password").type(user.password)
+    cy.get("button[type=submit]").click()
+    cy.get('[data-test="error-summary"]').should("be.visible").contains("h2", "Your details do not match")
+  })
+
+  it("should redirect to Bichard with a token in the cookie when password and verification code are correct", () => {
+    cy.visit("/login")
+    cy.get("input[type=email]").type(user.email)
+    cy.get("button[type=submit]").click()
+    cy.get("input#validationCode").should("exist")
+    cy.task("getVerificationCode", user.email).then((verificationCode) => {
+      cy.get("input#validationCode").type(verificationCode)
+      cy.get("input#password").type(user.password)
       cy.get("button[type=submit]").click()
-      cy.get("input#validationCode").should("exist")
-      cy.task("getVerificationCode", user.email).then((verificationCode) => {
-        cy.get("input#validationCode").type(verificationCode)
-        cy.get("input#password").type(user.password)
-        cy.get("button[type=submit]").click()
-        cy.url().should("match", /\/users/)
-        cy.get("body").should("contain", "Welcome Bichard User 01")
-        cy.getCookie(authCookieName).should("exist")
-      })
+      cy.url().should("match", /\/users/)
+      cy.get("body").should("contain", "Welcome Bichard User 01")
+      cy.getCookie(authCookieName).should("exist")
     })
 
     it("should allow login with case-insensitive email address", () => {

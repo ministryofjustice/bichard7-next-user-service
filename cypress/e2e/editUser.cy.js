@@ -3,12 +3,9 @@ const getCurrentUserGroups = (allGroups) => allGroups.filter((g) => currentUserG
 
 describe("Edit user", () => {
   beforeEach(() => {
-    cy.task("deleteFromUsersTable")
-    cy.task("deleteFromGroupsTable")
-    cy.task("deleteFromUsersGroupsTable")
-    cy.task("insertIntoGroupsTable")
+    cy.resetTablesToDefault()
     cy.task("insertIntoUsersTable")
-    cy.task("insertGroupHierarchies")
+
     cy.task("insertIntoUserGroupsTable", {
       email: "bichard02@example.com",
       groups: currentUserGroupNames
@@ -54,13 +51,10 @@ describe("Edit user", () => {
   })
 
   it("should not allow a user to view another user outside of their force", () => {
-    // Given
     cy.login("bichard02@example.com", "password")
 
-    // When
     cy.visit("/users/Bichard03", { failOnStatusCode: false })
 
-    // Then
     cy.get("body").should("not.contain.text", "User Details")
     cy.get("body").should("not.contain.text", "Bichard03")
     cy.get("body").should("not.contain.text", "Bichard User 03")
@@ -70,13 +64,10 @@ describe("Edit user", () => {
   })
 
   it("should not allow a user to edit another user outside of their force", () => {
-    // Given
     cy.login("bichard02@example.com", "password")
 
-    // When
     cy.visit("/users/Bichard03/edit", { failOnStatusCode: false })
 
-    // Then
     cy.get("body").should("not.contain.text", "Edit Bichard03's details")
     cy.get("body").should("not.contain.text", "Bichard03")
     cy.get("body").should("not.contain.text", "bichard03@example.com")
@@ -85,21 +76,19 @@ describe("Edit user", () => {
   })
 
   it("should not be able to update user such that they are left without a force", () => {
-    // Given
     cy.login("bichard02@example.com", "password")
     cy.visit("users/Bichard01")
     cy.get('a[data-test="edit-user-view"]').click()
     cy.get('input[id="visibleForces001"]').uncheck()
     cy.get('input[id="visibleForces002"]').uncheck()
     cy.get('input[id="visibleForces004"]').uncheck()
-    // When
+
     cy.get('button[type="submit"]').click()
-    // Then
+
     cy.get('[data-test="error-summary"]').contains("Please ensure that user is assigned to least one force.")
   })
 
   it("should update user correctly when updating user details", () => {
-    // Given
     cy.login("bichard02@example.com", "password")
     cy.visit("users/Bichard01")
     cy.get('a[data-test="edit-user-view"]').click()
@@ -119,9 +108,9 @@ describe("Edit user", () => {
       .find('[data-test="checkbox-multiselect-checkboxes"]')
       .find(`input[name="B7GeneralHandler_grp"]`)
       .check()
-    // When
+
     cy.get('button[type="submit"]').click()
-    // Then
+
     cy.get('[data-test="error-summary"]').should("not.exist")
     cy.task("selectFromUsersTable", "bichard01@example.com").then((user) => {
       cy.task("selectFromGroupsTable", "user_id", user.id).then(() => {
@@ -181,17 +170,12 @@ describe("Edit user", () => {
   })
 
   it("should remove 'endorsed by' field when in edit", () => {
-    // When
     cy.visit("users/new-user")
-    // Then
+
     cy.get('[data-test="text-input_endorsedBy"]').should("not.exist")
   })
 
   it("should de able to edit any user when logged in as super user", () => {
-    cy.task("deleteFromGroupsTable")
-    cy.task("insertIntoGroupsTable")
-    cy.task("deleteFromUsersTable")
-    cy.task("insertIntoUsersTable")
     cy.task("insertIntoUserGroupsTable", {
       email: "bichard04@example.com",
       groups: ["B7UserManager_grp", "B7SuperUserManager_grp"]
@@ -208,9 +192,9 @@ describe("Edit user", () => {
     cy.get('[data-test="included-triggers"]').click()
     cy.get('input[id="excludedTriggersTRPR0001"]').uncheck()
     cy.get('input[id="excludedTriggersTRPR0004"]').uncheck()
-    // When
+
     cy.get('button[type="submit"]').click()
-    // Then
+
     cy.get('[data-test="error-summary"]').should("not.exist")
     cy.get('[data-test="text-input_username"]').should("have.value", "Bichard01")
     cy.get('[data-test="text-input_forenames"]').should("have.value", "forename change 01")

@@ -1,12 +1,19 @@
 describe("Delete user", () => {
   beforeEach(() => {
-    cy.task("deleteFromUsersTable")
-    cy.task("insertIntoUsersAndGroupsTable")
+    cy.resetTablesToDefault()
+    cy.task("insertIntoUsersTable")
+
+    cy.task("insertIntoUserGroupsTable", {
+      email: "bichard01@example.com",
+      groups: ["B7UserManager_grp", "B7Supervisor_grp"]
+    })
   })
 
   it("should delete the user when confirmation text is valid", () => {
     cy.login("bichard01@example.com", "password")
-    cy.visit("/users/Bichard02")
+    cy.get("#user-management-link").click()
+
+    cy.get('a[href="users/Bichard02"]').click()
     cy.get('a[data-test="delete-user-view"]').click()
     cy.get("h1").contains("Are you sure you want to delete Bichard User 02 Surname 02?")
     cy.get("input[id=delete-account-confirmation]").type("Bichard02")
@@ -16,13 +23,20 @@ describe("Delete user", () => {
   })
 
   it("should prevent the user from deleting themselves", () => {
-    // Given
+    cy.login("bichard01@example.com", "password")
+    cy.get("#user-management-link").click()
+
+    cy.get('a[href="users/Bichard01"]').click()
+    cy.get('[data-test="disabled-delete-anchor"]').should("have.attr", "class", "disabled-link")
+  })
+
+  it("should prevent the user from deleting themselves by visiting the delete url", () => {
     cy.login("bichard01@example.com", "password")
     cy.visit("/users/Bichard01/delete")
+
     cy.get('[data-test="text-input_deleteAccountConfirmation"]').type("Bichard01")
-    // When
     cy.get('[data-test="delete_delete-account-btn"]').click()
-    // Then
+
     cy.get('[data-test="error-summary"]').contains("There is a problem")
     cy.get('[data-test="error-summary"]').contains(
       "A user may not delete themselves, please contact another user manager to delete your user"
@@ -53,13 +67,10 @@ describe("Delete user", () => {
   })
 
   it("should not allow the current user to navigate to /delete when user is in a different force", () => {
-    // Given
     cy.login("bichard02@example.com", "password")
 
-    // When
     cy.visit("/users/Bichard03/delete", { failOnStatusCode: false })
 
-    // Then
     cy.get('[data-test="404_header"]').should("contain.text", "Page not found")
   })
 
@@ -67,9 +78,7 @@ describe("Delete user", () => {
     cy.checkCsrf("/users/Bichard01/delete", "POST").then(() => done())
   })
 
-  it("should de able to delete user regardless of force if current user is super user", () => {
-    cy.task("deleteFromGroupsTable")
-    cy.task("insertIntoGroupsTable")
+  it("should be able to delete user regardless of force if current user is super user", () => {
     cy.task("insertIntoUserGroupsTable", {
       email: "bichard04@example.com",
       groups: ["B7UserManager_grp", "B7SuperUserManager_grp"]
