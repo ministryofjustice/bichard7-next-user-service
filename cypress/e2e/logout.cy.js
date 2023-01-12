@@ -5,6 +5,7 @@ describe("Logging Out", () => {
       cy.clearCookies()
 
       cy.resetTableToDefault()
+      cy.task("insertIntoUsersTable")
     })
 
     // TODO: check permissions - insertIntoUserGroupsTable

@@ -2,6 +2,8 @@ describe("Home", () => {
   context("720p resolution", () => {
     beforeEach(() => {
       cy.resetTableToDefault()
+      cy.task("insertIntoUsersTable")
+
       cy.task("insertIntoUserGroupsTable", {
         email: "bichard01@example.com",
         groups: ["B7UserManager_grp", "B7AuditLoggingManager_grp", "B7Supervisor_grp"]
