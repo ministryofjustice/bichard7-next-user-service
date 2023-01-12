@@ -6,8 +6,12 @@ describe("Display a list of few users", () => {
 
   // TODO: check permissions - insertIntoUserGroupsTable
   it("should display a list of user in tabular form", () => {
+    cy.task("insertIntoUserGroupsTable", {
+      email: "bichard01@example.com",
+      groups: ["B7UserManager_grp"]
+    })
     cy.login("bichard01@example.com", "password")
-    cy.visit("/users")
+    cy.get("#user-management-link").click()
 
     cy.get("tbody tr:nth-child(1) td:nth-child(1)").should("have.text", "Bichard01")
     cy.get("tbody tr:nth-child(1) td:nth-child(2)").should("have.text", "Bichard User 01")
@@ -35,7 +39,6 @@ describe("Display a list of few users", () => {
       groups: ["B7UserManager_grp"]
     })
     cy.login("bichard01@example.com", "password")
-    cy.visit("/login")
     cy.get("body").contains(
       /If you have any queries about your permissions or you cannot see the resources you expect, please contact one of the user managers for your force./i
     )
@@ -65,7 +68,7 @@ describe("Display a list of few users", () => {
       groups: ["B7UserManager_grp", "B7SuperUserManager_grp"]
     })
     cy.login("bichard04@example.com", "password")
-    cy.visit("/users")
+    cy.get("#user-management-link").click()
     cy.get('input[id="filter"]').type("Bichard02")
     cy.get('button[id="filter"]').click()
     cy.get("tbody tr:nth-child(1) td:nth-child(1)").should("have.text", "Bichard02")
@@ -90,8 +93,12 @@ describe("Display a list of many users", () => {
   })
 
   it("should display in paginated view when returning many users", () => {
+    cy.task("insertIntoUserGroupsTable", {
+      email: "bichard01@example.com",
+      groups: ["B7UserManager_grp"]
+    })
     cy.login("bichard01@example.com", "password")
-    cy.visit("/users")
+    cy.get("#user-management-link").click()
     cy.get("tbody tr:nth-child(1) td:nth-child(1)").should("have.text", "Bichard01")
     cy.get("tbody tr:nth-child(2) td:nth-child(1)").should("have.text", "Bichard02")
     cy.get("tbody tr:nth-child(3) td:nth-child(1)").should("have.text", "Bichard03")
@@ -122,8 +129,12 @@ describe("Display a list of many users", () => {
   })
 
   it("should display different users depending on the force codes assigned", () => {
+    cy.task("insertIntoUserGroupsTable", {
+      email: "bichard13@example.com",
+      groups: ["B7UserManager_grp"]
+    })
     cy.login("bichard13@example.com", "password")
-    cy.visit("/users")
+    cy.get("#user-management-link").click()
     cy.get("tbody tr:nth-child(1) td:nth-child(1)").should("have.text", "Bichard01")
     cy.get("tbody tr:nth-child(2) td:nth-child(1)").should("have.text", "Bichard02")
     cy.get("tbody tr:nth-child(3) td:nth-child(1)").should("have.text", "Bichard03")
