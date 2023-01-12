@@ -22,7 +22,6 @@ describe("Delete user", () => {
     cy.get("h3").should("have.text", "User deleted successfully.")
   })
 
-  // TODO: lines 35-40 seem unreachable through user journey
   it("should prevent the user from deleting themselves", () => {
     cy.login("bichard01@example.com", "password")
     cy.get("#user-management-link").click()
