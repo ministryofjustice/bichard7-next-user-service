@@ -34,6 +34,21 @@ describe("Reset password", () => {
     requestPasswordReset("bichard01@example.com".toUpperCase())
   })
 
+  it("should allow user to generate a random password", () => {
+    requestPasswordReset("bichard01@example.com")
+
+    cy.get("div[data-test='generated-password']").should("not.exist")
+    cy.get("a[data-test='generate-password']").click()
+    cy.get("div[data-test='generated-password']").should("not.be.empty")
+  })
+
+  it("should prompt the user that password reset was successful when provided password is valid", () => {
+    const newPassword = "Test@1234567"
+    requestPasswordReset("bichard01@example.com")
+    resetPassword("bichard01@example.com", newPassword)
+    cy.get("body").contains(/You can now sign in with your new password./i)
+  })
+
   it("should not allow submission when passwords are too short", () => {
     requestPasswordReset("bichard01@example.com")
     resetPassword("bichard01@example.com", "shorty")
@@ -50,13 +65,6 @@ describe("Reset password", () => {
     requestPasswordReset("bichard01@example.com")
     resetPassword("bichard01@example.com", "123456789")
     cy.get('[data-test="error-summary"]').contains("Password is too easy to guess.")
-  })
-
-  it("should prompt the user that password reset was successful when provided password is valid", () => {
-    const newPassword = "Test@1234567"
-    requestPasswordReset("bichard01@example.com")
-    resetPassword("bichard01@example.com", newPassword)
-    cy.get("body").contains(/You can now sign in with your new password./i)
   })
 
   it("should not allow submission when password is empty", () => {
@@ -76,18 +84,6 @@ describe("Reset password", () => {
     })
   })
 
-  it("should allow user to generate a random password", () => {
-    requestPasswordReset("bichard01@example.com")
-
-    cy.get("div[data-test='generated-password']").should("not.exist")
-    cy.get("a[data-test='generate-password']").click()
-    cy.get("div[data-test='generated-password']").should("not.be.empty")
-  })
-
-  it("should respond with forbidden response code when CSRF tokens are invalid in reset password page", (done) => {
-    cy.checkCsrf("/login/reset-password", "POST").then(() => done())
-  })
-
   it("should not allow to reset using and old password", () => {
     cy.resetTableToDefault()
     cy.task("insertIntoUsersTable")
@@ -101,5 +97,9 @@ describe("Reset password", () => {
     cy.get("body").contains(/sent you an email/i)
     resetPassword("bichard01@example.com", newPassword)
     cy.get('[data-test="error-summary"]').contains("Cannot use previously used password.")
+  })
+
+  it("should respond with forbidden response code when CSRF tokens are invalid in reset password page", (done) => {
+    cy.checkCsrf("/login/reset-password", "POST").then(() => done())
   })
 })
