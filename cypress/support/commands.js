@@ -39,15 +39,6 @@ Cypress.Commands.add("login", (emailAddress, password) => {
   })
 })
 
-Cypress.Commands.add("resetPassword", (emailAddress, newPassword) => {
-  cy.task("getVerificationCode", emailAddress).then((verificationCode) => {
-    cy.get("input#validationCode").type(verificationCode)
-    newPassword && cy.get("input#newPassword").type(newPassword)
-    newPassword && cy.get("input[type=password][name=confirmPassword]").type(newPassword)
-    cy.get("button[type=submit]").click()
-  })
-})
-
 Cypress.Commands.add("resetTableToDefault", () => {
   cy.task("deleteFromUsersTable")
   cy.task("deleteFromGroupsTable")
