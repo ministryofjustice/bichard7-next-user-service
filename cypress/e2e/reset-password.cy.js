@@ -17,15 +17,6 @@ describe("Reset password", () => {
     cy.contains(/sent you an email/i)
   }
 
-  function resetPassword(emailAddress, newPassword) {
-    cy.task("getVerificationCode", emailAddress).then((verificationCode) => {
-      cy.get("input#validationCode").type(verificationCode)
-      newPassword && cy.get("input#newPassword").type(newPassword)
-      newPassword && cy.get("input[type=password][name=confirmPassword]").type(newPassword)
-      cy.get("button[type=submit]").click()
-    })
-  }
-
   it("should send out email to reset password", () => {
     requestPasswordReset("bichard01@example.com")
   })
@@ -45,31 +36,31 @@ describe("Reset password", () => {
   it("should prompt the user that password reset was successful when provided password is valid", () => {
     const newPassword = "Test@1234567"
     requestPasswordReset("bichard01@example.com")
-    resetPassword("bichard01@example.com", newPassword)
+    cy.resetPassword("bichard01@example.com", newPassword)
     cy.contains(/You can now sign in with your new password./i)
   })
 
   it("should not allow submission when passwords are too short", () => {
     requestPasswordReset("bichard01@example.com")
-    resetPassword("bichard01@example.com", "shorty")
+    cy.resetPassword("bichard01@example.com", "shorty")
     cy.get('[data-test="error-summary"]').contains("Password is too short.")
   })
 
   it("should not allow submission when passwords contain sensitive information", () => {
     requestPasswordReset("bichard01@example.com")
-    resetPassword("bichard01@example.com", "bichard01")
+    cy.resetPassword("bichard01@example.com", "bichard01")
     cy.get('[data-test="error-summary"]').contains("Password contains personal information.")
   })
 
   it("should not allow submission when password is banned", () => {
     requestPasswordReset("bichard01@example.com")
-    resetPassword("bichard01@example.com", "123456789")
+    cy.resetPassword("bichard01@example.com", "123456789")
     cy.get('[data-test="error-summary"]').contains("Password is too easy to guess.")
   })
 
   it("should not allow submission when password is empty", () => {
     requestPasswordReset("bichard01@example.com")
-    resetPassword("bichard01@example.com")
+    cy.resetPassword("bichard01@example.com")
     cy.get('[data-test="error-summary"]').contains("Enter a new password")
   })
 
@@ -90,12 +81,12 @@ describe("Reset password", () => {
 
     const newPassword = "Test@1234567"
     requestPasswordReset("bichard01@example.com")
-    resetPassword("bichard01@example.com", newPassword)
+    cy.resetPassword("bichard01@example.com", newPassword)
     cy.contains(/You can now sign in with your new password./i)
 
     requestPasswordReset("bichard01@example.com")
     cy.contains(/sent you an email/i)
-    resetPassword("bichard01@example.com", newPassword)
+    cy.resetPassword("bichard01@example.com", newPassword)
     cy.get('[data-test="error-summary"]').contains("Cannot use previously used password.")
   })
 
