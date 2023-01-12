@@ -1,6 +1,6 @@
 describe("Authentication API endpoint", () => {
   beforeEach(() => {
-    cy.resetTableToDefault()
+    cy.resetTablesToDefault()
     cy.task("insertIntoUsersTable")
 
     cy.task("insertIntoUserGroupsTable", {

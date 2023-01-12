@@ -1,6 +1,6 @@
 describe("Home", () => {
   before(() => {
-    cy.resetTableToDefault()
+    cy.resetTablesToDefault()
     cy.task("insertIntoUsersTable")
     cy.task("insertIntoUserGroupsTable", {
       email: "bichard01@example.com",

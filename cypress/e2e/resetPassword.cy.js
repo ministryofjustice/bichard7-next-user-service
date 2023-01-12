@@ -1,6 +1,6 @@
 describe("Reset password", () => {
   before(() => {
-    cy.resetTableToDefault()
+    cy.resetTablesToDefault()
     cy.task("insertIntoUsersTable")
     cy.task("insertIntoUserGroupsTable", {
       email: "bichard01@example.com",
@@ -84,7 +84,7 @@ describe("Reset password", () => {
   })
 
   it("should not allow to reset using and old password", () => {
-    cy.resetTableToDefault()
+    cy.resetTablesToDefault()
     cy.task("insertIntoUsersTable")
 
     const newPassword = "Test@1234567"

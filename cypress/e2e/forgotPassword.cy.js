@@ -1,6 +1,6 @@
 describe("Forgot password", () => {
   before(() => {
-    cy.resetTableToDefault()
+    cy.resetTablesToDefault()
     cy.task("insertIntoUsersTable")
   })
 

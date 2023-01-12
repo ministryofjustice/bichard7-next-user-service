@@ -3,7 +3,7 @@ const getCurrentUserGroups = (allGroups) => allGroups.filter((g) => currentUserG
 
 describe("Edit user", () => {
   beforeEach(() => {
-    cy.resetTableToDefault()
+    cy.resetTablesToDefault()
     cy.task("insertIntoUsersTable")
 
     cy.task("insertIntoUserGroupsTable", {

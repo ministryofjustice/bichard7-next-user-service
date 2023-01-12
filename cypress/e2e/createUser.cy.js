@@ -1,6 +1,6 @@
 describe("Creation of new user", () => {
   before(() => {
-    cy.resetTableToDefault()
+    cy.resetTablesToDefault()
     cy.task("insertIntoUsersTable")
 
     cy.task("insertIntoUserGroupsTable", {

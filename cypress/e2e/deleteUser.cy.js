@@ -1,6 +1,6 @@
 describe("Delete user", () => {
   beforeEach(() => {
-    cy.resetTableToDefault()
+    cy.resetTablesToDefault()
     cy.task("insertIntoUsersTable")
 
     cy.task("insertIntoUserGroupsTable", {

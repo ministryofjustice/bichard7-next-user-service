@@ -1,6 +1,6 @@
 describe("Logging Out", () => {
   before(() => {
-    cy.resetTableToDefault()
+    cy.resetTablesToDefault()
     cy.task("insertIntoUsersTable")
   })
 

@@ -1,6 +1,6 @@
 describe("Display a list of few users", () => {
   beforeEach(() => {
-    cy.resetTableToDefault()
+    cy.resetTablesToDefault()
     cy.task("insertIntoUsersTable")
   })
 
@@ -87,7 +87,7 @@ describe("Display a list of few users", () => {
 
 describe("Display a list of many users", () => {
   beforeEach(() => {
-    cy.resetTableToDefault()
+    cy.resetTablesToDefault()
     cy.task("insertManyIntoUsersTable")
   })
 

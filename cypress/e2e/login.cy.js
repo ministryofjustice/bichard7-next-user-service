@@ -8,7 +8,7 @@ const user = {
 describe("Logging In", () => {
   beforeEach(() => {
     cy.clearCookies()
-    cy.resetTableToDefault()
+    cy.resetTablesToDefault()
     cy.task("insertIntoUsersTable")
   })
 
