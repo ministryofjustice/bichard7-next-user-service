@@ -1,112 +1,73 @@
-const user = {
-  email: "bichard01@example.com"
-}
-
 describe("Reset password", () => {
   before(() => {
     cy.resetTableToDefault()
     cy.task("insertIntoUsersTable")
     cy.task("insertIntoUserGroupsTable", {
-      email: user.email,
+      email: "bichard01@example.com",
       groups: ["B7UserManager_grp", "B7Supervisor_grp"]
     })
   })
 
-  // TODO: check permissions - insertIntoUserGroupsTable
-
-  it("should send out email to reset password", () => {
+  function requestPasswordReset(emailAddress) {
     cy.visit("/login")
     cy.get("a[data-test='reset-password']").click()
     cy.get("body").contains(/reset password/i)
-    cy.get("input[type=email]").type(user.email)
+    cy.get("input[type=email]").type(emailAddress)
     cy.get("button[type=submit]").click()
     cy.get("body").contains(/sent you an email/i)
+  }
+
+  function resetPassword(emailAddress, newPassword) {
+    cy.task("getVerificationCode", emailAddress).then((verificationCode) => {
+      cy.get("input#validationCode").type(verificationCode)
+      newPassword && cy.get("input#newPassword").type(newPassword)
+      newPassword && cy.get("input[type=password][name=confirmPassword]").type(newPassword)
+      cy.get("button[type=submit]").click()
+    })
+  }
+
+  it("should send out email to reset password", () => {
+    requestPasswordReset("bichard01@example.com")
   })
 
   it("should ignore email case when resetting the password", () => {
-    cy.visit("/login")
-    cy.get("a[data-test='reset-password']").click()
-    cy.get("body").contains(/reset password/i)
-    cy.get("input[type=email]").type(user.email.toUpperCase())
-    cy.get("button[type=submit]").click()
-    cy.get("body").contains(/sent you an email/i)
+    requestPasswordReset("bichard01@example.com".toUpperCase())
   })
 
   it("should not allow submission when passwords are too short", () => {
-    cy.visit(`/login/reset-password`)
-    cy.get("input[name=emailAddress]").type(user.email)
-    cy.get("button[type=submit]").click()
-    cy.get("body").contains(/sent you an email/i)
-    cy.task("getVerificationCode", user.email).then((verificationCode) => {
-      cy.get("input#validationCode").type(verificationCode)
-      cy.get("input#newPassword").type("shorty")
-      cy.get("input[type=password][name=confirmPassword]").type("shorty")
-      cy.get("button[type=submit]").click()
-      cy.get('[data-test="error-summary"]').contains("Password is too short.")
-    })
+    requestPasswordReset("bichard01@example.com")
+    resetPassword("bichard01@example.com", "shorty")
+    cy.get('[data-test="error-summary"]').contains("Password is too short.")
   })
 
   it("should not allow submission when passwords contain sensitive information", () => {
-    cy.visit(`/login/reset-password`)
-    cy.get("input[name=emailAddress]").type(user.email)
-    cy.get("button[type=submit]").click()
-    cy.get("body").contains(/sent you an email/i)
-    cy.task("getVerificationCode", user.email).then((verificationCode) => {
-      cy.get("input#validationCode").type(verificationCode)
-      cy.get("input#newPassword").type("bichard01")
-      cy.get("input[type=password][name=confirmPassword]").type("bichard01")
-      cy.get("button[type=submit]").click()
-      cy.get('[data-test="error-summary"]').contains("Password contains personal information.")
-    })
+    requestPasswordReset("bichard01@example.com")
+    resetPassword("bichard01@example.com", "bichard01")
+    cy.get('[data-test="error-summary"]').contains("Password contains personal information.")
   })
 
   it("should not allow submission when password is banned", () => {
-    cy.visit(`/login/reset-password`)
-    cy.get("input[name=emailAddress]").type(user.email)
-    cy.get("button[type=submit]").click()
-    cy.get("body").contains(/sent you an email/i)
-    cy.task("getVerificationCode", user.email).then((verificationCode) => {
-      cy.get("input#validationCode").type(verificationCode)
-      cy.get("input#newPassword").type("123456789")
-      cy.get("input[type=password][name=confirmPassword]").type("123456789")
-      cy.get("button[type=submit]").click()
-      cy.get('[data-test="error-summary"]').contains("Password is too easy to guess.")
-    })
+    requestPasswordReset("bichard01@example.com")
+    resetPassword("bichard01@example.com", "123456789")
+    cy.get('[data-test="error-summary"]').contains("Password is too easy to guess.")
   })
 
   it("should prompt the user that password reset was successful when provided password is valid", () => {
     const newPassword = "Test@1234567"
-    cy.visit(`/login/reset-password`)
-    cy.get("input[name=emailAddress]").type(user.email)
-    cy.get("button[type=submit]").click()
-    cy.get("body").contains(/sent you an email/i)
-    cy.task("getVerificationCode", user.email).then((verificationCode) => {
-      cy.get("input#validationCode").type(verificationCode)
-      cy.get("input#newPassword").type(newPassword)
-      cy.get("input[type=password][name=confirmPassword]").type(newPassword)
-      cy.get("button[type=submit]").click()
-      cy.get("body").contains(/You can now sign in with your new password./i)
-    })
+    requestPasswordReset("bichard01@example.com")
+    resetPassword("bichard01@example.com", newPassword)
+    cy.get("body").contains(/You can now sign in with your new password./i)
   })
 
   it("should not allow submission when password is empty", () => {
-    cy.visit(`/login/reset-password`)
-    cy.get("input[name=emailAddress]").type(user.email)
-    cy.get("button[type=submit]").click()
-    cy.get("body").contains(/sent you an email/i)
-    cy.task("getVerificationCode", user.email).then((verificationCode) => {
-      cy.get("input#validationCode").type(verificationCode)
-      cy.get("button[type=submit]").click()
-      cy.get('[data-test="error-summary"]').contains("Enter a new password")
-    })
+    requestPasswordReset("bichard01@example.com")
+    resetPassword("bichard01@example.com")
+    cy.get('[data-test="error-summary"]').contains("Enter a new password")
   })
 
   it("should not allow submission when passwords do not match", () => {
-    cy.visit(`/login/reset-password`)
-    cy.get("input[name=emailAddress]").type(user.email)
-    cy.get("button[type=submit]").click()
-    cy.get("body").contains(/sent you an email/i)
-    cy.task("getVerificationCode", user.email).then((verificationCode) => {
+    requestPasswordReset("bichard01@example.com")
+    cy.task("getVerificationCode", "bichard01@example.com").then((verificationCode) => {
       cy.get("input#validationCode").type(verificationCode)
       cy.get("input#newPassword").type("Test@123456")
       cy.get("input[type=password][name=confirmPassword]").type("DifferentPassword")
@@ -116,10 +77,7 @@ describe("Reset password", () => {
   })
 
   it("should allow user to generate a random password", () => {
-    cy.visit(`/login/reset-password`)
-    cy.get("input[name=emailAddress]").type(user.email)
-    cy.get("button[type=submit]").click()
-    cy.get("body").contains(/sent you an email/i)
+    requestPasswordReset("bichard01@example.com")
 
     cy.get("div[data-test='generated-password']").should("not.exist")
     cy.get("a[data-test='generate-password']").click()
@@ -135,31 +93,13 @@ describe("Reset password", () => {
     cy.task("insertIntoUsersTable")
 
     const newPassword = "Test@1234567"
-    cy.visit(`/login/reset-password`)
-    cy.get("input[name=emailAddress]").type(user.email)
-    cy.get("button[type=submit]").click()
+    requestPasswordReset("bichard01@example.com")
+    resetPassword("bichard01@example.com", newPassword)
+    cy.get("body").contains(/You can now sign in with your new password./i)
+
+    requestPasswordReset("bichard01@example.com")
     cy.get("body").contains(/sent you an email/i)
-
-    cy.task("getVerificationCode", user.email).then((verificationCode) => {
-      cy.get("input#validationCode").type(verificationCode)
-      cy.get("input#newPassword").type(newPassword)
-      cy.get("input[type=password][name=confirmPassword]").type(newPassword)
-      cy.get("button[type=submit]").click()
-      cy.get("body").contains(/You can now sign in with your new password./i)
-    })
-
-    cy.visit("/login")
-    cy.get('[data-test="reset-password"]').click()
-    cy.get("input[name=emailAddress]").type(user.email)
-    cy.get("button[type=submit]").click()
-    cy.get("body").contains(/sent you an email/i)
-
-    cy.task("getVerificationCode", user.email).then((verificationCode) => {
-      cy.get("input#validationCode").type(verificationCode)
-      cy.get("input#newPassword").type(newPassword)
-      cy.get("input[type=password][name=confirmPassword]").type(newPassword)
-      cy.get("button[type=submit]").click()
-      cy.get('[data-test="error-summary"]').contains("Cannot use previously used password.")
-    })
+    resetPassword("bichard01@example.com", newPassword)
+    cy.get('[data-test="error-summary"]').contains("Cannot use previously used password.")
   })
 })
