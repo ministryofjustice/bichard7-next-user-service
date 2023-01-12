@@ -46,10 +46,10 @@ describe("Creation of new user", () => {
       orgServes: "B organisation"
     })
 
-    cy.get('input[id="visibleForces001"]').check()
-    cy.get('input[id="visibleForces004"]').check()
+    cy.get("#visibleForces001").check()
+    cy.get("#visibleForces004").check()
     cy.get('[data-test="included-triggers"]').click()
-    cy.get('input[id="excludedTriggersTRPR0001"]').uncheck()
+    cy.get("#excludedTriggersTRPR0001").uncheck()
 
     cy.get("button[name=saveAndAddAnother]").click()
     cy.get('[data-test="success-banner_heading"]').should("have.text", "User Buser has been successfully created.")
@@ -68,11 +68,11 @@ describe("Creation of new user", () => {
       orgServes: "B organisation"
     })
 
-    cy.get('input[id="visibleForces001"]').check()
-    cy.get('input[id="visibleForces004"]').check()
+    cy.get("#visibleForces001").check()
+    cy.get("#visibleForces004").check()
 
     cy.get('[data-test="included-triggers"]').click()
-    cy.get('input[id="excludedTriggersTRPR0001"]').uncheck()
+    cy.get("#excludedTriggersTRPR0001").uncheck()
 
     cy.get("button[name=save]").click()
     cy.url().should("contain", "/users")
@@ -94,7 +94,7 @@ describe("Creation of new user", () => {
       orgServes: "B organisation"
     })
 
-    cy.get('input[id="visibleForces001"]').check()
+    cy.get("#visibleForces001").check()
     cy.get("button[name=save]").click()
 
     cy.contains("Buser3")
@@ -136,7 +136,7 @@ describe("Creation of new user", () => {
       orgServes: "B organisation"
     })
 
-    cy.get('input[id="visibleForces001"]').check()
+    cy.get("#visibleForces001").check()
 
     cy.get("button[name=saveAndAddAnother]").click()
     cy.get('[data-test="error-summary"]').contains("Username Bichard01 already exists.")
@@ -169,7 +169,7 @@ describe("Creation of new user", () => {
       cy.get('[data-test="checkbox-user-groups"]')
         .find('[data-test="checkbox-multiselect-checkboxes"]')
         .each(($el, index) => {
-          cy.wrap($el).find(`input[id=${userGroups[index].id}]`).should("exist")
+          cy.wrap($el).find(`#${userGroups[index].id}`).should("exist")
           cy.wrap($el).find("label").contains(userGroups[index].friendly_name)
         })
     })
@@ -188,10 +188,10 @@ describe("Creation of new user", () => {
       orgServes: "B organisation zz"
     })
 
-    cy.get('input[id="visibleForces001"]').check()
-    cy.get('input[id="visibleForces004"]').check()
+    cy.get("#visibleForces001").check()
+    cy.get("#visibleForces004").check()
     cy.get('[data-test="included-triggers"]').click()
-    cy.get('input[id="excludedTriggersTRPR0001"]').uncheck()
+    cy.get("#excludedTriggersTRPR0001").uncheck()
     cy.get('[data-test="checkbox-user-groups"]')
       .find('[data-test="checkbox-multiselect-checkboxes"]')
       .find(`input[name="B7UserManager_grp"]`)
@@ -226,10 +226,10 @@ describe("Creation of new user", () => {
       orgServes: "B organisation zz"
     })
 
-    cy.get('input[id="visibleForces001"]').check()
-    cy.get('input[id="visibleForces004"]').check()
+    cy.get("#visibleForces001").check()
+    cy.get("#visibleForces004").check()
     cy.get('[data-test="included-triggers"]').click()
-    cy.get('input[id="excludedTriggersTRPR0001"]').uncheck()
+    cy.get("#excludedTriggersTRPR0001").uncheck()
     cy.get('[data-test="checkbox-user-groups"]')
       .find('[data-test="checkbox-multiselect-checkboxes"]')
       .find(`input[name="B7GeneralHandler_grp"]`)
@@ -264,11 +264,11 @@ describe("Creation of new user", () => {
       orgServes: "B organisation"
     })
 
-    cy.get('input[id="visibleForces001"]').check()
-    cy.get('input[id="visibleForces004"]').check()
+    cy.get("#visibleForces001").check()
+    cy.get("#visibleForces004").check()
 
     cy.get('[data-test="included-triggers"]').click()
-    cy.get('input[id="excludedTriggersTRPR0001"]').uncheck()
+    cy.get("#excludedTriggersTRPR0001").uncheck()
 
     cy.get("button[name=save]").click()
 
@@ -295,11 +295,11 @@ describe("Creation of new user", () => {
       orgServes: "B organisation"
     })
 
-    cy.get('input[id="visibleForces001"]').check()
-    cy.get('input[id="visibleForces004"]').check()
+    cy.get("#visibleForces001").check()
+    cy.get("#visibleForces004").check()
 
     cy.get('[data-test="included-triggers"]').click()
-    cy.get('input[id="excludedTriggersTRPR0001"]').uncheck()
+    cy.get("#excludedTriggersTRPR0001").uncheck()
 
     cy.get("button[name=save]").click()
 
