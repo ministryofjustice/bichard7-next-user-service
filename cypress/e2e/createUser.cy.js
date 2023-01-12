@@ -9,7 +9,14 @@ describe("Creation of new user", () => {
     })
   })
 
-  function populateNewUser(username, forenames, surname, emailAddress, orgServes, visibleCourts) {
+  function populateNewUser(options) {
+    const username = options.username || "NewUsername"
+    const forenames = options.forenames || "NewForename"
+    const surname = options.surname || "NewSurname"
+    const emailAddress = options.emailAddress || "NewEmail@example.com"
+    const orgServes = options.orgServes || "NewOrgServes"
+    const visibleCourts = options.visibleCourts || "B01,B41ME00"
+
     cy.get('[data-test="text-input_username"]').type(username)
     cy.get('[data-test="text-input_forenames"]').type(forenames)
     cy.get('[data-test="text-input_surname"]').type(surname)
@@ -31,7 +38,13 @@ describe("Creation of new user", () => {
     cy.get('[data-test="B7Audit_grp"]').should("have.text", "Audit")
     cy.get('[data-test="B7UserManager_grp"]').should("have.text", "User Manager")
 
-    populateNewUser("Buser", "B forename", "B surname", "bichardemail1@example.com", "B organisation", "B01,B41ME00")
+    populateNewUser({
+      username: "Buser",
+      forenames: "B forename",
+      surname: "B surname",
+      emailAddress: "bichardemail1@example.com",
+      orgServes: "B organisation"
+    })
 
     cy.get('input[id="visibleForces001"]').check()
     cy.get('input[id="visibleForces004"]').check()
@@ -47,7 +60,14 @@ describe("Creation of new user", () => {
     cy.get("#user-management-link").click()
     cy.get("#add").click()
 
-    populateNewUser("Buser2", "B forename", "B surname", "bichardemail2@example.com", "B organisation", "B01,B41ME00")
+    populateNewUser({
+      username: "Buser2",
+      forenames: "B forename",
+      surname: "B surname",
+      emailAddress: "bichardemail2@example.com",
+      orgServes: "B organisation"
+    })
+
     cy.get('input[id="visibleForces001"]').check()
     cy.get('input[id="visibleForces004"]').check()
 
@@ -65,7 +85,15 @@ describe("Creation of new user", () => {
     cy.get("#user-management-link").click()
 
     cy.get("#add").click()
-    populateNewUser("Buser3", "B forename", "B surname", "buser3@example.com", "B organisation", "B01,B41ME00")
+
+    populateNewUser({
+      username: "Buser3",
+      forenames: "B forename",
+      surname: "B surname",
+      emailAddress: "buser3@example.com",
+      orgServes: "B organisation"
+    })
+
     cy.get('input[id="visibleForces001"]').check()
     cy.get("button[name=save]").click()
 
@@ -100,7 +128,14 @@ describe("Creation of new user", () => {
     cy.get("#user-management-link").click()
     cy.get("#add").click()
 
-    populateNewUser("Bichard01", "B forename", "B surname", "bemail2@example.com", "B organisation", "B01,B41ME00")
+    populateNewUser({
+      username: "Bichard01",
+      forenames: "B forename",
+      surname: "B surname",
+      emailAddress: "bemail2@example.com",
+      orgServes: "B organisation"
+    })
+
     cy.get('input[id="visibleForces001"]').check()
 
     cy.get("button[name=saveAndAddAnother]").click()
@@ -112,7 +147,14 @@ describe("Creation of new user", () => {
     cy.get("#user-management-link").click()
     cy.get("#add").click()
 
-    populateNewUser("Bichard01", "B forename", "B surname", "bemail2@example.com", "B organisation")
+    populateNewUser({
+      username: "Bichard01",
+      forenames: "B forename",
+      surname: "B surname",
+      emailAddress: "bemail2@example.com",
+      orgServes: "B organisation"
+    })
+
     cy.get("button[name=saveAndAddAnother]").click()
 
     cy.get('[data-test="error-summary"]').contains("Please ensure that user is assigned to least one force.")
@@ -134,12 +176,18 @@ describe("Creation of new user", () => {
   })
 
   it("should assign the correct group to a newly created user manager", () => {
-    const emailAddress = "bemailzz@example.com"
     cy.login("bichard01@example.com", "password")
     cy.get("#user-management-link").click()
     cy.get("#add").click()
 
-    populateNewUser("Buserzz", "B forename zz", "B surname zzz", emailAddress, "B organisation zz", "B01,B41ME00")
+    populateNewUser({
+      username: "Buserzz",
+      forenames: "B forename zz",
+      surname: "B surname zzz",
+      emailAddress: "bemailzz@example.com",
+      orgServes: "B organisation zz"
+    })
+
     cy.get('input[id="visibleForces001"]').check()
     cy.get('input[id="visibleForces004"]').check()
     cy.get('[data-test="included-triggers"]').click()
@@ -153,7 +201,7 @@ describe("Creation of new user", () => {
     cy.task("selectFromUsersGroupsTable").then((usersGroups) => {
       cy.task("selectFromGroupsTable").then((groups) => {
         const selectedGroup = groups.filter((g) => g.name === "B7UserManager_grp")[0]
-        cy.task("selectFromUsersTable", emailAddress).then((user) => {
+        cy.task("selectFromUsersTable", "bemailzz@example.com").then((user) => {
           const userGroups = usersGroups.filter((u) => u.user_id === user.id)
           expect(user.id).to.equal(userGroups[0].user_id)
           expect(userGroups[0].group_id).to.equal(selectedGroup.id)
@@ -166,12 +214,18 @@ describe("Creation of new user", () => {
   })
 
   it("should assign the correct group to a newly created general handler", () => {
-    const emailAddress = "bemailzz2@example.com"
     cy.login("bichard01@example.com", "password")
     cy.get("#user-management-link").click()
     cy.get("#add").click()
 
-    populateNewUser("Buserzz2", "B forename zz2", "B surname zzz", emailAddress, "B organisation zz", "B01,B41ME00")
+    populateNewUser({
+      username: "Buserzz2",
+      forenames: "B forename zz2",
+      surname: "B surname zzz",
+      emailAddress: "bemailzz2@example.com",
+      orgServes: "B organisation zz"
+    })
+
     cy.get('input[id="visibleForces001"]').check()
     cy.get('input[id="visibleForces004"]').check()
     cy.get('[data-test="included-triggers"]').click()
@@ -185,7 +239,7 @@ describe("Creation of new user", () => {
     cy.task("selectFromUsersGroupsTable").then((usersGroups) => {
       cy.task("selectFromGroupsTable").then((groups) => {
         const selectedGroup = groups.filter((g) => g.name === "B7GeneralHandler_grp")[0]
-        cy.task("selectFromUsersTable", emailAddress).then((user) => {
+        cy.task("selectFromUsersTable", "bemailzz2@example.com").then((user) => {
           const userGroups = usersGroups.filter((u) => u.user_id === user.id)
           expect(user.id).to.equal(userGroups[0].user_id)
           expect(userGroups[0].group_id).to.equal(selectedGroup.id)
@@ -202,7 +256,14 @@ describe("Creation of new user", () => {
     cy.get("#user-management-link").click()
     cy.get("#add").click()
 
-    populateNewUser("B%user2", "B forename", "B surname", "bichardemail2@example.com", "B organisation", "B01,B41ME00")
+    populateNewUser({
+      username: "B%user2",
+      forenames: "B forename",
+      surname: "B surname",
+      emailAddress: "bichardemail2@example.com",
+      orgServes: "B organisation"
+    })
+
     cy.get('input[id="visibleForces001"]').check()
     cy.get('input[id="visibleForces004"]').check()
 
@@ -226,14 +287,14 @@ describe("Creation of new user", () => {
     cy.get("#user-management-link").click()
     cy.get("#add").click()
 
-    populateNewUser(
-      "Buser2",
-      "B forename",
-      "B surname",
-      "bichardemail2@example.cjsm.net",
-      "B organisation",
-      "B01,B41ME00"
-    )
+    populateNewUser({
+      username: "Buser2",
+      forenames: "B forename",
+      surname: "B surname",
+      emailAddress: "bichardemail2@example.cjsm.net",
+      orgServes: "B organisation"
+    })
+
     cy.get('input[id="visibleForces001"]').check()
     cy.get('input[id="visibleForces004"]').check()
 
