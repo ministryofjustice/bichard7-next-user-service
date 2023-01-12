@@ -27,7 +27,7 @@ describe("Viewing a single user", () => {
     cy.login("bichard01@example.com", "password")
 
     cy.get("#user-management-link").click()
-    cy.get('a[hre*f="Bichard01"]').click()
+    cy.get('a[href*="Bichard01"]').click()
 
     cy.get('[data-test="summary-item_username_value"]').should("be.visible").contains("Bichard01")
     cy.get('[data-test="summary-item_forename_value"]').should("be.visible").contains("Bichard User 01")
