@@ -29,13 +29,19 @@ describe("Delete user", () => {
 
     cy.get('a[href="users/Bichard01"]').click()
     cy.get('[data-test="disabled-delete-anchor"]').should("have.attr", "class", "disabled-link")
+  })
 
-    // cy.get('[data-test="delete_delete-account-btn"]').click()
+  it("should prevent the user from deleting themselves by visiting the delete url", () => {
+    cy.login("bichard01@example.com", "password")
+    cy.visit("/users/Bichard01/delete")
 
-    // cy.get('[data-test="error-summary"]').contains("There is a problem")
-    // cy.get('[data-test="error-summary"]').contains(
-    //   "A user may not delete themselves, please contact another user manager to delete your user"
-    // )
+    cy.get('[data-test="text-input_deleteAccountConfirmation"]').type("Bichard01")
+    cy.get('[data-test="delete_delete-account-btn"]').click()
+
+    cy.get('[data-test="error-summary"]').contains("There is a problem")
+    cy.get('[data-test="error-summary"]').contains(
+      "A user may not delete themselves, please contact another user manager to delete your user"
+    )
   })
 
   it("should not allow deleting the user when confirmation text is invalid", () => {
