@@ -3,11 +3,13 @@ const user = {
 }
 
 describe("Reset password", () => {
-  beforeEach(() => {
+  before(() => {
     cy.resetTableToDefault()
     cy.task("insertIntoUsersTable")
-
-    cy.viewport(1280, 720)
+    cy.task("insertIntoUserGroupsTable", {
+      email: user.email,
+      groups: ["B7UserManager_grp", "B7Supervisor_grp"]
+    })
   })
 
   // TODO: check permissions - insertIntoUserGroupsTable
@@ -129,6 +131,9 @@ describe("Reset password", () => {
   })
 
   it("should not allow to reset using and old password", () => {
+    cy.resetTableToDefault()
+    cy.task("insertIntoUsersTable")
+
     const newPassword = "Test@1234567"
     cy.visit(`/login/reset-password`)
     cy.get("input[name=emailAddress]").type(user.email)
