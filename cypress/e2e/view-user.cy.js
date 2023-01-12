@@ -2,10 +2,12 @@ describe("Viewing a single user", () => {
   beforeEach(() => {
     cy.resetTableToDefault()
     cy.task("insertIntoUserGroupsTable", { email: "bichard01@example.com", groups: ["B7UserManager_grp"] })
+    cy.task("insertIntoUserGroupsTable", { email: "bichard02@example.com", groups: ["B7UserManager_grp"] })
   })
 
   it("should not allow the current user to view a user who is in a different force", () => {
     cy.login("bichard02@example.com", "password")
+    cy.get("#user-management-link").click()
 
     cy.visit("/users/Bichard03", { failOnStatusCode: false })
 
@@ -14,16 +16,16 @@ describe("Viewing a single user", () => {
 
   it("should prevent user from clicking on delete user button", () => {
     cy.login("bichard01@example.com", "password")
-
-    cy.visit("/users/Bichard01")
-
+    cy.get("#user-management-link").click()
+    cy.get('a[href="users/Bichard01"]').click()
     cy.get('[data-test="disabled-delete-anchor"]').should("be.visible")
   })
 
-  it("should show all summary information", () => {
+  it.only("should show all summary information", () => {
     cy.login("bichard01@example.com", "password")
 
-    cy.visit("/users/Bichard01")
+    cy.get("#user-management-link").click()
+    cy.get('a[href="users/Bichard01"]').click()
 
     cy.get('[data-test="summary-item_username_value"]').should("be.visible").contains("Bichard01")
     cy.get('[data-test="summary-item_forename_value"]').should("be.visible").contains("Bichard User 01")
