@@ -6,15 +6,11 @@ const user = {
 }
 
 describe("Logging In", () => {
-  before(() => {
+  beforeEach(() => {
+    cy.clearCookies()
     cy.resetTableToDefault()
     cy.task("insertIntoUsersTable")
   })
-  beforeEach(() => {
-    cy.clearCookies()
-  })
-
-  // TODO: check permissions - insertIntoUserGroupsTable
 
   it("should initially only ask for an email", () => {
     cy.visit("/login")
@@ -79,218 +75,218 @@ describe("Logging In", () => {
       cy.get("body").should("contain", "Welcome Bichard User 01")
       cy.getCookie(authCookieName).should("exist")
     })
-  })
 
-  it("should allow login with case-insensitive email address", () => {
-    cy.visit("/login")
-    cy.get("input[type=email]").type(user.email.toUpperCase())
-    cy.get("button[type=submit]").click()
-    cy.get("input#validationCode").should("exist")
-    cy.task("getVerificationCode", user.email).then((verificationCode) => {
-      cy.get("input#validationCode").type(verificationCode)
-      cy.get("input#password").type(user.password)
-      cy.get("button[type=submit]").click()
-      cy.url().should("match", /\/users/)
-      cy.get("body").should("contain", "Welcome Bichard User 01")
-      cy.getCookie(authCookieName).should("exist")
-    })
-  })
-
-  it("should accept a correct password and verification code even after incorrect password attempt", () => {
-    cy.visit("/login")
-    cy.get("input[type=email]").type(user.email)
-    cy.get("button[type=submit]").click()
-    cy.get("input#validationCode").should("exist")
-    cy.task("getVerificationCode", user.email).then((verificationCode) => {
-      cy.get("input#validationCode").type(verificationCode)
-      cy.get("input#password").type("wrongPassword")
-      cy.get("button[type=submit]").click()
-      cy.get('[data-test="error-summary"]').should("be.visible").contains("h2", "Your details do not match")
-
-      // Note: Although we avoid waits in cypress test as the logic implemented is temporal in nature we can consider this OK
-      // Need to wait 10 seconds after inputting an incorrect password
-      /* eslint-disable-next-line cypress/no-unnecessary-waiting */
-      cy.wait(10000)
-      cy.get("input[type=password][name=password]").type(user.password)
-      cy.get("button[type=submit]").click()
-
-      cy.get("body").should("contain", "Welcome Bichard User 01")
-      cy.url().should("match", /\/users/)
-    })
-  })
-
-  it("should remember email address when remember checkbox is checked", () => {
-    cy.visit("/login")
-    cy.get("input[type=email]").type(user.email)
-    cy.get("button[type=submit]").click()
-    cy.get("input#validationCode").should("exist")
-    cy.task("getVerificationCode", user.email).then((verificationCode) => {
-      cy.get("input#validationCode").type(verificationCode)
-      cy.get("input#password").type(user.password)
-      cy.get("input[id=rememberEmailYes]").should("not.be.checked")
-      cy.get("input[id=rememberEmailYes]").click()
-      cy.get("button[type=submit]").click()
-      cy.url().should("match", /\/users/)
-
-      cy.clearCookie(authCookieName)
+    it("should allow login with case-insensitive email address", () => {
       cy.visit("/login")
-      cy.get("body").should("contain", user.email)
-      cy.get("input#validationCode").should("not.exist")
-      cy.get("input#password").type(user.password)
-      cy.get("input[id=rememberEmailYes]").should("be.checked")
-      cy.get("button[type=submit]").trigger("click")
-      cy.url().should("match", /\/users/)
-
-      const expectedRememberEmailCookieExpiry = new Date()
-      expectedRememberEmailCookieExpiry.setHours(expectedRememberEmailCookieExpiry.getHours() + 24)
-      cy.getCookie(emailCookieName)
-        .should("exist")
-        .then((cookie) => {
-          const { expiry, httpOnly } = cookie
-          const actualExpiry = new Date(expiry * 1000)
-
-          expect(httpOnly).to.equal(true)
-          expect(actualExpiry.toDateString()).to.equal(expectedRememberEmailCookieExpiry.toDateString())
-          expect(actualExpiry.getHours()).to.equal(expectedRememberEmailCookieExpiry.getHours())
-          expect(actualExpiry.getMinutes()).to.equal(expectedRememberEmailCookieExpiry.getMinutes())
-        })
-    })
-  })
-
-  it("should remove the cookie when remember checkbox is unchecked", () => {
-    cy.visit("/login")
-    cy.get("input[type=email]").type(user.email)
-    cy.get("button[type=submit]").click()
-    cy.get("input#validationCode").should("exist")
-    cy.task("getVerificationCode", user.email).then((verificationCode) => {
-      cy.get("input#validationCode").type(verificationCode)
-      cy.get("input#password").type(user.password)
-      cy.get("input[id=rememberEmailYes]").click()
+      cy.get("input[type=email]").type(user.email.toUpperCase())
       cy.get("button[type=submit]").click()
-      cy.url().should("match", /\/users/)
+      cy.get("input#validationCode").should("exist")
+      cy.task("getVerificationCode", user.email).then((verificationCode) => {
+        cy.get("input#validationCode").type(verificationCode)
+        cy.get("input#password").type(user.password)
+        cy.get("button[type=submit]").click()
+        cy.url().should("match", /\/users/)
+        cy.get("body").should("contain", "Welcome Bichard User 01")
+        cy.getCookie(authCookieName).should("exist")
+      })
+    })
 
-      cy.get("a[data-test=logout").click()
-      cy.get("a[data-test=log-back-in").click()
-      cy.get("body").should("contain", user.email)
-      cy.get("input#validationCode").should("not.exist")
-      cy.get("input#password").type(user.password)
-      cy.get("input[id=rememberEmailYes]").click()
-      cy.get("button[type=submit]").trigger("click")
-      cy.url().should("match", /\/users/)
-
-      const expectedRememberEmailCookieExpiry = new Date()
-      expectedRememberEmailCookieExpiry.setHours(expectedRememberEmailCookieExpiry.getHours() + 24)
+    it("should accept a correct password and verification code even after incorrect password attempt", () => {
+      cy.visit("/login")
+      cy.get("input[type=email]").type(user.email)
       cy.get("button[type=submit]").click()
-      cy.get("a[data-test=logout]").click()
-      cy.get("a[data-test=log-back-in]").click()
-      cy.getCookie(emailCookieName).should("have.property", "value", "")
-    })
-  })
+      cy.get("input#validationCode").should("exist")
+      cy.task("getVerificationCode", user.email).then((verificationCode) => {
+        cy.get("input#validationCode").type(verificationCode)
+        cy.get("input#password").type("wrongPassword")
+        cy.get("button[type=submit]").click()
+        cy.get('[data-test="error-summary"]').should("be.visible").contains("h2", "Your details do not match")
 
-  it("should forget remembered email address when 'not you' link is clicked", () => {
-    cy.visit("/login")
-    cy.get("input[type=email]").type(user.email)
-    cy.get("button[type=submit]").click()
-    cy.get("input#validationCode").should("exist")
-    cy.task("getVerificationCode", user.email).then((verificationCode) => {
-      cy.get("input#validationCode").type(verificationCode)
-      cy.get("input#password").type(user.password)
-      cy.get("input[id=rememberEmailYes]").click()
+        // Note: Although we avoid waits in cypress test as the logic implemented is temporal in nature we can consider this OK
+        // Need to wait 10 seconds after inputting an incorrect password
+        /* eslint-disable-next-line cypress/no-unnecessary-waiting */
+        cy.wait(10000)
+        cy.get("input[type=password][name=password]").type(user.password)
+        cy.get("button[type=submit]").click()
+
+        cy.get("body").should("contain", "Welcome Bichard User 01")
+        cy.url().should("match", /\/users/)
+      })
+    })
+
+    it("should remember email address when remember checkbox is checked", () => {
+      cy.visit("/login")
+      cy.get("input[type=email]").type(user.email)
       cy.get("button[type=submit]").click()
-      cy.url().should("match", /\/users/)
+      cy.get("input#validationCode").should("exist")
+      cy.task("getVerificationCode", user.email).then((verificationCode) => {
+        cy.get("input#validationCode").type(verificationCode)
+        cy.get("input#password").type(user.password)
+        cy.get("input[id=rememberEmailYes]").should("not.be.checked")
+        cy.get("input[id=rememberEmailYes]").click()
+        cy.get("button[type=submit]").click()
+        cy.url().should("match", /\/users/)
 
-      cy.get("a[data-test=logout]").click()
-      cy.get("a[data-test=log-back-in]").click()
-      cy.get("body").should("contain", user.email)
-      cy.get("a[data-test=not-you-link]").click()
-      cy.url().should("match", /\/login\?notYou=true$/)
-      cy.get("body").should("not.contain", user.email)
-      cy.getCookie(emailCookieName).should("have.property", "value", "")
+        cy.clearCookie(authCookieName)
+        cy.visit("/login")
+        cy.get("body").should("contain", user.email)
+        cy.get("input#validationCode").should("not.exist")
+        cy.get("input#password").type(user.password)
+        cy.get("input[id=rememberEmailYes]").should("be.checked")
+        cy.get("button[type=submit]").trigger("click")
+        cy.url().should("match", /\/users/)
+
+        const expectedRememberEmailCookieExpiry = new Date()
+        expectedRememberEmailCookieExpiry.setHours(expectedRememberEmailCookieExpiry.getHours() + 24)
+        cy.getCookie(emailCookieName)
+          .should("exist")
+          .then((cookie) => {
+            const { expiry, httpOnly } = cookie
+            const actualExpiry = new Date(expiry * 1000)
+
+            expect(httpOnly).to.equal(true)
+            expect(actualExpiry.toDateString()).to.equal(expectedRememberEmailCookieExpiry.toDateString())
+            expect(actualExpiry.getHours()).to.equal(expectedRememberEmailCookieExpiry.getHours())
+            expect(actualExpiry.getMinutes()).to.equal(expectedRememberEmailCookieExpiry.getMinutes())
+          })
+      })
     })
-  })
 
-  it("should respond with forbidden response code when CSRF tokens are invalid in login page", (done) => {
-    cy.checkCsrf("/login", "POST").then(() => done())
-  })
-
-  it("should update the token id in the database on every login", () => {
-    const emailAddress = user.email
-    const password = "password"
-
-    cy.login(emailAddress, password)
-
-    let firstJwtId
-    cy.task("selectFromUsersTable", emailAddress).then((u) => {
-      firstJwtId = u.jwt_id
-    })
-
-    // Note: Although we avoid waits in cypress test as the logic implemented is temporal in nature we can consider this OK
-    // Need to wait 10 seconds after inputting a correct password
-    /* eslint-disable-next-line cypress/no-unnecessary-waiting */
-    cy.wait(10000)
-
-    cy.clearCookies()
-    cy.login(emailAddress, password)
-    cy.task("selectFromUsersTable", emailAddress).then((u) => {
-      expect(u.jwt_id).not.to.equal(firstJwtId)
-    })
-  })
-
-  it("doesn't show the login page to a logged-in user", () => {
-    cy.login(user.email, "password")
-
-    cy.visit("/login")
-    cy.url().should("not.match", /\/login\//)
-    cy.get("input[type=email]").should("not.exist")
-  })
-
-  it("allows a user to login with their CJSM email address", () => {
-    const cjsmEmailAddress = `${user.email}.cjsm.net`
-
-    cy.visit("/login")
-    cy.get("input[type=email]").type(cjsmEmailAddress)
-    cy.get("button[type=submit]").click()
-    cy.get("input#validationCode").should("exist")
-    cy.task("getVerificationCode", user.email).then((verificationCode) => {
-      cy.get("input#validationCode").type(verificationCode)
-      cy.get("input#password").type(user.password)
+    it("should remove the cookie when remember checkbox is unchecked", () => {
+      cy.visit("/login")
+      cy.get("input[type=email]").type(user.email)
       cy.get("button[type=submit]").click()
-      cy.url().should("match", /\/users/)
+      cy.get("input#validationCode").should("exist")
+      cy.task("getVerificationCode", user.email).then((verificationCode) => {
+        cy.get("input#validationCode").type(verificationCode)
+        cy.get("input#password").type(user.password)
+        cy.get("input[id=rememberEmailYes]").click()
+        cy.get("button[type=submit]").click()
+        cy.url().should("match", /\/users/)
+
+        cy.get("a[data-test=logout").click()
+        cy.get("a[data-test=log-back-in").click()
+        cy.get("body").should("contain", user.email)
+        cy.get("input#validationCode").should("not.exist")
+        cy.get("input#password").type(user.password)
+        cy.get("input[id=rememberEmailYes]").click()
+        cy.get("button[type=submit]").trigger("click")
+        cy.url().should("match", /\/users/)
+
+        const expectedRememberEmailCookieExpiry = new Date()
+        expectedRememberEmailCookieExpiry.setHours(expectedRememberEmailCookieExpiry.getHours() + 24)
+        cy.get("button[type=submit]").click()
+        cy.get("a[data-test=logout]").click()
+        cy.get("a[data-test=log-back-in]").click()
+        cy.getCookie(emailCookieName).should("have.property", "value", "")
+      })
     })
-  })
 
-  it("doesn't allow user to login after incorrectly inserting password 3 times", () => {
-    cy.visit("/login")
-    cy.get("input[type=email]").type(user.email)
-    cy.get("button[type=submit]").click()
-    cy.get("input#validationCode").should("exist")
-
-    cy.task("getVerificationCode", user.email).then((verificationCode) => {
-      // first incorrect login attempt
-      cy.get("input#validationCode").type(verificationCode)
-      cy.get("input#password").type("wrongPassword")
+    it("should forget remembered email address when 'not you' link is clicked", () => {
+      cy.visit("/login")
+      cy.get("input[type=email]").type(user.email)
       cy.get("button[type=submit]").click()
-      cy.get('[data-test="error-summary"]').should("be.visible").contains("h2", "Your details do not match")
+      cy.get("input#validationCode").should("exist")
+      cy.task("getVerificationCode", user.email).then((verificationCode) => {
+        cy.get("input#validationCode").type(verificationCode)
+        cy.get("input#password").type(user.password)
+        cy.get("input[id=rememberEmailYes]").click()
+        cy.get("button[type=submit]").click()
+        cy.url().should("match", /\/users/)
+
+        cy.get("a[data-test=logout]").click()
+        cy.get("a[data-test=log-back-in]").click()
+        cy.get("body").should("contain", user.email)
+        cy.get("a[data-test=not-you-link]").click()
+        cy.url().should("match", /\/login\?notYou=true$/)
+        cy.get("body").should("not.contain", user.email)
+        cy.getCookie(emailCookieName).should("have.property", "value", "")
+      })
+    })
+
+    it("should respond with forbidden response code when CSRF tokens are invalid in login page", (done) => {
+      cy.checkCsrf("/login", "POST").then(() => done())
+    })
+
+    it("should update the token id in the database on every login", () => {
+      const emailAddress = user.email
+      const password = "password"
+
+      cy.login(emailAddress, password)
+
+      let firstJwtId
+      cy.task("selectFromUsersTable", emailAddress).then((u) => {
+        firstJwtId = u.jwt_id
+      })
 
       // Note: Although we avoid waits in cypress test as the logic implemented is temporal in nature we can consider this OK
-      // Need to wait 10 seconds after inputting an incorrect password
+      // Need to wait 10 seconds after inputting a correct password
       /* eslint-disable-next-line cypress/no-unnecessary-waiting */
       cy.wait(10000)
 
-      // second incorrect login attempt
-      cy.get("input#password").type("wrongPassword")
-      cy.get("button[type=submit]").click()
-      cy.get('[data-test="error-summary"]').should("be.visible").contains("h2", "Your details do not match")
+      cy.clearCookies()
+      cy.login(emailAddress, password)
+      cy.task("selectFromUsersTable", emailAddress).then((u) => {
+        expect(u.jwt_id).not.to.equal(firstJwtId)
+      })
+    })
 
-      // Note: Although we avoid waits in cypress test as the logic implemented is temporal in nature we can consider this OK
-      // Need to wait 10 seconds after inputting an incorrect password
-      /* eslint-disable-next-line cypress/no-unnecessary-waiting */
-      cy.wait(10000)
+    it("doesn't show the login page to a logged-in user", () => {
+      cy.login(user.email, "password")
 
-      // third incorrect login attempt
-      cy.get("input#password").type("wrongPassword")
+      cy.visit("/login")
+      cy.url().should("not.match", /\/login\//)
+      cy.get("input[type=email]").should("not.exist")
+    })
+
+    it("allows a user to login with their CJSM email address", () => {
+      const cjsmEmailAddress = `${user.email}.cjsm.net`
+
+      cy.visit("/login")
+      cy.get("input[type=email]").type(cjsmEmailAddress)
       cy.get("button[type=submit]").click()
-      cy.get('[data-test="error-summary"]').should("be.visible").contains("Too many incorrect password attempts")
+      cy.get("input#validationCode").should("exist")
+      cy.task("getVerificationCode", user.email).then((verificationCode) => {
+        cy.get("input#validationCode").type(verificationCode)
+        cy.get("input#password").type(user.password)
+        cy.get("button[type=submit]").click()
+        cy.url().should("match", /\/users/)
+      })
+    })
+
+    it("doesn't allow user to login after incorrectly inserting password 3 times", () => {
+      cy.visit("/login")
+      cy.get("input[type=email]").type(user.email)
+      cy.get("button[type=submit]").click()
+      cy.get("input#validationCode").should("exist")
+
+      cy.task("getVerificationCode", user.email).then((verificationCode) => {
+        // first incorrect login attempt
+        cy.get("input#validationCode").type(verificationCode)
+        cy.get("input#password").type("wrongPassword")
+        cy.get("button[type=submit]").click()
+        cy.get('[data-test="error-summary"]').should("be.visible").contains("h2", "Your details do not match")
+
+        // Note: Although we avoid waits in cypress test as the logic implemented is temporal in nature we can consider this OK
+        // Need to wait 10 seconds after inputting an incorrect password
+        /* eslint-disable-next-line cypress/no-unnecessary-waiting */
+        cy.wait(10000)
+
+        // second incorrect login attempt
+        cy.get("input#password").type("wrongPassword")
+        cy.get("button[type=submit]").click()
+        cy.get('[data-test="error-summary"]').should("be.visible").contains("h2", "Your details do not match")
+
+        // Note: Although we avoid waits in cypress test as the logic implemented is temporal in nature we can consider this OK
+        // Need to wait 10 seconds after inputting an incorrect password
+        /* eslint-disable-next-line cypress/no-unnecessary-waiting */
+        cy.wait(10000)
+
+        // third incorrect login attempt
+        cy.get("input#password").type("wrongPassword")
+        cy.get("button[type=submit]").click()
+        cy.get('[data-test="error-summary"]').should("be.visible").contains("Too many incorrect password attempts")
+      })
     })
   })
 })
