@@ -2,6 +2,8 @@ describe("Change password", () => {
   context("720p resolution", () => {
     beforeEach(() => {
       cy.resetTableToDefault()
+      cy.task("insertIntoUsersTable")
+
       cy.clearCookies()
     })
 

@@ -1,10 +1,10 @@
-describe("Display list of users", () => {
+describe("Display a list of few users", () => {
   beforeEach(() => {
     cy.resetTableToDefault()
+    cy.task("insertIntoUsersTable")
   })
 
   // TODO: check permissions - insertIntoUserGroupsTable
-
   it("should display a list of user in tabular form", () => {
     cy.login("bichard01@example.com", "password")
     cy.visit("/users")
@@ -81,10 +81,16 @@ describe("Display list of users", () => {
     cy.get("tbody tr:nth-child(1) td:nth-child(3)").should("have.text", "Surname 03")
     cy.get("tbody tr:nth-child(1) td:nth-child(4)").should("have.text", "bichard03@example.com")
   })
+})
+
+describe("Display a list of many users", () => {
+  beforeEach(() => {
+    cy.resetTableToDefault()
+    cy.task("insertManyIntoUsersTable")
+  })
 
   it("should display in paginated view when returning many users", () => {
     cy.login("bichard01@example.com", "password")
-
     cy.visit("/users")
     cy.get("tbody tr:nth-child(1) td:nth-child(1)").should("have.text", "Bichard01")
     cy.get("tbody tr:nth-child(2) td:nth-child(1)").should("have.text", "Bichard02")
@@ -117,7 +123,6 @@ describe("Display list of users", () => {
 
   it("should display different users depending on the force codes assigned", () => {
     cy.login("bichard13@example.com", "password")
-
     cy.visit("/users")
     cy.get("tbody tr:nth-child(1) td:nth-child(1)").should("have.text", "Bichard01")
     cy.get("tbody tr:nth-child(2) td:nth-child(1)").should("have.text", "Bichard02")

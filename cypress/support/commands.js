@@ -45,6 +45,5 @@ Cypress.Commands.add("resetTableToDefault", () => {
   cy.task("deleteFromServiceMessagesTable")
   cy.task("insertIntoGroupsTable")
   cy.task("insertGroupHierarchies")
-  cy.task("insertIntoUsersTable")
   cy.task("insertIntoServiceMessagesTable")
 })

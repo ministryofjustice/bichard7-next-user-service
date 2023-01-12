@@ -1,6 +1,7 @@
 describe("Redirection log in", () => {
   before(() => {
     cy.resetTableToDefault()
+    cy.task("insertIntoUsersTable")
   })
 
   // TODO: check permissions - insertIntoUserGroupsTable
