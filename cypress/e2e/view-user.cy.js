@@ -1,5 +1,5 @@
 describe("Viewing a single user", () => {
-  beforeEach(() => {
+  before(() => {
     cy.resetTableToDefault()
     cy.task("insertIntoUsersTable")
 
@@ -23,7 +23,7 @@ describe("Viewing a single user", () => {
     cy.get('[data-test="disabled-delete-anchor"]').should("be.visible")
   })
 
-  it.only("should show all summary information", () => {
+  it("should show all summary information", () => {
     cy.login("bichard01@example.com", "password")
 
     cy.get("#user-management-link").click()
