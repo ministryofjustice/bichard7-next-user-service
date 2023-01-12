@@ -11,10 +11,10 @@ describe("Reset password", () => {
   function requestPasswordReset(emailAddress) {
     cy.visit("/login")
     cy.get("a[data-test='reset-password']").click()
-    cy.get("body").contains(/reset password/i)
+    cy.contains(/reset password/i)
     cy.get("input[type=email]").type(emailAddress)
     cy.get("button[type=submit]").click()
-    cy.get("body").contains(/sent you an email/i)
+    cy.contains(/sent you an email/i)
   }
 
   function resetPassword(emailAddress, newPassword) {
@@ -46,7 +46,7 @@ describe("Reset password", () => {
     const newPassword = "Test@1234567"
     requestPasswordReset("bichard01@example.com")
     resetPassword("bichard01@example.com", newPassword)
-    cy.get("body").contains(/You can now sign in with your new password./i)
+    cy.contains(/You can now sign in with your new password./i)
   })
 
   it("should not allow submission when passwords are too short", () => {
@@ -91,10 +91,10 @@ describe("Reset password", () => {
     const newPassword = "Test@1234567"
     requestPasswordReset("bichard01@example.com")
     resetPassword("bichard01@example.com", newPassword)
-    cy.get("body").contains(/You can now sign in with your new password./i)
+    cy.contains(/You can now sign in with your new password./i)
 
     requestPasswordReset("bichard01@example.com")
-    cy.get("body").contains(/sent you an email/i)
+    cy.contains(/sent you an email/i)
     resetPassword("bichard01@example.com", newPassword)
     cy.get('[data-test="error-summary"]').contains("Cannot use previously used password.")
   })
