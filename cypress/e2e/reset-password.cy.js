@@ -6,6 +6,8 @@ describe("Reset password", () => {
   context("720p resolution", () => {
     beforeEach(() => {
       cy.resetTableToDefault()
+      cy.task("insertIntoUsersTable")
+
       cy.viewport(1280, 720)
     })
 

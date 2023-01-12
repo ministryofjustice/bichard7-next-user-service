@@ -1,6 +1,8 @@
 describe("Delete user", () => {
   beforeEach(() => {
     cy.resetTableToDefault()
+    cy.task("insertIntoUsersTable")
+
     // 🧹TODO: check at end of refactor if deleteFromUsersGroupsTable can be brought into resetTableToDefault
     cy.task("deleteFromUsersGroupsTable")
     cy.task("insertIntoUserGroupsTable", {
