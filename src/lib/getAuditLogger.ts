@@ -5,6 +5,54 @@ import { isError } from "types/Result"
 import logger from "utils/logger"
 import { UserServiceConfig } from "./config"
 import generateAuditLog from "./generateAuditLog"
+import axios from "axios"
+
+enum HttpStatus {
+  Created = 201
+}
+
+const getApiAuditLogger =
+  (context: GetServerSidePropsContext, config: UserServiceConfig): AuditLogger =>
+  async (action, attributes): PromiseResult<void> => {
+    try {
+      const {
+        timestamp,
+        action: auditAction,
+        username,
+        userIp,
+        requestUri,
+        attributes: auditAttributes
+      } = generateAuditLog(context, action, attributes)
+
+      const userEvent = {
+        eventSource: "User Service",
+        category: "information",
+        eventType: auditAction,
+        timestamp: `${timestamp.toISOString()}`,
+        attributes: {
+          auditLogVersion: "2",
+          eventCode: auditAction.replace(/ /g, "-").toLowerCase(),
+          "Request URI": requestUri,
+          "User IP": userIp,
+          ...auditAttributes
+        }
+      }
+
+      const apiResult = await axios.post(`users/${username}/events`, userEvent, {
+        baseURL: config.auditLogApiUrl,
+        headers: {
+          "X-API-Key": config.auditLogApiKey
+        }
+      })
+
+      if (apiResult.status !== HttpStatus.Created) {
+        return Error(`Could not log event. API returned ${apiResult.status}. ${apiResult.data}`)
+      }
+    } catch (error) {
+      logger.error(error)
+      return isError(error) ? error : Error("Error writing to log")
+    }
+  }
 
 const getConsoleAuditLogger =
   (context: GetServerSidePropsContext): AuditLogger =>
@@ -46,11 +94,14 @@ export default (context: GetServerSidePropsContext, config: UserServiceConfig): 
     return auditLogger
   }
 
-  if (config.auditLoggerType !== "console") {
+  if (config.auditLoggerType === "console") {
+    auditLogger = getConsoleAuditLogger(context)
+  } else if (config.auditLoggerType === "audit-log-api") {
+    auditLogger = getApiAuditLogger(context, config)
+  } else {
     throw new Error("Unknown audit logger type.")
   }
 
-  auditLogger = getConsoleAuditLogger(context)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ;(context as any).auditLogger = auditLogger
 

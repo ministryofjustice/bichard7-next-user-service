@@ -12,7 +12,7 @@ it("should throw error when unknown logger type is set in config", () => {
   try {
     getAuditLogger(dummyContext, testConfig)
   } catch (error) {
-    actualError = error
+    actualError = error as Error
   }
 
   expect(isError(actualError)).toBe(true)
