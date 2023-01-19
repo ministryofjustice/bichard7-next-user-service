@@ -31,7 +31,7 @@ commands:
     steps:
       - run:
           name: Clone Audit Logging
-          command: git clone --depth 1 git@github.com:ministryofjustice/bichard7-next-audit-logging.git -b scripts-to-run-api-in-ci ~/bichard7-next-audit-logging
+          command: git clone --depth 1 git@github.com:ministryofjustice/bichard7-next-audit-logging.git ~/bichard7-next-audit-logging
       - run:
           name: Run Audit Log API
           command: |
