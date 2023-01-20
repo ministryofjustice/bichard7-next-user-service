@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-
 import { getConfig } from "lib/config"
 
 describe("config", () => {
