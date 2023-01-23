@@ -1,5 +1,6 @@
 import AuditLogger from "types/AuditLogger"
 import Database from "types/Database"
+import AuditLogEvent from "types/AuditLogEvent"
 import PromiseResult from "types/PromiseResult"
 import { isError } from "types/Result"
 import logger from "utils/logger"
@@ -76,7 +77,7 @@ export default async (
         return Error("Server error. Please try again later.")
       }
 
-      await auditLogger("Change password")
+      await auditLogger(AuditLogEvent.changedPassword)
 
       const sendPasswordChangedEmailResult = await sendPasswordChangedEmail(connection, emailAddress, baseUrl)
 

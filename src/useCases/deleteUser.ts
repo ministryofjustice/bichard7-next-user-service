@@ -3,6 +3,7 @@ import Database from "types/Database"
 import { isError } from "types/Result"
 import AuditLogger from "types/AuditLogger"
 import markUserAsDeleted from "./markUserAsDeleted"
+import AuditLogEvent from "types/AuditLogEvent"
 
 interface DeleteUserResult {
   serverSideError?: Error
@@ -21,7 +22,7 @@ export default async (
     return { serverSideError: markUserAsDeletedResult }
   }
 
-  await auditLogger("Delete user", { user, by: currentUser })
+  await auditLogger(AuditLogEvent.deletedUser, { user, by: currentUser })
 
   return { isDeleted: true }
 }

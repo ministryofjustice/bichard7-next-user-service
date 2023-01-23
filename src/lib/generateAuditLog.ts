@@ -1,6 +1,7 @@
 import { GetServerSidePropsContext } from "next"
 import AuditLog from "types/AuditLog"
 import AuthenticationServerSidePropsContext from "types/AuthenticationServerSidePropsContext"
+import AuditLogEvent from "types/AuditLogEvent"
 import KeyValuePair from "types/KeyValuePair"
 
 type AttributesWithUser = { user?: { username?: string } }
@@ -22,7 +23,7 @@ const filterAttributes = (
 
 export default (
   context: GetServerSidePropsContext,
-  action: string,
+  event: AuditLogEvent,
   attributes?: KeyValuePair<string, unknown>
 ): AuditLog => {
   const {
@@ -33,5 +34,12 @@ export default (
   const remoteAddress = String(socket?.remoteAddress)
   const username = currentUser?.username ?? (attributes as AttributesWithUser)?.user?.username ?? "Anonymous"
 
-  return new AuditLog(action, username, remoteAddress, String(url), filterAttributes(attributes))
+  return new AuditLog(
+    event.getDescription(),
+    event.getCode(),
+    username,
+    remoteAddress,
+    String(url),
+    filterAttributes(attributes)
+  )
 }

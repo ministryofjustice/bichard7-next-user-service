@@ -1,6 +1,7 @@
-import KeyValuePair from "./KeyValuePair"
-import PromiseResult from "./PromiseResult"
+import type AuditLogEvent from "./AuditLogEvent"
+import type KeyValuePair from "./KeyValuePair"
+import type PromiseResult from "./PromiseResult"
 
-type AuditLogger = (action: string, attributes?: KeyValuePair<string, unknown>) => PromiseResult<void>
+type AuditLogger = (event: AuditLogEvent, attributes?: KeyValuePair<string, unknown>) => PromiseResult<void>
 
 export default AuditLogger

@@ -1,6 +1,7 @@
 import { UserServiceConfig } from "lib/config"
 import getAuditLogger from "lib/getAuditLogger"
 import { GetServerSidePropsContext } from "next"
+import AuditLogEvent from "types/AuditLogEvent"
 import { isError } from "types/Result"
 
 it("should log using audit log api", async () => {
@@ -17,7 +18,7 @@ it("should log using audit log api", async () => {
   } as unknown as GetServerSidePropsContext
 
   const auditLogger = getAuditLogger(dummyContext, testConfig)
-  const result = await auditLogger("Dummy action", {
+  const result = await auditLogger(AuditLogEvent.editedUser, {
     "Attribute 1": "Dummy value",
     "Attribute 2": 100,
     user: {

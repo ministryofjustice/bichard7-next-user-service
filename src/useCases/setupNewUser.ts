@@ -4,6 +4,7 @@ import config from "lib/config"
 import getEmailer from "lib/getEmailer"
 import AuditLogger from "types/AuditLogger"
 import Database from "types/Database"
+import AuditLogEvent from "types/AuditLogEvent"
 import PromiseResult from "types/PromiseResult"
 import { isError } from "types/Result"
 import User from "types/User"
@@ -30,12 +31,12 @@ export default async (
     return result
   }
 
-  await auditLogger("Create user", { user: userCreateDetails, by: currentUser })
+  await auditLogger(AuditLogEvent.createdUser, { user: userCreateDetails, by: currentUser })
 
   const createNewUserEmailResult = createNewUserEmail(userCreateDetails, baseUrl)
 
   if (isError(createNewUserEmailResult)) {
-    await auditLogger("Error creating new user email", { user: userCreateDetails })
+    await auditLogger(AuditLogEvent.failedCreatingNewEmailWhileCreatingUser, { user: userCreateDetails })
     logger.error(createNewUserEmailResult)
     return Error("Server error. Please try again later.")
   }
@@ -59,7 +60,7 @@ export default async (
     })
     .then(() => logger.info(`Email successfully sent to ${userCreateDetails.emailAddress}`))
     .catch(async () => {
-      await auditLogger("Error sending notification email of new user creation", { user: userCreateDetails })
+      await auditLogger(AuditLogEvent.failedNotificationWhileCreatingUser, { user: userCreateDetails })
     })
 
   return emailer
@@ -70,7 +71,7 @@ export default async (
     })
     .then(() => logger.info(`Email successfully sent to ${userCreateDetails.emailAddress}`))
     .catch(async (error: Error) => {
-      await auditLogger("Error sending email to new user", { user: userCreateDetails })
+      await auditLogger(AuditLogEvent.failedToEmailUserWhileCreatingUser, { user: userCreateDetails })
       return error
     })
 }

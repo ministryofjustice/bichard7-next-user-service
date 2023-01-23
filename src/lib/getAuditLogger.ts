@@ -13,25 +13,26 @@ enum HttpStatus {
 
 const getApiAuditLogger =
   (context: GetServerSidePropsContext, config: UserServiceConfig): AuditLogger =>
-  async (action, attributes): PromiseResult<void> => {
+  async (event, attributes): PromiseResult<void> => {
     try {
       const {
         timestamp,
-        action: auditAction,
+        action,
+        eventCode,
         username,
         userIp,
         requestUri,
         attributes: auditAttributes
-      } = generateAuditLog(context, action, attributes)
+      } = generateAuditLog(context, event, attributes)
 
       const userEvent = {
         eventSource: "User Service",
         category: "information",
-        eventType: auditAction,
+        eventType: action,
         timestamp: `${timestamp.toISOString()}`,
         attributes: {
           auditLogVersion: "2",
-          eventCode: auditAction.replace(/ /g, "-").toLowerCase(),
+          eventCode,
           "Request URI": requestUri,
           "User IP": userIp,
           ...auditAttributes
@@ -56,23 +57,25 @@ const getApiAuditLogger =
 
 const getConsoleAuditLogger =
   (context: GetServerSidePropsContext): AuditLogger =>
-  (action, attributes): PromiseResult<void> => {
+  (event, attributes): PromiseResult<void> => {
     try {
       const {
         auditLogId,
         timestamp,
-        action: auditAction,
+        action,
+        eventCode,
         username,
         userIp,
         requestUri,
         attributes: auditAttributes
-      } = generateAuditLog(context, action, attributes)
+      } = generateAuditLog(context, event, attributes)
 
       logger.info({
         component: "[Audit Logger]",
         auditLogId,
         timestamp: `${timestamp.toISOString()}`,
-        action: auditAction,
+        action,
+        eventCode,
         username,
         userIp,
         requestUri,
