@@ -111,7 +111,7 @@ if [[ "$(has_local_image)" -gt 0 ]]; then
   if [ $(arch) = "arm64" ]
   then
       echo "Building for ARM"
-      docker build --platform=linux/amd64 -t user-service:latest .
+      docker build --platform=linux/arm64 -t user-service:latest .
   else
       echo "Building regular image"
       docker build -t user-service:latest .
