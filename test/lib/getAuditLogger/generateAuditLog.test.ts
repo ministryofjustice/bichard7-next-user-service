@@ -1,4 +1,4 @@
-import generateAuditLog from "lib/generateAuditLog"
+import generateAuditLog from "lib/getAuditLogger/generateAuditLog"
 import { GetServerSidePropsContext } from "next"
 import AuditLogEvent from "types/AuditLogEvent"
 import User from "types/User"
@@ -12,12 +12,15 @@ it("should generate audit log when current user exists", () => {
   } as User
 
   const testContext = { currentUser: user, req: dummyRequest } as unknown as GetServerSidePropsContext
-  const auditLog = generateAuditLog(testContext, AuditLogEvent.loggedIn, { attribute1: "test", attribute2: true })
+  const auditLog = generateAuditLog(testContext, AuditLogEvent.loggedIn.code, AuditLogEvent.loggedIn.description, {
+    attribute1: "test",
+    attribute2: true
+  })
 
   expect(auditLog.auditLogId).toBeDefined()
   expect(auditLog.timestamp).toBeDefined()
-  expect(auditLog.action).toBe("User logged in")
-  expect(auditLog.eventCode).toBe("user-logged-in")
+  expect(auditLog.description).toBe("User logged in")
+  expect(auditLog.eventCode).toBe("user.logged-in")
   expect(auditLog.requestUri).toBe(dummyRequest.url)
   expect(auditLog.userIp).toBe(dummyRequest.socket.remoteAddress)
   expect(auditLog.username).toBe(user.username)
@@ -35,12 +38,16 @@ it("should generate audit log and get username from user object in attributes", 
     emailAddress: "dummy@dummy.com"
   } as User
   const testContext = { req: dummyRequest } as unknown as GetServerSidePropsContext
-  const auditLog = generateAuditLog(testContext, AuditLogEvent.loggedIn, { attribute1: "test", attribute2: true, user })
+  const auditLog = generateAuditLog(testContext, AuditLogEvent.loggedIn.code, AuditLogEvent.loggedIn.description, {
+    attribute1: "test",
+    attribute2: true,
+    user
+  })
 
   expect(auditLog.auditLogId).toBeDefined()
   expect(auditLog.timestamp).toBeDefined()
-  expect(auditLog.action).toBe("User logged in")
-  expect(auditLog.eventCode).toBe("user-logged-in")
+  expect(auditLog.description).toBe("User logged in")
+  expect(auditLog.eventCode).toBe("user.logged-in")
   expect(auditLog.requestUri).toBe(dummyRequest.url)
   expect(auditLog.userIp).toBe(dummyRequest.socket.remoteAddress)
   expect(auditLog.username).toBe("dummy 2")
@@ -54,12 +61,15 @@ it("should generate audit log and get username from user object in attributes", 
 
 it("should generate audit log when current user and user object in attributes do not exist", () => {
   const testContext = { req: dummyRequest } as unknown as GetServerSidePropsContext
-  const auditLog = generateAuditLog(testContext, AuditLogEvent.loggedIn, { attribute1: "test", attribute2: true })
+  const auditLog = generateAuditLog(testContext, AuditLogEvent.loggedIn.code, AuditLogEvent.loggedIn.description, {
+    attribute1: "test",
+    attribute2: true
+  })
 
   expect(auditLog.auditLogId).toBeDefined()
   expect(auditLog.timestamp).toBeDefined()
-  expect(auditLog.action).toBe("User logged in")
-  expect(auditLog.eventCode).toBe("user-logged-in")
+  expect(auditLog.description).toBe("User logged in")
+  expect(auditLog.eventCode).toBe("user.logged-in")
   expect(auditLog.requestUri).toBe(dummyRequest.url)
   expect(auditLog.userIp).toBe(dummyRequest.socket.remoteAddress)
   expect(auditLog.username).toBe("Anonymous")
@@ -73,7 +83,7 @@ it("should generate audit log when current user and user object in attributes do
 
 it("should remove unsafe attributes", () => {
   const testContext = { req: dummyRequest } as unknown as GetServerSidePropsContext
-  const auditLog = generateAuditLog(testContext, AuditLogEvent.loggedIn, {
+  const auditLog = generateAuditLog(testContext, AuditLogEvent.loggedIn.code, AuditLogEvent.loggedIn.description, {
     user: { name: "test User", password: "secret", migratedPassword: "secret" }
   })
 

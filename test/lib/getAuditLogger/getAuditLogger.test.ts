@@ -29,6 +29,15 @@ it("should keep the audit logger instance in context", () => {
   expect(auditLogger).toEqual(contextAuditLogger)
 })
 
+it("should set logError and logEvent in audit logger", () => {
+  const testContext = {} as unknown as GetServerSidePropsContext
+
+  const auditLogger = getAuditLogger(testContext, config)
+
+  expect(auditLogger.logError).toBeDefined()
+  expect(auditLogger.logEvent).toBeDefined()
+})
+
 it("should return the auditLogger in the context", () => {
   const testContext = { auditLogger: { testingAuditLogger: true } } as unknown as GetServerSidePropsContext
 

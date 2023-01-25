@@ -111,7 +111,7 @@ const updateUser = async (
     return new Error("There was an error while updating the user. Please try again.")
   }
 
-  await auditLogger(AuditLogEvent.editedUser, { user: userDetails, by: currentUser })
+  await auditLogger.logEvent(AuditLogEvent.userDetailsEdited, { user: userDetails, by: currentUser })
 
   return undefined
 }

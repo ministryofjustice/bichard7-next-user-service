@@ -18,7 +18,7 @@ it("should log using audit log api", async () => {
   } as unknown as GetServerSidePropsContext
 
   const auditLogger = getAuditLogger(dummyContext, testConfig)
-  const result = await auditLogger(AuditLogEvent.editedUser, {
+  const result = await auditLogger.logEvent(AuditLogEvent.userDetailsEdited, {
     "Attribute 1": "Dummy value",
     "Attribute 2": 100,
     user: {

@@ -65,7 +65,7 @@ export default async (
         return updatePasswordResult
       }
 
-      await auditLogger(AuditLogEvent.resetPassword, { user: { emailAddress } })
+      await auditLogger.logEvent(AuditLogEvent.passwordReset, { user: { emailAddress } })
 
       return undefined
     })

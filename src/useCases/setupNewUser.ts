@@ -31,13 +31,12 @@ export default async (
     return result
   }
 
-  await auditLogger(AuditLogEvent.createdUser, { user: userCreateDetails, by: currentUser })
+  await auditLogger.logEvent(AuditLogEvent.userCreated, { user: userCreateDetails, by: currentUser })
 
   const createNewUserEmailResult = createNewUserEmail(userCreateDetails, baseUrl)
 
   if (isError(createNewUserEmailResult)) {
-    await auditLogger(AuditLogEvent.failedCreatingNewEmailWhileCreatingUser, { user: userCreateDetails })
-    logger.error(createNewUserEmailResult)
+    auditLogger.logError("Error creating new user email", { user: userCreateDetails }, createNewUserEmailResult)
     return Error("Server error. Please try again later.")
   }
 
@@ -59,8 +58,8 @@ export default async (
       ...UserCreatedNotification({ user: { ...userCreateDetails, ...{ groups: groupsForNewUser } } })
     })
     .then(() => logger.info(`Email successfully sent to ${userCreateDetails.emailAddress}`))
-    .catch(async () => {
-      await auditLogger(AuditLogEvent.failedNotificationWhileCreatingUser, { user: userCreateDetails })
+    .catch(() => {
+      auditLogger.logError("Error sending notification email of new user creation", { user: userCreateDetails })
     })
 
   return emailer
@@ -70,8 +69,8 @@ export default async (
       ...email
     })
     .then(() => logger.info(`Email successfully sent to ${userCreateDetails.emailAddress}`))
-    .catch(async (error: Error) => {
-      await auditLogger(AuditLogEvent.failedToEmailUserWhileCreatingUser, { user: userCreateDetails })
+    .catch((error: Error) => {
+      auditLogger.logError("Error sending email to new user", { user: userCreateDetails })
       return error
     })
 }

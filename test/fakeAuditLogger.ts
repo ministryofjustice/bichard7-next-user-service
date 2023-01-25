@@ -2,8 +2,9 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import AuditLogger from "types/AuditLogger"
 
-const fakeAuditLogger: AuditLogger = (_action, _attributes) => {
-  return Promise.resolve()
+const fakeAuditLogger: AuditLogger = {
+  logEvent: (_action, _attributes) => Promise.resolve(),
+  logError: (_description, _attributes, _error) => {}
 }
 
 export default fakeAuditLogger

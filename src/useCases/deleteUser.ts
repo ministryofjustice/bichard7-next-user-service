@@ -22,7 +22,7 @@ export default async (
     return { serverSideError: markUserAsDeletedResult }
   }
 
-  await auditLogger(AuditLogEvent.deletedUser, { user, by: currentUser })
+  await auditLogger.logEvent(AuditLogEvent.userDeleted, { user, by: currentUser })
 
   return { isDeleted: true }
 }

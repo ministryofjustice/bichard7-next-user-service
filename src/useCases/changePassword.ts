@@ -77,7 +77,7 @@ export default async (
         return Error("Server error. Please try again later.")
       }
 
-      await auditLogger(AuditLogEvent.changedPassword)
+      await auditLogger.logEvent(AuditLogEvent.passwordUpdated)
 
       const sendPasswordChangedEmailResult = await sendPasswordChangedEmail(connection, emailAddress, baseUrl)
 

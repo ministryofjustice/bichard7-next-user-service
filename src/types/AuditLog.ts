@@ -7,7 +7,7 @@ export default class AuditLog {
   public readonly timestamp: Date
 
   constructor(
-    public readonly action: string,
+    public readonly description: string,
     public readonly eventCode: string,
     public readonly username: string,
     public readonly userIp: string,
