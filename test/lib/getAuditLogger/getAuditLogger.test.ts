@@ -12,7 +12,7 @@ it("should throw error when unknown logger type is set in config", () => {
   try {
     getAuditLogger(dummyContext, testConfig)
   } catch (error) {
-    actualError = error
+    actualError = error as Error
   }
 
   expect(isError(actualError)).toBe(true)
@@ -27,6 +27,15 @@ it("should keep the audit logger instance in context", () => {
   const { auditLogger: contextAuditLogger } = testContext as unknown as { auditLogger: AuditLogger }
 
   expect(auditLogger).toEqual(contextAuditLogger)
+})
+
+it("should set logError and logEvent in audit logger", () => {
+  const testContext = {} as unknown as GetServerSidePropsContext
+
+  const auditLogger = getAuditLogger(testContext, config)
+
+  expect(auditLogger.logError).toBeDefined()
+  expect(auditLogger.logEvent).toBeDefined()
 })
 
 it("should return the auditLogger in the context", () => {

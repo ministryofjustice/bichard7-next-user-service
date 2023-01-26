@@ -25,6 +25,7 @@
     "@trust/webcrypto": "^0.9.2",
     "@types/qs": "^6.9.7",
     "argon2": "^0.30.3",
+    "axios": "^1.2.3",
     "badwords-list": "^1.0.0",
     "classnames": "^2.3.2",
     "cookie": "^0.5.0",

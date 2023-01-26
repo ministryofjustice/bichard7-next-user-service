@@ -12,6 +12,7 @@ import getFailedPasswordAttempts from "./getFailedPasswordAttempts"
 import setFailedPasswordAttempts from "./setFailedPasswordAttempts"
 import UserAuthBichard from "types/UserAuthBichard"
 import UserGroup from "types/UserGroup"
+import AuditLogEvent from "types/AuditLogEvent"
 
 const fetchGroups = async (task: ITask<unknown>, emailAddress: string): Promise<UserGroup[]> => {
   const fetchGroupsQuery = `
@@ -138,7 +139,7 @@ const authenticate = async (
 
     if (isAuthenticated && (verificationCode === null || isVerified)) {
       await resetUserVerificationCode(connection, emailAddress)
-      await auditLogger("User logged in", { user })
+      await auditLogger.logEvent(AuditLogEvent.loggedIn, { user })
       return user
     }
 

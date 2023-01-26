@@ -25,6 +25,20 @@ commands:
       - run:
           name: Clone Bichard7 Next
           command: git clone --depth 1 git@github.com:ministryofjustice/bichard7-next.git ~/bichard7-next
+  
+  run_audit_logging_api:
+    description: Check out the bichard7-next-audit-logging repo and run Audit Log API
+    steps:
+      - run:
+          name: Clone Audit Logging
+          command: git clone --depth 1 git@github.com:ministryofjustice/bichard7-next-audit-logging.git ~/bichard7-next-audit-logging
+      - run:
+          name: Run Audit Log API
+          command: |
+            cd ~/bichard7-next-audit-logging
+            npm install
+            npx --yes pm2 start "SKIP_MQ=true SKIP_PG=true npm run start-api"
+            ./scripts/wait-for-api.sh
 
   run_postgres_database:
     description: Spin up the postgres database
@@ -100,6 +114,7 @@ jobs:
       - attach_workspace:
           at: .
       - clone_bichard_repo
+      - run_audit_logging_api
       - run_postgres_database
       - run:
           name: Run integration tests

@@ -6,6 +6,7 @@ import { ITask } from "pg-promise"
 import { isError } from "types/Result"
 import { UserGroupResult } from "types/UserGroup"
 import logger from "utils/logger"
+import AuditLogEvent from "types/AuditLogEvent"
 
 const deleteFromUsersGroups = (task: ITask<unknown>, userId: number): PromiseResult<null> => {
   const deleteFromUsersGroupsQuery = `
@@ -110,7 +111,7 @@ const updateUser = async (
     return new Error("There was an error while updating the user. Please try again.")
   }
 
-  await auditLogger("Edit user", { user: userDetails, by: currentUser })
+  await auditLogger.logEvent(AuditLogEvent.userDetailsEdited, { user: userDetails, by: currentUser })
 
   return undefined
 }

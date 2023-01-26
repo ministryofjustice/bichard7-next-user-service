@@ -1,5 +1,6 @@
 import AuditLogger from "types/AuditLogger"
 import Database from "types/Database"
+import AuditLogEvent from "types/AuditLogEvent"
 import PromiseResult from "types/PromiseResult"
 import { isError } from "types/Result"
 import addPasswordHistory from "./addPasswordHistory"
@@ -64,7 +65,7 @@ export default async (
         return updatePasswordResult
       }
 
-      await auditLogger("Reset password", { user: { emailAddress } })
+      await auditLogger.logEvent(AuditLogEvent.passwordReset, { user: { emailAddress } })
 
       return undefined
     })
