@@ -48,6 +48,12 @@ commands:
           working_directory: ~/bichard7-next
           command: make run-pg
 
+  checkout-tests:
+    steps:
+      - run:
+          name: Git clone e2e tests
+          command: git clone --depth 1 https://github.com/ministryofjustice/bichard7-next-tests.git ~/bichard7-next-tests
+
   fetch_docker_images:
     description: Fetch all of the required docker images from ECR
     steps:
@@ -164,6 +170,7 @@ jobs:
     working_directory: ~
     steps:
       - checkout
+      - checkout-tests
       - npm_install
       - attach_workspace:
           at: .
@@ -193,8 +200,8 @@ jobs:
           when: on_fail
       - run:
           name: Run end-to-end tests
-          working_directory: ~/bichard7-next
-          command: bash -c ". ./scripts/e2e-tests/e2e-tests-env.sh && docker-compose run e2e-tests npm run test:must"
+          working_directory: ~/bichard7-next-tests
+          command: npm i && npm run test:must
           environment:
             STACK_TYPE: next
             WORKSPACE: local-next
