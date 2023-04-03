@@ -52,7 +52,8 @@ describe("Display a list of few users", () => {
     cy.get("tbody tr:nth-child(1) td:nth-child(3)").should("have.text", "Surname 02")
     cy.get("tbody tr:nth-child(1) td:nth-child(4)").should("have.text", "bichard02@example.com")
 
-    cy.get('input[id="filter"]').focus().clear()
+    cy.get('input[id="filter"]').focus()
+    cy.get('input[id="filter"]').clear()
     cy.get('input[id="filter"]').type("bichard03")
     cy.get('button[id="filter"]').click()
     cy.get("tbody tr:nth-child(1) td:nth-child(1)").should("have.text", "Bichard03")
@@ -75,7 +76,8 @@ describe("Display a list of few users", () => {
     cy.get("tbody tr:nth-child(1) td:nth-child(3)").should("have.text", "Surname 02")
     cy.get("tbody tr:nth-child(1) td:nth-child(4)").should("have.text", "bichard02@example.com")
 
-    cy.get('input[id="filter"]').focus().clear()
+    cy.get('input[id="filter"]').focus()
+    cy.get('input[id="filter"]').clear()
     cy.get('input[id="filter"]').type("bichard03")
     cy.get('button[id="filter"]').click()
     cy.get("tbody tr:nth-child(1) td:nth-child(1)").should("have.text", "Bichard03")
