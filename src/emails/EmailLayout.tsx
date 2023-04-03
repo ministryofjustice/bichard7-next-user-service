@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-head-element */
 import { ReactNode } from "react"
 
 const outerBackgroundColour = "#f3f2f1"
