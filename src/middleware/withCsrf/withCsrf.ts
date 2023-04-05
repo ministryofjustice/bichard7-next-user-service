@@ -19,6 +19,7 @@ export default <Props extends { [key: string]: any }>(
     if (!isValid) {
       res.statusCode = 403
       res.statusMessage = "Invalid CSRF-token"
+      res.setHeader("X-Status-Message", "Invalid CSRF-token")
       res.end()
       return { props: {} } as unknown as GetServerSidePropsResult<Props>
     }

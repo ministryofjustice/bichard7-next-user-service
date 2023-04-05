@@ -10,6 +10,7 @@ import { GetServerSidePropsContext } from "next"
 import QueryString from "qs"
 import { ParsedUrlQuery } from "querystring"
 import CsrfServerSidePropsContext from "types/CsrfServerSidePropsContext"
+import KeyValuePair from "types/KeyValuePair"
 
 it("should include form data and CSRF token in the context", async () => {
   const mockedVerifyCsrfToken = verifyCsrfToken as jest.MockedFunction<typeof verifyCsrfToken>
@@ -49,10 +50,14 @@ it("should set forbidden response code when CSRF token verification fails", asyn
   mockedVerifyCsrfToken.mockResolvedValue({ formData: dummyFormData, isValid: false })
 
   let isEndCalled = false
+  const headers: KeyValuePair<string, string> = {}
   const dummyContext = {
     res: {
       statusCode: 200,
       statusMessage: "Ok",
+      setHeader: (name: string, value: string) => {
+        headers[name] = value
+      },
       end: () => {
         isEndCalled = true
       }
@@ -66,5 +71,8 @@ it("should set forbidden response code when CSRF token verification fails", asyn
   const { statusCode, statusMessage } = dummyContext.res
   expect(statusCode).toBe(403)
   expect(statusMessage).toBe("Invalid CSRF-token")
+  expect(headers).toStrictEqual({
+    "X-Status-Message": "Invalid CSRF-token"
+  })
   expect(isEndCalled).toBe(true)
 })
