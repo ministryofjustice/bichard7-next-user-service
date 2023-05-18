@@ -25,7 +25,7 @@ commands:
       - run:
           name: Clone Bichard7 Next
           command: git clone --depth 1 git@github.com:ministryofjustice/bichard7-next.git ~/bichard7-next
-  
+
   run_audit_logging_api:
     description: Check out the bichard7-next-audit-logging repo and run Audit Log API
     steps:
@@ -77,7 +77,7 @@ commands:
 jobs:
   build:
     docker:
-      - image: cimg/node:16.3.0
+      - image: cimg/node:16.18.0
     working_directory: ~
     steps:
       - checkout
