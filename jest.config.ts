@@ -1,4 +1,5 @@
 import type { Config } from "@jest/types"
+import { TextEncoder } from "util"
 
 const config: Config.InitialOptions = {
   preset: "ts-jest",
@@ -9,7 +10,8 @@ const config: Config.InitialOptions = {
   globals: {
     "ts-jest": {
       tsconfig: "test/tsconfig.json"
-    }
+    },
+    TextEncoder
   },
   moduleDirectories: ["node_modules", "./src"],
   testPathIgnorePatterns: ["/node_modules/", "/.next/", "/cypress"],
