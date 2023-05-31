@@ -18,7 +18,7 @@
     "test:unit:update": "npm run test:unit -- -u",
     "test:integration": "jest --testPathPattern=\"integration\" --runInBand",
     "test:ui": "./scripts/run-test-ui.sh",
-    "update-deps": "ncu -x pg-promise -u && npm install"
+    "update-deps": "ncu -u && npm install"
   },
   "dependencies": {
     "@moj-bichard7-developers/bichard7-next-data": "^2.0.83",
