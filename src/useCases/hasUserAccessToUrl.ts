@@ -3,7 +3,7 @@ import getUserServiceAccess from "./getUserServiceAccess"
 
 const userManagementUrlExpression = /^\/users\/users.*/
 const bichardUrlExpression = /^\/bichard-ui.*/
-const newBichardUrlExpression = /^\/bichard\/.*|^\/bichard$/
+const newBichardUrlExpression = /^\/bichard\/.*|^\/bichard$\/?/
 const reportsUrlExpression = /^\/reports\/.*/
 
 export default (token: AuthenticationTokenPayload, url?: string): boolean => {
