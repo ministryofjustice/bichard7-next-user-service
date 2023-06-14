@@ -53,6 +53,36 @@ const testData: TestData[] = [
     group: null,
     url: "/users/logout",
     expectedResult: true
+  },
+  {
+    group: null,
+    url: "/bichard",
+    expectedResult: false
+  },
+  {
+    group: null,
+    url: "/bichard/",
+    expectedResult: false
+  },
+  {
+    group: "B7ExceptionHandler",
+    url: "/bichard",
+    expectedResult: false
+  },
+  {
+    group: "B7NewUI",
+    url: "/bichard",
+    expectedResult: true
+  },
+  {
+    group: "B7NewUI",
+    url: "/bichard/",
+    expectedResult: true
+  },
+  {
+    group: "B7NewUI",
+    url: "/bichard/court-cases/0",
+    expectedResult: true
   }
 ]
 
