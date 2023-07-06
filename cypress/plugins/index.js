@@ -109,6 +109,22 @@ module.exports = (on, config) => {
       return groupsUsers
     },
 
+    async selectGroupsForUser(emailAddress) {
+      const groupsForUser = await db.any(
+        ` SELECT
+            g.*
+          FROM
+            br7own.users u
+            INNER JOIN br7own.users_groups ug ON ug.user_id = u.id
+            INNER JOIN br7own.groups g ON ug.group_id = g.id
+          WHERE
+          u.email = $1`,
+        emailAddress
+      )
+
+      return groupsForUser
+    },
+
     async insertIntoUsersAndGroupsTable() {
       await insertIntoUsersAndGroupsTable(users, groups)
       return null

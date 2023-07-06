@@ -1,3 +1,6 @@
+import users from "../../testFixtures/database/data/users"
+
+const [, bichard02] = users
 const currentUserGroupNames = ["B7UserManager_grp", "B7ExceptionHandler_grp"]
 const getCurrentUserGroups = (allGroups) => allGroups.filter((g) => currentUserGroupNames.includes(g.name))
 
@@ -15,38 +18,42 @@ describe("Edit user", () => {
   it("should display correct user details when navigating to the edit user page", () => {
     cy.login("bichard02@example.com", "password")
 
-    const emailAddress = "bichard01@example.com"
-    cy.visit("users/Bichard01")
+    const emailAddress = "bichard02@example.com"
+    cy.visit("users/Bichard02")
     cy.get('a[data-test="edit-user-view"]').click()
 
-    cy.task("selectFromUsersTable", emailAddress).then((user) => {
-      cy.task("selectFromGroupsTable", "user_id", user.id).then((groups) => {
-        cy.get('[data-test="B7ExceptionHandler_grp"]').should("have.text", "Exception Handler")
-        cy.get('[data-test="B7GeneralHandler_grp"]').should("have.text", "General Handler")
-        cy.get('[data-test="B7TriggerHandler_grp"]').should("have.text", "Trigger Handler")
-        cy.get('[data-test="B7Supervisor_grp"]').should("have.text", "Supervisor")
-        cy.get('[data-test="B7Allocator_grp"]').should("have.text", "Allocator")
-        cy.get('[data-test="B7Audit_grp"]').should("have.text", "Audit")
-        cy.get('[data-test="B7UserManager_grp"]').should("have.text", "User Manager")
+    // this should be in a component test
+    cy.get('[data-test="B7ExceptionHandler_grp"]').should("have.text", "Exception Handler")
+    cy.get('[data-test="B7GeneralHandler_grp"]').should("have.text", "General Handler")
+    cy.get('[data-test="B7TriggerHandler_grp"]').should("have.text", "Trigger Handler")
+    cy.get('[data-test="B7Supervisor_grp"]').should("have.text", "Supervisor")
+    cy.get('[data-test="B7Allocator_grp"]').should("have.text", "Allocator")
+    cy.get('[data-test="B7Audit_grp"]').should("have.text", "Audit")
+    cy.get('[data-test="B7UserManager_grp"]').should("have.text", "User Manager")
 
-        const currentUserGroups = getCurrentUserGroups(groups)
-        cy.get('[data-test="text-input_username"]').should("have.value", "Bichard01")
-        cy.get('[data-test="text-input_forenames"]').should("have.value", "Bichard User 01")
-        cy.get('[data-test="text-input_orgServes"]').should("have.value", "org_severs 01")
-        cy.get('[data-test="included-triggers"]').click()
-        cy.get('input[id="visibleForces001"]').should("be.checked")
-        cy.get('input[id="visibleForces004"]').should("be.checked")
-        cy.get('[data-test="text-input_visibleCourts"]').should("have.value", "B01,B41ME00")
-        cy.get('input[id="excludedTriggersTRPR0001"]').should("not.be.checked")
-        cy.get('input[id="excludedTriggersTRPR0002"]').should("be.checked")
-        cy.get('input[id="excludedTriggersTRPR0003"]').should("be.checked")
-        cy.get('input[id="excludedTriggersTRPR0004"]').should("be.checked")
-        cy.get('input[id="excludedTriggersTRPR0005"]').should("be.checked")
-        cy.get('[data-test="checkbox-user-groups"]')
-          .find('[data-test="checkbox-multiselect-checkboxes"]')
-          .find(`label[for="${currentUserGroups[0].id}"]`)
-          .should("have.text", currentUserGroups[0].friendly_name)
+    cy.get('[data-test="text-input_username"]').should("have.value", bichard02.username)
+    cy.get('[data-test="text-input_forenames"]').should("have.value", bichard02.forenames)
+    cy.get('[data-test="text-input_orgServes"]').should("have.value", bichard02.org_serves)
+    cy.get('[data-test="text-input_visibleCourts"]').should("have.value", bichard02.visible_courts)
+
+    cy.get('input[id="visibleForces001"]').should("be.checked")
+    cy.get('input[id="visibleForces002"]').should("be.checked")
+    cy.get('input[id="visibleForces004"]').should("be.checked")
+
+    cy.get('[data-test="included-triggers"]').click()
+    cy.get('input[id="excludedTriggersTRPR0001"]').should("be.checked")
+    cy.get('input[id="excludedTriggersTRPR0002"]').should("be.checked")
+    cy.get('input[id="excludedTriggersTRPR0003"]').should("be.checked")
+    cy.get('input[id="excludedTriggersTRPR0004"]').should("not.be.checked")
+    cy.get('input[id="excludedTriggersTRPR0005"]').should("be.checked")
+
+    cy.task("selectGroupsForUser", emailAddress).then((groups) => {
+      const selectedGroups = getCurrentUserGroups(groups).map((group) => {
+        return `[name="${group.name}"]`
       })
+
+      cy.get('div[data-test="checkbox-user-groups"]').find(`input${selectedGroups}`).should("be.checked")
+      cy.get('div[data-test="checkbox-user-groups"]').find(`input:not(${selectedGroups})`).should("not.be.checked")
     })
   })
 
@@ -88,7 +95,7 @@ describe("Edit user", () => {
     cy.get('[data-test="error-summary"]').contains("Please ensure that user is assigned to least one force.")
   })
 
-  it.only("should update user correctly when updating user details", () => {
+  it("should update user correctly when updating user details", () => {
     cy.login("bichard02@example.com", "password")
     cy.visit("users/Bichard01")
     cy.get('a[data-test="edit-user-view"]').click()
