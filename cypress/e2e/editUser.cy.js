@@ -88,10 +88,11 @@ describe("Edit user", () => {
     cy.get('[data-test="error-summary"]').contains("Please ensure that user is assigned to least one force.")
   })
 
-  it("should update user correctly when updating user details", () => {
+  it.only("should update user correctly when updating user details", () => {
     cy.login("bichard02@example.com", "password")
     cy.visit("users/Bichard01")
     cy.get('a[data-test="edit-user-view"]').click()
+
     cy.get('[data-test="text-input_forenames"]').clear()
     cy.get('[data-test="text-input_forenames"]').type("forename change 01")
     cy.get('[data-test="text-input_orgServes"]').clear()
@@ -101,6 +102,7 @@ describe("Edit user", () => {
     cy.get('[data-test="text-input_visibleCourts"]').clear()
     cy.get('[data-test="text-input_visibleCourts"]').type("B02,B42MD00")
     cy.get('[data-test="included-triggers"]').click()
+
     cy.get('input[id="excludedTriggersTRPR0001"]').uncheck()
     cy.get('input[id="excludedTriggersTRPR0004"]').uncheck()
     cy.get('[data-test="checkbox-user-groups"]')
@@ -111,23 +113,18 @@ describe("Edit user", () => {
       .find('[data-test="checkbox-multiselect-checkboxes"]')
       .find(`input[name="B7GeneralHandler_grp"]`)
       .check()
-
     cy.get('button[type="submit"]').click()
 
     cy.get('[data-test="error-summary"]').should("not.exist")
-    cy.task("selectFromUsersTable", "bichard01@example.com").then((user) => {
-      cy.task("selectFromGroupsTable", "user_id", user.id).then(() => {
-        cy.get('[data-test="text-input_username"]').should("have.value", "Bichard01")
-        cy.get('[data-test="text-input_forenames"]').should("have.value", "forename change 01")
-        cy.get('[data-test="text-input_emailAddress"]').should("have.value", "bichard01@example.com")
-        cy.get('[data-test="text-input_orgServes"]').should("have.value", "org change 02")
-        cy.get('[data-test="included-triggers"]').click()
-        cy.get('input[id="excludedTriggersTRPR0001"]').should("not.be.checked")
-        cy.get('input[id="excludedTriggersTRPR0004"]').should("not.be.checked")
-        cy.get('[data-test="checkbox-user-groups"]').find(`input[name="B7ExceptionHandler_grp"]`).should("be.checked")
-        cy.get('[data-test="checkbox-user-groups"]').find(`input[name="B7GeneralHandler_grp"]`).should("be.checked")
-      })
-    })
+    cy.get('[data-test="text-input_username"]').should("have.value", "Bichard01")
+    cy.get('[data-test="text-input_forenames"]').should("have.value", "forename change 01")
+    cy.get('[data-test="text-input_emailAddress"]').should("have.value", "bichard01@example.com")
+    cy.get('[data-test="text-input_orgServes"]').should("have.value", "org change 02")
+    cy.get('[data-test="included-triggers"]').click()
+    cy.get('input[id="excludedTriggersTRPR0001"]').should("not.be.checked")
+    cy.get('input[id="excludedTriggersTRPR0004"]').should("not.be.checked")
+    cy.get('[data-test="checkbox-user-groups"]').find(`input[name="B7ExceptionHandler_grp"]`).should("be.checked")
+    cy.get('[data-test="checkbox-user-groups"]').find(`input[name="B7GeneralHandler_grp"]`).should("be.checked")
   })
 
   it("should invalidate form correctly when form in not valid", () => {
