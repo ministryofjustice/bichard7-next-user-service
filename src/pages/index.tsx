@@ -208,7 +208,9 @@ const Home = ({
       </Layout>
       <script src={`http://bichard7.service.justice.gov.uk/forces.js?forceID=${currentUser?.visibleForces}`} async />
 
-      {currentUser?.visibleForces && <ForceBrowserShareAssets visibleForces={currentUser?.visibleForces} />}
+      {currentUser?.visibleForces && currentUser?.id && (
+        <ForceBrowserShareAssets visibleForces={currentUser?.visibleForces} userId={currentUser?.id} />
+      )}
     </>
   )
 }
