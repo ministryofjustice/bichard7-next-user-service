@@ -1,13 +1,13 @@
-import PromiseResult from "types/PromiseResult"
-import Database from "types/Database"
 import { ITask } from "pg-promise"
+import Database from "types/Database"
+import PromiseResult from "types/PromiseResult"
 import { isError } from "types/Result"
 import User from "types/User"
 import { UserGroupResult } from "types/UserGroup"
 import logger from "utils/logger"
-import isUsernameUnique from "./isUsernameUnique"
 import isEmailUnique from "./IsEmailUnique"
 import getUserHierarchyGroups from "./getUserHierarchyGroups"
+import isUsernameUnique from "./isUsernameUnique"
 
 type InsertUserResult = PromiseResult<{ id: number }>
 
@@ -22,7 +22,8 @@ const insertUser = (task: ITask<unknown>, userDetails: Partial<User>): InsertUse
         org_serves,
         visible_courts,
         visible_forces,
-        excluded_triggers
+        excluded_triggers,
+        feature_flags
       )
       VALUES (
         $\{username\},
@@ -33,7 +34,8 @@ const insertUser = (task: ITask<unknown>, userDetails: Partial<User>): InsertUse
         $\{orgServes\},
         $\{visibleCourts\},
         $\{visibleForces\},
-        $\{excludedTriggers\}
+        $\{excludedTriggers\},
+        $\{featureFlags\}
       ) RETURNING id;
     `
 
@@ -97,8 +99,8 @@ export default async (
 
   const createUserResult = await connection
     .tx(async (task: ITask<unknown>) => {
+      userDetails.featureFlags = { httpsRedirect: true }
       const insertUserResult = await insertUser(task, userDetails)
-
       if (isError(insertUserResult)) {
         logger.error(insertUserResult)
         return Error("Could not insert record into users table")
