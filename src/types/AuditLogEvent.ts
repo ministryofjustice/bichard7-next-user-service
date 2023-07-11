@@ -1,5 +1,8 @@
 export default class AuditLogEvent {
-  private constructor(public readonly code: string, public readonly description: string) {}
+  private constructor(
+    public readonly code: string,
+    public readonly description: string
+  ) {}
 
   public static readonly loggedIn = new AuditLogEvent("user.logged-in", "User logged in")
 
