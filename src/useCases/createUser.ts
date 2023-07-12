@@ -99,7 +99,6 @@ export default async (
 
   const createUserResult = await connection
     .tx(async (task: ITask<unknown>) => {
-      userDetails.featureFlags = { httpsRedirect: true }
       const insertUserResult = await insertUser(task, userDetails)
       if (isError(insertUserResult)) {
         logger.error(insertUserResult)
