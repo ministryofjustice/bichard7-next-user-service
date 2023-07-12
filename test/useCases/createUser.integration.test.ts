@@ -1,17 +1,17 @@
-import createUser from "useCases/createUser"
-import User from "types/User"
-import getUserByUsername from "useCases/getUserByUsername"
-import { isError } from "types/Result"
 import Database from "types/Database"
-import selectFromTable from "../../testFixtures/database/selectFromTable"
-import deleteFromTable from "../../testFixtures/database/deleteFromTable"
-import getTestConnection from "../../testFixtures/getTestConnection"
-import users from "../../testFixtures/database/data/users"
+import { isError } from "types/Result"
+import User from "types/User"
+import createUser from "useCases/createUser"
+import getUserByUsername from "useCases/getUserByUsername"
 import groups from "../../testFixtures/database/data/groups"
-import insertIntoGroupsTable from "../../testFixtures/database/insertIntoGroupsTable"
+import users from "../../testFixtures/database/data/users"
+import deleteFromTable from "../../testFixtures/database/deleteFromTable"
 import insertGroupHierarchies from "../../testFixtures/database/insertGroupHierarchies"
-import insertIntoUsersTable from "../../testFixtures/database/insertIntoUsersTable"
+import insertIntoGroupsTable from "../../testFixtures/database/insertIntoGroupsTable"
 import insertIntoUserGroupsTable from "../../testFixtures/database/insertIntoUserGroupsTable"
+import insertIntoUsersTable from "../../testFixtures/database/insertIntoUsersTable"
+import selectFromTable from "../../testFixtures/database/selectFromTable"
+import getTestConnection from "../../testFixtures/getTestConnection"
 
 describe("DeleteUserUseCase", () => {
   let connection: Database
@@ -122,11 +122,11 @@ describe("DeleteUserUseCase", () => {
       groupId: selectedGroup.id,
       visibleForces: user.visible_forces,
       visibleCourts: user.visible_courts,
-      excludedTriggers: user.excluded_triggers
+      excludedTriggers: user.excluded_triggers,
+      featureFlags: user.feature_flags
     }
 
     const createResult = await createUser(connection, { id: currentUserId, username: "Bichard01" }, createUserDetails)
-    console.log(createResult)
     expect(isError(createResult)).toBe(false)
 
     const getResult = await getUserByUsername(connection, user.username)
@@ -141,6 +141,7 @@ describe("DeleteUserUseCase", () => {
     expect(actualUser.visibleForces).toBe(user.visible_forces)
     expect(actualUser.visibleCourts).toBe(user.visible_courts)
     expect(actualUser.excludedTriggers).toBe(user.excluded_triggers)
+    expect(actualUser.featureFlags).toStrictEqual(user.feature_flags)
   })
 
   it("should be possible to add a user to my force even if we insert whitespaces at ends", async () => {
@@ -168,7 +169,8 @@ describe("DeleteUserUseCase", () => {
       groupId: selectedGroup.id,
       visibleForces: user.visible_forces,
       visibleCourts: user.visible_courts,
-      excludedTriggers: user.excluded_triggers
+      excludedTriggers: user.excluded_triggers,
+      featureFlags: user.feature_flags
     }
 
     const createResult = await createUser(connection, { id: currentUserId, username: "Bichard01" }, createUserDetails)
@@ -187,6 +189,7 @@ describe("DeleteUserUseCase", () => {
     expect(actualUser.visibleForces).toBe(user.visible_forces)
     expect(actualUser.visibleCourts).toBe(user.visible_courts)
     expect(actualUser.excludedTriggers).toBe(user.excluded_triggers)
+    expect(actualUser.featureFlags).toStrictEqual(user.feature_flags)
   })
 
   it("should add the user to the correct group that exists in the user table", async () => {
@@ -212,7 +215,8 @@ describe("DeleteUserUseCase", () => {
       orgServes: user.org_serves,
       visibleForces: "001,004,",
       visibleCourts: "B01,B41ME00",
-      excludedTriggers: "TRPR0001,"
+      excludedTriggers: "TRPR0001,",
+      featureFlags: user.feature_flags
     }
     createUserDetails[selectedGroup.name] = "yes"
     const createResult = await createUser(connection, currentUser, createUserDetails)
@@ -254,7 +258,8 @@ describe("DeleteUserUseCase", () => {
       groupId: greatestPossibleIdPlusOne,
       visibleForces: "001,004,",
       visibleCourts: "B01,B41ME00",
-      excludedTriggers: "TRPR0001,"
+      excludedTriggers: "TRPR0001,",
+      featureFlags: user.feature_flags
     }
 
     const createResult = await createUser(connection, { id: currentUserId, username: "Bichard01" }, createUserDetails)
@@ -283,7 +288,8 @@ describe("DeleteUserUseCase", () => {
       groupId: selectedGroups[0].id,
       visibleForces: "001,004,",
       visibleCourts: "B01,B41ME00",
-      excludedTriggers: "TRPR0001,"
+      excludedTriggers: "TRPR0001,",
+      featureFlags: user.feature_flags
     }
 
     const createResult = await createUser(connection, { id: currentUserId, username: "Bichard01" }, createUserDetails)

@@ -16,7 +16,8 @@ const users = [
     migrated_password: null,
     visible_forces: "001,002,004,014",
     visible_courts: "B01,B41ME00",
-    excluded_triggers: "TRPR0001"
+    excluded_triggers: "TRPR0001",
+    feature_flags: { httpsRedirect: true }
   },
   {
     username: "Bichard02",
@@ -35,7 +36,8 @@ const users = [
     migrated_password: null,
     visible_forces: "001,002,004",
     visible_courts: "B41ME00",
-    excluded_triggers: "TRPR0004"
+    excluded_triggers: "TRPR0004",
+    feature_flags: { httpsRedirect: true }
   },
   {
     username: "Bichard03",

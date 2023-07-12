@@ -1,7 +1,7 @@
-import User from "types/User"
 import Database from "types/Database"
 import PromiseResult from "types/PromiseResult"
 import { isError } from "types/Result"
+import User from "types/User"
 import getUserSpecificGroups from "./getUserSpecificGroups"
 
 export default async (connection: Database, username: string): PromiseResult<User | null> => {
@@ -17,7 +17,8 @@ export default async (connection: Database, username: string): PromiseResult<Use
         surname,
         visible_courts,
         visible_forces,
-        excluded_triggers
+        excluded_triggers,
+        feature_flags
       FROM br7own.users AS u
       WHERE username = $\{username\} AND deleted_at IS NULL
     `
@@ -48,6 +49,7 @@ export default async (connection: Database, username: string): PromiseResult<Use
     groups,
     visibleCourts: user.visible_courts,
     visibleForces: user.visible_forces,
-    excludedTriggers: user.excluded_triggers
+    excludedTriggers: user.excluded_triggers,
+    featureFlags: user.feature_flags
   }
 }
