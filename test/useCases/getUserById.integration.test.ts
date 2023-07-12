@@ -111,7 +111,8 @@ describe("getUserById", () => {
       orgServes: user.org_serves,
       visibleForces: "001,004,",
       visibleCourts: "B01,B41ME00",
-      excludedTriggers: "TRPR0001,"
+      excludedTriggers: "TRPR0001,",
+      featureFlags: user.feature_flags
     }
     createUserDetails[selectedGroup.name] = "yes"
     await createUser(connection, currentUser, createUserDetails)
