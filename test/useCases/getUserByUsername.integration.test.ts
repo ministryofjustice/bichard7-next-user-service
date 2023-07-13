@@ -1,16 +1,16 @@
-import User from "types/User"
-import { isError } from "types/Result"
-import getUserByUsername from "useCases/getUserByUsername"
-import createUser from "useCases/createUser"
 import Database from "types/Database"
-import getTestConnection from "../../testFixtures/getTestConnection"
-import deleteFromTable from "../../testFixtures/database/deleteFromTable"
-import insertIntoUsersTable from "../../testFixtures/database/insertIntoUsersTable"
-import insertIntoGroupsTable from "../../testFixtures/database/insertIntoGroupsTable"
-import users from "../../testFixtures/database/data/users"
+import { isError } from "types/Result"
+import User from "types/User"
+import createUser from "useCases/createUser"
+import getUserByUsername from "useCases/getUserByUsername"
 import groups from "../../testFixtures/database/data/groups"
-import selectFromTable from "../../testFixtures/database/selectFromTable"
+import users from "../../testFixtures/database/data/users"
+import deleteFromTable from "../../testFixtures/database/deleteFromTable"
+import insertIntoGroupsTable from "../../testFixtures/database/insertIntoGroupsTable"
 import insertIntoUserGroupsTable from "../../testFixtures/database/insertIntoUserGroupsTable"
+import insertIntoUsersTable from "../../testFixtures/database/insertIntoUsersTable"
+import selectFromTable from "../../testFixtures/database/selectFromTable"
+import getTestConnection from "../../testFixtures/getTestConnection"
 
 describe("getUserByUsername", () => {
   let connection: Database
@@ -30,7 +30,8 @@ describe("getUserByUsername", () => {
       orgServes: user.org_serves,
       visibleForces: "001,004,",
       visibleCourts: "B01,B41ME00",
-      excludedTriggers: "TRPR0001,"
+      excludedTriggers: "TRPR0001,",
+      featureFlags: { httpsRedirect: true }
     }
 
     selectedGroups.forEach((group: any) => {

@@ -58,7 +58,7 @@ describe("AccountSetup", () => {
         groups: [selectedGroup],
         visibleForces: "001,004,",
         visibleCourts: "B01,B41ME00",
-        excludedTriggers: "TRPR0001,",
+        excludedTriggers: "TRPR0001",
         featureFlags: { httpsRedirect: true }
       }))[0]
 
