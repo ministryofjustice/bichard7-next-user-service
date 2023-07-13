@@ -2,19 +2,19 @@
  * @jest-environment node
  */
 
-import createUser from "useCases/createUser"
-import createNewUserEmail from "useCases/createNewUserEmail"
-import { isError } from "types/Result"
-import EmailContent from "types/EmailContent"
 import Database from "types/Database"
-import insertIntoUsersTable from "../../testFixtures/database/insertIntoUsersTable"
-import insertIntoGroupsTable from "../../testFixtures/database/insertIntoGroupsTable"
-import selectFromTable from "../../testFixtures/database/selectFromTable"
-import deleteFromTable from "../../testFixtures/database/deleteFromTable"
-import getTestConnection from "../../testFixtures/getTestConnection"
-import users from "../../testFixtures/database/data/users"
+import EmailContent from "types/EmailContent"
+import { isError } from "types/Result"
+import createNewUserEmail from "useCases/createNewUserEmail"
+import createUser from "useCases/createUser"
 import groups from "../../testFixtures/database/data/groups"
+import users from "../../testFixtures/database/data/users"
+import deleteFromTable from "../../testFixtures/database/deleteFromTable"
+import insertIntoGroupsTable from "../../testFixtures/database/insertIntoGroupsTable"
 import insertIntoUserGroupsTable from "../../testFixtures/database/insertIntoUserGroupsTable"
+import insertIntoUsersTable from "../../testFixtures/database/insertIntoUsersTable"
+import selectFromTable from "../../testFixtures/database/selectFromTable"
+import getTestConnection from "../../testFixtures/getTestConnection"
 
 describe("AccountSetup", () => {
   let connection: Database
@@ -58,7 +58,8 @@ describe("AccountSetup", () => {
         groups: [selectedGroup],
         visibleForces: "001,004,",
         visibleCourts: "B01,B41ME00",
-        excludedTriggers: "TRPR0001,"
+        excludedTriggers: "TRPR0001",
+        featureFlags: { httpsRedirect: true }
       }))[0]
 
     const result = await createUser(connection, { id: currentUserId, username: "Bichard01" }, user)
