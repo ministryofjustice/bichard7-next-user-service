@@ -178,6 +178,7 @@ jobs:
           name: Build user-service docker image
           command: make build
       - clone_bichard_repo
+      - run_audit_logging_api
       - fetch_docker_images
       - run:
           name: Run full stack (excluding beanconnect and PNC emulator)
