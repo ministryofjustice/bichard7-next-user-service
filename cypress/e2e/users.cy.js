@@ -155,3 +155,42 @@ describe("Display a list of many users", () => {
     cy.get("tbody tr:nth-child(4) td:nth-child(1)").should("have.text", "Bichard13")
   })
 })
+
+describe("Display page navigation buttons correctly", () => {
+  it("should display next button when the number of users are one more than the max users displayed per page", () => {
+    cy.resetTablesToDefault()
+    cy.task("insertManyIntoUsersTable", 11)
+
+    cy.task("insertIntoUserGroupsTable", {
+      email: "bichard01@example.com",
+      groups: ["B7UserManager_grp"]
+    })
+    cy.login("bichard01@example.com", "password")
+    cy.get("#user-management-link").click()
+    cy.get("tbody tr:nth-child(1) td:nth-child(1)").should("have.text", "Bichard01")
+    cy.get("tbody tr:nth-child(2) td:nth-child(1)").should("have.text", "Bichard02")
+    cy.get("tbody tr:nth-child(3) td:nth-child(1)").should("have.text", "Bichard03")
+    cy.get("tbody tr:nth-child(4) td:nth-child(1)").should("have.text", "Bichard04")
+    cy.get("tbody tr:nth-child(5) td:nth-child(1)").should("have.text", "Bichard05")
+    cy.get("tbody tr:nth-child(6) td:nth-child(1)").should("have.text", "Bichard06")
+    cy.get("tbody tr:nth-child(7) td:nth-child(1)").should("have.text", "Bichard07")
+    cy.get("tbody tr:nth-child(8) td:nth-child(1)").should("have.text", "Bichard08")
+    cy.get("tbody tr:nth-child(9) td:nth-child(1)").should("have.text", "Bichard09")
+    cy.get("tbody tr:nth-child(10) td:nth-child(1)").should("have.text", "Bichard10")
+
+    cy.get('a[data-test="Next"]').click()
+    cy.get("tbody tr:nth-child(1) td:nth-child(1)").should("have.text", "Bichard11")
+
+    cy.get('a[data-test="Prev"]').click()
+    cy.get("tbody tr:nth-child(1) td:nth-child(1)").should("have.text", "Bichard01")
+    cy.get("tbody tr:nth-child(2) td:nth-child(1)").should("have.text", "Bichard02")
+    cy.get("tbody tr:nth-child(3) td:nth-child(1)").should("have.text", "Bichard03")
+    cy.get("tbody tr:nth-child(4) td:nth-child(1)").should("have.text", "Bichard04")
+    cy.get("tbody tr:nth-child(5) td:nth-child(1)").should("have.text", "Bichard05")
+    cy.get("tbody tr:nth-child(6) td:nth-child(1)").should("have.text", "Bichard06")
+    cy.get("tbody tr:nth-child(7) td:nth-child(1)").should("have.text", "Bichard07")
+    cy.get("tbody tr:nth-child(8) td:nth-child(1)").should("have.text", "Bichard08")
+    cy.get("tbody tr:nth-child(9) td:nth-child(1)").should("have.text", "Bichard09")
+    cy.get("tbody tr:nth-child(10) td:nth-child(1)").should("have.text", "Bichard10")
+  })
+})

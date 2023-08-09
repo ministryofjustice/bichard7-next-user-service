@@ -196,7 +196,7 @@ const Users = ({ allUsers, csrfToken, currentUser, previousFilter, pageNumber, t
           </Link>
           <span style={styles}>{pageString}</span>
           <Link href={nextPage} data-test="Next">
-            {pageNumber + 1 < (totalUsers - 1) / config.maxUsersPerPage && "Next >"}
+            {pageNumber + 1 <= (totalUsers - 1) / config.maxUsersPerPage && "Next >"}
           </Link>
         </div>
       </Layout>

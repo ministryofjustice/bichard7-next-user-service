@@ -79,8 +79,9 @@ module.exports = (on, config) => {
       return null
     },
 
-    async insertManyIntoUsersTable() {
-      await insertIntoUsersTable(manyUsers)
+    async insertManyIntoUsersTable(maxNumberOfUsers) {
+      const usersToInsert = maxNumberOfUsers ? manyUsers.slice(0, maxNumberOfUsers) : manyUsers
+      await insertIntoUsersTable(usersToInsert)
       return null
     },
 
