@@ -322,7 +322,7 @@ describe("Creation of new user", () => {
       .should("have.attr", "readonly", "readonly")
   })
 
-  it("should respond with forbidden response code when CSRF tokens are invalid in new user page", (done) => {
-    cy.checkCsrf("/users/new-user", "POST").then(() => done())
+  it("should respond with forbidden response code when CSRF tokens are invalid in new user page", () => {
+    cy.checkCsrf("/users/new-user", "POST")
   })
 })

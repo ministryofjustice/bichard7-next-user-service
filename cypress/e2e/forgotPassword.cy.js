@@ -22,6 +22,6 @@ describe("Forgot password", () => {
   })
 
   it("should respond with forbidden response code when CSRF tokens are invalid in forgot password page", (done) => {
-    cy.checkCsrf("/login/reset-password", "POST").then(() => done())
+    cy.checkCsrf("/login/reset-password", "POST")
   })
 })
