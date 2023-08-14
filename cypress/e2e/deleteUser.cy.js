@@ -74,8 +74,8 @@ describe("Delete user", () => {
     cy.get('[data-test="404_header"]').should("contain.text", "Page not found")
   })
 
-  it("should respond with forbidden response code when CSRF tokens are invalid in delete page", (done) => {
-    cy.checkCsrf("/users/Bichard01/delete", "POST").then(() => done())
+  it("should respond with forbidden response code when CSRF tokens are invalid in delete page", () => {
+    cy.checkCsrf("/users/Bichard01/delete", "POST")
   })
 
   it("should be able to delete user regardless of force if current user is super user", () => {

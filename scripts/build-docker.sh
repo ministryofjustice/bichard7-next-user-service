@@ -2,6 +2,8 @@
 
 set -e
 
+NOCACHE=${NOCACHE:-"false"}
+
 readonly DOCKER_REFERENCE="nginx-nodejs-supervisord"
 
 function has_local_image() {
@@ -40,7 +42,7 @@ function pull_and_build_from_aws() {
 
   DOCKER_IMAGE_HASH="${AWS_ACCOUNT_ID}.dkr.ecr.eu-west-2.amazonaws.com/${DOCKER_REFERENCE}@${IMAGE_HASH}"
 
-  docker build --build-arg "BUILD_IMAGE=${DOCKER_IMAGE_HASH}" -t user-service .
+  docker build --no-cache=$NOCACHE --build-arg "BUILD_IMAGE=${DOCKER_IMAGE_HASH}" -t user-service .
 
   if [[ -n "${CODEBUILD_RESOLVED_SOURCE_VERSION}" && -n "${CODEBUILD_START_TIME}" ]]; then
 
@@ -111,10 +113,10 @@ if [[ "$(has_local_image)" -gt 0 ]]; then
   if [ $(arch) = "arm64" ]
   then
       echo "Building for ARM"
-      docker build --platform=linux/arm64 -t user-service:latest .
+      docker build --no-cache=$NOCACHE --platform=linux/arm64 -t user-service:latest .
   else
       echo "Building regular image"
-      docker build -t user-service:latest .
+      docker build --no-cache=$NOCACHE --no-cache=$NOCACHE -t user-service:latest .
   fi
 else
   pull_and_build_from_aws

@@ -99,7 +99,7 @@ describe("Reset password", () => {
     cy.get('[data-test="error-summary"]').contains("Cannot use previously used password.")
   })
 
-  it("should respond with forbidden response code when CSRF tokens are invalid in reset password page", (done) => {
-    cy.checkCsrf("/login/reset-password", "POST").then(() => done())
+  it("should respond with forbidden response code when CSRF tokens are invalid in reset password page", () => {
+    cy.checkCsrf("/login/reset-password", "POST")
   })
 })
