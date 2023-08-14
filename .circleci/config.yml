@@ -207,6 +207,7 @@ jobs:
             STACK_TYPE: next
             WORKSPACE: local-next
             AUTH_TYPE: user-service
+            AUDIT_LOG_API_URL: http://localhost:3010
 
 workflows:
   version: 2
