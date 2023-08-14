@@ -146,7 +146,7 @@ describe("Edit user", () => {
     cy.get('[data-test="error-summary"]').contains("Enter the user's surname")
   })
 
-  it("should respond with forbidden response code when CSRF tokens are invalid in edit page", (done) => {
+  it("should respond with forbidden response code when CSRF tokens are invalid in edit page", () => {
     cy.checkCsrf("/users/Bichard01/edit", "POST")
   })
 

@@ -74,7 +74,7 @@ describe("Delete user", () => {
     cy.get('[data-test="404_header"]').should("contain.text", "Page not found")
   })
 
-  it("should respond with forbidden response code when CSRF tokens are invalid in delete page", (done) => {
+  it("should respond with forbidden response code when CSRF tokens are invalid in delete page", () => {
     cy.checkCsrf("/users/Bichard01/delete", "POST")
   })
 
