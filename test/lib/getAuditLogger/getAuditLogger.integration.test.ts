@@ -4,7 +4,7 @@ import { GetServerSidePropsContext } from "next"
 import AuditLogEvent from "types/AuditLogEvent"
 import { isError } from "types/Result"
 
-it("should log using audit log api", async () => {
+it.only("should log using audit log api", async () => {
   const testConfig = {
     auditLoggerType: "audit-log-api",
     auditLogApiUrl: "http://localhost:7010",
@@ -26,5 +26,6 @@ it("should log using audit log api", async () => {
     }
   })
 
+  console.log(result)
   expect(isError(result)).toBe(false)
 })

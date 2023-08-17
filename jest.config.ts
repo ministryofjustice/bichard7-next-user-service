@@ -3,7 +3,6 @@ import { TextEncoder } from "util"
 
 const config: Config.InitialOptions = {
   preset: "ts-jest",
-  testEnvironment: "jsdom",
   transform: {
     "\\.[jt]sx?$": "babel-jest"
   },
