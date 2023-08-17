@@ -1,152 +1,149 @@
 version: 2.1
 
+orbs:
+  node: circleci/node@5.1.0
+
 commands:
-  npm_install:
-    description: Check out the repo and install the node dependencies
-    steps:
-      - run:
-          name: Hash package lock
-          command: ./.circleci/scripts/hash-package-lock.sh
-      - restore_cache:
-          name: Load node_modules from the cache if they haven't changed
-          keys:
-            - v1-npm-deps-{{ checksum "package-lock.json.md5" }}
-            - v1-npm-deps-
-      - run:
-          name: Install node dependencies
-          command: npm i
-
-  clone_bichard_repo:
-    description: Check out the bichard7-next repo
-    steps:
-      - add_ssh_keys:
-          fingerprints:
-            - 35:cd:01:48:c1:3c:7f:17:04:a1:42:ec:27:81:2c:19
-      - run:
-          name: Clone Bichard7 Next
-          command: git clone --depth 1 git@github.com:ministryofjustice/bichard7-next.git ~/bichard7-next
-
-  run_audit_logging_api:
-    description: Check out the bichard7-next-audit-logging repo and run Audit Log API
-    steps:
-      - run:
-          name: Clone Audit Logging
-          command: git clone --depth 1 git@github.com:ministryofjustice/bichard7-next-audit-logging.git ~/bichard7-next-audit-logging
-      - run:
-          name: Run Audit Log API
-          command: |
-            cd ~/bichard7-next-audit-logging
-            npm install
-            npx --yes pm2 start "SKIP_MQ=true SKIP_PG=true npm run start-api"
-            ./scripts/wait-for-api.sh
-
-  run_postgres_database:
-    description: Spin up the postgres database
-    steps:
-      - run:
-          name: Spin up PostgreSQL database
-          working_directory: ~/bichard7-next
-          command: make run-pg
-
-  checkout-tests:
-    steps:
-      - run:
-          name: Git clone e2e tests
-          command: git clone --depth 1 https://github.com/ministryofjustice/bichard7-next-tests.git ~/bichard7-next-tests
-
-  fetch_docker_images:
-    description: Fetch all of the required docker images from ECR
-    steps:
-      - run:
-          name: Fetch the BeanConnect image
-          working_directory: ~/bichard7-next
-          command: bash scripts/fetch_beanconnect_docker.sh
-      - run:
-          name: Fetch the E2E tests image
-          working_directory: ~/bichard7-next
-          command: bash scripts/fetch_e2etests_docker.sh
-      - run:
-          name: Fetch the Nginx Auth Proxy image
-          working_directory: ~/bichard7-next
-          command: bash scripts/fetch_nginx_auth_proxy_docker.sh
-      - run:
-          name: Fetch the PNC Emulator image
-          working_directory: ~/bichard7-next
-          command: bash scripts/fetch_pncemulator_docker.sh
-
-jobs:
-  build:
-    docker:
-      - image: cimg/node:16.18.0
-    working_directory: ~
+  ################### Helpers
+  install:
     steps:
       - checkout
-      - npm_install
-      - save_cache:
-          name: Save node_modules cache
-          key: v1-npm-deps-{{ checksum "package-lock.json.md5" }}
-          paths: node_modules
+      - node/install
+      - run: rm -rf ~/.npm
+      - node/install-packages:
+          include-branch-in-cache-key: true
+
+  clone_services:
+    steps:
+      - run:
+          name: Clone bichard7-next-core
+          command: git clone --depth 1 https://github.com/ministryofjustice/bichard7-next-core.git ~/bichard7-next-core
+      - run:
+          name: Clone bichard7-next-audit-logging
+          command: git clone --depth 1 https://github.com/ministryofjustice/bichard7-next-audit-logging.git ~/bichard7-next-audit-logging
+  
+  fetch_images:
+    parameters:
+      IMAGES:
+        default: ""
+        type: string
+    steps:
+      - run: 
+          name: "Fetch images: <<parameters.IMAGES>>"
+          command: bash ./scripts/fetch-docker-images.sh <<parameters.IMAGES>>
+
+  build_message_forwarder:
+    steps:
+      - run:
+          name: Build message forwarder image
+          working_directory: ~/bichard7-next-core
+          command: docker-compose -f environment/docker-compose.yml build message-forwarder
+
+  build_audit_logging:
+    steps:
+      - run:
+          name: Build audit logging images
+          working_directory: ~/bichard7-next-audit-logging
+          command: make build-api-server build-event-handler-server
+
+  run_test_chunk:
+    parameters:
+      NEXTUI:
+        default: "false"
+        type: "string"
+    steps:
+      - run:
+          name: Run test chunk
+          working_directory: ~/bichard7-next-tests
+          command: |
+            CHUNK=$(circleci tests glob "features/**/*.feature" | circleci tests split --split-by=timings) \
+            NEXTUI=<<parameters.NEXTUI>> \
+            npm run test:chunk
+
+################### Services
+  start_bichard7_legacy:
+    steps:
+      - fetch_images:
+          IMAGES: nodejs
+      - build_message_forwarder
+      - build_audit_logging
+      - run:
+          name: Start bichard7 legacy
+          working_directory: ~/bichard7-next-core
+          command: npm run all-legacy
+    
+  start_services:
+    parameters:
+      SERVICES:
+        default: ""
+        type: string
+      FLAGS:
+        default: ""
+        type: string
+    steps:
+      - run:
+          name: "Run services: <<parameters.SERVICES>>"
+          working_directory: ~/bichard7-next-core
+          command: |
+            docker-compose --project-name bichard -f environment/docker-compose.yml \
+            up -d <<parameters.SERVICES>> <<parameters.FLAGS>> --wait <<parameters.SERVICES>>
+
+#################################################################################
+
+jobs:
+  lint:
+    executor:
+      name: node/default
+      tag: '16.20.2'
+    steps:
+      - install
       - run:
           name: Check the code for linting errors
           command: npm run lint
-      - run:
-          name: Build the user service application
-          command: npm run build
-      - persist_to_workspace:
-          root: .
-          paths: .next
 
   unit_test:
-    docker:
-      - image: cimg/node:16.3.0
-    working_directory: ~
+    executor:
+      name: node/default
+      tag: '16.20.2'
     steps:
-      - checkout
-      - npm_install
-      - attach_workspace:
-          at: .
+      - install
       - run:
           name: Run unit tests
           command: npm run test:unit
 
   integration_test:
-    machine:
-      image: ubuntu-2004:2022.07.1
-      docker_layer_caching: true
-    working_directory: ~
+    executor:
+      name: node/default
+      tag: '16.20.2'
     steps:
-      - checkout
-      - npm_install
-      - attach_workspace:
-          at: .
-      - clone_bichard_repo
-      - run_audit_logging_api
-      - run_postgres_database
+      - install
+      - clone_services
+      - build_audit_logging
+      - run:
+          name: Build the user service application
+          command: npm run build
+      - start_services:
+          SERVICES: localstack postgres audit-log-api
       - run:
           name: Run integration tests
           command: npm run test:integration
 
   ui_test:
     machine:
-      image: ubuntu-2004:2022.07.1
+      image: ubuntu-2204:current
       docker_layer_caching: true
     resource_class: large
-    working_directory: ~
     parallelism: 4
     steps:
-      - checkout
+      - install
+      - clone_services
       - run:
           name: Install Cypress in the background
           command: ./.circleci/scripts/install-cypress.sh 2>&1
           background: true
-      - npm_install
       - run:
           name: Install GOV.UK Assets
           command: npm run install:assets
-      - attach_workspace:
-          at: .
-      - clone_bichard_repo
-      - run_postgres_database
       - run:
           name: Wait for Cypress installation to finish
           command: until [ -f cypressInstalled ]; do sleep 1; done
@@ -154,6 +151,8 @@ jobs:
       - run:
           name: Retrying installing Cypress
           command: ./.circleci/scripts/install-cypress.sh
+      - start_services:
+          SERVICES: postgres
       - run:
           name: Run UI tests
           command: npm run test:ui
@@ -164,65 +163,38 @@ jobs:
 
   e2e_test:
     machine:
-      image: ubuntu-2004:2022.07.1
+      image: ubuntu-2204:current
       docker_layer_caching: true
     resource_class: xlarge
-    working_directory: ~
+    parallelism: 10
+    environment:
+      STACK_TYPE: next
+      WORKSPACE: local-next
+      AUTH_TYPE: user-service
     steps:
-      - checkout
-      - checkout-tests
-      - npm_install
-      - attach_workspace:
-          at: .
+      - install
+      - clone_services
+      - build_message_forwarder
+      - build_audit_logging
+      - run: make build
       - run:
-          name: Build user-service docker image
-          command: make build
-      - clone_bichard_repo
-      - run_audit_logging_api
-      - fetch_docker_images
-      - run:
-          name: Run full stack (excluding beanconnect and PNC emulator)
-          working_directory: ~/bichard7-next
-          command: |
-            make build-ci
-            make run-all-no-bc -j 4
-      - run:
-          name: Run beanconnect and PNC emulator
-          working_directory: ~/bichard7-next
-          command: make run-beanconnect
-      - run:
-          name: Wait for Bichard
-          working_directory: ~/bichard7-next
-          command: bash ./scripts/wait_for_bichard.sh
-      - run:
-          name: Trying to run beanconnect and PNC emulator again
-          working_directory: ~/bichard7-next
-          command: make run-beanconnect && bash ./scripts/wait_for_bichard.sh
-          when: on_fail
-      - run:
-          name: Run end-to-end tests
-          working_directory: ~/bichard7-next-tests
-          command: npm i && npm run test:must
-          environment:
-            STACK_TYPE: next
-            WORKSPACE: local-next
-            AUTH_TYPE: user-service
-            AUDIT_LOG_API_URL: http://localhost:3010
+          name: Clone bichard7-next-tests
+          command: git clone --depth 1 https://github.com/ministryofjustice/bichard7-next-tests.git ~/bichard7-next-tests
+      - node/install-packages:
+          app-dir: ~/bichard7-next-tests
+          cache-path: ~/bichard7-next-tests/node_modules
+          include-branch-in-cache-key: true
+      - start_bichard7_legacy
+      - run_test_chunk:
+          NEXTUI: "true"
+
+#################################################################################
 
 workflows:
-  version: 2
   build-and-test:
     jobs:
-      - build
-      - unit_test:
-          requires:
-            - build
-      - integration_test:
-          requires:
-            - build
-      - ui_test:
-          requires:
-            - build
-      - e2e_test:
-          requires:
-            - build
+      - lint
+      - unit_test
+      - integration_test
+      - ui_test
+      - e2e_test
