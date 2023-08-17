@@ -7,7 +7,7 @@ import { isError } from "types/Result"
 it("should log using audit log api", async () => {
   const testConfig = {
     auditLoggerType: "audit-log-api",
-    auditLogApiUrl: "http://localhost:3010",
+    auditLogApiUrl: "http://localhost:7010",
     auditLogApiKey: "dummy_key"
   } as unknown as UserServiceConfig
   const dummyContext = {
