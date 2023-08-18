@@ -13,7 +13,7 @@ commands:
       - node/install-packages:
           include-branch-in-cache-key: true
 
-  clone_services:
+  clone_dependencies:
     steps:
       - run:
           name: Clone bichard7-next-core
@@ -119,7 +119,7 @@ jobs:
       docker_layer_caching: true
     steps:
       - install
-      - clone_services
+      - clone_dependencies
       - build_audit_logging
       - run:
           name: Build the user service application
@@ -138,7 +138,7 @@ jobs:
     parallelism: 4
     steps:
       - install
-      - clone_services
+      - clone_dependencies
       - run:
           name: Install Cypress in the background
           command: ./.circleci/scripts/install-cypress.sh 2>&1
@@ -175,7 +175,7 @@ jobs:
       AUTH_TYPE: user-service
     steps:
       - install
-      - clone_services
+      - clone_dependencies
       - build_message_forwarder
       - build_audit_logging
       - run: make build
