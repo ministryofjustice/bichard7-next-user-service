@@ -4,7 +4,7 @@ set -e
 
 NOCACHE=${NOCACHE:-"false"}
 
-readonly DOCKER_REFERENCE="nginx-nodejs-supervisord"
+readonly DOCKER_REFERENCE="nginx-nodejs-2023-supervisord"
 
 function has_local_image() {
   IMAGES=$(docker images --filter=reference="${DOCKER_REFERENCE}:*" -q | wc -l)
