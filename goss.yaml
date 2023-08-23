@@ -110,8 +110,6 @@ user:
 process:
   nginx:
     running: true
-  node:
-    running: true
   supervisord:
     running: true
 http:
