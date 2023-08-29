@@ -116,7 +116,7 @@ jobs:
   integration_test:
     machine:
       image: ubuntu-2204:current
-      docker_layer_caching: true
+      docker_layer_caching: false
     steps:
       - install
       - clone_dependencies
@@ -133,7 +133,7 @@ jobs:
   ui_test:
     machine:
       image: ubuntu-2204:current
-      docker_layer_caching: true
+      docker_layer_caching: false
     resource_class: large
     parallelism: 4
     steps:
@@ -166,7 +166,7 @@ jobs:
   e2e_test:
     machine:
       image: ubuntu-2204:current
-      docker_layer_caching: true
+      docker_layer_caching: false
     resource_class: xlarge
     parallelism: 10
     environment:
