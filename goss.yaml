@@ -110,13 +110,9 @@ user:
 process:
   nginx:
     running: true
-  node:
-    running: true
   supervisord:
     running: true
 http:
   https://localhost/users/login:
-    request-headers:
-      - "X-Origin: http://localhost:3000"
     status: 200
     allow-insecure: true
