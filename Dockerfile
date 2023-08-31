@@ -1,4 +1,4 @@
-ARG BUILD_IMAGE="nginx-nodejs-supervisord"
+ARG BUILD_IMAGE="nginx-nodejs-2023-supervisord"
 
 # Build user-service app
 
@@ -13,8 +13,6 @@ COPY ./scripts/ ./scripts/
 COPY ./public/ ./public/
 
 RUN yum groupinstall -y "Development Tools" && \
-    amazon-linux-extras install -y python3.8 && \
-    ln -sf /usr/bin/python3.8 /usr/bin/python3 && \
     npm install && \
     npm run install:assets
 
