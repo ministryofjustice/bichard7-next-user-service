@@ -48,4 +48,4 @@ COPY docker/conf/supervisord.conf /etc/supervisord.conf
 EXPOSE 80
 EXPOSE 443
 
-CMD [ "/usr/bin/supervisord", "-c", "/etc/supervisord.conf" ]
+CMD [ "supervisord", "-c", "/etc/supervisord.conf" ]
