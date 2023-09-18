@@ -7,10 +7,12 @@ const insertIntoServiceMessagesTable = (data) => {
     INSERT INTO
       br7own.service_messages(
         message,
-        created_at
+        created_at,
+        incident_date
       ) VALUES (
         $\{message\},
-        $\{created_at\}
+        $\{created_at\},
+        $\{incident_date\}
       )
   `
 
