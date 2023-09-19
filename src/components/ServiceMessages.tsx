@@ -19,9 +19,9 @@ const ServiceMessages = ({ messages }: Props) => (
             <time
               className="govuk-!-font-weight-bold govuk-!-font-size-14"
               aria-label="time"
-              title={format(new Date(message.createdAt), "dd MMMM yyyy HH:mm")}
+              title={format(new Date(message.incidentDate || message.createdAt), "dd MMMM yyyy HH:mm")}
             >
-              {format(new Date(message.createdAt), "dd MMMM yyyy")}
+              {format(new Date(message.incidentDate || message.createdAt), "dd MMMM yyyy")}
             </time>
             <br />
             {message.message}
