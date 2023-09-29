@@ -58,7 +58,7 @@ commands:
           command: |
             CHUNK=$(circleci tests glob "features/**/*.feature" | circleci tests split --split-by=timings) \
             NEXTUI=<<parameters.NEXTUI>> \
-            npm run test:chunk
+            MESSAGE_ENTRY_POINT=mq npm run test:chunk
 
   ################### Services
   start_bichard7_legacy:
