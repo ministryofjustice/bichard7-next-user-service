@@ -59,7 +59,7 @@ describe("AccountSetup", () => {
         visibleForces: "001,004,",
         visibleCourts: "B01,B41ME00",
         excludedTriggers: "TRPR0001",
-        featureFlags: { httpsRedirect: true }
+        featureFlags: { httpsRedirect: true, exceptionsEnables: false }
       }))[0]
 
     const result = await createUser(connection, { id: currentUserId, username: "Bichard01" }, user)
