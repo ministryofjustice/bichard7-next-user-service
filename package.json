@@ -35,7 +35,7 @@
     "date-fns": "^2.30.0",
     "govuk-frontend": "^4.7.0",
     "jsonwebtoken": "^9.0.2",
-    "next": "^13.5.3",
+    "next": "^13.5.4",
     "nodemailer": "^6.9.5",
     "pg": "^8.11.3",
     "pg-promise": "^11.5.4",
