@@ -25,7 +25,7 @@ export default async (
   userCreateDetails: any,
   baseUrl: string
 ): PromiseResult<newUserSetupResult> => {
-  userCreateDetails.featureFlags = { httpsRedirect: true }
+  userCreateDetails.featureFlags = { httpsRedirect: true, exceptionsEnabled: false }
   const result = await createUser(connection, currentUser, userCreateDetails)
 
   if (isError(result)) {
