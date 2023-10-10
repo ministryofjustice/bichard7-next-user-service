@@ -56,8 +56,7 @@ const users = [
     migrated_password: null,
     visible_forces: "014",
     visible_courts: "",
-    excluded_triggers: "",
-    feature_flags: { httpsRedirect: true }
+    excluded_triggers: ""
   },
   {
     username: "Bichard04",
@@ -76,8 +75,7 @@ const users = [
     migrated_password: null,
     visible_forces: "",
     visible_courts: "",
-    excluded_triggers: "",
-    feature_flags: { httpsRedirect: true }
+    excluded_triggers: ""
   },
   {
     username: "DeletedUser",
@@ -96,8 +94,7 @@ const users = [
     migrated_password: null,
     visible_forces: "014",
     visible_courts: "",
-    excluded_triggers: "",
-    feature_flags: { httpsRedirect: true }
+    excluded_triggers: ""
   }
 ]
 
