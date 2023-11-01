@@ -92,7 +92,6 @@ jobs:
   lint:
     executor:
       name: node/default
-      tag: "16.20.2"
     steps:
       - install
       - run:
@@ -102,7 +101,6 @@ jobs:
   unit_test:
     executor:
       name: node/default
-      tag: "16.20.2"
     steps:
       - install
       - run:
