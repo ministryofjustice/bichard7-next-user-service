@@ -1,4 +1,4 @@
-ARG BUILD_IMAGE="nodejs-20-2023"
+ARG BUILD_IMAGE="nginx-nodejs-20-2023-supervisord"
 
 # Build user-service app
 
