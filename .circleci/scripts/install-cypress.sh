@@ -3,8 +3,8 @@
 echo "Installing Cypress..."
 
 # Install Cypress dependencies
-sudo DEBIAN_FRONTEND=noninteractive apt-get update
-sudo apt-get install libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb -y
+sudo apt-get update
+sudo NEEDRESTART_MODE=a apt-get install libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb -y
 
 # Install Cypress
 npx cypress install
