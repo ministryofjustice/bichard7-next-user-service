@@ -38,8 +38,8 @@ WORKDIR /app
 COPY ./package*.json ./
 
 COPY --from=app_builder /src/user-service/next.config.js ./
-COPY --from=app_builder /src/user-service/public ./public
 COPY --from=app_builder /src/user-service/node_modules node_modules
+COPY --from=app_builder --chown=nextjs:nodejs /src/user-service/public ./public
 COPY --from=app_builder --chown=nextjs:nodejs /src/user-service/.next ./.next
 
 COPY docker/conf/nginx.conf /etc/nginx/nginx.conf
