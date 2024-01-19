@@ -44,16 +44,20 @@ const Header: React.FC<HeaderProps> = ({ organisationName, serviceName, userName
                     {userName}
                   </a>
                 </li>
-                <li className="moj-header__navigation-item">
-                  <a className="moj-header__navigation-link" href="/users/account/change-password">
-                    {"Change Password"}
-                  </a>
-                </li>
-                <li className="moj-header__navigation-item">
-                  <a className="moj-header__navigation-link" href="/users/logout/">
-                    {"Sign out"}
-                  </a>
-                </li>
+                {userName ? (
+                  <>
+                    <li className="moj-header__navigation-item">
+                      <a className="moj-header__navigation-link" href="/users/account/change-password">
+                        {"Change Password"}
+                      </a>
+                    </li>
+                    <li className="moj-header__navigation-item">
+                      <a className="moj-header__navigation-link" href="/users/logout/">
+                        {"Sign out"}
+                      </a>
+                    </li>
+                  </>
+                ) : undefined}
               </ul>
             </nav>
           </div>
