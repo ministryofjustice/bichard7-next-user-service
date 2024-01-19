@@ -1,6 +1,7 @@
 $govuk-assets-path: "/users/";
 
 @import "~govuk-frontend/dist/govuk/all";
+@import "node_modules/@ministryofjustice/frontend/moj/all";
 
 .align-right {
   margin-left: auto;
