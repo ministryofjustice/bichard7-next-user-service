@@ -12,7 +12,7 @@ const config: Config.InitialOptions = {
     },
     TextEncoder
   },
-  moduleDirectories: ["node_modules", "./src"],
+  moduleDirectories: ["node_modules", "<rootDir>/src"],
   testPathIgnorePatterns: ["/node_modules/", "/.next/", "/cypress"],
   transformIgnorePatterns: ["/node_modules/", "/.next/", "/cypress"],
   verbose: true
