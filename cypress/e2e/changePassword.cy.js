@@ -23,7 +23,7 @@ describe("Change password", () => {
       // Note: Although we avoid waits in cypress test as the logic implemented is temporal in nature we can consider this OK
       /* eslint-disable-next-line cypress/no-unnecessary-waiting */
       cy.wait(10000)
-      cy.get("a[class=govuk-link]").click()
+      cy.get(".govuk-notification-banner__heading a[class=govuk-link]").click()
       cy.get("input[type=email]").type(emailAddress)
       cy.get("button[type=submit]").click()
       cy.get("input#validationCode").should("exist")
@@ -71,7 +71,7 @@ describe("Change password", () => {
       cy.visit("/account/change-password")
       cy.get("body").contains(/change password/i)
       cy.get(".govuk-inset-text").should("not.exist")
-      cy.get("a[class=govuk-link]").click()
+      cy.get('a[data-test="generate-password"]').click()
       cy.get(".govuk-inset-text").should("not.be.empty")
     })
 
