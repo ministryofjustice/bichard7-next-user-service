@@ -67,14 +67,39 @@ exports[`should render the component and match the snapshot 1`] = `
     </div>
   </header>
   <div
-    class="govuk-width-container"
+    class="govuk-width-container-0-2-4"
   >
     <main
-      class="govuk-main-wrapper"
+      id="main-content"
       role="main"
     >
       <div
-        class="govuk-grid-row"
+        class="govuk-phase-banner"
+      >
+        <p
+          class="govuk-phase-banner__content"
+        >
+          <strong
+            class="govuk-tag govuk-phase-banner__content__tag"
+          >
+            Beta
+          </strong>
+          <span
+            class="govuk-phase-banner__text"
+          >
+            This is a new service – your 
+            <a
+              class="govuk-link"
+              href="/feedback?previousPath=null"
+            >
+              feedback
+            </a>
+             will help us to improve it.
+          </span>
+        </p>
+      </div>
+      <div
+        class="top-padding-0-2-5 govuk-grid-row"
       >
         <div
           class="govuk-grid-column-two-thirds"
