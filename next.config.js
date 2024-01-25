@@ -1,7 +1,8 @@
 module.exports = {
   basePath: "/users",
-  webpack5: true,
   poweredByHeader: false,
+  output: "standalone",
+  reactStrictMode: true,
   sassOptions: {
     quietDeps: true
   },

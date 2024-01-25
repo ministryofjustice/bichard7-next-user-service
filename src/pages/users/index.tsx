@@ -12,6 +12,7 @@ import { withAuthentication, withCsrf, withMultipleServerSideProps } from "middl
 import { GetServerSidePropsContext, GetServerSidePropsResult } from "next"
 import Head from "next/head"
 import { ParsedUrlQuery } from "querystring"
+import useCustomStyles from "styles/useCustomStyles"
 import AuthenticationServerSidePropsContext from "types/AuthenticationServerSidePropsContext"
 import CsrfServerSidePropsContext from "types/CsrfServerSidePropsContext"
 import KeyValuePair from "types/KeyValuePair"
@@ -187,6 +188,8 @@ const Users = ({
   }
 
   const pageString = `Page ${pageNumber + 1} of ${Math.ceil(totalUsers / config.maxUsersPerPage)}`
+  const classes = useCustomStyles()
+
   return (
     <>
       <Head>
@@ -198,40 +201,42 @@ const Users = ({
         hasAccessToUserManagement={hasAccessToUserManagement}
         hasAccessToNewBichard={hasAccessToNewBichard}
       >
-        <h1 className="govuk-heading-l">{"Users"}</h1>
+        <div className={`${classes["top-padding"]}`}>
+          <h1 className="govuk-heading-l">{"Users"}</h1>
 
-        {!!bannerMessage && <SuccessBanner>{bannerMessage}</SuccessBanner>}
+          {!!bannerMessage && <SuccessBanner>{bannerMessage}</SuccessBanner>}
 
-        <Form method="post" csrfToken={csrfToken}>
-          <ButtonGroup>
-            <Link id="add" className="govuk-button govuk-!-margin-right-8" href="/users/new-user">
-              {"Add user"}
+          <Form method="post" csrfToken={csrfToken}>
+            <ButtonGroup>
+              <Link id="add" className="govuk-button govuk-!-margin-right-8" href="/users/new-user">
+                {"Add user"}
+              </Link>
+              <TextInput className="align-right" id="filter" name="filter" type="text" value={previousFilter} />
+              <Button className="govuk-!-margin-left-4" noDoubleClick id="filter">
+                {"Filter"}
+              </Button>
+            </ButtonGroup>
+          </Form>
+
+          {allUsers && (
+            <Table tableHeaders={tableHeaders} tableData={allUsers}>
+              <LinkColumn
+                data-test="link-to-user-view"
+                field="username"
+                href={(user) => `users/${(user as unknown as User).username}`}
+              />
+            </Table>
+          )}
+
+          <div className="govuk-hint">
+            <Link href={prevPage} data-test="Prev">
+              {pageNumber > 0 && "< Prev"}
             </Link>
-            <TextInput className="align-right" id="filter" name="filter" type="text" value={previousFilter} />
-            <Button className="govuk-!-margin-left-4" noDoubleClick id="filter">
-              {"Filter"}
-            </Button>
-          </ButtonGroup>
-        </Form>
-
-        {allUsers && (
-          <Table tableHeaders={tableHeaders} tableData={allUsers}>
-            <LinkColumn
-              data-test="link-to-user-view"
-              field="username"
-              href={(user) => `users/${(user as unknown as User).username}`}
-            />
-          </Table>
-        )}
-
-        <div className="govuk-hint">
-          <Link href={prevPage} data-test="Prev">
-            {pageNumber > 0 && "< Prev"}
-          </Link>
-          <span style={styles}>{pageString}</span>
-          <Link href={nextPage} data-test="Next">
-            {pageNumber + 1 <= (totalUsers - 1) / config.maxUsersPerPage && "Next >"}
-          </Link>
+            <span style={styles}>{pageString}</span>
+            <Link href={nextPage} data-test="Next">
+              {pageNumber + 1 <= (totalUsers - 1) / config.maxUsersPerPage && "Next >"}
+            </Link>
+          </div>
         </div>
       </Layout>
     </>

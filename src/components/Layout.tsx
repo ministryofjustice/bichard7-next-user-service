@@ -4,6 +4,8 @@ import { addBasePath } from "next/dist/client/add-base-path"
 import { ReactNode } from "react"
 import User from "types/User"
 import NavBar from "./NavBar"
+import PageTemplate from "./PageTemplate"
+import PhaseBanner from "./PhaseBanner"
 
 interface Props {
   children: ReactNode
@@ -34,11 +36,11 @@ const Layout = ({ children, user, hasAccessToReports, hasAccessToUserManagement,
       />
     ) : undefined}
 
-    <div className="govuk-width-container">
-      <main className="govuk-main-wrapper" role="main">
-        {children}
-      </main>
-    </div>
+    <PageTemplate>
+      <PhaseBanner phase={"Beta"} />
+
+      {children}
+    </PageTemplate>
 
     <Footer />
     <ScreenSizeStats />
