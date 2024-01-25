@@ -130,4 +130,5 @@ const useCustomStyles = createUseStyles({
   }
 })
 
+export { useCustomStyles }
 export default useCustomStyles
