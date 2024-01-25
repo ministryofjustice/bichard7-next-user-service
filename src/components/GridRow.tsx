@@ -3,7 +3,6 @@ import useCustomStyles from "styles/useCustomStyles"
 
 interface Props {
   children: ReactNode
-  className?: string
 }
 
 const GridRow = ({ children }: Props) => {
