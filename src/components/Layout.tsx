@@ -3,6 +3,7 @@ import Header from "components/Header"
 import { addBasePath } from "next/dist/client/add-base-path"
 import { ReactNode } from "react"
 import User from "types/User"
+import { UserServiceAccess } from "useCases/getUserServiceAccess"
 import NavBar from "./NavBar"
 import PageTemplate from "./PageTemplate"
 import PhaseBanner from "./PhaseBanner"
@@ -10,9 +11,7 @@ import PhaseBanner from "./PhaseBanner"
 interface Props {
   children: ReactNode
   user?: Partial<User>
-  hasAccessToReports?: boolean
-  hasAccessToUserManagement?: boolean
-  hasAccessToNewBichard?: boolean
+  hasAccessTo?: UserServiceAccess
 }
 
 /* eslint-disable jsx-a11y/alt-text, @next/next/no-img-element */
@@ -25,14 +24,14 @@ const FakeAssetForNoJsStatsGathering = () => (
 const ScreenSizeStats = () => <script src={addBasePath("/js/grabScreenSize.js")} async />
 
 /* eslint-enable jsx-a11y/alt-text, @next/next/no-img-element */
-const Layout = ({ children, user, hasAccessToReports, hasAccessToUserManagement, hasAccessToNewBichard }: Props) => (
+const Layout = ({ children, user, hasAccessTo }: Props) => (
   <>
     <FakeAssetForNoJsStatsGathering />
     <Header serviceName="Bichard7" userName={user?.username ?? ""} organisationName={"Ministry of Justice"} />
-    {hasAccessToNewBichard ? (
+    {hasAccessTo && hasAccessTo.hasAccessToNewBichard ? (
       <NavBar
-        hasAccessToReports={hasAccessToReports ?? false}
-        hasAccessToUserManagement={hasAccessToUserManagement ?? false}
+        hasAccessToReports={hasAccessTo.hasAccessToReports ?? false}
+        hasAccessToUserManagement={hasAccessTo.hasAccessToUserManagement ?? false}
       />
     ) : undefined}
 
