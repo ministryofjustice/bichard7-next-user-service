@@ -3,7 +3,7 @@
 exports[`should render the component and match the snapshot when there are messages 1`] = `
 <div>
   <div
-    class="govuk-grid-row"
+    class="top-padding-0-2-5 govuk-grid-row"
   >
     <div
       class="govuk-grid-column-full"
@@ -24,7 +24,7 @@ exports[`should render the component and match the snapshot when there are messa
     </div>
   </div>
   <div
-    class="govuk-grid-row"
+    class="top-padding-0-2-5 govuk-grid-row"
   >
     <div
       class="govuk-grid-column-full"
@@ -45,7 +45,7 @@ exports[`should render the component and match the snapshot when there are messa
     </div>
   </div>
   <div
-    class="govuk-grid-row"
+    class="top-padding-0-2-5 govuk-grid-row"
   >
     <div
       class="govuk-grid-column-full"

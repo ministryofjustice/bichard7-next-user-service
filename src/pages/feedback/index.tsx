@@ -12,7 +12,7 @@ import { withAuthentication, withCsrf, withMultipleServerSideProps } from "middl
 import { GetServerSidePropsContext, GetServerSidePropsResult } from "next"
 import Head from "next/head"
 import { ParsedUrlQuery } from "querystring"
-import React from "react"
+import useCustomStyles from "styles/useCustomStyles"
 import AuthenticationServerSidePropsContext from "types/AuthenticationServerSidePropsContext"
 import CsrfServerSidePropsContext from "types/CsrfServerSidePropsContext"
 import { isError } from "types/Result"
@@ -74,46 +74,50 @@ interface Props {
 }
 
 const ShareFeedback = ({ csrfToken, currentUser, errorMessage, successMessage }: Props) => {
+  const classes = useCustomStyles()
+
   return (
     <>
       <Head>
         <title>{"Share feedback"}</title>
       </Head>
       <Layout user={currentUser}>
-        <ErrorSummary title="There is a problem" show={!!errorMessage}>
-          {errorMessage}
-        </ErrorSummary>
+        <div className={`${classes["top-padding"]}`}>
+          <ErrorSummary title="There is a problem" show={!!errorMessage}>
+            {errorMessage}
+          </ErrorSummary>
 
-        {successMessage && <SuccessBanner>{successMessage}</SuccessBanner>}
+          {successMessage && <SuccessBanner>{successMessage}</SuccessBanner>}
 
-        <h3 data-test="check-email" className="govuk-heading-xl">
-          {"Share your feedback"}
-        </h3>
+          <h3 data-test="check-email" className="govuk-heading-xl">
+            {"Share your feedback"}
+          </h3>
 
-        <Form method="post" csrfToken={csrfToken}>
-          <div id="contact-support" className="govuk-label">
-            <Paragraph>
-              {"Please keep in mind that if you are experiencing any issues, you should either check our "}
-              <ContactLink>{"FAQ page"}</ContactLink>
-              {" or "}
-              <Link href={config.serviceNowUrl}>{"raise a ticket with the service desk"}</Link>
-              {". Any issues raised via this page will not be handled."}
-            </Paragraph>
-          </div>
-          <div id="feedback-hint" className="govuk-label">
-            {"What improvements would you like to see?"}
-          </div>
-          <textarea
-            className="govuk-textarea"
-            id="feedback"
-            name="feedback"
-            rows={5}
-            aria-describedby="feedback-hint"
-          ></textarea>
-          <Button noDoubleClick>{"Send feedback"}</Button>
-        </Form>
+          <Form method="post" csrfToken={csrfToken}>
+            <div id="contact-support" className="govuk-label">
+              <Paragraph>
+                {"Please keep in mind that if you are experiencing any issues, you should either check our "}
+                <ContactLink>{"FAQ page"}</ContactLink>
+                {" or "}
+                <Link href={config.serviceNowUrl}>{"raise a ticket with the service desk"}</Link>
+                {". Any issues raised via this page will not be handled."}
+              </Paragraph>
+            </div>
+            <div id="feedback-hint" className="govuk-label">
+              {"What improvements would you like to see?"}
+            </div>
+            <textarea
+              className="govuk-textarea"
+              id="feedback"
+              name="feedback"
+              rows={5}
+              aria-describedby="feedback-hint"
+            ></textarea>
+            <Button noDoubleClick>{"Send feedback"}</Button>
+          </Form>
 
-        <BackLink href="/" />
+          <BackLink href="/" />
+        </div>
       </Layout>
     </>
   )

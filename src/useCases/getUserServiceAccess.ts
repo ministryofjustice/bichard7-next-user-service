@@ -1,7 +1,7 @@
 import { AuthenticationTokenPayload } from "lib/token/authenticationToken"
 import UserGroup from "types/UserGroup"
 
-interface GetUserServiceAccessResult {
+export interface UserServiceAccess {
   hasAccessToBichard: boolean
   hasAccessToUserManagement: boolean
   hasAccessToReports: boolean
@@ -17,7 +17,7 @@ const bichardGroups = [
   "B7TriggerHandler"
 ]
 
-export default ({ groups }: AuthenticationTokenPayload): GetUserServiceAccessResult => {
+export default ({ groups }: AuthenticationTokenPayload): UserServiceAccess => {
   const hasAccessToBichard = bichardGroups.some((g) => groups.includes(g as UserGroup))
 
   const hasAccessToUserManagement = groups.includes("B7UserManager" as UserGroup)

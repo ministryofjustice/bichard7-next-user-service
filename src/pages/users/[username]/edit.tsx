@@ -1,40 +1,42 @@
+import BackLink from "components/BackLink"
 import Button from "components/Button"
+import { ErrorSummary, ErrorSummaryList } from "components/ErrorSummary"
+import Form from "components/Form"
 import Layout from "components/Layout"
-import Head from "next/head"
 import SuccessBanner from "components/SuccessBanner"
+import UserForm, { listOfForces, listOfTriggers } from "components/users/UserForm"
+import config from "lib/config"
+import getAuditLogger from "lib/getAuditLogger"
 import getConnection from "lib/getConnection"
 import userFormIsValid from "lib/userFormIsValid"
-import getUserById from "useCases/getUserById"
-import { updateUser, getUserByUsername } from "useCases"
-import UserForm, { listOfForces, listOfTriggers } from "components/users/UserForm"
+import usersHaveSameForce from "lib/usersHaveSameForce"
+import { withAuthentication, withCsrf, withMultipleServerSideProps } from "middleware"
+import { GetServerSidePropsContext, GetServerSidePropsResult } from "next"
+import Head from "next/head"
+import { ParsedUrlQuery } from "querystring"
+import { useCustomStyles as customStyles } from "styles/useCustomStyles"
+import AuthenticationServerSidePropsContext from "types/AuthenticationServerSidePropsContext"
+import CsrfServerSidePropsContext from "types/CsrfServerSidePropsContext"
 import { isError } from "types/Result"
 import User from "types/User"
-import CsrfServerSidePropsContext from "types/CsrfServerSidePropsContext"
-import Form from "components/Form"
-import { GetServerSidePropsContext, GetServerSidePropsResult } from "next"
-import { withAuthentication, withCsrf, withMultipleServerSideProps } from "middleware"
-import { ParsedUrlQuery } from "querystring"
-import AuthenticationServerSidePropsContext from "types/AuthenticationServerSidePropsContext"
+import { UserGroupResult } from "types/UserGroup"
+import { getUserByUsername, updateUser } from "useCases"
+import getUserByEmailAddress from "useCases/getUserByEmailAddress"
+import getUserById from "useCases/getUserById"
+import getUserHierarchyGroups from "useCases/getUserHierarchyGroups"
+import getUserServiceAccess, { type UserServiceAccess } from "useCases/getUserServiceAccess"
+import isUserWithinGroup from "useCases/isUserWithinGroup"
+import sendEmailChangedEmails from "useCases/sendEmailChangedEmails"
+import updateUserCodes from "useCases/updateUserCodes"
+import createRedirectResponse from "utils/createRedirectResponse"
 import { isPost } from "utils/http"
 import logger from "utils/logger"
-import { UserGroupResult } from "types/UserGroup"
-import getAuditLogger from "lib/getAuditLogger"
-import config from "lib/config"
-import BackLink from "components/BackLink"
-import { ErrorSummary, ErrorSummaryList } from "components/ErrorSummary"
-import createRedirectResponse from "utils/createRedirectResponse"
-import updateUserCodes from "useCases/updateUserCodes"
-import usersHaveSameForce from "lib/usersHaveSameForce"
-import getUserByEmailAddress from "useCases/getUserByEmailAddress"
-import sendEmailChangedEmails from "useCases/sendEmailChangedEmails"
-import isUserWithinGroup from "useCases/isUserWithinGroup"
-import getUserHierarchyGroups from "useCases/getUserHierarchyGroups"
 
 export const getServerSideProps = withMultipleServerSideProps(
   withAuthentication,
   withCsrf,
   async (context: GetServerSidePropsContext<ParsedUrlQuery>): Promise<GetServerSidePropsResult<Props>> => {
-    const { query, req, formData, csrfToken, currentUser } = context as CsrfServerSidePropsContext &
+    const { query, req, formData, csrfToken, currentUser, authentication } = context as CsrfServerSidePropsContext &
       AuthenticationServerSidePropsContext
     const { username } = query as { username: string }
 
@@ -42,6 +44,12 @@ export const getServerSideProps = withMultipleServerSideProps(
       logger.error("Unable to determine current user")
       return createRedirectResponse("/500")
     }
+
+    if (!authentication) {
+      return createRedirectResponse("/login")
+    }
+
+    const hasAccessTo = getUserServiceAccess(authentication)
 
     const connection = getConnection()
     const user = await getUserByUsername(connection, username)
@@ -80,7 +88,8 @@ export const getServerSideProps = withMultipleServerSideProps(
             user: { ...user, ...userDetails },
             isFormValid: true,
             forcesError: "Please ensure that user is assigned to least one force.",
-            currentUserVisibleForces: currentUser.visibleForces ?? ""
+            currentUserVisibleForces: currentUser.visibleForces ?? "",
+            hasAccessTo
           }
         }
       }
@@ -109,7 +118,8 @@ export const getServerSideProps = withMultipleServerSideProps(
                 isFormValid: false,
                 emailError: "Please enter a unique email address",
                 isCurrentSuperUser,
-                currentUserVisibleForces: currentUser.visibleForces ?? ""
+                currentUserVisibleForces: currentUser.visibleForces ?? "",
+                hasAccessTo
               }
             }
           }
@@ -130,7 +140,8 @@ export const getServerSideProps = withMultipleServerSideProps(
               user: { ...user, ...userDetails },
               errorMessage: userUpdated.message,
               isCurrentSuperUser,
-              currentUserVisibleForces: currentUser.visibleForces ?? ""
+              currentUserVisibleForces: currentUser.visibleForces ?? "",
+              hasAccessTo
             }
           }
         }
@@ -152,7 +163,8 @@ export const getServerSideProps = withMultipleServerSideProps(
               user: { ...user, ...userDetails },
               ...formValidationResult,
               isCurrentSuperUser,
-              currentUserVisibleForces: currentUser.visibleForces ?? ""
+              currentUserVisibleForces: currentUser.visibleForces ?? "",
+              hasAccessTo
             }
           }
         }
@@ -166,7 +178,8 @@ export const getServerSideProps = withMultipleServerSideProps(
             groups,
             ...formValidationResult,
             isCurrentSuperUser,
-            currentUserVisibleForces: currentUser.visibleForces ?? ""
+            currentUserVisibleForces: currentUser.visibleForces ?? "",
+            hasAccessTo
           }
         }
       }
@@ -180,7 +193,8 @@ export const getServerSideProps = withMultipleServerSideProps(
           groups,
           ...formValidationResult,
           isCurrentSuperUser,
-          currentUserVisibleForces: currentUser.visibleForces ?? ""
+          currentUserVisibleForces: currentUser.visibleForces ?? "",
+          hasAccessTo
         }
       }
     }
@@ -194,7 +208,8 @@ export const getServerSideProps = withMultipleServerSideProps(
         groups,
         isFormValid: true,
         isCurrentSuperUser,
-        currentUserVisibleForces: currentUser.visibleForces ?? ""
+        currentUserVisibleForces: currentUser.visibleForces ?? "",
+        hasAccessTo
       }
     }
   }
@@ -217,6 +232,7 @@ interface Props {
   isCurrentSuperUser?: boolean
   isFormValid: boolean
   currentUserVisibleForces: string
+  hasAccessTo: UserServiceAccess
 }
 
 const editUser = ({
@@ -234,67 +250,74 @@ const editUser = ({
   groups,
   isCurrentSuperUser,
   isFormValid,
-  currentUserVisibleForces
-}: Props) => (
-  <>
-    <Head>
-      <title>{"Edit User"}</title>
-    </Head>
-    <Layout user={currentUser}>
-      <h1 className="govuk-heading-l">
-        {"Edit "}
-        {(user && user.username) || "user"}
-        {"'s details"}
-      </h1>
+  currentUserVisibleForces,
+  hasAccessTo
+}: Props) => {
+  const classes = customStyles()
 
-      <ErrorSummary title="There is a problem" show={!!errorMessage}>
-        {errorMessage}
-      </ErrorSummary>
+  return (
+    <>
+      <Head>
+        <title>{"Edit User"}</title>
+      </Head>
+      <Layout user={currentUser} hasAccessTo={hasAccessTo}>
+        <div className={`${classes["top-padding"]}`}>
+          <h1 className="govuk-heading-l">
+            {"Edit "}
+            {(user && user.username) || "user"}
+            {"'s details"}
+          </h1>
 
-      <ErrorSummary title="There is a problem" show={!isFormValid}>
-        {!!emailIsTaken && (
-          <p>
-            {"The email address "}
-            <b>{user?.emailAddress}</b>
-            {" already belongs to another user."}
-          </p>
-        )}
-        <ErrorSummaryList
-          items={[
-            { id: "username", error: usernameError },
-            { id: "forenames", error: forenamesError },
-            { id: "surname", error: surnameError },
-            { id: "emailAddress", error: emailError }
-          ]}
-        />
-      </ErrorSummary>
+          <ErrorSummary title="There is a problem" show={!!errorMessage}>
+            {errorMessage}
+          </ErrorSummary>
 
-      {successMessage && <SuccessBanner>{successMessage}</SuccessBanner>}
+          <ErrorSummary title="There is a problem" show={!isFormValid}>
+            {!!emailIsTaken && (
+              <p>
+                {"The email address "}
+                <b>{user?.emailAddress}</b>
+                {" already belongs to another user."}
+              </p>
+            )}
+            <ErrorSummaryList
+              items={[
+                { id: "username", error: usernameError },
+                { id: "forenames", error: forenamesError },
+                { id: "surname", error: surnameError },
+                { id: "emailAddress", error: emailError }
+              ]}
+            />
+          </ErrorSummary>
 
-      {user && (
-        <Form method="post" csrfToken={csrfToken}>
-          <UserForm
-            /* eslint-disable-next-line react/jsx-props-no-spreading */
-            {...user}
-            usernameError={usernameError}
-            forenamesError={forenamesError}
-            surnameError={surnameError}
-            emailError={emailError}
-            forcesError={forcesError}
-            allGroups={groups}
-            userGroups={user.groups}
-            currentUserVisibleForces={currentUserVisibleForces}
-            isCurrentSuperUser={isCurrentSuperUser}
-            isEdit
-          />
-          <input type="hidden" name="id" value={user.id} />
-          <Button noDoubleClick>{"Update user"}</Button>
-        </Form>
-      )}
+          {successMessage && <SuccessBanner>{successMessage}</SuccessBanner>}
 
-      <BackLink href="/users" />
-    </Layout>
-  </>
-)
+          {user && (
+            <Form method="post" csrfToken={csrfToken}>
+              <UserForm
+                /* eslint-disable-next-line react/jsx-props-no-spreading */
+                {...user}
+                usernameError={usernameError}
+                forenamesError={forenamesError}
+                surnameError={surnameError}
+                emailError={emailError}
+                forcesError={forcesError}
+                allGroups={groups}
+                userGroups={user.groups}
+                currentUserVisibleForces={currentUserVisibleForces}
+                isCurrentSuperUser={isCurrentSuperUser}
+                isEdit
+              />
+              <input type="hidden" name="id" value={user.id} />
+              <Button noDoubleClick>{"Update user"}</Button>
+            </Form>
+          )}
+
+          <BackLink href={`/users/${user && user.username}`} />
+        </div>
+      </Layout>
+    </>
+  )
+}
 
 export default editUser
