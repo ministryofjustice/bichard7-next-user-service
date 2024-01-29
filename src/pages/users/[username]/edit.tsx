@@ -24,6 +24,7 @@ import { getUserByUsername, updateUser } from "useCases"
 import getUserByEmailAddress from "useCases/getUserByEmailAddress"
 import getUserById from "useCases/getUserById"
 import getUserHierarchyGroups from "useCases/getUserHierarchyGroups"
+import getUserServiceAccess, { type UserServiceAccess } from "useCases/getUserServiceAccess"
 import isUserWithinGroup from "useCases/isUserWithinGroup"
 import sendEmailChangedEmails from "useCases/sendEmailChangedEmails"
 import updateUserCodes from "useCases/updateUserCodes"
@@ -35,7 +36,7 @@ export const getServerSideProps = withMultipleServerSideProps(
   withAuthentication,
   withCsrf,
   async (context: GetServerSidePropsContext<ParsedUrlQuery>): Promise<GetServerSidePropsResult<Props>> => {
-    const { query, req, formData, csrfToken, currentUser } = context as CsrfServerSidePropsContext &
+    const { query, req, formData, csrfToken, currentUser, authentication } = context as CsrfServerSidePropsContext &
       AuthenticationServerSidePropsContext
     const { username } = query as { username: string }
 
@@ -43,6 +44,12 @@ export const getServerSideProps = withMultipleServerSideProps(
       logger.error("Unable to determine current user")
       return createRedirectResponse("/500")
     }
+
+    if (!authentication) {
+      return createRedirectResponse("/login")
+    }
+
+    const hasAccessTo = getUserServiceAccess(authentication)
 
     const connection = getConnection()
     const user = await getUserByUsername(connection, username)
@@ -81,7 +88,8 @@ export const getServerSideProps = withMultipleServerSideProps(
             user: { ...user, ...userDetails },
             isFormValid: true,
             forcesError: "Please ensure that user is assigned to least one force.",
-            currentUserVisibleForces: currentUser.visibleForces ?? ""
+            currentUserVisibleForces: currentUser.visibleForces ?? "",
+            hasAccessTo
           }
         }
       }
@@ -110,7 +118,8 @@ export const getServerSideProps = withMultipleServerSideProps(
                 isFormValid: false,
                 emailError: "Please enter a unique email address",
                 isCurrentSuperUser,
-                currentUserVisibleForces: currentUser.visibleForces ?? ""
+                currentUserVisibleForces: currentUser.visibleForces ?? "",
+                hasAccessTo
               }
             }
           }
@@ -131,7 +140,8 @@ export const getServerSideProps = withMultipleServerSideProps(
               user: { ...user, ...userDetails },
               errorMessage: userUpdated.message,
               isCurrentSuperUser,
-              currentUserVisibleForces: currentUser.visibleForces ?? ""
+              currentUserVisibleForces: currentUser.visibleForces ?? "",
+              hasAccessTo
             }
           }
         }
@@ -153,7 +163,8 @@ export const getServerSideProps = withMultipleServerSideProps(
               user: { ...user, ...userDetails },
               ...formValidationResult,
               isCurrentSuperUser,
-              currentUserVisibleForces: currentUser.visibleForces ?? ""
+              currentUserVisibleForces: currentUser.visibleForces ?? "",
+              hasAccessTo
             }
           }
         }
@@ -167,7 +178,8 @@ export const getServerSideProps = withMultipleServerSideProps(
             groups,
             ...formValidationResult,
             isCurrentSuperUser,
-            currentUserVisibleForces: currentUser.visibleForces ?? ""
+            currentUserVisibleForces: currentUser.visibleForces ?? "",
+            hasAccessTo
           }
         }
       }
@@ -181,7 +193,8 @@ export const getServerSideProps = withMultipleServerSideProps(
           groups,
           ...formValidationResult,
           isCurrentSuperUser,
-          currentUserVisibleForces: currentUser.visibleForces ?? ""
+          currentUserVisibleForces: currentUser.visibleForces ?? "",
+          hasAccessTo
         }
       }
     }
@@ -195,7 +208,8 @@ export const getServerSideProps = withMultipleServerSideProps(
         groups,
         isFormValid: true,
         isCurrentSuperUser,
-        currentUserVisibleForces: currentUser.visibleForces ?? ""
+        currentUserVisibleForces: currentUser.visibleForces ?? "",
+        hasAccessTo
       }
     }
   }
@@ -218,6 +232,7 @@ interface Props {
   isCurrentSuperUser?: boolean
   isFormValid: boolean
   currentUserVisibleForces: string
+  hasAccessTo: UserServiceAccess
 }
 
 const editUser = ({
@@ -235,7 +250,8 @@ const editUser = ({
   groups,
   isCurrentSuperUser,
   isFormValid,
-  currentUserVisibleForces
+  currentUserVisibleForces,
+  hasAccessTo
 }: Props) => {
   const classes = customStyles()
 
@@ -244,7 +260,7 @@ const editUser = ({
       <Head>
         <title>{"Edit User"}</title>
       </Head>
-      <Layout user={currentUser}>
+      <Layout user={currentUser} hasAccessTo={hasAccessTo}>
         <div className={`${classes["top-padding"]}`}>
           <h1 className="govuk-heading-l">
             {"Edit "}

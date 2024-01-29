@@ -1,30 +1,31 @@
-import Layout from "components/Layout"
-import Head from "next/head"
-import User from "types/User"
-import { GetServerSidePropsContext, GetServerSidePropsResult } from "next"
 import Button from "components/Button"
 import ButtonGroup from "components/ButtonGroup"
-import Link from "components/Link"
+import { ErrorSummaryList } from "components/ErrorSummary"
 import ErrorSummary from "components/ErrorSummary/ErrorSummary"
 import { Fieldset, FieldsetHint, FieldsetLegend } from "components/Fieldset"
-import Warning from "components/Warning"
-import TextInput from "components/TextInput"
-import { isError } from "types/Result"
-import createRedirectResponse from "utils/createRedirectResponse"
-import getConnection from "lib/getConnection"
-import { deleteUser, getUserByUsername } from "useCases"
 import Form from "components/Form"
-import { withAuthentication, withCsrf, withMultipleServerSideProps } from "middleware"
-import CsrfServerSidePropsContext from "types/CsrfServerSidePropsContext"
-import { ParsedUrlQuery } from "querystring"
-import AuthenticationServerSidePropsContext from "types/AuthenticationServerSidePropsContext"
-import { isPost } from "utils/http"
-import getAuditLogger from "lib/getAuditLogger"
-import logger from "utils/logger"
+import Layout from "components/Layout"
+import Link from "components/Link"
+import TextInput from "components/TextInput"
+import Warning from "components/Warning"
 import config from "lib/config"
-import { ErrorSummaryList } from "components/ErrorSummary"
+import getAuditLogger from "lib/getAuditLogger"
+import getConnection from "lib/getConnection"
 import usersHaveSameForce from "lib/usersHaveSameForce"
+import { withAuthentication, withCsrf, withMultipleServerSideProps } from "middleware"
+import { GetServerSidePropsContext, GetServerSidePropsResult } from "next"
+import Head from "next/head"
+import { ParsedUrlQuery } from "querystring"
+import useCustomStyles from "styles/useCustomStyles"
+import AuthenticationServerSidePropsContext from "types/AuthenticationServerSidePropsContext"
+import CsrfServerSidePropsContext from "types/CsrfServerSidePropsContext"
+import { isError } from "types/Result"
+import User from "types/User"
+import { deleteUser, getUserByUsername } from "useCases"
 import isUserWithinGroup from "useCases/isUserWithinGroup"
+import createRedirectResponse from "utils/createRedirectResponse"
+import { isPost } from "utils/http"
+import logger from "utils/logger"
 
 export const getServerSideProps = withMultipleServerSideProps(
   withAuthentication,
@@ -111,6 +112,7 @@ interface Props {
 
 const Delete = ({ user, showInputNotMatchingError, csrfToken, currentUser, isCurrentUserToBeDeleted }: Props) => {
   const fullName = `${user.forenames} ${user.surname}`
+  const classes = useCustomStyles()
 
   return (
     <>
@@ -118,52 +120,54 @@ const Delete = ({ user, showInputNotMatchingError, csrfToken, currentUser, isCur
         <title>{"Users"}</title>
       </Head>
       <Layout user={currentUser}>
-        <Form method="post" csrfToken={csrfToken}>
-          <Fieldset>
-            <FieldsetLegend>{`Are you sure you want to delete ${fullName}?`}</FieldsetLegend>
-            <FieldsetHint>
-              <Warning>{"This action is irreversible."}</Warning>
-            </FieldsetHint>
-            <ErrorSummary title="Username mismatch" show={!!showInputNotMatchingError}>
-              <ErrorSummaryList
-                items={[
-                  {
-                    id: "delete-account-confirmation",
-                    error: "Enter the account username"
-                  }
-                ]}
+        <div className={`${classes["top-padding"]}`}>
+          <Form method="post" csrfToken={csrfToken}>
+            <Fieldset>
+              <FieldsetLegend>{`Are you sure you want to delete ${fullName}?`}</FieldsetLegend>
+              <FieldsetHint>
+                <Warning>{"This action is irreversible."}</Warning>
+              </FieldsetHint>
+              <ErrorSummary title="Username mismatch" show={!!showInputNotMatchingError}>
+                <ErrorSummaryList
+                  items={[
+                    {
+                      id: "delete-account-confirmation",
+                      error: "Enter the account username"
+                    }
+                  ]}
+                />
+              </ErrorSummary>
+
+              <TextInput
+                id="delete-account-confirmation"
+                name="deleteAccountConfirmation"
+                label={`If you are sure about deleting this account, type '${user.username}' in the box below.`}
+                type="text"
+                width="20"
+                error={showInputNotMatchingError && "Username does not match"}
               />
+            </Fieldset>
+
+            <ErrorSummary title="There is a problem" show={!!isCurrentUserToBeDeleted}>
+              {!!isCurrentUserToBeDeleted && (
+                <p>{"A user may not delete themselves, please contact another user manager to delete your user"}</p>
+              )}
             </ErrorSummary>
-
-            <TextInput
-              id="delete-account-confirmation"
-              name="deleteAccountConfirmation"
-              label={`If you are sure about deleting this account, type '${user.username}' in the box below.`}
-              type="text"
-              width="20"
-              error={showInputNotMatchingError && "Username does not match"}
-            />
-          </Fieldset>
-
-          <ErrorSummary title="There is a problem" show={!!isCurrentUserToBeDeleted}>
-            {!!isCurrentUserToBeDeleted && (
-              <p>{"A user may not delete themselves, please contact another user manager to delete your user"}</p>
-            )}
-          </ErrorSummary>
-          <ButtonGroup>
-            <Button
-              dataTest="delete_delete-account-btn"
-              variant="warning"
-              noDoubleClick
-              isDisabled={isCurrentUserToBeDeleted}
-            >
-              {"Delete account"}
-            </Button>
-            <Link data-test="cancel" href={`/users/${user.username}`}>
-              {"Cancel"}
-            </Link>
-          </ButtonGroup>
-        </Form>
+            <ButtonGroup>
+              <Button
+                dataTest="delete_delete-account-btn"
+                variant="warning"
+                noDoubleClick
+                isDisabled={isCurrentUserToBeDeleted}
+              >
+                {"Delete account"}
+              </Button>
+              <Link data-test="cancel" href={`/users/${user.username}`}>
+                {"Cancel"}
+              </Link>
+            </ButtonGroup>
+          </Form>
+        </div>
       </Layout>
     </>
   )

@@ -14,6 +14,7 @@ import AuthenticationServerSidePropsContext from "types/AuthenticationServerSide
 import { isError } from "types/Result"
 import User from "types/User"
 import { getUserByUsername } from "useCases"
+import getUserServiceAccess, { type UserServiceAccess } from "useCases/getUserServiceAccess"
 import isUserWithinGroup from "useCases/isUserWithinGroup"
 import createRedirectResponse from "utils/createRedirectResponse"
 import logger from "utils/logger"
@@ -21,13 +22,19 @@ import logger from "utils/logger"
 export const getServerSideProps = withMultipleServerSideProps(
   withAuthentication,
   async (context: GetServerSidePropsContext<ParsedUrlQuery>): Promise<GetServerSidePropsResult<Props>> => {
-    const { query, currentUser } = context as AuthenticationServerSidePropsContext
+    const { query, currentUser, authentication } = context as AuthenticationServerSidePropsContext
     const { username } = query as { username: string }
 
     if (!currentUser) {
       logger.error("Unable to determine current user")
       return createRedirectResponse("/500")
     }
+
+    if (!currentUser || !authentication) {
+      return createRedirectResponse("/login")
+    }
+
+    const hasAccessTo = getUserServiceAccess(authentication)
 
     const connection = getConnection()
     const user = await getUserByUsername(connection, username)
@@ -47,7 +54,7 @@ export const getServerSideProps = withMultipleServerSideProps(
     const isCurrentUserToBeDeleted = currentUser.id === user.id
 
     return {
-      props: { user, currentUser, isCurrentUserToBeDeleted }
+      props: { user, currentUser, isCurrentUserToBeDeleted, hasAccessTo }
     }
   }
 )
@@ -56,16 +63,17 @@ interface Props {
   user: User
   currentUser?: Partial<User>
   isCurrentUserToBeDeleted?: boolean
+  hasAccessTo: UserServiceAccess
 }
 
-const Users = ({ user, currentUser, isCurrentUserToBeDeleted }: Props) => {
+const Users = ({ user, currentUser, isCurrentUserToBeDeleted, hasAccessTo }: Props) => {
   const classes = useCustomStyles()
   return (
     <>
       <Head>
         <title>{"User details"}</title>
       </Head>
-      <Layout user={currentUser}>
+      <Layout user={currentUser} hasAccessTo={hasAccessTo}>
         <div className={`${classes["top-padding"]}`}>
           <h2 className="govuk-heading-l">{"User details"}</h2>
           <Summary>

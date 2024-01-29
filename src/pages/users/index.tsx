@@ -20,7 +20,7 @@ import { isError } from "types/Result"
 import User from "types/User"
 import getAllUsers from "useCases/getAllUsers"
 import getFilteredUsers from "useCases/getFilteredUsers"
-import getUserServiceAccess from "useCases/getUserServiceAccess"
+import getUserServiceAccess, { type UserServiceAccess } from "useCases/getUserServiceAccess"
 import isUserWithinGroup from "useCases/isUserWithinGroup"
 import addQueryParams from "utils/addQueryParams"
 import createRedirectResponse from "utils/createRedirectResponse"
@@ -42,8 +42,7 @@ export const getServerSideProps = withMultipleServerSideProps(
       return createRedirectResponse("/login")
     }
 
-    const { hasAccessToReports, hasAccessToUserManagement, hasAccessToNewBichard } =
-      getUserServiceAccess(authentication)
+    const hasAccessTo = getUserServiceAccess(authentication)
 
     if (isPost(req)) {
       const { filter } = formData as {
@@ -102,9 +101,7 @@ export const getServerSideProps = withMultipleServerSideProps(
           pageNumber,
           totalUsers: 0,
           bannerMessage,
-          hasAccessToReports,
-          hasAccessToUserManagement,
-          hasAccessToNewBichard
+          hasAccessTo
         }
       }
     }
@@ -122,9 +119,7 @@ export const getServerSideProps = withMultipleServerSideProps(
         pageNumber,
         totalUsers,
         bannerMessage,
-        hasAccessToReports,
-        hasAccessToUserManagement,
-        hasAccessToNewBichard
+        hasAccessTo
       }
     }
   }
@@ -138,9 +133,7 @@ interface Props {
   pageNumber: number
   totalUsers: number
   bannerMessage?: string
-  hasAccessToReports: boolean
-  hasAccessToUserManagement: boolean
-  hasAccessToNewBichard: boolean
+  hasAccessTo: UserServiceAccess
 }
 
 const tableHeaders: TableHeaders = [
@@ -158,9 +151,7 @@ const Users = ({
   pageNumber,
   totalUsers,
   bannerMessage,
-  hasAccessToReports,
-  hasAccessToUserManagement,
-  hasAccessToNewBichard
+  hasAccessTo
 }: Props) => {
   const nextPage = addQueryParams("/users", {
     filter: previousFilter,
@@ -195,12 +186,7 @@ const Users = ({
       <Head>
         <title>{"Users"}</title>
       </Head>
-      <Layout
-        user={currentUser}
-        hasAccessToReports={hasAccessToReports}
-        hasAccessToUserManagement={hasAccessToUserManagement}
-        hasAccessToNewBichard={hasAccessToNewBichard}
-      >
+      <Layout user={currentUser} hasAccessTo={hasAccessTo}>
         <div className={`${classes["top-padding"]}`}>
           <h1 className="govuk-heading-l">{"Users"}</h1>
 
