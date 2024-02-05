@@ -12,7 +12,10 @@ const getSmtpMailer = (): Emailer =>
     auth: {
       user: config.smtp.user,
       pass: config.smtp.password
-    }
+    },
+    // Enable verbose logging to diagnose delivery issue
+    logger: true,
+    debug: true
   })
 
 const getConsoleMailer = (): Emailer => ({
