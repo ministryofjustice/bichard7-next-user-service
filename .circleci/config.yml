@@ -180,7 +180,9 @@ jobs:
       - fetch_images:
           IMAGES: nodejs-20-2023
       - clone_dependencies
-      - run: npm i
+      - run:
+          name: Install dependencies for bichard7-next-tests
+          command: npm i
       - run: make build
       - start_bichard7_legacy
       - run_test_chunk:

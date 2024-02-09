@@ -13,14 +13,13 @@ COPY ./scripts/ ./scripts/
 COPY ./public/ ./public/
 
 RUN yum groupinstall -y "Development Tools" && \
-    npm install && \
+    npm ci --production && \
     npm run install:assets
 
 COPY . ./
 
 ENV NEXT_TELEMETRY_DISABLED=1
 RUN npm run build
-RUN npm ci --production
 
 # Run user-service app
 
