@@ -19,7 +19,7 @@
     "test:integration": "jest --testPathPattern=\"integration\" --runInBand",
     "test:ui": "./scripts/run-test-ui.sh",
     "update-deps": "ncu -u && npm install",
-    "prepare": "husky"
+    "prepare": "node_modules/.bin/husky"
   },
   "dependencies": {
     "@ministryofjustice/frontend": "^2.1.0",
