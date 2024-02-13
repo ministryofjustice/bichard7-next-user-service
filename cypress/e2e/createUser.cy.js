@@ -46,10 +46,10 @@ describe("Creation of new user", () => {
       orgServes: "B organisation"
     })
 
-    cy.get("#visibleForces001").check()
-    cy.get("#visibleForces004").check()
+    cy.get("#visibleForces001").check({ force: true })
+    cy.get("#visibleForces004").check({ force: true })
     cy.get('[data-test="included-triggers"]').click()
-    cy.get("#excludedTriggersTRPR0001").uncheck()
+    cy.get("#excludedTriggersTRPR0001").uncheck({ force: true })
 
     cy.get("button[name=saveAndAddAnother]").click()
     cy.get('[data-test="success-banner_heading"]').should("have.text", "User Buser has been successfully created.")
@@ -68,11 +68,11 @@ describe("Creation of new user", () => {
       orgServes: "B organisation"
     })
 
-    cy.get("#visibleForces001").check()
-    cy.get("#visibleForces004").check()
+    cy.get("#visibleForces001").check({ force: true })
+    cy.get("#visibleForces004").check({ force: true })
 
     cy.get('[data-test="included-triggers"]').click()
-    cy.get("#excludedTriggersTRPR0001").uncheck()
+    cy.get("#excludedTriggersTRPR0001").uncheck({ force: true })
 
     cy.get("button[name=save]").click()
     cy.url().should("contain", "/users")
@@ -94,7 +94,7 @@ describe("Creation of new user", () => {
       orgServes: "B organisation"
     })
 
-    cy.get("#visibleForces001").check()
+    cy.get("#visibleForces001").check({ force: true })
     cy.get("button[name=save]").click()
 
     cy.contains("Buser3")
@@ -136,7 +136,7 @@ describe("Creation of new user", () => {
       orgServes: "B organisation"
     })
 
-    cy.get("#visibleForces001").check()
+    cy.get("#visibleForces001").check({ force: true })
 
     cy.get("button[name=saveAndAddAnother]").click()
     cy.get('[data-test="error-summary"]').contains("Username Bichard01 already exists.")
@@ -188,14 +188,14 @@ describe("Creation of new user", () => {
       orgServes: "B organisation zz"
     })
 
-    cy.get("#visibleForces001").check()
-    cy.get("#visibleForces004").check()
+    cy.get("#visibleForces001").check({ force: true })
+    cy.get("#visibleForces004").check({ force: true })
     cy.get('[data-test="included-triggers"]').click()
-    cy.get("#excludedTriggersTRPR0001").uncheck()
+    cy.get("#excludedTriggersTRPR0001").uncheck({ force: true })
     cy.get('[data-test="checkbox-user-groups"]')
       .find('[data-test="checkbox-multiselect-checkboxes"]')
       .find(`input[name="B7UserManager_grp"]`)
-      .check()
+      .check({ force: true })
     cy.get("button[name=save]").click()
 
     cy.task("selectFromUsersGroupsTable").then((usersGroups) => {
@@ -226,14 +226,14 @@ describe("Creation of new user", () => {
       orgServes: "B organisation zz"
     })
 
-    cy.get("#visibleForces001").check()
-    cy.get("#visibleForces004").check()
+    cy.get("#visibleForces001").check({ force: true })
+    cy.get("#visibleForces004").check({ force: true })
     cy.get('[data-test="included-triggers"]').click()
-    cy.get("#excludedTriggersTRPR0001").uncheck()
+    cy.get("#excludedTriggersTRPR0001").uncheck({ force: true })
     cy.get('[data-test="checkbox-user-groups"]')
       .find('[data-test="checkbox-multiselect-checkboxes"]')
       .find(`input[name="B7GeneralHandler_grp"]`)
-      .check()
+      .check({ force: true })
     cy.get("button[name=save]").click()
 
     cy.task("selectFromUsersGroupsTable").then((usersGroups) => {
@@ -264,11 +264,11 @@ describe("Creation of new user", () => {
       orgServes: "B organisation"
     })
 
-    cy.get("#visibleForces001").check()
-    cy.get("#visibleForces004").check()
+    cy.get("#visibleForces001").check({ force: true })
+    cy.get("#visibleForces004").check({ force: true })
 
     cy.get('[data-test="included-triggers"]').click()
-    cy.get("#excludedTriggersTRPR0001").uncheck()
+    cy.get("#excludedTriggersTRPR0001").uncheck({ force: true })
 
     cy.get("button[name=save]").click()
 
@@ -295,11 +295,11 @@ describe("Creation of new user", () => {
       orgServes: "B organisation"
     })
 
-    cy.get("#visibleForces001").check()
-    cy.get("#visibleForces004").check()
+    cy.get("#visibleForces001").check({ force: true })
+    cy.get("#visibleForces004").check({ force: true })
 
     cy.get('[data-test="included-triggers"]').click()
-    cy.get("#excludedTriggersTRPR0001").uncheck()
+    cy.get("#excludedTriggersTRPR0001").uncheck({ force: true })
 
     cy.get("button[name=save]").click()
 
