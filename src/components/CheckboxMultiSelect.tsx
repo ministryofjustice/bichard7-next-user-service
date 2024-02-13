@@ -1,4 +1,3 @@
-import React from "react"
 import { Fieldset } from "./Fieldset"
 
 interface Props {
@@ -80,7 +79,11 @@ const CheckboxMultiSelect = ({
               defaultChecked={isSelectedOption(selectedOptions, group)}
             />
 
-            <label data-test={nameMappingFn(group)} className="govuk-label govuk-checkboxes__label" htmlFor={group.id}>
+            <label
+              data-test={nameMappingFn(group)}
+              className="govuk-label govuk-checkboxes__label"
+              htmlFor={idMappingFn(group)}
+            >
               {displayValueMappingFn(group)}
             </label>
           </div>
