@@ -13,7 +13,7 @@ COPY ./scripts/ ./scripts/
 COPY ./public/ ./public/
 
 RUN yum groupinstall -y "Development Tools" && \
-    npm i && \
+    npm install && \
     npm run install:assets
 
 COPY . ./

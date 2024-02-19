@@ -182,7 +182,7 @@ jobs:
       - clone_dependencies
       - run:
           name: Install dependencies for bichard7-next-tests
-          command: npm i
+          command: npm install
       - run: make build
       - start_bichard7_legacy
       - run_test_chunk:
