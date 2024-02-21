@@ -67,8 +67,7 @@ commands:
       - build_audit_logging
       - run:
           name: Start bichard7 legacy
-          working_directory: ~/bichard7-next-core
-          command: SKIP_IMAGES=user-service npm run all-legacy
+          command: bash ./scripts/run-infrastructure.sh
 
   start_services:
     parameters:
