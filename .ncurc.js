@@ -1,7 +1,7 @@
-const pinned = []
+const pinned = ["@typescript-eslint/eslint-plugin", "@typescript-eslint/parser"]
 const ignored = []
 const skipped = [
-  /*{ package: "next", version: "13.4.13" }*/
+  /* { package: "next", version: "13.4.13" } */
 ]
 
 module.exports = {
@@ -16,9 +16,10 @@ module.exports = {
 
   filterResults: (pkg, { upgradedVersion }) => {
     if (ignored.some((ignore) => ignore.package === pkg)) {
-      return
-    } else if (skipped.some((skip) => skip.package === pkg && skip.version === upgradedVersion)) {
-      return
+      return false
+    }
+    if (skipped.some((skip) => skip.package === pkg && skip.version === upgradedVersion)) {
+      return false
     }
     return true
   }
