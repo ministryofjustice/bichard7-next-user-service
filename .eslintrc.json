@@ -109,6 +109,12 @@
         "no-console": "off",
         "no-unused-expressions": "off"
       }
+    },
+    {
+      "files": [".ncurc.js"],
+      "rules": {
+        "no-console": "off"
+      }
     }
   ]
 }
