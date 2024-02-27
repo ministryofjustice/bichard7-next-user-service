@@ -1,8 +1,6 @@
 const pinned = ["@typescript-eslint/eslint-plugin", "@typescript-eslint/parser"]
 const ignored = []
-const skipped = [
-  /* { package: "next", version: "13.4.13" } */
-]
+const skipped = []
 
 module.exports = {
   target: (pkg) => {
