@@ -41,7 +41,7 @@ const NavBar: React.FC<NavBarProps> = ({ hasAccessToUserManagement, hasAccessToR
               <NavItem name={"Case list"} link={"/bichard/"} />
               {hasAccessToReports && <NavItem name={"Reports"} link={"/bichard-ui/ReturnToReportIndex"} />}
               {hasAccessToUserManagement && <NavItem name={"User management"} link={"/users/users/"} />}
-              <NavItem name={"Help"} link={"/help/"} />
+              <NavItem name={"Help"} link={"/help/"} newTab />
             </ul>
           </nav>
         </div>
