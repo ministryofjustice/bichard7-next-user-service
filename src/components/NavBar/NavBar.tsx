@@ -4,6 +4,7 @@ import useCustomStyles from "../../styles/useCustomStyles"
 interface NavItemProps {
   name: string
   link: string
+  newTab?: boolean
 }
 
 interface NavBarProps {
@@ -11,13 +12,18 @@ interface NavBarProps {
   hasAccessToReports: boolean
 }
 
-const NavItem: React.FC<NavItemProps> = ({ name, link }: NavItemProps) => {
+const NavItem: React.FC<NavItemProps> = ({ name, link, newTab }: NavItemProps) => {
   const { basePath } = useRouter()
   const ariaCurrent = link === basePath + "/users/" ? true : undefined
 
   return (
     <li className="moj-primary-navigation__item">
-      <a aria-current={ariaCurrent} className="moj-primary-navigation__link" href={link}>
+      <a
+        aria-current={ariaCurrent}
+        className="moj-primary-navigation__link"
+        href={link}
+        target={newTab ? "_blank" : "_self"}
+      >
         {name}
       </a>
     </li>
