@@ -3,5 +3,4 @@ export default interface Argon2Config {
   memoryCost: number
   parallelism: number
   timeCost: number
-  salt: number
 }
