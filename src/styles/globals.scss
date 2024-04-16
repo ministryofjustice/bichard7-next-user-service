@@ -1,6 +1,11 @@
 $govuk-assets-path: "/users/";
+$moj-assets-path: "/bichard/moj_assets/";
 
-@import "~govuk-frontend/govuk/all";
+@import "node_modules/govuk-frontend/dist/govuk/all";
+@import "node_modules/@ministryofjustice/frontend/moj/all";
+@import "page";
+@import "form";
+@import "components";
 
 .align-right {
   margin-left: auto;

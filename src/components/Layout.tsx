@@ -1,12 +1,17 @@
 import Footer from "components/Footer"
 import Header from "components/Header"
+import { addBasePath } from "next/dist/client/add-base-path"
 import { ReactNode } from "react"
 import User from "types/User"
-import { addBasePath } from "next/dist/client/add-base-path"
+import { UserServiceAccess } from "useCases/getUserServiceAccess"
+import NavBar from "./NavBar"
+import PageTemplate from "./PageTemplate"
+import PhaseBanner from "./PhaseBanner"
 
 interface Props {
   children: ReactNode
   user?: Partial<User>
+  hasAccessTo?: UserServiceAccess
 }
 
 /* eslint-disable jsx-a11y/alt-text, @next/next/no-img-element */
@@ -19,16 +24,22 @@ const FakeAssetForNoJsStatsGathering = () => (
 const ScreenSizeStats = () => <script src={addBasePath("/js/grabScreenSize.js")} async />
 
 /* eslint-enable jsx-a11y/alt-text, @next/next/no-img-element */
-const Layout = ({ children, user }: Props) => (
+const Layout = ({ children, user, hasAccessTo }: Props) => (
   <>
     <FakeAssetForNoJsStatsGathering />
-    <Header serviceName="Ministry of Justice" user={user} />
+    <Header serviceName="Bichard7" userName={user?.username ?? ""} organisationName={"Ministry of Justice"} />
+    {hasAccessTo && hasAccessTo.hasAccessToNewBichard ? (
+      <NavBar
+        hasAccessToReports={hasAccessTo.hasAccessToReports ?? false}
+        hasAccessToUserManagement={hasAccessTo.hasAccessToUserManagement ?? false}
+      />
+    ) : undefined}
 
-    <div className="govuk-width-container">
-      <main className="govuk-main-wrapper" role="main">
-        {children}
-      </main>
-    </div>
+    <PageTemplate>
+      <PhaseBanner phase={"Beta"} />
+
+      {children}
+    </PageTemplate>
 
     <Footer />
     <ScreenSizeStats />

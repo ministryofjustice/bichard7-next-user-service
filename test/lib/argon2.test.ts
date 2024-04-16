@@ -53,7 +53,7 @@ it("should return null when argon2 hash length parameter is set incorrectly", as
 })
 
 it("should return null when argon2 salt length parameter is set incorrectly", async () => {
-  const hash = await hashPassword("This is a dummy password 5", { saltLength: 0 })
+  const hash = await hashPassword("This is a dummy password 5", { salt: Buffer.alloc(0) })
 
   expect(hash).toBeNull()
 })

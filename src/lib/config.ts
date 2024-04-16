@@ -50,7 +50,6 @@ const getConfig = (): UserServiceConfig => ({
     hashLength: 32,
     memoryCost: 15360,
     parallelism: 1,
-    saltLength: 16,
     timeCost: 2
   },
   auditLogApiKey: process.env.AUDIT_LOG_API_KEY,
