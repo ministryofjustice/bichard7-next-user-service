@@ -1,4 +1,4 @@
-const pinned = []
+const pinned = ["eslint", "eslint-plugin", "@typescript-eslint/eslint-plugin", "@typescript-eslint/parser", "eslint-config-airbnb-typescript"]
 const ignored = []
 const skipped = []
 
