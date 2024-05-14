@@ -273,8 +273,6 @@ const handleGet = (
     const notYourEmailAddressUrl = getNotYourEmailLink(query)
 
     if (emailAddress) {
-      logger.info(emailAddress)
-
       return {
         props: {
           csrfToken,
