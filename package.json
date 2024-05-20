@@ -52,7 +52,7 @@
     "react-jss": "^10.10.0",
     "styled-components": "^6.1.11",
     "uuid": "^9.0.1",
-    "word-list": "^4.0.0"
+    "word-list": "^3.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.24.5",
