@@ -107,13 +107,31 @@ exports[`should render the component and match the snapshot 1`] = `
           <h1
             class="govuk-heading-xl"
           >
-            Sorry, there is a problem with the service
+            Sorry, there is a problem with Bichard
           </h1>
           <p
             class="govuk-body"
           >
-            Try again later.
+            Please try the following
           </p>
+          <ol>
+            <li>
+              <a
+                class="govuk-link"
+                href="#"
+              >
+                Click here to try the previous page again
+              </a>
+            </li>
+            <li>
+              <a
+                class="govuk-link"
+                href="/"
+              >
+                Click here to go to the main login page
+              </a>
+            </li>
+          </ol>
           <p
             class="govuk-body"
           >
@@ -123,7 +141,7 @@ exports[`should render the component and match the snapshot 1`] = `
             >
               Contact support
             </a>
-             if you have repeated problems with the service.
+             if you have repeated problems with Bichard.
           </p>
         </div>
       </div>
