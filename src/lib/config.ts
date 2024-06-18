@@ -31,7 +31,8 @@ export interface UserServiceConfig {
   rememberEmailAddressCookieName: string
   rememberEmailAddressMaxAgeInMinutes: number
   serviceMessagesStaleDays: number
-  serviceNowUrl: string
+  supportEmail: string
+  supportCJSMEmail: string
   suggestedPasswordNumWords: number
   suggestedPasswordMinWordLength: number
   suggestedPasswordMaxWordLength: number
@@ -69,7 +70,8 @@ const getConfig = (): UserServiceConfig => ({
   rememberEmailAddressCookieName: "LOGIN_EMAIL",
   rememberEmailAddressMaxAgeInMinutes: parseInt(process.env.REMEMBER_EMAIL_MAX_AGE ?? "1440", 10),
   serviceMessagesStaleDays: parseInt(process.env.SERVICE_MESSAGES_STALE_DAYS ?? "30", 10),
-  serviceNowUrl: "https://mojprod.service-now.com/",
+  supportEmail: process.env.SUPPORT_EMAIL ?? "moj-bichard7@madetech.com",
+  supportCJSMEmail: process.env.SUPPORT_CJSM_EMAIL ?? "moj-bichard7@madetech.cjsm.net",
   suggestedPasswordNumWords: 3,
   suggestedPasswordMinWordLength: 3,
   suggestedPasswordMaxWordLength: 8,

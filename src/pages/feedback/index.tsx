@@ -99,7 +99,7 @@ const ShareFeedback = ({ csrfToken, currentUser, errorMessage, successMessage }:
                 {"Please keep in mind that if you are experiencing any issues, you should either check our "}
                 <ContactLink>{"FAQ page"}</ContactLink>
                 {" or "}
-                <Link href={config.serviceNowUrl}>{"raise a ticket with the service desk"}</Link>
+                <Link href={`mailto:${config.supportEmail}`}>{"contact support"}</Link>
                 {". Any issues raised via this page will not be handled."}
               </Paragraph>
             </div>
