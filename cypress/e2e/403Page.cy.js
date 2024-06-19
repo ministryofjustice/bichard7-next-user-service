@@ -8,7 +8,7 @@ describe("403 - Access denied", () => {
     cy.contains("If you believe you have permission to access this page, you can contact support to report this issue.")
   })
 
-  it("should respond with the correct HTTP status code (404)", () => {
+  it("should respond with the correct HTTP status code (403)", () => {
     cy.request({
       failOnStatusCode: false,
       url: "/403"

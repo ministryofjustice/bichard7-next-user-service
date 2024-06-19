@@ -1,9 +1,11 @@
 import Accordion from "components/Accordion"
 import AccordionItem from "components/AccordionItem"
-import ServiceMessages from "components/ServiceMessages"
+import GridColumn from "components/GridColumn"
+import GridRow from "components/GridRow"
 import Layout from "components/Layout"
 import Link from "components/Link"
 import Paragraph from "components/Paragraph"
+import ServiceMessages from "components/ServiceMessages"
 import config from "lib/config"
 import getConnection from "lib/getConnection"
 import Head from "next/head"
@@ -12,9 +14,6 @@ import ServiceMessage from "types/ServiceMessage"
 import getServiceMessages from "useCases/getServiceMessages"
 import logger from "utils/logger"
 import faqJSON from "../faqs.json"
-import React from "react"
-import GridColumn from "components/GridColumn"
-import GridRow from "components/GridRow"
 
 interface faqJson {
   lastUpdated: string
@@ -63,11 +62,6 @@ const faq = ({ faqJson, serviceMessages }: Props) => {
               {"Frequently Asked Questions"}
             </h1>
 
-            <div data-test="faq_last-updated" className="govuk-hint">
-              {"Last Updated: "}
-              {faqJson.lastUpdated}
-            </div>
-
             <Paragraph>
               {
                 "Before contacting support, please check to see if your query is already answered by the information below."
@@ -85,7 +79,7 @@ const faq = ({ faqJson, serviceMessages }: Props) => {
             <h3 className="govuk-heading-m">{"Still need help?"}</h3>
             <Paragraph>
               {"If your query isn't answered by the above information, then you can "}
-              <Link href={config.serviceNowUrl}>{"raise a ticket with the service desk"}</Link>
+              <Link href={`mailto:${config.supportEmail}`}>{"contact the Bichard team for support"}</Link>
               {"."}
             </Paragraph>
           </GridColumn>

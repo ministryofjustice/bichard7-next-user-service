@@ -10,9 +10,20 @@ interface Props {
   id?: string
   rel?: string
   title?: string
+  onClick?: (e: React.MouseEvent<HTMLElement>) => void
 }
 
-const Link = ({ children, basePath = true, className, "data-test": dataTest, href, id, rel, title }: Props) => (
+const Link = ({
+  children,
+  basePath = true,
+  className,
+  "data-test": dataTest,
+  href,
+  id,
+  rel,
+  title,
+  onClick
+}: Props) => (
   <a
     data-test={dataTest}
     href={basePath ? addBasePath(href) : href}
@@ -20,6 +31,7 @@ const Link = ({ children, basePath = true, className, "data-test": dataTest, hre
     id={id}
     rel={rel}
     title={title}
+    onClick={onClick}
   >
     {children}
   </a>

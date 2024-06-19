@@ -4,7 +4,7 @@ import PromiseResult from "types/PromiseResult"
 import logger from "utils/logger"
 
 const postFeedback = (feedback: string, currentUserEmail?: string): PromiseResult<void> => {
-  const sendFeedbackTo = "kayleigh.derricutt@madetech.cjsm.net" // sorry Kayleigh :(
+  const sendFeedbackTo = config.supportCJSMEmail
 
   const emailer = getEmailer(sendFeedbackTo)
   const fromUser = currentUserEmail ? `User ${currentUserEmail}` : "An unknown user"
