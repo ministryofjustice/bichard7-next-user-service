@@ -2,7 +2,7 @@ ARG BUILD_IMAGE="nginx-nodejs-20-2023-supervisord"
 
 # Build user-service app
 
-FROM ${BUILD_IMAGE} as app_builder
+FROM ${BUILD_IMAGE} AS app_builder
 
 LABEL maintainer="CJSE"
 
@@ -23,7 +23,7 @@ RUN npm run build
 
 # Run user-service app
 
-FROM ${BUILD_IMAGE} as runner
+FROM ${BUILD_IMAGE} AS runner
 
 RUN useradd nextjs && \
     groupadd nodejs && \
