@@ -127,6 +127,10 @@ const useCustomStyles = createUseStyles({
   "table-column-header-cell": {
     height: "100%",
     verticalAlign: "bottom"
+  },
+
+  "service-message": {
+    "white-space": "pre-wrap"
   }
 })
 
