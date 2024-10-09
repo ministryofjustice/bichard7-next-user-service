@@ -55,11 +55,11 @@ commands:
     steps:
       - run:
           name: Run test chunk
-          working_directory: ~/bichard7-next-tests
+          working_directory: ~/bichard7-next-core
           command: |
             CHUNK=$(circleci tests glob "features/**/*.feature" | circleci tests split --split-by=timings) \
             NEXTUI=<<parameters.NEXTUI>> \
-            MESSAGE_ENTRY_POINT=mq npm run test:chunk
+            MESSAGE_ENTRY_POINT=mq npm run test:chunk -w packages/e2e-test
 
   ################### Services
   start_bichard7_legacy:
@@ -171,19 +171,18 @@ jobs:
       WORKSPACE: local-next
       AUTH_TYPE: user-service
     steps:
-      - run:
-          name: Clone bichard7-next-tests
-          command: git clone --depth 1 https://github.com/ministryofjustice/bichard7-next-tests.git ~/bichard7-next-tests
-      - node/install-packages:
-          app-dir: ~/bichard7-next-tests
-          cache-path: ~/bichard7-next-tests/node_modules
       - install
       - clone_dependencies
+      - run:
+          name: Install dependencies for Core
+          command: npm install
+          working_directory: ~/bichard7-next-core
+      - run:
+          name: Build Core
+          command: npm run build
+          working_directory: ~/bichard7-next-core
       - fetch_images:
           IMAGES: nodejs-20-2023
-      - run:
-          name: Install dependencies for bichard7-next-tests
-          command: npm install
       - run: make build
       - start_bichard7_legacy
       - run_test_chunk:
