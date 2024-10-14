@@ -1,6 +1,7 @@
 const pinned = [
   "eslint",
   "eslint-plugin",
+  "eslint-plugin-cypress",
   "@typescript-eslint/eslint-plugin",
   "@typescript-eslint/parser",
   "eslint-config-airbnb-typescript",
