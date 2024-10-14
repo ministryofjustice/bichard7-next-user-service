@@ -1,5 +1,5 @@
-import parseCookieToken from "middleware/withCsrf/parseCookieToken"
 import { IncomingMessage } from "http"
+import parseCookieToken from "middleware/withCsrf/parseCookieToken"
 import { isError } from "types/Result"
 
 it("should return cookie token when valid CSRF cookie exists", () => {
@@ -41,7 +41,7 @@ it("should return error when CSRF cookie is invalid", () => {
   expect(isError(result)).toBe(true)
 
   const actualError = <Error>result
-  expect(actualError.message).toBe("Signed cookie string must be provided.")
+  expect(actualError.message).toBe("Invalid cookie token format.")
 })
 
 it("should return error when CSRF cookie has invalid signature", () => {
