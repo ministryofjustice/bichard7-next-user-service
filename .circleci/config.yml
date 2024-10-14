@@ -55,11 +55,11 @@ commands:
     steps:
       - run:
           name: Run test chunk
-          working_directory: ~/bichard7-next-core
+          working_directory: ~/bichard7-next-core/packages/e2e-test
           command: |
             CHUNK=$(circleci tests glob "features/**/*.feature" | circleci tests split --split-by=timings) \
             NEXTUI=<<parameters.NEXTUI>> \
-            MESSAGE_ENTRY_POINT=mq npm run test:chunk -w packages/e2e-test
+            MESSAGE_ENTRY_POINT=mq npm run test:chunk
 
   ################### Services
   start_bichard7_legacy:
