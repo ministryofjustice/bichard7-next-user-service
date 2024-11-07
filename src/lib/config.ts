@@ -86,7 +86,7 @@ const getConfig = (): UserServiceConfig => ({
     tokenName: "CSRFToken",
     cookieSecret: process.env.CSRF_COOKIE_SECRET ?? "OliverTwist1",
     formSecret: process.env.CSRF_FORM_SECRET ?? "OliverTwist2",
-    maximumTokenAgeInSeconds: parseInt(process.env.CSRF_TOKEN_MAX_AGE ?? "600", 10)
+    maximumTokenAgeInSeconds: Number(process.env.CSRF_TOKEN_MAX_AGE ?? "600")
   },
   database: {
     host: process.env.DB_HOST ?? process.env.DB_AUTH_HOST ?? "localhost",
