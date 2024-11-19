@@ -21,13 +21,14 @@ import User from "types/User"
 import getServiceMessages from "useCases/getServiceMessages"
 import getUserManagersForForce from "useCases/getUserManagersForForce"
 import getUserServiceAccess from "useCases/getUserServiceAccess"
+import courtCaseDetailsRedirect from "utils/courtCaseDetailsRedirect"
 import createRedirectResponse from "utils/createRedirectResponse"
 import logger from "utils/logger"
 
 export const getServerSideProps = withMultipleServerSideProps(
   withAuthentication,
   async (context: GetServerSidePropsContext<ParsedUrlQuery>): Promise<GetServerSidePropsResult<Props>> => {
-    const { currentUser, authentication, query } = context as AuthenticationServerSidePropsContext
+    const { currentUser, authentication, query, req } = context as AuthenticationServerSidePropsContext
 
     if (!currentUser || !authentication) {
       return createRedirectResponse("/login")
@@ -52,6 +53,8 @@ export const getServerSideProps = withMultipleServerSideProps(
       logger.error(currentUserManagers)
     }
 
+    const courtCaseDetails = courtCaseDetailsRedirect(req, currentUser)
+
     return {
       props: {
         currentUser,
@@ -63,7 +66,8 @@ export const getServerSideProps = withMultipleServerSideProps(
         hasAccessToNewBichard,
         serviceMessages: JSON.parse(JSON.stringify(serviceMessagesResult.result)),
         pageNumber,
-        totalMessages: serviceMessagesResult.totalElements
+        totalMessages: serviceMessagesResult.totalElements,
+        courtCaseDetails
       }
     }
   }
@@ -78,6 +82,7 @@ interface Props {
   serviceMessages: ServiceMessage[]
   pageNumber: number
   totalMessages: number
+  courtCaseDetails: string
 }
 
 const Home = ({
@@ -88,7 +93,8 @@ const Home = ({
   hasAccessToNewBichard,
   serviceMessages,
   pageNumber,
-  totalMessages
+  totalMessages,
+  courtCaseDetails
 }: Props) => {
   return (
     <>
@@ -134,7 +140,7 @@ const Home = ({
               <>
                 <br />
                 <Link
-                  href={config.newBichardRedirectURL}
+                  href={config.newBichardRedirectURL + courtCaseDetails}
                   basePath={false}
                   className="govuk-button govuk-button--start govuk-!-margin-top-5"
                   id="bichard-link"
