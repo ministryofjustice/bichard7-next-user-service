@@ -468,8 +468,8 @@ const Index = ({
                   name="validationCode"
                   label="Enter the 6 character code from the email"
                   type="text"
-                  autocomplete={false}
                   value={validationCode}
+                  optionalProps={{ autocomplete: "off", "aria-autocomplete": "none" }}
                 />
                 <TextInput name="password" label="Password" type="password" />
                 <RememberForm checked={false} />

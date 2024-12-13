@@ -10,8 +10,8 @@ interface Props {
   readOnly?: boolean
   disabled?: boolean
   mandatory?: boolean
-  autocomplete?: boolean
   value?: string
+  optionalProps?: object
 }
 
 const TextInput = ({
@@ -26,8 +26,8 @@ const TextInput = ({
   disabled = false,
   type = "text",
   value,
-  autocomplete = true,
-  mandatory = false
+  mandatory = false,
+  optionalProps = {}
 }: Props) => {
   const hintElementId = `${name}-hint`
   const errorElementId = `${name}-error`
@@ -62,9 +62,8 @@ const TextInput = ({
         defaultValue={value}
         readOnly={readOnly}
         disabled={disabled}
-        autoComplete={autocomplete ? "on" : "off"}
-        aria-autocomplete={autocomplete ? "both" : "none"}
         aria-describedby={`${hint ? hintElementId : ""} ${hasError ? errorElementId : ""}`}
+        {...optionalProps}
       />
     </div>
   )
