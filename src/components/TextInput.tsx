@@ -11,6 +11,7 @@ interface Props {
   disabled?: boolean
   mandatory?: boolean
   value?: string
+  optionalProps?: object
 }
 
 const TextInput = ({
@@ -25,7 +26,8 @@ const TextInput = ({
   disabled = false,
   type = "text",
   value,
-  mandatory = false
+  mandatory = false,
+  optionalProps = {}
 }: Props) => {
   const hintElementId = `${name}-hint`
   const errorElementId = `${name}-error`
@@ -61,6 +63,7 @@ const TextInput = ({
         readOnly={readOnly}
         disabled={disabled}
         aria-describedby={`${hint ? hintElementId : ""} ${hasError ? errorElementId : ""}`}
+        {...optionalProps}
       />
     </div>
   )
