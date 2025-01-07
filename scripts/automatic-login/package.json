@@ -9,6 +9,6 @@
   "license": "ISC",
   "dependencies": {
     "pg-promise": "^10.11.1",
-    "puppeteer": "^19.2.2"
+    "puppeteer": "^23.11.1"
   }
 }
