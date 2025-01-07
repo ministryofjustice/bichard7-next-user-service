@@ -5,7 +5,11 @@ const pinned = [
   "@typescript-eslint/eslint-plugin",
   "@typescript-eslint/parser",
   "eslint-config-airbnb-typescript",
-  "word-list"
+  "word-list",
+  "react",
+  "react-dom",
+  "@types/react",
+  "@types/react-dom"
 ]
 const ignored = []
 const skipped = []
