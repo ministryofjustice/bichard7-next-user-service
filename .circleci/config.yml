@@ -179,7 +179,7 @@ jobs:
           working_directory: ~/bichard7-next-core
       - run:
           name: Build Core
-          command: npm run build
+          command: npm run build:core
           working_directory: ~/bichard7-next-core
       - fetch_images:
           IMAGES: nodejs-20-2023
