@@ -1,3 +1,4 @@
+import type { StringValue } from "ms"
 import Argon2Config from "types/Argon2Config"
 import CsrfConfig from "types/CsrfConfig"
 import DatabaseConfig from "./DatabaseConfig"
@@ -37,7 +38,7 @@ export interface UserServiceConfig {
   suggestedPasswordMinWordLength: number
   suggestedPasswordMaxWordLength: number
   smtp: SmtpConfig
-  tokenExpiresIn: string
+  tokenExpiresIn: StringValue
   tokenIssuer: string
   tokenSecret: string
   maxPasswordFailedAttempts: number
@@ -75,7 +76,7 @@ const getConfig = (): UserServiceConfig => ({
   suggestedPasswordNumWords: 3,
   suggestedPasswordMinWordLength: 3,
   suggestedPasswordMaxWordLength: 8,
-  tokenExpiresIn: process.env.TOKEN_EXPIRES_IN ?? "10 minutes",
+  tokenExpiresIn: (process.env.TOKEN_EXPIRES_IN as StringValue) ?? "10 minutes",
   tokenIssuer: process.env.TOKEN_ISSUER ?? "Bichard",
   tokenSecret: process.env.TOKEN_SECRET ?? "OliverTwist",
   maxPasswordFailedAttempts: 3,
