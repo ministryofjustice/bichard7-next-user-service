@@ -21,6 +21,8 @@ import generateRandomPassword from "useCases/generateRandomPassword"
 import createRedirectResponse from "utils/createRedirectResponse"
 import { isPost } from "utils/http"
 import logger from "utils/logger"
+import GridColumn from "components/GridColumn"
+import GridRow from "components/GridRow"
 
 export const getServerSideProps = withMultipleServerSideProps(
   withAuthentication,
@@ -140,59 +142,66 @@ const ChangePassword = ({
         <title>{"Change password"}</title>
       </Head>
       <Layout user={currentUser}>
-        <h3 data-test="check-email" className="govuk-heading-xl">
-          {"Change your password"}
-        </h3>
-        <Form method="post" csrfToken={csrfToken}>
-          <ErrorSummary
-            title="There is a problem"
-            show={
-              currentPasswordMissing ||
-              newPasswordMissing ||
-              invalidCurrentPassword ||
-              passwordsMismatch ||
-              !!errorMessage
-            }
-          >
-            <ErrorSummaryList
-              items={[
-                { id: "currentPassword", error: currentPasswordMissing && "Current password field is mandatory." },
-                { id: "currentPassword", error: invalidCurrentPassword && "Provided current password is not valid." },
-                { id: "newPassword", error: newPasswordMissing && "New password field is mandatory." },
-                { id: "newPassword", error: passwordsMismatch && "Provided new passwords do not match." },
-                { id: "newPassword", error: errorMessage }
-              ]}
-            />
-          </ErrorSummary>
+        <GridRow>
+          <GridColumn width="two-thirds">
+            <h3 data-test="check-email" className="govuk-heading-xl">
+              {"Change your password"}
+            </h3>
+            <Form method="post" csrfToken={csrfToken}>
+              <ErrorSummary
+                title="There is a problem"
+                show={
+                  currentPasswordMissing ||
+                  newPasswordMissing ||
+                  invalidCurrentPassword ||
+                  passwordsMismatch ||
+                  !!errorMessage
+                }
+              >
+                <ErrorSummaryList
+                  items={[
+                    { id: "currentPassword", error: currentPasswordMissing && "Current password field is mandatory." },
+                    {
+                      id: "currentPassword",
+                      error: invalidCurrentPassword && "Provided current password is not valid."
+                    },
+                    { id: "newPassword", error: newPasswordMissing && "New password field is mandatory." },
+                    { id: "newPassword", error: passwordsMismatch && "Provided new passwords do not match." },
+                    { id: "newPassword", error: errorMessage }
+                  ]}
+                />
+              </ErrorSummary>
 
-          <TextInput
-            id="currentPassword"
-            name="currentPassword"
-            label="Current Password"
-            type="password"
-            width="20"
-            error={currentPasswordError}
-          />
-          <TextInput
-            id="newPassword"
-            name="newPassword"
-            label="New Password"
-            type="password"
-            width="20"
-            error={newPasswordError}
-          />
-          <TextInput
-            id="confirmPassword"
-            name="confirmPassword"
-            label="Confirm Password"
-            type="password"
-            width="20"
-            error={passwordsMismatch && passwordMismatchError}
-          />
+              <TextInput
+                id="currentPassword"
+                name="currentPassword"
+                label="Current Password"
+                type="password"
+                width="20"
+                error={currentPasswordError}
+              />
+              <TextInput
+                id="newPassword"
+                name="newPassword"
+                label="New Password"
+                type="password"
+                width="20"
+                error={newPasswordError}
+              />
+              <TextInput
+                id="confirmPassword"
+                name="confirmPassword"
+                label="Confirm Password"
+                type="password"
+                width="20"
+                error={passwordsMismatch && passwordMismatchError}
+              />
 
-          <Button noDoubleClick>{"Update password"}</Button>
-          <SuggestPassword suggestedPassword={suggestedPassword} suggestedPasswordUrl={suggestedPasswordUrl} />
-        </Form>
+              <Button noDoubleClick>{"Update password"}</Button>
+              <SuggestPassword suggestedPassword={suggestedPassword} suggestedPasswordUrl={suggestedPasswordUrl} />
+            </Form>
+          </GridColumn>
+        </GridRow>
       </Layout>
     </>
   )
