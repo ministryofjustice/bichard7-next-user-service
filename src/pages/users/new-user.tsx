@@ -29,6 +29,8 @@ import isValidUsername from "utils/isValidUsername"
 import logger from "utils/logger"
 import isUserWithinGroup from "useCases/isUserWithinGroup"
 import getUserHierarchyGroups from "useCases/getUserHierarchyGroups"
+import GridRow from "../../components/GridRow"
+import GridColumn from "../../components/GridColumn"
 
 export const getServerSideProps = withMultipleServerSideProps(
   withAuthentication,
@@ -259,50 +261,54 @@ const NewUser = ({
       <title>{"New User"}</title>
     </Head>
     <Layout user={currentUser}>
-      <h1 className="govuk-heading-l">{"Add a new user"}</h1>
+      <GridRow>
+        <GridColumn width="two-thirds">
+          <h1 className="govuk-heading-l">{"Add a new user"}</h1>
 
-      <ErrorSummary title="There is a problem" show={!isFormValid || (!isSuccess && !!message)}>
-        <ErrorSummaryList
-          items={[
-            { id: "username", error: usernameError },
-            { id: "forenames", error: forenamesError },
-            { id: "surname", error: surnameError },
-            { id: "emailAddress", error: emailError },
-            { id: "", error: message }
-          ]}
-        />
-      </ErrorSummary>
+          <ErrorSummary title="There is a problem" show={!isFormValid || (!isSuccess && !!message)}>
+            <ErrorSummaryList
+              items={[
+                { id: "username", error: usernameError },
+                { id: "forenames", error: forenamesError },
+                { id: "surname", error: surnameError },
+                { id: "emailAddress", error: emailError },
+                { id: "", error: message }
+              ]}
+            />
+          </ErrorSummary>
 
-      {isSuccess && message && <SuccessBanner>{message}</SuccessBanner>}
+          {isSuccess && message && <SuccessBanner>{message}</SuccessBanner>}
 
-      <Form method="post" csrfToken={csrfToken}>
-        <UserForm
-          // eslint-disable-next-line react/jsx-props-no-spreading
-          {...userDetails}
-          usernameError={usernameError}
-          forenamesError={forenamesError}
-          emailError={emailError}
-          surnameError={surnameError}
-          forcesError={forcesError}
-          allGroups={userGroups}
-          endorsedBy={currentUser?.username}
-          userGroups={userDetails.groups}
-          currentUserVisibleForces={currentUserVisibleForces}
-          isCurrentSuperUser={isCurrentSuperUser}
-        />
-        <ButtonGroup>
-          <Button data-test="new-user_save" name="save" value="save" noDoubleClick>
-            {"Save"}
-          </Button>
-          <Button variant="secondary" name="saveAndAddAnother" value="saveAndAddAnother" noDoubleClick>
-            {"Save and add another"}
-          </Button>
-        </ButtonGroup>
-      </Form>
+          <Form method="post" csrfToken={csrfToken}>
+            <UserForm
+              // eslint-disable-next-line react/jsx-props-no-spreading
+              {...userDetails}
+              usernameError={usernameError}
+              forenamesError={forenamesError}
+              emailError={emailError}
+              surnameError={surnameError}
+              forcesError={forcesError}
+              allGroups={userGroups}
+              endorsedBy={currentUser?.username}
+              userGroups={userDetails.groups}
+              currentUserVisibleForces={currentUserVisibleForces}
+              isCurrentSuperUser={isCurrentSuperUser}
+            />
+            <ButtonGroup>
+              <Button data-test="new-user_save" name="save" value="save" noDoubleClick>
+                {"Save"}
+              </Button>
+              <Button variant="secondary" name="saveAndAddAnother" value="saveAndAddAnother" noDoubleClick>
+                {"Save and add another"}
+              </Button>
+            </ButtonGroup>
+          </Form>
 
-      <Link href="/users" className="govuk-back-link">
-        {"Back"}
-      </Link>
+          <Link href="/users" className="govuk-back-link">
+            {"Back"}
+          </Link>
+        </GridColumn>
+      </GridRow>
     </Layout>
   </>
 )
