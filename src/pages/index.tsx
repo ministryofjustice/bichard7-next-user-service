@@ -3,6 +3,7 @@ import GridColumn from "components/GridColumn"
 import GridRow from "components/GridRow"
 import Layout from "components/Layout"
 import Link from "components/Link"
+import NotificationBox from "components/NotificationBox"
 import Pagination from "components/Pagination"
 import Paragraph from "components/Paragraph"
 import ServiceMessages from "components/ServiceMessages"
@@ -201,6 +202,8 @@ const Home = ({
             <h2 className="govuk-heading-m">{"Latest service messages"}</h2>
 
             <ServiceMessages messages={serviceMessages} />
+
+            <NotificationBox />
 
             <Pagination
               pageNumber={pageNumber}
