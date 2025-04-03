@@ -32,7 +32,7 @@ const Header: React.FC<HeaderProps> = ({ organisationName, serviceName, userName
             <a className="moj-header__link moj-header__link--organisation-name" href="/">
               {organisationName}
             </a>
-            <a style={{ paddingLeft: "55px" }} className="moj-header__link moj-header__link--service-name" href="/">
+            <a style={{ marginLeft: "55px" }} className="moj-header__link moj-header__link--service-name" href="/">
               {serviceName}
             </a>
           </div>
