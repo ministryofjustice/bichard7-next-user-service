@@ -32,7 +32,9 @@ const NotificationBox = () => (
         <h2 className="moj-alert__heading">{"There are new features available on new Bichard"}</h2>
         <Paragraph>
           {"View "}
-          <Link href={"/feedback"}>{"the help guidance for new features"}</Link>
+          <Link basePath={false} href={"/help/"}>
+            {"the help guidance for new features"}
+          </Link>
           {"."}
         </Paragraph>
       </div>
