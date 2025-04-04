@@ -1,12 +1,16 @@
-import Paragraph from "./Paragraph"
-import Link from "components/Link"
+import { ReactNode } from "react"
 
-const NotificationBox = () => (
+interface Props {
+  heading: string
+  children?: ReactNode
+}
+
+const NotificationBanner = ({ heading, children }: Props) => (
   <>
     <div
-      role="region"
       className="moj-alert moj-alert--information moj-alert--with-heading"
-      aria-label="information: There are new features available on new Bichard"
+      role="region"
+      aria-labelledby="moj-alert-heading"
       data-module="moj-alert"
     >
       <div>
@@ -29,17 +33,13 @@ const NotificationBox = () => (
         </svg>
       </div>
       <div className="moj-alert__content">
-        <h2 className="moj-alert__heading">{"There are new features available on new Bichard"}</h2>
-        <Paragraph>
-          {"View "}
-          <Link basePath={false} href={"/help/"}>
-            {"the help guidance for new features"}
-          </Link>
-          {"."}
-        </Paragraph>
+        <h2 className="moj-alert__heading" id="moj-alert-heading">
+          {heading}
+        </h2>
+        {children}
       </div>
     </div>
   </>
 )
 
-export default NotificationBox
+export default NotificationBanner

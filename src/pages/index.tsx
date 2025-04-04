@@ -3,7 +3,7 @@ import GridColumn from "components/GridColumn"
 import GridRow from "components/GridRow"
 import Layout from "components/Layout"
 import Link from "components/Link"
-import NotificationBox from "components/NotificationBox"
+import NotificationBanner from "components/NotificationBanner"
 import Pagination from "components/Pagination"
 import Paragraph from "components/Paragraph"
 import ServiceMessages from "components/ServiceMessages"
@@ -203,8 +203,6 @@ const Home = ({
 
             <ServiceMessages messages={serviceMessages} />
 
-            <NotificationBox />
-
             <Pagination
               pageNumber={pageNumber}
               totalItems={totalMessages}
@@ -212,6 +210,16 @@ const Home = ({
               href="/"
               className="govuk-!-font-size-16"
             />
+
+            <NotificationBanner heading="There are new features available on new Bichard">
+              <Paragraph>
+                {"View "}
+                <Link basePath={false} href={"/help/"}>
+                  {"the help guidance for new features"}
+                </Link>
+                {"."}
+              </Paragraph>
+            </NotificationBanner>
           </GridColumn>
         </GridRow>
       </Layout>
