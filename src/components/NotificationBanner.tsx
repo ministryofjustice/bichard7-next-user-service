@@ -31,6 +31,7 @@ const NotificationBanner = ({ heading, children }: Props) => (
         />
       </svg>
     </div>
+
     <div className="moj-alert__content">
       <h2 className="moj-alert__heading" id="moj-alert-heading">
         {heading}
