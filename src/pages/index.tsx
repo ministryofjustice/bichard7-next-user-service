@@ -3,6 +3,7 @@ import GridColumn from "components/GridColumn"
 import GridRow from "components/GridRow"
 import Layout from "components/Layout"
 import Link from "components/Link"
+import NotificationBanner from "components/NotificationBanner"
 import Pagination from "components/Pagination"
 import Paragraph from "components/Paragraph"
 import ServiceMessages from "components/ServiceMessages"
@@ -209,6 +210,16 @@ const Home = ({
               href="/"
               className="govuk-!-font-size-16"
             />
+
+            <NotificationBanner heading="There are new features available on new Bichard">
+              <Paragraph>
+                {"View "}
+                <Link basePath={false} href={"/help/whats-new"}>
+                  {"the help guidance for new features"}
+                </Link>
+                {"."}
+              </Paragraph>
+            </NotificationBanner>
           </GridColumn>
         </GridRow>
       </Layout>
