@@ -214,7 +214,7 @@ const Home = ({
             <NotificationBanner heading="There are new features available on new Bichard">
               <Paragraph>
                 {"View "}
-                <Link basePath={false} href={"/help/whats-new"}>
+                <Link basePath={false} href={"/help/whats-new/"} target={"_blank"}>
                   {"the help guidance for new features"}
                 </Link>
                 {"."}
