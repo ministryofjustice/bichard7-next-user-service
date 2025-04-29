@@ -11,6 +11,7 @@ interface Props {
   rel?: string
   title?: string
   onClick?: (e: React.MouseEvent<HTMLElement>) => void
+  target?: string
 }
 
 const Link = ({
@@ -22,7 +23,8 @@ const Link = ({
   id,
   rel,
   title,
-  onClick
+  onClick,
+  target
 }: Props) => (
   <a
     data-test={dataTest}
@@ -32,6 +34,7 @@ const Link = ({
     rel={rel}
     title={title}
     onClick={onClick}
+    target={target}
   >
     {children}
   </a>
