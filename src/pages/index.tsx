@@ -9,12 +9,14 @@ import Paragraph from "components/Paragraph"
 import ServiceMessages from "components/ServiceMessages"
 import ForceBrowserShareAssets from "components/StatsGathering/ForceBrowserShareAssets"
 import UserManagers from "components/UserManagers"
+import { deleteCookie } from "cookies-next"
 import config from "lib/config"
 import getConnection from "lib/getConnection"
 import { withAuthentication, withMultipleServerSideProps } from "middleware"
 import { GetServerSidePropsContext, GetServerSidePropsResult } from "next"
 import Head from "next/head"
 import { ParsedUrlQuery } from "querystring"
+import { useEffect } from "react"
 import AuthenticationServerSidePropsContext from "types/AuthenticationServerSidePropsContext"
 import { isError } from "types/Result"
 import ServiceMessage from "types/ServiceMessage"
@@ -97,6 +99,10 @@ const Home = ({
   totalMessages,
   courtCaseDetails
 }: Props) => {
+  useEffect(() => {
+    deleteCookie("qa_case_details_404")
+  })
+
   return (
     <>
       <Head>
