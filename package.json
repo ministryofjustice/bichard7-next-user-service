@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "COOKIES_SECURE=false BASE_URL=http://localhost:3000 next dev",
     "build": "next build",
+    "build:docker": "./scripts/build-docker.sh",
     "install:assets": "./scripts/copy-govuk-frontend-assets.sh",
     "install:hooks": "./scripts/install-git-hooks.sh",
     "start": "COOKIES_SECURE=false next start",
@@ -33,6 +34,7 @@
     "classnames": "^2.5.1",
     "cookie": "^1.0.2",
     "cookie-signature": "^1.2.2",
+    "cookies-next": "^5.1.0",
     "crypto-secure-random-digit": "^1.0.10",
     "csrf": "^3.1.0",
     "date-fns": "^4.1.0",

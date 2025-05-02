@@ -4,7 +4,7 @@ describe("Home", () => {
     cy.task("insertIntoUsersTable")
     cy.task("insertIntoUserGroupsTable", {
       email: "bichard01@example.com",
-      groups: ["B7UserManager_grp", "B7AuditLoggingManager_grp", "B7Supervisor_grp"]
+      groups: ["B7UserManager_grp", "B7AuditLoggingManager_grp", "B7Supervisor_grp", "B7NewUI_grp"]
     })
   })
 
@@ -39,6 +39,33 @@ describe("Home", () => {
       cy.wrap(row)
         .get(".govuk-body")
         .contains(`Message ${13 - index}`)
+    })
+  })
+
+  it("should show link to new bichard", () => {
+    cy.login("bichard01@example.com", "password")
+
+    cy.get("a").contains("Access New Bichard").should("have.attr", "href", "/bichard")
+  })
+
+  it("should show link to new bichard case details page with cookie", () => {
+    cy.login("bichard01@example.com", "password")
+
+    cy.setCookie(`qs_case_details_d1413a9b5b148735`, "1", { path: "/" }).then(() => {
+      cy.reload()
+      cy.get("a")
+        .contains("Access New Bichard")
+        .should("have.attr", "href")
+        .and("match", /^\/bichard\/court-cases\/1(\?.*)?$/)
+    })
+  })
+
+  it("should show link to new bichard without case details page with 404 cookie", () => {
+    cy.login("bichard01@example.com", "password")
+
+    cy.setCookie(`qa_case_details_404`, "/bichard/court-cases/733").then(() => {
+      cy.reload()
+      cy.get("a").contains("Access New Bichard").should("have.attr", "href", "/bichard")
     })
   })
 })

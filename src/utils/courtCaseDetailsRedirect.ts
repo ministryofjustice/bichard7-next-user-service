@@ -18,7 +18,20 @@ const courtCaseDetailsRedirect = (req: IncomingMessage, currentUser: Partial<Use
   const caseDetailCookie = cookies?.find((c) => regex.test(c))
   const redirectToCourtDetails = caseDetailCookie?.replace(`${caseDetailsCookieName}=`, "")
 
-  if (!redirectToCourtDetails) {
+  const caseDetails404Name = "qa_case_details_404"
+  const caseDetail404Cookie = cookies?.find((c) => c.startsWith(caseDetails404Name))
+
+  let hasCaseDetails404ErrorId = false
+
+  if (caseDetail404Cookie) {
+    const match = /bichard\/court-case\/(\d+)$/.exec(caseDetail404Cookie)
+
+    if (match) {
+      hasCaseDetails404ErrorId = !!match[1]
+    }
+  }
+
+  if (!redirectToCourtDetails || hasCaseDetails404ErrorId) {
     return ""
   }
 
