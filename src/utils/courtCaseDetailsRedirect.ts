@@ -24,7 +24,7 @@ const courtCaseDetailsRedirect = (req: IncomingMessage, currentUser: Partial<Use
   let hasCaseDetails404ErrorId = false
 
   if (caseDetail404Cookie) {
-    const match = /(\d+)$/.exec(caseDetail404Cookie)
+    const match = /bichard\/court-case\/(\d+)$/.exec(caseDetail404Cookie)
 
     if (match) {
       hasCaseDetails404ErrorId = !!match[1]
