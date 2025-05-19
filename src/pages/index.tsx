@@ -20,6 +20,7 @@ import { useEffect } from "react"
 import AuthenticationServerSidePropsContext from "types/AuthenticationServerSidePropsContext"
 import { isError } from "types/Result"
 import ServiceMessage from "types/ServiceMessage"
+import { UiType } from "types/UiType"
 import User from "types/User"
 import getServiceMessages from "useCases/getServiceMessages"
 import getUserManagersForForce from "useCases/getUserManagersForForce"
@@ -103,6 +104,10 @@ const Home = ({
     deleteCookie("qa_case_details_404")
   })
 
+  const setCurrentUi = (uiType: string) => {
+    localStorage.setItem("currentUi", uiType)
+  }
+
   return (
     <>
       <Head>
@@ -119,6 +124,7 @@ const Home = ({
                 basePath={false}
                 className="govuk-button govuk-button--start govuk-!-margin-top-5"
                 id="bichard-link"
+                onClick={() => setCurrentUi(UiType.Old)}
               >
                 {"Access Bichard"}
                 <svg
@@ -151,6 +157,7 @@ const Home = ({
                   basePath={false}
                   className="govuk-button govuk-button--start govuk-!-margin-top-5"
                   id="bichard-link"
+                  onClick={() => setCurrentUi(UiType.New)}
                 >
                   {"Access New Bichard"}
                   <svg
