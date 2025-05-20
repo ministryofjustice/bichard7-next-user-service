@@ -20,7 +20,7 @@ import { useEffect } from "react"
 import AuthenticationServerSidePropsContext from "types/AuthenticationServerSidePropsContext"
 import { isError } from "types/Result"
 import ServiceMessage from "types/ServiceMessage"
-import { UiType } from "types/UiType"
+import { Ui } from "types/Ui"
 import User from "types/User"
 import getServiceMessages from "useCases/getServiceMessages"
 import getUserManagersForForce from "useCases/getUserManagersForForce"
@@ -124,7 +124,7 @@ const Home = ({
                 basePath={false}
                 className="govuk-button govuk-button--start govuk-!-margin-top-5"
                 id="bichard-link"
-                onClick={() => setCurrentUi(UiType.Old)}
+                onClick={() => setCurrentUi(Ui.Old)}
               >
                 {"Access Bichard"}
                 <svg
@@ -157,7 +157,7 @@ const Home = ({
                   basePath={false}
                   className="govuk-button govuk-button--start govuk-!-margin-top-5"
                   id="bichard-link"
-                  onClick={() => setCurrentUi(UiType.New)}
+                  onClick={() => setCurrentUi(Ui.New)}
                 >
                   {"Access New Bichard"}
                   <svg
