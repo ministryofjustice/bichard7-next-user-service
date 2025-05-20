@@ -104,10 +104,6 @@ const Home = ({
     deleteCookie("qa_case_details_404")
   })
 
-  const setCurrentUi = (uiType: string) => {
-    localStorage.setItem("currentUi", uiType)
-  }
-
   return (
     <>
       <Head>
@@ -124,7 +120,7 @@ const Home = ({
                 basePath={false}
                 className="govuk-button govuk-button--start govuk-!-margin-top-5"
                 id="bichard-link"
-                onClick={() => setCurrentUi(Ui.Old)}
+                onClick={() => localStorage.setItem("currentUi", Ui.Old)}
               >
                 {"Access Bichard"}
                 <svg
@@ -157,7 +153,7 @@ const Home = ({
                   basePath={false}
                   className="govuk-button govuk-button--start govuk-!-margin-top-5"
                   id="bichard-link"
-                  onClick={() => setCurrentUi(Ui.New)}
+                  onClick={() => localStorage.setItem("currentUi", Ui.New)}
                 >
                   {"Access New Bichard"}
                   <svg
