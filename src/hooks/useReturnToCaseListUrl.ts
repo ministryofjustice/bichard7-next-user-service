@@ -7,7 +7,7 @@ const useReturnToCaseListUrl = () => {
 
   useEffect(() => {
     const uiType = localStorage.getItem("currentUi")
-    setUrl(uiType === Ui.New ? config.newBichardRedirectURL : config.bichardRedirectURL)
+    setUrl(uiType === Ui.New ? config.newBichardRedirectURL : config.bichardRedirectToCaseListURL)
   }, [])
 
   return url
