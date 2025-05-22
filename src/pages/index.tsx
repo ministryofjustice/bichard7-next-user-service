@@ -20,7 +20,7 @@ import { useEffect } from "react"
 import AuthenticationServerSidePropsContext from "types/AuthenticationServerSidePropsContext"
 import { isError } from "types/Result"
 import ServiceMessage from "types/ServiceMessage"
-import { Ui } from "types/Ui"
+import { LocalStorageKey, Ui } from "types/Ui"
 import User from "types/User"
 import getServiceMessages from "useCases/getServiceMessages"
 import getUserManagersForForce from "useCases/getUserManagersForForce"
@@ -120,7 +120,7 @@ const Home = ({
                 basePath={false}
                 className="govuk-button govuk-button--start govuk-!-margin-top-5"
                 id="bichard-link"
-                onClick={() => localStorage.setItem("currentUi", Ui.Old)}
+                onClick={() => localStorage.setItem(LocalStorageKey.CurrentUi, Ui.Old)}
               >
                 {"Access Bichard"}
                 <svg
@@ -153,7 +153,7 @@ const Home = ({
                   basePath={false}
                   className="govuk-button govuk-button--start govuk-!-margin-top-5"
                   id="bichard-link"
-                  onClick={() => localStorage.setItem("currentUi", Ui.New)}
+                  onClick={() => localStorage.setItem(LocalStorageKey.CurrentUi, Ui.New)}
                 >
                   {"Access New Bichard"}
                   <svg
