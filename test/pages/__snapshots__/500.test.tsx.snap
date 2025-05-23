@@ -143,6 +143,13 @@ exports[`should render the component and match the snapshot 1`] = `
             </a>
              if you have repeated problems with Bichard.
           </p>
+          <a
+            class="govuk-button"
+            data-module="govuk-button"
+            href="/bichard-ui/RefreshListNoRedirect"
+          >
+            Return to case list
+          </a>
         </div>
       </div>
     </main>

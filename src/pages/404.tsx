@@ -3,11 +3,13 @@ import GridColumn from "components/GridColumn"
 import GridRow from "components/GridRow"
 import Layout from "components/Layout"
 import Paragraph from "components/Paragraph"
+import useReturnToCaseListUrl from "hooks/useReturnToCaseListUrl"
 import Head from "next/head"
 import { useEffect, useState } from "react"
 
 const Custom404 = () => {
   const [cookieSet, setCookieSet] = useState(false)
+  const returnToCaseListUrl = useReturnToCaseListUrl()
 
   useEffect(() => {
     if (window.location.pathname.includes("/court-cases/")) {
@@ -35,6 +37,9 @@ const Custom404 = () => {
               <ContactLink>{"contact support"}</ContactLink>
               {"."}
             </Paragraph>
+            <a href={returnToCaseListUrl} className="govuk-button" data-module="govuk-button">
+              {"Return to case list"}
+            </a>
           </GridColumn>
         </GridRow>
         {cookieSet ? <div id={"cookie-set"} hidden aria-hidden></div> : undefined}

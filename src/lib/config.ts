@@ -19,6 +19,7 @@ export interface UserServiceConfig {
   authenticationCookieName: string
   baseUrl?: string
   bichardRedirectURL: string
+  bichardRedirectToCaseListURL: string
   newBichardRedirectURL: string
   cookieSecret: string
   cookiesSecureOption: boolean
@@ -60,6 +61,7 @@ const getConfig = (): UserServiceConfig => ({
   authenticationCookieName: ".AUTH",
   baseUrl: process.env.BASE_URL,
   bichardRedirectURL: process.env.BICHARD_REDIRECT_URL ?? "/bichard-ui/InitialRefreshList",
+  bichardRedirectToCaseListURL: "/bichard-ui/RefreshListNoRedirect",
   newBichardRedirectURL: process.env.NEW_BICHARD_REDIRECT_URL ?? "/bichard",
   cookieSecret: process.env.COOKIE_SECRET ?? "OliverTwist",
   cookiesSecureOption: (process.env.COOKIES_SECURE ?? "true") === "true",
