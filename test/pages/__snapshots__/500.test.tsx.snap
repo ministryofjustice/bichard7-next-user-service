@@ -147,8 +147,16 @@ exports[`should render the component and match the snapshot 1`] = `
             class="govuk-button"
             data-module="govuk-button"
             href="/bichard-ui/RefreshListNoRedirect"
+            style="margin-right: 1rem;"
           >
             Return to case list
+          </a>
+          <a
+            class="govuk-button"
+            data-module="govuk-button"
+            href="mailto:moj-bichard7@madetech.com?subject=Feedback%3A%20500%20Error&body=Please%20describe%20the%20issues%20you%20have%20experienced%2C%20including%20Username%20and%20Force%20-%20the%20more%20detail%20the%20better.%20If%20you%20have%20any%20screenshots%2C%20please%20attach%20them%20to%20the%20email."
+          >
+            Report this error
           </a>
         </div>
       </div>
