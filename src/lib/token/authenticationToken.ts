@@ -6,9 +6,8 @@ import config from "../config"
 import UserGroup from "../../types/UserGroup"
 import UserAuthBichard from "types/UserAuthBichard"
 
-const signOptions: jwt.SignOptions = {
-  issuer: config.tokenIssuer
-}
+const signOptions: jwt.SignOptions = { issuer: config.tokenIssuer }
+const verifyOptions: jwt.VerifyOptions = { issuer: config.tokenIssuer }
 
 export type AuthenticationToken = string
 
@@ -42,7 +41,7 @@ export function generateAuthenticationToken(user: Partial<UserAuthBichard>, uniq
 
 export function decodeAuthenticationToken(token: string): Result<AuthenticationTokenPayload> {
   try {
-    return jwt.verify(token, config.tokenSecret, signOptions) as AuthenticationTokenPayload
+    return jwt.verify(token, config.tokenSecret, verifyOptions) as AuthenticationTokenPayload
   } catch (error) {
     return error as Error
   }
