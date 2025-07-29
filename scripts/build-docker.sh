@@ -42,7 +42,14 @@ function pull_and_build_from_aws() {
 
   DOCKER_IMAGE_HASH="${AWS_ACCOUNT_ID}.dkr.ecr.eu-west-2.amazonaws.com/${DOCKER_REFERENCE}@${IMAGE_HASH}"
 
-  docker build --no-cache=$NOCACHE --build-arg "BUILD_IMAGE=${DOCKER_IMAGE_HASH}" -t user-service .
+  if [ $(arch) = "arm64" ]
+  then
+    echo "Building for ARM"
+    docker build --no-cache=$NOCACHE --platform=linux/arm64 --build-arg "BUILD_IMAGE=${DOCKER_IMAGE_HASH}" -t user-service .
+  else
+    echo "Building regular image"
+    docker build --no-cache=$NOCACHE --build-arg "BUILD_IMAGE=${DOCKER_IMAGE_HASH}" -t user-service .
+  fi
 
   if [[ -n "${CODEBUILD_RESOLVED_SOURCE_VERSION}" && -n "${CODEBUILD_START_TIME}" ]]; then
 
