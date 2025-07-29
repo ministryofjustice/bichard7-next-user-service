@@ -51,6 +51,8 @@ function pull_and_build_from_aws() {
     docker build --no-cache=$NOCACHE --build-arg "BUILD_IMAGE=${DOCKER_IMAGE_HASH}" -t user-service .
   fi
 
+  echo "Build complete"
+
   if [[ -n "${CODEBUILD_RESOLVED_SOURCE_VERSION}" && -n "${CODEBUILD_START_TIME}" ]]; then
 
       ## Install goss
