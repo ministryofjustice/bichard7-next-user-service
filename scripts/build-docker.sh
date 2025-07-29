@@ -89,6 +89,7 @@ EOF
 }
 
 if [[ "$(has_local_image)" -gt 0 ]]; then
+  echo "Found local image"
   if [ $(arch) = "arm64" ]
   then
       echo "Building for ARM"
