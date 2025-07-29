@@ -45,7 +45,7 @@ function pull_and_build_from_aws() {
   if [ $(arch) = "arm64" ]
   then
     echo "Building for ARM"
-    docker build --no-cache=$NOCACHE --platform=linux/arm64 --build-arg "BUILD_IMAGE=${DOCKER_IMAGE_HASH}" -t user-service .
+    docker build --no-cache=$NOCACHE --build-arg "BUILD_IMAGE=${DOCKER_IMAGE_HASH}" --platform=linux/arm64 -t user-service .
   else
     echo "Building regular image"
     docker build --no-cache=$NOCACHE --build-arg "BUILD_IMAGE=${DOCKER_IMAGE_HASH}" -t user-service .
