@@ -22,7 +22,7 @@ const postFeedback = (feedback: string, currentUserEmail?: string): PromiseResul
     })
     .then(() => logger.info(`Feedback successfully sent`))
     .catch((error: Error) => {
-      logger.error(`Error sending email `, error.message)
+      logger.error({ error: error }, "Error sending email")
       return error
     })
 }
