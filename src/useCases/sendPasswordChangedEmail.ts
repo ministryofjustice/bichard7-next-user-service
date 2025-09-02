@@ -30,7 +30,7 @@ export default async (connection: Database, emailAddress: string, baseUrl: strin
     })
     .then(() => logger.info(`Email successfully sent to ${emailAddress}`))
     .catch((error: Error) => {
-      logger.error(`Error sending email to ${emailAddress}`, error.message)
+      logger.error({ error: error }, `Error sending email to ${emailAddress}`)
       return error
     })
 }

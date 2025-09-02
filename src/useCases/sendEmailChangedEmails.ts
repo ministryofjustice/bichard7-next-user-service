@@ -24,7 +24,7 @@ export default async (
     })
     .then(() => logger.info(`Email successfully sent to ${oldEmail}`))
     .catch((error: Error) => {
-      logger.error(`Error sending email to ${oldEmail}`, error.message)
+      logger.error({ error: error }, `Error sending email to ${oldEmail}`)
       sendingError = error
     })
 
@@ -36,7 +36,7 @@ export default async (
     })
     .then(() => logger.info(`Email successfully sent to ${newEmail}`))
     .catch((error: Error) => {
-      logger.error(`Error sending email to ${newEmail}`, error.message)
+      logger.error({ error: error }, `Error sending email to ${newEmail}`)
       sendingError = error
     })
 

@@ -70,7 +70,7 @@ export const getServerSideProps = withMultipleServerSideProps(
       const baseUrl = req.headers["x-origin"] || req.headers.origin || config.baseUrl
 
       if (!baseUrl || Array.isArray(baseUrl)) {
-        logger.error("baseUrl is invalid", baseUrl)
+        logger.error({ baseUrl }, "baseUrl is invalid")
         return createRedirectResponse("/500")
       }
 
